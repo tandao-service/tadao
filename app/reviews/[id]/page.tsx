@@ -12,6 +12,8 @@ import NavbarReviews from "@/components/shared/NavbarReviews";
 import { Toaster } from "@/components/ui/toaster";
 import dynamic from "next/dynamic";
 import Skeleton from "@mui/material/Skeleton";
+import ReviewsBoxMyAds from "@/components/shared/ReviewsBoxMyAds";
+import SendReviewMyAds from "@/components/shared/SendReviewMyAds";
 
 const SellerProfile = dynamic(
   () => import("@/components/shared/SellerProfile"),
@@ -106,7 +108,7 @@ const pagechat = async ({ params: { id } }: chatProps) => {
       </div>
       <div className="mx-auto flex mt-20 p-1">
         <div className="hidden lg:inline w-[350px] sidebar left-0 top-0 bg-[#ebf2f7] p-4">
-          <div className="bg-white w-full rounded-lg p-1">
+          <div className="w-full rounded-lg p-1">
             <SellerProfile
               user={user}
               loggedId={senderId}
@@ -117,7 +119,7 @@ const pagechat = async ({ params: { id } }: chatProps) => {
 
         <div className="w-full lg:w-3/4 chat overflow-y-auto right-0 top-0 p-0">
           <div className="lg:hidden w-full sidebar lg:fixed left-0 top-0 bg-[#ebf2f7] mb-1">
-            <div className="bg-white w-full rounded-lg p-1">
+            <div className="w-full rounded-lg p-1">
               <SellerProfile
                 user={user}
                 loggedId={senderId}
@@ -138,7 +140,7 @@ const pagechat = async ({ params: { id } }: chatProps) => {
               recipient={user}
             />
           </div>
-          <SendReview
+          <SendReviewMyAds
             displayName={senderName}
             uid={senderId}
             photoURL={senderImage}
