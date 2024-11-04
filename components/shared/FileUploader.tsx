@@ -198,6 +198,13 @@ export function FileUploader({
     const newImageUrls = [...imageUrls];
     newImageUrls.splice(index, 1);
     onFieldChange(newImageUrls);
+
+    // Remove from setFiles
+    setFiles((prevFiles) => {
+      const newFiles = [...prevFiles];
+      newFiles.splice(index, 1);
+      return newFiles;
+    });
   };
 
   return (

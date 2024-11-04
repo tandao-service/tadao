@@ -66,6 +66,7 @@ import Head from "next/head";
 import ChatButton from "./ChatButton ";
 import ShareAd from "./ShareAd";
 import { useToast } from "../ui/use-toast";
+import SellerProfileCard from "./SellerProfileCard";
 type CardProps = {
   ad: IAd;
   userId: string;
@@ -472,7 +473,7 @@ export default function Ads({ ad, userId, userImage, userName }: CardProps) {
               <div className="bg-black p-4 w-full flex flex-col items-center justify-center z-50">
                 <button
                   onClick={togglePopup}
-                  className="bg-opacity-70 rounded-full m-1 bg-black absolute top-0 right-0 focus:outline-none"
+                  className="bg-opacity-70 rounded-full m-1 p-2 bg-black absolute top-3 right-3 focus:outline-none"
                 >
                   <CloseIcon className="text-white m-0" />
                 </button>
@@ -891,10 +892,11 @@ export default function Ads({ ad, userId, userImage, userName }: CardProps) {
           <div className="hidden lg:inline">
             <div className="bg-white p-1 text-l rounded-lg overflow-hidden shadow-md">
               <div className="flex flex-col">
-                <SellerProfile
-                  userId={ad.organizer._id}
-                  loggedId={userId}
-                  user={ad.organizer}
+                <SellerProfileCard
+                  userId={userId}
+                  ad={ad}
+                  userImage={userImage}
+                  userName={userName}
                 />
               </div>
             </div>

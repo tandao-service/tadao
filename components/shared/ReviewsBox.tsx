@@ -99,7 +99,7 @@ const ReviewsBox = ({
       {messages.length > 0 ? (
         <>
           {" "}
-          <ScrollArea className="h-screen w-full bg-white rounded-md border p-4">
+          <ScrollArea className="h-screen  grid grid-cols-2 lg:grid-cols-2 bg-white rounded-md border p-4">
             {messages
               .slice()
               .reverse()

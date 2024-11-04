@@ -12,7 +12,7 @@ import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import { useRouter } from "next/navigation";
 
 interface SettingsProp {
-  user: IUser;
+  user: any;
   userId: string;
   isAdCreator: boolean;
 }

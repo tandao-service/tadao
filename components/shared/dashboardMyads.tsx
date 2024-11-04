@@ -257,7 +257,7 @@ CollectionProps) => {
               <div className="flex w-full justify-between">
                 <div className="flex flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
                   <div
-                    className={`cursor-pointer ${
+                    className={`bg-white rounded-sm border p-1 cursor-pointer ${
                       activeButton === 0 ? "text-[#30AF5B]" : "text-gray-400"
                     }`}
                     onClick={() => handleButtonClick(0)}
@@ -265,7 +265,7 @@ CollectionProps) => {
                     <ViewModuleIcon />
                   </div>
                   <div
-                    className={`cursor-pointer ${
+                    className={`bg-white rounded-sm border p-1 cursor-pointer ${
                       activeButton === 1 ? "text-[#30AF5B]" : "text-gray-400"
                     }`}
                     onClick={() => handleButtonClick(1)}
@@ -273,12 +273,12 @@ CollectionProps) => {
                     <ViewListIcon />
                   </div>
                 </div>
-                <div className="rounded-lg p-1 flex items-center">
+                <div className="rounded-full bg-white border p-1 flex items-center">
                   <div className="text-[#30AF5B]">
                     <SwapVertIcon />
                   </div>
                   <Select onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-[180px] border-0 rounded-full">
                       <SelectValue placeholder="Sort By" />
                     </SelectTrigger>
                     <SelectContent>

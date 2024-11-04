@@ -144,7 +144,7 @@ const Card = ({ ad, hasOrderLink, hidePrice, userId }: CardProps) => {
         <div className="w-full flex justify-end  absolute top-2/3 left-1/2 transform -translate-x-1/2 p-1 rounded-full">
           <SignedIn>
             <div
-              className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+              className="w-8 h-8 p-1 mt-[-20px] shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
               data-tip="Bookmark"
               onClick={() => handle(ad._id)}
             >
@@ -164,7 +164,7 @@ const Card = ({ ad, hasOrderLink, hidePrice, userId }: CardProps) => {
           <SignedOut>
             <Link href="/sign-in">
               <div
-                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                className="w-8 h-8 p-1 mt-[-20px] shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                 data-tip="Bookmark"
               >
                 <TooltipProvider>

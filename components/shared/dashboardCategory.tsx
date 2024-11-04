@@ -521,7 +521,7 @@ CollectionProps) => {
                 {subcategory ? <> {subcategory}</> : "All"}
               </div>
               <div className="lg:hidden">
-                <section className="flex justify-between items-center gap-1 bg-white p-1 bg-white bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
+                <section className="flex mt-2 justify-between items-center gap-1 bg-white p-1 bg-white bg-dotted-pattern bg-cover bg-center rounded-sm">
                   <div className="flex w-full p-1">
                     <SubCategoryFilterSearch
                       category={category}
@@ -917,7 +917,7 @@ CollectionProps) => {
               <div className="flex w-full justify-between">
                 <div className="flex gap-1 flex-wrap justify-start items-center mb-4 ">
                   <div
-                    className={`cursor-pointer ${
+                    className={`bg-white rounded-sm border p-1 cursor-pointer ${
                       activeButton === 0 ? "text-[#30AF5B]" : "text-gray-400"
                     }`}
                     onClick={() => handleButtonClick(0)}
@@ -934,7 +934,7 @@ CollectionProps) => {
                     </TooltipProvider>
                   </div>
                   <div
-                    className={`cursor-pointer ${
+                    className={`bg-white rounded-sm border p-1 cursor-pointer ${
                       activeButton === 1 ? "text-[#30AF5B]" : "text-gray-400"
                     }`}
                     onClick={() => handleButtonClick(1)}
@@ -951,7 +951,7 @@ CollectionProps) => {
                     </TooltipProvider>
                   </div>
                   <div
-                    className={`cursor-pointer ${
+                    className={`bg-white rounded-sm border p-1 cursor-pointer ${
                       activeButton === 2 ? "text-[#30AF5B]" : "text-gray-400"
                     }`}
                     onClick={() => handleButtonClick(2)}
@@ -968,12 +968,12 @@ CollectionProps) => {
                     </TooltipProvider>
                   </div>
                 </div>
-                <div className="rounded-lg p-1 z-5 flex items-center">
+                <div className="rounded-full bg-white border p-1 z-5 flex items-center">
                   <div className="text-[#30AF5B]">
                     <SwapVertIcon />
                   </div>
                   <Select onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-[180px] border-0 rounded-full">
                       <SelectValue placeholder="Sort By" />
                     </SelectTrigger>
                     <SelectContent className="z-20">

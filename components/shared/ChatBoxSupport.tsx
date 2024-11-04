@@ -40,7 +40,7 @@ const ChatBoxSupport = ({
   const [messages, setMessages] = useState<any[]>([]);
   //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   };
 
   useEffect(scrollToBottom, [messages]);

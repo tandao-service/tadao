@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { createBookmark, deleteBookmark } from "@/lib/actions/bookmark.actions";
 import { updatebookmarked } from "@/lib/actions/ad.actions";
@@ -98,11 +98,15 @@ const HorizontalCard = ({ userId, ad, isAdCreator }: CardProps) => {
       });
     }
   };
+  const router = useRouter();
   // console.log(ad.imageUrls);
   return (
     <>
       <div className="flex w-full mb-2 rounded-lg bg-white hover:cursor-pointer shadow">
-        <div className="relative w-[160px] lg:w-[200px] h-[200px]">
+        <div
+          onClick={() => router.push(`/ads/${ad._id}`)}
+          className="relative w-[160px] lg:w-[200px] h-[200px]"
+        >
           <img
             src={ad.imageUrls[0]}
             alt="ad image"
@@ -260,7 +264,7 @@ const HorizontalCard = ({ userId, ad, isAdCreator }: CardProps) => {
               <div className="">
                 <SignedIn>
                   <div
-                    className="w-8 h-8 p-1 shadow-lg flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                    className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                     data-tip="Bookmark"
                     onClick={() => handle(ad._id)}
                   >
@@ -280,7 +284,7 @@ const HorizontalCard = ({ userId, ad, isAdCreator }: CardProps) => {
                 <SignedOut>
                   <Link href="/sign-in">
                     <div
-                      className="w-8 h-8 p-1 shadow-lg flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                      className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                       data-tip="Bookmark"
                     >
                       <TooltipProvider>

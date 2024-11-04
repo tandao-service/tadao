@@ -136,7 +136,7 @@ const SellerProfileMobile = ({
             className="no-underline font-boldm-1"
           >
             <p className="ml-2 text-xs text-emerald-500 hover:text-emerald-950 hover:underline">
-              View Seller Shop
+              View Seller Profile
             </p>
           </Link>
         </div>

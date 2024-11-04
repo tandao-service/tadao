@@ -125,6 +125,34 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
               className="rounded-sm w-full h-6"
             />
           </div>
+          <div className="flex gap-2 justify-center mb-1">
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-6 h-6"
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-full h-6"
+            />
+          </div>
+          <div className="flex gap-2 justify-center mb-1">
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-6 h-6"
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-full h-6"
+            />
+          </div>
         </div>
       ) : messages.length > 0 ? (
         <>
