@@ -205,7 +205,7 @@ const HomeDashboard = ({ userId, userName, userImage }: homeProps) => {
                     mt={2.5}
                     sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}
                   >
-                    PAUL THUMBI
+                    -----------------
                   </Box>
                 </Box>
               </Box>
