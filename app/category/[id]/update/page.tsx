@@ -21,58 +21,6 @@ import {
   getCategoryById,
 } from "@/lib/actions/category.actions";
 
-const SellerProfile = dynamic(
-  () => import("@/components/shared/SellerProfile"),
-  {
-    ssr: false,
-    loading: () => (
-      <div>
-        <div className="w-full lg:w-[300px] h-full flex flex-col items-center justify-center">
-          <Image
-            src="/assets/icons/loading2.gif"
-            alt="loading"
-            width={40}
-            height={40}
-            unoptimized
-          />
-        </div>
-      </div>
-    ),
-  }
-);
-
-const ReviewsBox = dynamic(() => import("@/components/shared/ReviewsBox"), {
-  ssr: false,
-  loading: () => (
-    <div>
-      <div className="w-full h-[300px] mb-2 bg-white rounded-lg flex flex-col items-center justify-center">
-        <Image
-          src="/assets/icons/loading2.gif"
-          alt="loading"
-          width={40}
-          height={40}
-          unoptimized
-        />
-      </div>
-    </div>
-  ),
-});
-const SendReview = dynamic(() => import("@/components/shared/SendReview"), {
-  ssr: false,
-  loading: () => (
-    <div>
-      <div className="w-full h-[50px] mt-2 flex bg-white rounded-lg flex-col items-center justify-center">
-        <Image
-          src="/assets/icons/loading2.gif"
-          alt="loading"
-          width={40}
-          height={40}
-          unoptimized
-        />
-      </div>
-    </div>
-  ),
-});
 type chatProps = {
   params: {
     id: string;
