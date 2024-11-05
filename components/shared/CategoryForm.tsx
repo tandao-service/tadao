@@ -67,13 +67,13 @@ const CategoryForm = ({ type, category, categoryId }: CategoryFormProps) => {
 
         const newCategory = await createCategory({
           category: { ...values, imageUrl: uploadedImageUrl },
-          path: "/profile",
+          path: "/home",
         });
         // alert(newCategory);
         if (newCategory) {
           form.reset();
           //  router.push(`/admin/${newCategory._id}`);
-          router.push(`/categories/`);
+          router.push(`/home/`);
           // window.location.href = "/events/" + newEvent._id;
         }
       } catch (error) {
@@ -92,12 +92,12 @@ const CategoryForm = ({ type, category, categoryId }: CategoryFormProps) => {
             imageUrl: uploadedImageUrl,
             _id: categoryId,
           },
-          path: `/categories/${categoryId}`,
+          path: `/home/`,
         });
 
         if (updatedCat) {
           form.reset();
-          router.push(`/categories/${updatedCat._id}/update`);
+          router.push(`/category/${updatedCat._id}/update`);
           // router.push(`/categories`);
         }
       } catch (error) {
