@@ -890,7 +890,7 @@ export default function Ads({ ad, userId, userImage, userName }: CardProps) {
 
           <br />
           <div className="hidden lg:inline">
-            <div className="bg-white p-1 text-l rounded-lg overflow-hidden shadow-md">
+            <div className="">
               <div className="flex flex-col">
                 <SellerProfileCard
                   userId={userId}

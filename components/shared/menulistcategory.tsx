@@ -61,7 +61,7 @@ export default function Menulistcategory({ categoryList }: MobileProps) {
               </Accordion>
               <div className="flex items-center">
                 <Link
-                  href={`/categories/${category._id}/update`}
+                  href={`/category/${category._id}/update`}
                   className="mr-2"
                 >
                   <Image

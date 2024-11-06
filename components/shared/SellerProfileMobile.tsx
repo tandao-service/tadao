@@ -131,14 +131,14 @@ const SellerProfileMobile = ({
             </p>
           </Link>
 
-          <Link
-            href={`/shop/${ad.organizer._id}`}
-            className="no-underline font-boldm-1"
+          <div
+            onClick={() => router.push(`/shop/${ad.organizer._id}`)}
+            className=" cursor-pointer no-underline font-boldm-1"
           >
             <p className="ml-2 text-xs text-emerald-500 hover:text-emerald-950 hover:underline">
               View Seller Profile
             </p>
-          </Link>
+          </div>
         </div>
       </div>
       {/* <Ratingsmobile recipientUid={userId} />*/}

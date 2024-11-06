@@ -41,12 +41,13 @@ const CollectionMyads = ({
 
   const fetchAds = async () => {
     setLoading(true);
+
     try {
       const organizedAds = await getAdByUser({
         userId,
         page,
         sortby: sortby,
-        myshop: isAdCreator,
+        myshop: true,
       });
 
       // Update ads state using the latest prevAds for filtering
@@ -62,6 +63,7 @@ const CollectionMyads = ({
       });
       setTotalPages(organizedAds?.totalPages || 1);
     } catch (error) {
+      alert(error);
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);

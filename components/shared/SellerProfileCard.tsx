@@ -110,7 +110,7 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
     });
     window.location.href = `tel:${ad.phone}`;
   };
-
+  const router = useRouter();
   const handlewhatsappClick = async (e: any) => {
     const whatsapp = (Number(ad.whatsapp ?? "0") + 1).toString();
     const _id = ad._id;
@@ -186,13 +186,14 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
           <RatingsCard recipientUid={ad.organizer._id} />
         </div>
       </div>
-      <Link
-        href={`/shop/${ad.organizer._id}`}
-        className="no-underline w-full flex gap-1 items-center mt-3"
+      <div
+        // href={`/shop/${ad.organizer._id}`}
+        onClick={() => router.push(`/shop/${ad.organizer._id}`)}
+        className="cursor-pointer no-underline w-full flex gap-1 items-center mt-3"
       >
         <LocalOfferOutlinedIcon sx={{ fontSize: 24 }} />
         <p className="hover:underline">View Seller Profile</p>
-      </Link>
+      </div>
 
       {!isAds && (
         <>

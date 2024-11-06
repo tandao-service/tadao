@@ -290,17 +290,17 @@ const VerticalCard = ({ userId, ad, isAdCreator }: CardProps) => {
         </div>
         <div className="flex justify-between w-full gap-1 p-1">
           {ad.vehiclecondition && (
-            <div className="flex gap-2 text-[10px] lg:text-xs bg-[#ebf2f7] rounded-sm p-1 justify-center border">
+            <div className="flex gap-2 text-[8px] lg:text-xs bg-[#ebf2f7] rounded-sm p-1 justify-center border">
               {ad.vehiclecondition}
             </div>
           )}
           {ad.vehicleTransmissions && (
-            <div className="flex gap-2 text-[10px] lg:text-xs bg-[#ebf2f7] rounded-sm p-1 justify-center border">
+            <div className="flex gap-2 text-[8px] lg:text-xs bg-[#ebf2f7] rounded-sm p-1 justify-center border">
               {ad.vehicleTransmissions}
             </div>
           )}
           {ad.vehicleEngineSizesCC && (
-            <div className="flex gap-2 text-[10px] lg:text-xs bg-[#ebf2f7] rounded-sm p-1 justify-center border">
+            <div className="flex gap-2 text-[8px] lg:text-xs bg-[#ebf2f7] rounded-sm p-1 justify-center border">
               {ad.vehicleEngineSizesCC}
             </div>
           )}
