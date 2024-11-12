@@ -186,15 +186,14 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
           <RatingsCard recipientUid={ad.organizer._id} />
         </div>
       </div>
-      <div
-        // href={`/shop/${ad.organizer._id}`}
-        onClick={() => router.push(`/shop/${ad.organizer._id}`)}
-        className="cursor-pointer no-underline w-full flex gap-1 items-center mt-3"
+
+      <Link
+        href={`/shop/${ad.organizer._id}`}
+        className="no-underline w-full flex gap-1 items-center mt-3"
       >
         <LocalOfferOutlinedIcon sx={{ fontSize: 24 }} />
         <p className="hover:underline">View Seller Profile</p>
-      </div>
-
+      </Link>
       {!isAds && (
         <>
           <div className="flex gap-1 items-center p-1 w-full">

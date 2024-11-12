@@ -107,6 +107,7 @@ const SellerProfileMobile = ({
       <div className="lg:hidden flex gap-1 items-center p-1 w-full">
         <Link
           href={`/shop/${ad.organizer._id}`}
+          target="_blank"
           className="no-underline font-bold m-1"
         >
           <div className="w-10 h-10 rounded-full bg-white">
@@ -124,6 +125,7 @@ const SellerProfileMobile = ({
         <div className="flex flex-col">
           <Link
             href={`/shop/${ad.organizer._id}`}
+            target="_blank"
             className="no-underline font-boldm-1"
           >
             <p className="ml-2 text-xs font-bold">
@@ -131,14 +133,11 @@ const SellerProfileMobile = ({
             </p>
           </Link>
 
-          <div
-            onClick={() => router.push(`/shop/${ad.organizer._id}`)}
-            className=" cursor-pointer no-underline font-boldm-1"
-          >
+          <Link href={`/shop/${ad.organizer._id}`} className="no-underline m-1">
             <p className="ml-2 text-xs text-emerald-500 hover:text-emerald-950 hover:underline">
               View Seller Profile
             </p>
-          </div>
+          </Link>
         </div>
       </div>
       {/* <Ratingsmobile recipientUid={userId} />*/}

@@ -26,6 +26,9 @@ import Skeleton from "@mui/material/Skeleton";
 import { IUser } from "@/lib/database/models/user.model";
 import ReviewsBoxMyAds from "./ReviewsBoxMyAds";
 import SendReviewMyAds from "./SendReviewMyAds";
+//import RatingsCard from "./RatingsCard";
+//import CollectionMyads from "./CollectionMyads";
+
 const CollectionMyads = dynamic(() => import("./CollectionMyads"), {
   ssr: false,
   loading: () => (
@@ -200,7 +203,7 @@ CollectionProps) => {
       alert("Geolocation is not supported by this browser. ");
     }
   }
-
+  //console.log("loggedId:" + loggedId);
   return (
     <>
       <div className="max-w-6xl mx-auto flex flex-col mt-3 p-1">
@@ -307,6 +310,7 @@ CollectionProps) => {
                     </Select>
                   </div>
                 </div>
+
                 <CollectionMyads
                   // data={data}
                   emptyTitle="No ads have been created yet"
@@ -324,7 +328,7 @@ CollectionProps) => {
             </div>
           </div>
         </div>
-        <div className="rounded-xl bg-white w-full flex flex-col">
+        <div className="rounded-xl w-full flex flex-col">
           <span className=" p-2 logo font-bold text-[25px] text-emerald-950">
             Customer feedback
           </span>

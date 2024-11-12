@@ -24,7 +24,6 @@ const myads = async ({ params: { id }, searchParams }: SearchParamProps) => {
   const isAdCreator = myId === userId;
 
   const user = await getUserById(userId);
-
   let subscription: any = [];
   let daysRemaining = 0;
   let remainingads = 0;
@@ -92,7 +91,6 @@ const myads = async ({ params: { id }, searchParams }: SearchParamProps) => {
     );
   }
 
-  //console.log("sortby:" + sortby);
   return (
     <>
       <div className="z-10 top-0 fixed w-full">

@@ -46,7 +46,7 @@ export async function transactionStatus(transaction: TransactionStatusParams) {
         const response = await axios.get(regueststatusurl, { headers: requestHeaders });
   
        const responseData = response.data;
-       console.log(responseData);
+       //console.log(responseData);
        if (responseData && responseData.status==="200") {
        
         //console.log("amount: "+responseData.amount);
@@ -226,7 +226,7 @@ export async function createTransaction(transaction: CreateTransactionParams) {
       ...transaction,buyer: transaction.buyerId
     })
 
- console.log(JSON.parse(JSON.stringify(newTransaction)))
+ //console.log(JSON.parse(JSON.stringify(newTransaction)))
     return JSON.parse(JSON.stringify(newTransaction));
   } catch (error) {
     handleError(error)

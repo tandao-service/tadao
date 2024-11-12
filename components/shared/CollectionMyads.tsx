@@ -47,9 +47,9 @@ const CollectionMyads = ({
         userId,
         page,
         sortby: sortby,
-        myshop: true,
+        myshop: isAdCreator,
       });
-
+      // alert(organizedAds);
       // Update ads state using the latest prevAds for filtering
       setAds((prevAds: IAd[]) => {
         const existingAdIds = new Set(prevAds.map((ad) => ad._id));
@@ -63,7 +63,7 @@ const CollectionMyads = ({
       });
       setTotalPages(organizedAds?.totalPages || 1);
     } catch (error) {
-      alert(error);
+      //alert(error);
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);
@@ -71,7 +71,9 @@ const CollectionMyads = ({
   };
 
   useEffect(() => {
-    fetchAds();
+    if (userId) {
+      fetchAds();
+    }
   }, [page]);
 
   const lastAdRef = (node: any) => {

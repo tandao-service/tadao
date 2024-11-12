@@ -171,11 +171,8 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
             />
           </div>
         </div>
-
-        <div className="flex flex-col">
-          <RatingsCard recipientUid={user._id} />
-        </div>
       </div>
+
       <div className="flex flex-col mt-4 items-center bg-white rounded-xl w-full p-1">
         <div className="divider"></div>
         {userId === loggedId && (
@@ -726,6 +723,9 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
             </div>
           </>
         )}
+      </div>
+      <div className="flex mb-3 flex-col mt-4 items-center bg-white rounded-xl w-full p-1">
+        <RatingsCard recipientUid={user._id} />
       </div>
     </div>
   );

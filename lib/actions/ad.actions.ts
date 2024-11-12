@@ -539,8 +539,10 @@ return {
 // GET Ad BY ORGANIZER
 export async function getAdByUser({ userId, limit = 20, page , sortby, myshop}: GetAdsByUserParams) {
   try {
+  
     await connectToDatabase()
     let conditions={}
+  
 if(myshop){
   conditions = { organizer: userId }
  
@@ -548,7 +550,7 @@ if(myshop){
   
   const status = "Active";
    conditions = { $and: [{ organizer: userId }, { adstatus: status }] };
-
+  
 }
    
     const skipAmount = (page - 1) * limit
@@ -611,7 +613,7 @@ export async function getRelatedAdByCategory({
 
     const Ads = await populateAd(AdQuery)
     const AdCount = await Ad.countDocuments(conditions)
-console.log(JSON.parse(JSON.stringify(Ads)))
+//console.log(JSON.parse(JSON.stringify(Ads)))
     return { data: JSON.parse(JSON.stringify(Ads)), totalPages: Math.ceil(AdCount / limit) }
   } catch (error) {
     handleError(error)

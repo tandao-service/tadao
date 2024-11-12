@@ -10,6 +10,7 @@ import { handleError } from '@/lib/utils'
 
 import { CreateUserParams, UpdateUserParams, UpdateUserSetingsParams, UpdateUserToken } from '@/types'
 import Verify from '../database/models/verifies.model'
+import Verifies from '../database/models/verifies.model'
 
 
 export async function createUser(user: CreateUserParams) {
@@ -40,7 +41,15 @@ export async function getUserById(userId: string) {
 
     if (!user) throw new Error('User not found')
 
-    return JSON.parse(JSON.stringify(user))
+// Fetch verification fee
+const verifyData = await Verifies.findOne() // adjust if you have a different criteria
+const fee = verifyData?.fee || 500
+console.log(fee);
+return JSON.parse(JSON.stringify({ ...user.toObject(), fee }))
+
+
+
+  //  return JSON.parse(JSON.stringify(user))
   } catch (error) {
    handleError(error)
   }

@@ -67,16 +67,6 @@ const Verificationmobile: React.FC<SettingsProp> = ({
     // Handle error when formatting date
   }
 
-  useEffect(() => {
-    if (!(user.verified && user?.verified[0]?.accountverified === true)) {
-      const getFee = async () => {
-        const verifies = await getVerfiesfee(_id);
-        setActivationFee(verifies.fee);
-      };
-      getFee();
-    }
-  }, [user]);
-
   const verifiedContent = (
     <div className="flex justify-between space-x-4">
       <VerifiedUserOutlinedIcon
@@ -112,9 +102,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
         </p>
         <div className="flex items-center pt-2">
           <button
-            onClick={() =>
-              handlePay(_id, "Verification", "0", activationfee.toString())
-            }
+            onClick={() => handlePay(_id, "Verification", "0", user.fee)}
             className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-xs mt-2 p-1 rounded-lg shadow"
           >
             <CheckCircleIcon sx={{ marginRight: "5px" }} />

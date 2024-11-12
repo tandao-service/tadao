@@ -69,9 +69,9 @@ export async function POST(req: Request) {
       status: "User",
       verified: [{ accountverified: false, verifieddate: new Date() }],
     }
-   // console.log("create");
+    console.log("create");
     const newUser = await createUser(user);
-  //  console.log(newUser);
+   console.log(newUser);
     if(newUser) {
       await clerkClient.users.updateUserMetadata(id, {
         publicMetadata: {
