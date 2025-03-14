@@ -1,4 +1,4 @@
-import { Schema, model, models, Document } from "mongoose";
+import mongoose, { Schema, model, models, Document } from "mongoose";
 
 export interface IUser extends Document {
   _id: string;
@@ -74,9 +74,10 @@ const UserSchema = new Schema({
   tiktok: { type: String }, // Optional
   verified: { type: [VerifiedSchema], required: true }, // Optional
   imageUrl: { type: String }, // Optional
-  fcmToken: { type: String },
+  isOnline: { type: Boolean, default: false },
+  lastActive: { type: Date, default: null },
 });
-
+delete mongoose.models.User;
 const User = models.User || model('User', UserSchema);
 
 export default User;

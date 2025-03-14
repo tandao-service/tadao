@@ -30,6 +30,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { mode } from "@/constants";
 const Sidebar = dynamic(() => import("@/components/shared/Sidebar"), {
   ssr: false,
   loading: () => (
@@ -50,7 +51,7 @@ const SendMessage = dynamic(() => import("@/components/shared/SendMessage"), {
   ssr: false,
   loading: () => (
     <div>
-      <div className="w-full h-[50px] flex bg-white rounded-lg flex-col items-center justify-center">
+      <div className="w-full h-[50px] flex rounded-lg flex-col items-center justify-center">
         <Image
           src="/assets/icons/loading2.gif"
           alt="loading"
@@ -66,7 +67,7 @@ const ChatBox = dynamic(() => import("@/components/shared/ChatBox"), {
   ssr: false,
   loading: () => (
     <div>
-      <div className="w-full h-[300px] mb-2 bg-white rounded-lg flex flex-col items-center justify-center">
+      <div className="w-full h-[300px] mb-2 rounded-lg flex flex-col items-center justify-center">
         <Image
           src="/assets/icons/loading2.gif"
           alt="loading"
@@ -84,6 +85,20 @@ type payProps = {
   user: any;
   recipientUid: string;
   senderId: string;
+  onClose: () => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
+  handleOpenSell: () => void;
+  handleOpenShop: (shopId:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenPerfomance: () => void;
+  handleCategory:(value:string) => void;
+    handleOpenAbout: () => void;
+    handleOpenTerms: () => void;
+    handleOpenPrivacy: () => void;
+    handleOpenSafety: () => void;
 };
 const DashboardChat = ({
   recipientUid,
@@ -91,6 +106,12 @@ const DashboardChat = ({
   senderId,
   senderName,
   senderImage,
+  handleOpenAbout,
+  handleOpenTerms,
+  handleOpenPrivacy,
+  handleOpenSafety,
+  handleOpenPerfomance, handleOpenSettings,
+  onClose,handleOpenChatId, handleOpenChat,handleOpenBook,handleOpenPlan,handleOpenSell,handleOpenShop,
 }: payProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -101,18 +122,43 @@ const DashboardChat = ({
   const closeDialog = () => {
     setIsOpen(false);
   };
-
+ const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+  
+      useEffect(() => {
+         const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+         const isDark = savedTheme === mode;
+         
+         setIsDarkMode(isDark);
+         document.documentElement.classList.toggle(mode, isDark);
+       }, []);
+     
+       useEffect(() => {
+         if (isDarkMode === null) return; // Prevent running on initial mount
+     
+         document.documentElement.classList.toggle(mode, isDarkMode);
+         localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+       }, [isDarkMode]);
+     
+       if (isDarkMode === null) return null; // Avoid flickering before state is set
+     
   return (
-    <div className="w-full">
-      <div className="z-10 top-0 fixed w-full">
-        <NavbarChats recipient={user} userId={recipientUid} />
-      </div>
+    <div className="min-h-screen w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
+     <div className="w-full">
+                     <Navbar userstatus={user.status} userId={senderId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenPlan={handleOpenPlan} popup={"chat"} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
+        handleOpenPerfomance={handleOpenPerfomance}
+        handleOpenSettings={handleOpenSettings}
+        handleOpenAbout={handleOpenAbout}
+        handleOpenTerms={handleOpenTerms}
+        handleOpenPrivacy={handleOpenPrivacy}
+        handleOpenSafety={handleOpenSafety} 
+        handleOpenShop={handleOpenShop}/>
+                   </div>
 
-      <div className="max-w-6xl mx-auto flex mt-[50px] lg:mt-[60px] mb-0 p-1">
-        <div className="hidden lg:inline mr-5">
-          <div className="bg-white w-full p-0">
+      <div className="max-w-6xl mx-auto flex mb-0 p-1">
+        <div className="hidden lg:inline mr-2">
+          <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89vh] rounded-lg">
             <div className="p-1 w-full items-center justify-center">
-              <span className="logo font-bold text-[25px] text-emerald-950">
+              <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
                 Messanger
               </span>
               <div className="flex gap-1 items-center">
@@ -120,7 +166,7 @@ const DashboardChat = ({
                 Latest Chats
               </div>
             </div>
-            <Sidebar userId={senderId} />
+            <Sidebar userId={senderId} handleOpenChatId={handleOpenChatId}/>
           </div>
         </div>
 

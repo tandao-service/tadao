@@ -7,21 +7,21 @@ export type CreateUserParams = {
   email: string
   photo: string
   status: string
-  businessname?:string
-  aboutbusiness?:string
-  businessaddress?:string
+  businessname?: string
+  aboutbusiness?: string
+  businessaddress?: string
   latitude?: string
   longitude?: string
-  businesshours?:Businesshours[]
+  businesshours?: Businesshours[]
   businessworkingdays?: string[]
   phone?: string
-  whatsapp?:string
-  website?:string
-  facebook?:string
-  twitter?:string
-  instagram?:string
-  tiktok?:string
-  verified:Verified[]
+  whatsapp?: string
+  website?: string
+  facebook?: string
+  twitter?: string
+  instagram?: string
+  tiktok?: string
+  verified: Verified[]
   imageUrl?: string
   fcmToken?: string
 }
@@ -47,26 +47,40 @@ export type UpdateUserToken = {
 }
 export type UpdateUserSetingsParams = {
   user: {
-  _id: string
-  lastName: string
-  photo: string
-  businessname?:string
-  aboutbusiness?:string
-  businessaddress?:string
-  latitude?: string
-  longitude?: string
-  businesshours?:Businesshours[]
-  businessworkingdays?: string[]
-  phone?: string
-  whatsapp?:string
-  website?:string
-  facebook?:string
-  twitter?:string
-  instagram?:string
-  tiktok?:string
- // verified?:Verified[]
-  imageUrl?: string
+    _id: string
+    lastName: string
+    photo: string
+    businessname?: string
+    aboutbusiness?: string
+    businessaddress?: string
+    latitude?: string
+    longitude?: string
+    businesshours?: Businesshours[]
+    businessworkingdays?: string[]
+    phone?: string
+    whatsapp?: string
+    website?: string
+    facebook?: string
+    twitter?: string
+    instagram?: string
+    tiktok?: string
+    // verified?:Verified[]
+    imageUrl?: string
   }
+  path: string
+}
+// ====== Ad PARAMS
+export type CreateAdShopParams = {
+  userId: string
+  subcategory: string
+  planId: string
+  plan: string
+  pricePack: number
+  periodPack: string
+  formData: any
+  priority: number
+  expirely: Date
+  adstatus: string
   path: string
 }
 
@@ -74,15 +88,15 @@ export type UpdateUserSetingsParams = {
 export type CreateAdParams = {
   userId: string
   planId: string
-  pricePack:number;
-  periodPack:string;
+  pricePack: number;
+  periodPack: string;
   ad: {
     title: string
     description: string
     latitude: string
     longitude: string
-    address:string
-    enableMap:boolean
+    address: string
+    enableMap: boolean
     imageUrls: string[]
     negotiable: boolean
     youtube?: string
@@ -91,46 +105,46 @@ export type CreateAdParams = {
     views: string
     categoryId: string
     price: number
-    make?:string
-    vehiclemodel?:string
-    vehicleyear?:string
-    vehiclecolor?:string//Black,Blue,Gray,Silver,White,Beige,Brown,Burgundy,Gold,Green,Ivory,Matt Black,Off white,Orange, Pearl, Pink,Purple ,Red,Teal,Yellow,Others
-    vehicleinteriorColor?:string
-    vehiclecondition?:string//Brand New, Foreign Used, Local Used
-    vehiclesecordCondition?:string//After crash,Engine Issue,First Owner,First registration, Gear issue,Need body repair,Need body repainting, Need repair,Original parts,Unpainted,Wiring problem, No fault
-    vehicleTransmissions?:string
-   vehiclemileage?:string
-   vehiclekeyfeatures?:string[]
-    vehiclechassis?:string//VIN Chassis Number
-    vehicleregistered?:string//yes,no
-    vehicleexchangeposible?:string//yes,no
-    vehicleFuelTypes?:string//petrol,disel,Electricity
-    vehicleBodyTypes?:string
-    vehicleSeats?:string
-    vehicleEngineSizesCC?:string
-    Types?:string
-    bedrooms?:string
-    bathrooms?:string
-    furnishing?:string
-    amenities?:string[]
-    toilets?:string
-    parking?:string
-    status?:string
-    area?:string
-    landuse?:string
-    propertysecurity?:string
-    floors?:string
-    estatename?:string
-    houseclass?:string
-    listedby?:string
-    fee?:string
+    make?: string
+    vehiclemodel?: string
+    vehicleyear?: string
+    vehiclecolor?: string//Black,Blue,Gray,Silver,White,Beige,Brown,Burgundy,Gold,Green,Ivory,Matt Black,Off white,Orange, Pearl, Pink,Purple ,Red,Teal,Yellow,Others
+    vehicleinteriorColor?: string
+    vehiclecondition?: string//Brand New, Foreign Used, Local Used
+    vehiclesecordCondition?: string//After crash,Engine Issue,First Owner,First registration, Gear issue,Need body repair,Need body repainting, Need repair,Original parts,Unpainted,Wiring problem, No fault
+    vehicleTransmissions?: string
+    vehiclemileage?: string
+    vehiclekeyfeatures?: string[]
+    vehiclechassis?: string//VIN Chassis Number
+    vehicleregistered?: string//yes,no
+    vehicleexchangeposible?: string//yes,no
+    vehicleFuelTypes?: string//petrol,disel,Electricity
+    vehicleBodyTypes?: string
+    vehicleSeats?: string
+    vehicleEngineSizesCC?: string
+    Types?: string
+    bedrooms?: string
+    bathrooms?: string
+    furnishing?: string
+    amenities?: string[]
+    toilets?: string
+    parking?: string
+    status?: string
+    area?: string
+    landuse?: string
+    propertysecurity?: string
+    floors?: string
+    estatename?: string
+    houseclass?: string
+    listedby?: string
+    fee?: string
     geometry: {
       type: string
       coordinates: number[]
     }
-    priority:number
-    expirely:Date
-    adstatus:string
+    priority: number
+    expirely: Date
+    adstatus: string
   }
   path: string
 }
@@ -145,8 +159,8 @@ export type UpdateAdParams = {
     description: string
     latitude: string
     longitude: string
-    address:string
-    enableMap:boolean
+    address: string
+    enableMap: boolean
     negotiable: boolean
     youtube?: string
     phone: string
@@ -154,47 +168,63 @@ export type UpdateAdParams = {
     views: string
     categoryId: string
     price: number
-    make?:string
-    vehiclemodel?:string
-    vehicleyear?:string
-    vehiclecolor?:string//Black,Blue,Gray,Silver,White,Beige,Brown,Burgundy,Gold,Green,Ivory,Matt Black,Off white,Orange, Pearl, Pink,Purple ,Red,Teal,Yellow,Others
-    vehicleinteriorColor?:string
-    vehiclecondition?:string//Brand New, Foreign Used, Local Used
-    vehiclesecordCondition?:string//After crash,Engine Issue,First Owner,First registration, Gear issue,Need body repair,Need body repainting, Need repair,Original parts,Unpainted,Wiring problem, No fault
-    vehicleTransmissions?:string
-   vehiclemileage?:string
-   vehiclekeyfeatures?:string[]
-    vehiclechassis?:string//VIN Chassis Number
-    vehicleregistered?:string//yes,no
-    vehicleexchangeposible?:string//yes,no
-    vehicleFuelTypes?:string//petrol,disel,Electricity
-    vehicleBodyTypes?:string
-    vehicleSeats?:string
-    vehicleEngineSizesCC?:string
-    Types?:string
-    bedrooms?:string
-    bathrooms?:string
-    furnishing?:string
-    amenities?:string[]
-    toilets?:string
-    parking?:string
-    status?:string
-    area?:string
-    landuse?:string
-    propertysecurity?:string
-    floors?:string
-    estatename?:string
-    houseclass?:string
-    listedby?:string
-    fee?:string
+    make?: string
+    vehiclemodel?: string
+    vehicleyear?: string
+    vehiclecolor?: string//Black,Blue,Gray,Silver,White,Beige,Brown,Burgundy,Gold,Green,Ivory,Matt Black,Off white,Orange, Pearl, Pink,Purple ,Red,Teal,Yellow,Others
+    vehicleinteriorColor?: string
+    vehiclecondition?: string//Brand New, Foreign Used, Local Used
+    vehiclesecordCondition?: string//After crash,Engine Issue,First Owner,First registration, Gear issue,Need body repair,Need body repainting, Need repair,Original parts,Unpainted,Wiring problem, No fault
+    vehicleTransmissions?: string
+    vehiclemileage?: string
+    vehiclekeyfeatures?: string[]
+    vehiclechassis?: string//VIN Chassis Number
+    vehicleregistered?: string//yes,no
+    vehicleexchangeposible?: string//yes,no
+    vehicleFuelTypes?: string//petrol,disel,Electricity
+    vehicleBodyTypes?: string
+    vehicleSeats?: string
+    vehicleEngineSizesCC?: string
+    Types?: string
+    bedrooms?: string
+    bathrooms?: string
+    furnishing?: string
+    amenities?: string[]
+    toilets?: string
+    parking?: string
+    status?: string
+    area?: string
+    landuse?: string
+    propertysecurity?: string
+    floors?: string
+    estatename?: string
+    houseclass?: string
+    listedby?: string
+    fee?: string
     geometry: {
       type: string
       coordinates: number[]
     }
- 
+
   }
   path: string
 }
+
+//==========Reported
+export type CreateReportedParams = {
+  report: {
+    userId: string
+    adId: string
+    reason: string
+    description: string
+  }
+  path: string
+}
+export type DeleteReportedParams = {
+  _id: string
+  path: string
+}
+
 //==========Bookmark
 export type CreateBookmarkParams = {
   bookmark: {
@@ -215,10 +245,10 @@ export type CreatePackagesParams = {
     imageUrl: string
     features: Feature[]
     price: Price[]
-    color:string
-    priority:number;
-    list:number;
-   
+    color: string
+    priority: number;
+    list: number;
+
   }
   path: string
 }
@@ -242,10 +272,10 @@ export type UpdatePackagesParams = {
     features: Feature[]
     price: Price[]
     imageUrl: string
-    color:string
-    priority:number;
-    list:number;
-  
+    color: string
+    priority: number;
+    list: number;
+
   }
   path: string
 }
@@ -259,46 +289,51 @@ export type DeleteAdParams = {
   deleteImages: string[]
   path: string
 }
+export type GetAlldynamicAdParams = {
+  limit: number
+  page: number
+  queryObject: any
+}
 
 export type GetAllAdsParams = {
   query: string
   category: string
-  subcategory:string
-  sortby:string
-  make:string
-  vehiclemodel:string
-  yearfrom:string
-  vehiclecolor:string
-  vehiclecondition:string
-  vehicleTransmissions:string
-  vehicleFuelTypes:string
-  vehicleBodyTypes:string
-  vehicleregistered:string
-  vehiclesecordCondition:string
-  vehicleexchangeposible:string
-  vehicleEngineSizesCC:string
-  vehicleSeats:string
-  vehicleyear:string
-  Types?:string
-  bedrooms?:string
-  bathrooms?:string
-  furnishing?:string
-  amenities?:string[]
-  toilets?:string
-  parking?:string
-  status?:string
-  area?:string
-  landuse?:string
-  propertysecurity?:string
-    floors?:string
-    estatename?:string
-    houseclass?:string
-  longitude:string
-  latitude:string
-  address:string
-  membership:string
-  yearto:string
-  Price:string
+  subcategory: string
+  sortby: string
+  make: string
+  vehiclemodel: string
+  yearfrom: string
+  vehiclecolor: string
+  vehiclecondition: string
+  vehicleTransmissions: string
+  vehicleFuelTypes: string
+  vehicleBodyTypes: string
+  vehicleregistered: string
+  vehiclesecordCondition: string
+  vehicleexchangeposible: string
+  vehicleEngineSizesCC: string
+  vehicleSeats: string
+  vehicleyear: string
+  Types?: string
+  bedrooms?: string
+  bathrooms?: string
+  furnishing?: string
+  amenities?: string[]
+  toilets?: string
+  parking?: string
+  status?: string
+  area?: string
+  landuse?: string
+  propertysecurity?: string
+  floors?: string
+  estatename?: string
+  houseclass?: string
+  longitude: string
+  latitude: string
+  address: string
+  membership: string
+  yearto: string
+  Price: string
   limit: number
   page: number
 
@@ -308,13 +343,20 @@ export type GetAdsByUserParams = {
   userId: string
   limit?: number
   page: number
-  sortby:string;
-  myshop:boolean;
- 
+  sortby: string;
+  myshop: boolean;
+
 }
 export type deleteImageParams = {
   deleteImage: string
   path: string
+}
+
+export type GetRelatedAdsBySubCategoryParams = {
+  subcategory: string
+  adId: string
+  limit?: number
+  page: number | string
 }
 
 export type GetRelatedAdsByCategoryParams = {
@@ -333,71 +375,71 @@ export type Ad = {
   imageUrls: string[]
   latitude: string
   longitude: string
-  address:string
-  enableMap:boolean
+  address: string
+  enableMap: boolean
   negotiable: boolean
   youtube?: string
   phone: string
   subcategory: string
   views: string
-  make:string
-  vehiclemodel:string
-  vehicleyear?:string
-    vehiclecolor?:string//Black,Blue,Gray,Silver,White,Beige,Brown,Burgundy,Gold,Green,Ivory,Matt Black,Off white,Orange, Pearl, Pink,Purple ,Red,Teal,Yellow,Others
-    vehicleinteriorColor?:string
-    vehiclecondition?:string//Brand New, Foreign Used, Local Used
-    vehiclesecordCondition?:string//After crash,Engine Issue,First Owner,First registration, Gear issue,Need body repair,Need body repainting, Need repair,Original parts,Unpainted,Wiring problem, No fault
-    vehicleTransmissions?:string
-   vehiclemileage?:string
-   vehiclekeyfeatures?:string[]
-    vehiclechassis?:string//VIN Chassis Number
-    vehicleregistered?:string//yes,no
-    vehicleexchangeposible?:string//yes,no
-    vehicleFuelTypes?:string//petrol,disel,Electricity
-    vehicleBodyTypes?:string
-    vehicleSeats?:string
-    vehicleEngineSizesCC?:string
-    Types?:string
-    bedrooms?:string
-    bathrooms?:string
-    furnishing?:string
-    amenities?:string[]
-    toilets?:string
-    parking?:string
-    status?:string
-    area?:string
-    landuse?:string
-    propertysecurity?:string
-    floors?:string
-    estatename?:string
-    houseclass?:string
-    listedby?:string
-    fee?:string
-    geometry: {
-      type: string
-      coordinates: number[]
-    }
+  make: string
+  vehiclemodel: string
+  vehicleyear?: string
+  vehiclecolor?: string//Black,Blue,Gray,Silver,White,Beige,Brown,Burgundy,Gold,Green,Ivory,Matt Black,Off white,Orange, Pearl, Pink,Purple ,Red,Teal,Yellow,Others
+  vehicleinteriorColor?: string
+  vehiclecondition?: string//Brand New, Foreign Used, Local Used
+  vehiclesecordCondition?: string//After crash,Engine Issue,First Owner,First registration, Gear issue,Need body repair,Need body repainting, Need repair,Original parts,Unpainted,Wiring problem, No fault
+  vehicleTransmissions?: string
+  vehiclemileage?: string
+  vehiclekeyfeatures?: string[]
+  vehiclechassis?: string//VIN Chassis Number
+  vehicleregistered?: string//yes,no
+  vehicleexchangeposible?: string//yes,no
+  vehicleFuelTypes?: string//petrol,disel,Electricity
+  vehicleBodyTypes?: string
+  vehicleSeats?: string
+  vehicleEngineSizesCC?: string
+  Types?: string
+  bedrooms?: string
+  bathrooms?: string
+  furnishing?: string
+  amenities?: string[]
+  toilets?: string
+  parking?: string
+  status?: string
+  area?: string
+  landuse?: string
+  propertysecurity?: string
+  floors?: string
+  estatename?: string
+  houseclass?: string
+  listedby?: string
+  fee?: string
+  geometry: {
+    type: string
+    coordinates: number[]
+  }
   organizer: {
     _id: string
     firstName: string
     lastName: string
     photo: string
     email: string
-    businessname?:string
-    aboutbusiness?:string
-    businessaddress?:string
+    businessname?: string
+    aboutbusiness?: string
+    businessaddress?: string
     latitude?: string
     longitude?: string
-    businesshours?:Businesshours[]
+    businesshours?: Businesshours[]
     businessworkingdays?: string[]
     phone?: string
-    whatsapp?:string
-    website?:string
-    facebook?:string
-    twitter?:string
-    instagram?:string
-    tiktok?:string
-    verified?:Verified[]
+    whatsapp?: string
+    website?: string
+    facebook?: string
+    twitter?: string
+    instagram?: string
+    tiktok?: string
+    verified?: Verified[]
     imageUrl?: string
   }
   category: {
@@ -410,40 +452,34 @@ export type Ad = {
     color: string
     imageUrl: string
   }
-  priority:number
-  expirely:Date
-  adstatus:string
-  inquiries:string
-  whatsapp:string
-  shared:string
-  bookmarked:string
-  abused:string
+  priority: number
+  expirely: Date
+  adstatus: string
+  inquiries: string
+  whatsapp: string
+  shared: string
+  bookmarked: string
+  abused: string
 }
 export interface Subcategory {
   title: string;
 }
 // ====== CATEGORY PARAMS
 export type CreateCategoryParams = {
-  category: {
-  name: string
-  subcategory: Subcategory[]
-  imageUrl: string
-  }
+  formData: any
   path: string
 }
 export type UpdateCategoryParams = {
-  category: {
-    _id: string
-    name: string
-    subcategory: Subcategory[]
-    imageUrl: string
-  }
+  formData: any
+  _id: string
+  deleteUrl: boolean
+  oldurl: string
   path: string
 }
 
 
 export type catego = {
-  _id:string
+  _id: string
   name: string
   subcategory: Subcategory[]
   imageUrl: string
@@ -488,7 +524,7 @@ export type UrlQueryParams = {
   key: string
   value: string | null
 }
-export type UrlQueryParamsWithMultipleUpdates ={
+export type UrlQueryParamsWithMultipleUpdates = {
   params: string
   updates: Record<string, string>
 }
@@ -531,7 +567,7 @@ export type CreateTransactionParams = {
   //firstName: string;
   //middleName: string;
   //lastName: string;
- // email: string;
+  // email: string;
 };
 // ====== TRANSACTION status
 export type TransactionStatusParams = {
@@ -553,43 +589,49 @@ export type UpdateVideoParams = {
   _id: string; // object File
   youtube: string;
   path: string;
- 
+
 };
 export type UpdateViewsParams = {
   _id: string; // object File
   views: string;
   path: string;
- 
+
 };
 export type UpdateCallsParams = {
   _id: string; // object File
   calls: string;
   path: string;
- 
+
 };
 export type UpdateWhatsappParams = {
   _id: string; // object File
   whatsapp: string;
   path: string;
- 
+
 };
 export type UpdateInquiriesParams = {
   _id: string; // object File
   inquiries: string;
   path: string;
- 
+
 };
 export type UpdateShareParams = {
   _id: string; // object File
   shared: string;
   path: string;
- 
+
 };
 export type UpdateAbuseParams = {
   _id: string; // object File
   abused: string;
   path: string;
- 
+
+};
+export type UpdateStatusParams = {
+  _id: string; // object File
+  adstatus: string;
+  path: string;
+
 };
 export type UpdateBookmarkedParams = {
   _id: string; // object File
@@ -598,7 +640,7 @@ export type UpdateBookmarkedParams = {
 };
 export type CreateVerifiesParams = {
   verifies: {
-  fee: string
+    fee: string
   }
   path: string
 }

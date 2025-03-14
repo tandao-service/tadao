@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { v4 as uuidv4 } from "uuid"; // Import UUID function
 import { IUser } from "@/lib/database/models/user.model";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import { useRouter } from "next/navigation";
 type Package = {
   imageUrl: string;
@@ -29,6 +29,7 @@ type PackProps = {
   daysRemaining: number;
   packname: string;
   user: IUser;
+  handlePayNow: (id:string) => void;
 };
 export default function Listpackages({
   packagesList,
@@ -36,6 +37,7 @@ export default function Listpackages({
   packname,
   daysRemaining,
   user,
+  handlePayNow,
 }: PackProps) {
   const [activeButton, setActiveButton] = useState(1);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
@@ -61,7 +63,8 @@ export default function Listpackages({
     };
     const response = await createTransaction(trans);
     if (response.status === "Pending") {
-      router.push(`/pay/${response.orderTrackingId}`);
+      handlePayNow(response.orderTrackingId)
+     // router.push(`/pay/${response.orderTrackingId}`);
     }
   };
   const handleButtonClick = (index: number, title: string) => {
@@ -113,15 +116,15 @@ export default function Listpackages({
   // console.log("USER: " + user);
   return (
     <div className="p-1 rounded-sm">
-      <div className="mb-20 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 m-1 gap-1">
+      <div className="mb-[120px] lg:mb-20 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 m-1 gap-1">
         {packagesList.length > 0 &&
           packagesList.map((pack, index: any) => (
             <div
               key={index}
               className={`shadow-md rounded-md p-0 cursor-pointer ${
                 activePackage === pack
-                  ? "bg-[#F2FFF2] border-[#4DCE7A] border-2"
-                  : ""
+                  ? "dark:bg-[#2D3236] bg-[#F2FFF2] border-[#4DCE7A] border-2"
+                  : "dark:bg-[#2D3236] dark:text-gray-300 bg-white"
               }`}
               onClick={() => handleClick(pack)}
             >
@@ -136,7 +139,7 @@ export default function Listpackages({
               </div>
 
               <div className="p-3">
-                <div className="text-gray-600 mb-1">
+                <div className="dark:text-gray-400 text-gray-600 mb-1">
                   <div className="flex gap-2 text-sm">
                     {pack.description}
 
@@ -171,8 +174,15 @@ export default function Listpackages({
                                 index !== activeButton ? "hidden" : ""
                               }`}
                             >
-                              <p className="p-16-regular">
-                                Ksh {price.amount}/ {activeButtonTitle}
+                              <p
+                                className={`text-xs font-bold lg:text-lg ${
+                                  activePackage === pack
+                                    ? "text-[#30AF5B] "
+                                    : "text-gray-600 dark:text-gray-300"
+                                }`}
+                              >
+                                Ksh {price.amount.toLocaleString()}/{" "}
+                                {activeButtonTitle}
                               </p>
                             </li>
                           ))}
@@ -203,7 +213,7 @@ export default function Listpackages({
       </div>
       {/* Static div at the bottom */}
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F2FFF2] h-auto md:h-24 z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center">
+      <div className="fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 bg-white h-auto md:h-24 z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center">
         {/* Left-aligned buttons */}
 
         <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 justify-between items-center mb-2 md:mb-0">
@@ -271,7 +281,7 @@ export default function Listpackages({
             type="text"
             value={priceInput}
             disabled
-            className="border p-1 w-[150px] lg:w-[200px] border-gray-300 font-bold rounded-md "
+            className="p-1 w-[150px] dark:text-white lg:w-[200px] font-bold rounded-md "
           />
           <SignedIn>
             <Button
@@ -280,13 +290,17 @@ export default function Listpackages({
                 handlepay(packIdInput, packNameInput, periodInput, priceInput)
               }
               role="link"
-              className="w-[100px] rounded-full bg-[#000000] bg-cover"
+              className="w-[100px] rounded-full hover:dark:bg-emerald-800 dark:bg-emerald-700 text-white  bg-cover"
             >
               Buy Now
             </Button>
           </SignedIn>
           <SignedOut>
-            <Button asChild className="rounded-full w-[100px]" size="lg">
+            <Button
+              asChild
+              className="rounded-full w-[100px] hover:dark:bg-emerald-800 dark:bg-emerald-700 text-white"
+              size="lg"
+            >
               <Link href="/sign-in">Pay Now</Link>
             </Button>
           </SignedOut>

@@ -45,7 +45,7 @@ const Message = ({
     return title;
   };
   return (
-    <div className="">
+    <div className="text-gray-700">
       <div className="chatbox p-4 bg-gray-50">
         <div
           className={`flex items-start mb-4 ${
@@ -60,7 +60,7 @@ const Message = ({
           <div
             className={`message-content max-w-xs rounded-lg p-3 ${
               message.uid === uid
-                ? "bg-green-100 text-right"
+                ? "bg-green-100 text-left"
                 : "bg-blue-100 text-left"
             }`}
           >

@@ -11,8 +11,10 @@ import { Timestamp } from "firebase/firestore";
 import StarIcon from "@mui/icons-material/Star";
 import StarHalfIcon from "@mui/icons-material/StarHalf";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 type Ratingsprop = {
   recipientUid: string;
+  handleOpenReview: (value:string) => void;
 };
 
 interface Review {
@@ -26,7 +28,7 @@ interface Review {
   starClicked: boolean[];
 }
 
-const Ratingsmobile = ({ recipientUid }: Ratingsprop) => {
+const Ratingsmobile = ({ recipientUid, handleOpenReview }: Ratingsprop) => {
   const [clickedStarsCount, setClickedStarsCount] = useState<number>(0);
   const [messagesCount, setMessagesCount] = useState<number>(0);
   const [averangestar, setaverangestar] = useState<number>(0);
@@ -65,7 +67,7 @@ const Ratingsmobile = ({ recipientUid }: Ratingsprop) => {
 
     fetchMessages();
   }, [recipientUid]);
-
+  const router = useRouter();
   return (
     <div className="text-[12px] flex gap-1 items-center justify-center h-full">
       <div className="text-[12px] font-bold"> {averangestar.toFixed(1)}</div>
@@ -160,12 +162,16 @@ const Ratingsmobile = ({ recipientUid }: Ratingsprop) => {
         </div>
       )}
 
-      <Link
-        href={`/reviews/${recipientUid}`}
-        className="text-gray-600 text-xs no-underline font-boldm-1 hover:text-emerald-500 hover:underline"
+      <div
+        onClick={() => {
+         // openLoading();
+         handleOpenReview(recipientUid);
+          //router.push(`/reviews/${recipientUid}`);
+        }}
+        className="cursor-pointer dark:text-gray-400 text-gray-600 text-xs no-underline font-boldm-1 hover:text-emerald-500 hover:underline"
       >
         <p className="items-center">{messagesCount} reviews</p>
-      </Link>
+      </div>
     </div>
   );
 };

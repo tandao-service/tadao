@@ -3,10 +3,12 @@ import Dashboard from "@/components/shared/dashboard";
 import Navbar from "@/components/shared/navbar";
 import Image from "next/image";
 import { getAllPackages } from "@/lib/actions/packages.actions";
-import { getData } from "@/lib/actions/transactionstatus";
+import { getData } from "@/lib/actions/transactions.actions";
 import { auth } from "@clerk/nextjs/server";
-import { getAdById } from "@/lib/actions/ad.actions";
 import { Toaster } from "@/components/ui/toaster";
+import { getAdById } from "@/lib/actions/dynamicAd.actions";
+import Footersub from "@/components/shared/Footersub";
+import BottomNavigation from "@/components/shared/BottomNavigation";
 type UpdateAdProps = {
   params: {
     id: string;
@@ -23,7 +25,7 @@ const UpdateAd = async ({ params: { id } }: UpdateAdProps) => {
   let remainingads = 0;
   let listed = 0;
   let planpackage = "Free";
-  let planId = "65fa7d3fb20de072ea107223";
+  let planId = "677a7b97d24cd2414b1260b7";
   let priority = 0;
   let adstatus = "Pending";
   let color = "#000000";
@@ -71,7 +73,7 @@ const UpdateAd = async ({ params: { id } }: UpdateAdProps) => {
   } catch {}
   if (!subscription && !packagesList && !Ad) {
     return (
-      <div className="flex-center h-screen w-full bg-[#ebf2f7] bg-dotted-pattern bg-cover bg-fixed bg-center">
+      <div className="flex-center h-screen w-full bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-dotted-pattern bg-cover bg-fixed bg-center">
         <div className="top-0 z-10 fixed w-full">
           <Navbar userstatus="User" userId={userId || ""} />
         </div>
@@ -83,7 +85,6 @@ const UpdateAd = async ({ params: { id } }: UpdateAdProps) => {
               width={60}
               height={60}
             />
-            Loading...
           </div>
         </div>
       </div>
@@ -91,27 +92,46 @@ const UpdateAd = async ({ params: { id } }: UpdateAdProps) => {
   }
   return (
     <>
-      <div className="z-10 top-0 fixed w-full">
-        <Navbar userstatus="User" userId={userId} />
-      </div>
-      <div className="mt-2">
-        <Dashboard
-          userId={userId}
-          type="Update"
-          ad={Ad}
-          adId={Ad._id}
-          daysRemaining={daysRemaining}
-          packname={planpackage}
-          planId={planId}
-          userName={userName}
-          packagesList={packagesList}
-          listed={remainingads}
-          expirationDate={expirationDate}
-          priority={priority}
-          adstatus={adstatus}
-        />
-        <Toaster />
-      </div>
+     {/* <div className="bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+        <div className="z-10 top-0 fixed w-full">
+          <Navbar userstatus="User" userId={""} />
+        </div>
+        <div className="mt-[50px] mb-[65px] lg:mb-0">
+          <div className="min-h-[500px] max-w-3xl mx-auto flex mt-2 p-1">
+            <div className="flex-1">
+              <div className="bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] rounded-[20px] max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
+                */} <Dashboard
+                  userId={userId}
+                  type="Update"
+                  ad={Ad}
+                  adId={Ad._id}
+                  daysRemaining={daysRemaining}
+                  packname={planpackage}
+                  planId={planId}
+                  userName={userName}
+                  packagesList={packagesList}
+                  listed={remainingads}
+                  expirationDate={expirationDate}
+                  priority={priority}
+                  adstatus={adstatus}
+                />
+                   <Toaster />
+            {/*    
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer className="bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+          <div>
+            <div className="hidden lg:inline">
+              <Footersub />
+            </div>
+            <div className="lg:hidden">
+              <BottomNavigation userId={userId} />
+            </div>
+          </div>
+        </footer>
+      </div>*/}
     </>
   );
 };

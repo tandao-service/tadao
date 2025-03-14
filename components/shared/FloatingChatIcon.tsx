@@ -3,6 +3,7 @@
 import React from "react";
 import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 interface FloatingChatIconProps {
   onClick: () => void;
   isOpen: boolean;
@@ -13,17 +14,17 @@ const FloatingChatIcon: React.FC<FloatingChatIconProps> = ({
 }) => {
   return (
     <div
-      className="fixed bottom-20 lg:bottom-10 right-1 lg:right-5 bg-[#000000] w-10 lg:w-16 h-10 lg:h-16 flex justify-center items-center rounded-full cursor-pointer z-10"
+      className="fixed bottom-20 lg:bottom-10 right-1 lg:right-5 bg-green-600 w-14 h-14 flex justify-center items-center rounded-full cursor-pointer z-10"
       onClick={onClick}
     >
-      <div className="w-6 h-6 lg:w-8 lg:h-8 flex text-[#000000] items-center justify-center rounded-full bg-white tooltip tooltip-bottom hover:cursor-pointer">
+      <div className="w-10 h-10 flex text-white items-center justify-center rounded-full bg-green-600 tooltip tooltip-bottom hover:cursor-pointer">
         {isOpen === true ? (
           <>
             <KeyboardArrowDownOutlinedIcon />
           </>
         ) : (
           <>
-            <SupportAgentOutlinedIcon />
+            <QuestionAnswerOutlinedIcon />
           </>
         )}
       </div>

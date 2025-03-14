@@ -50,15 +50,15 @@ export default function MenumakeMotobikes({
               key={vehicle.make} // Always good to have a unique key prop
               className={`flex h-[80px] shadow flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-1 border-emerald-300 hover:bg-emerald-200 ${
                 vehicle.make === searchParams.get("make")
-                  ? "bg-[#30AF5B] text-white"
-                  : "bg-white hover:bg-emerald-200"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-200"
               }`}
             >
               <div
                 className="flex text-center flex-col items-center"
                 onClick={(e) => setQuery(vehicle.make)}
               >
-                <div className="h-12 w-12 rounded-full bg-white p-2">
+                <div className="h-10 w-10 rounded-full bg-white p-2">
                   <Image
                     className="w-full h-full"
                     src={vehicle.iconPath}

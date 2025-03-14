@@ -17,6 +17,10 @@ import Image from "next/image";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import LatLngPickerAndShare from "./LatLngPickerAndShare";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+
 type sidebarProps = {
   displayName: string;
   uid: string;
@@ -78,12 +82,45 @@ const SendMessage = ({
       console.error("Error adding document: ", error);
     }
   };
+ const [showPopupGps, setShowPopupGps] = useState(false);
 
+  const handleOpenPopupGps = () => {
+    setShowPopupGps(true);
+  };
+
+  const handleClosePopupGps = () => {
+    setShowPopupGps(false);
+  };
+  const handleSaveGps = () => {
+    setShowPopupGps(false); // Close the popup after saving
+  };
+  const handleInputOnChange = async (field: string, value: any) => {
+    //setValue("PropertyLocation&lat="+value.lat+"&lng="+value.lng)
+    try {
+      let imageUrl: string = "";
+      const read = "1";
+      await addDoc(collection(db, "messages"), {
+        text: "PropertyLocation&lat="+value.lat+"&lng="+value.lng,
+        name: displayName,
+        avatar: photoURL,
+        createdAt: serverTimestamp(),
+        uid,
+        recipientUid,
+        imageUrl,
+        read,
+      });
+      setValue("");
+      setImg(null);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+    //setValue(process.env.NEXT_PUBLIC_DOMAIN_URL+"location?title="+value.title+"&price="+value.price+"&lat="+value.lat+"&lng="+value.lng)
+  };
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#ebf2f7] h-auto z-10 p-0 shadow-md flex flex-col md:flex-row justify-end items-center">
+    <div className="border dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black rounded-b-md right-0 bg-white dark:bg-[#131B1E] h-auto z-10 p-0 flex flex-col md:flex-row justify-end items-center">
       <form
         onSubmit={handleSendMessage}
-        className="flex w-full p-1 justify-end items-center"
+        className="flex w-full p-0 justify-end items-center"
       >
         {recipientUid ? (
           <>
@@ -106,12 +143,17 @@ const SendMessage = ({
                 </Zoom>
               </div>
             )}
-            <input
+            <textarea
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="input lg:ml-[460px] w-full text-sm lg:text-base text-black p-3 focus:outline-none bg-white rounded-r-none rounded-l-lg"
-              type="text"
+              onInput={(e) => {
+                e.currentTarget.style.height = "auto"; // Reset height to recalculate
+                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+              }}
+              className="input dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black w-full text-sm lg:text-base p-3 focus:outline-none bg-white rounded-r-none rounded-l-lg"
               placeholder="Enter your message..."
+              rows={1} // Start with a single row
+              style={{ height: "auto" }} // Ensure auto-height
             />
 
             <button
@@ -123,12 +165,17 @@ const SendMessage = ({
           </>
         ) : (
           <>
-            <input
+            <textarea
               value={value}
-              disabled
-              className="input lg:ml-[450px] w-full text-sm lg:text-base text-black p-3 focus:outline-none bg-white rounded-r-none rounded-l-lg"
-              type="text"
+              onChange={(e) => setValue(e.target.value)}
+              onInput={(e) => {
+                e.currentTarget.style.height = "auto"; // Reset height to recalculate
+                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+              }}
+              className="input dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black w-full text-sm lg:text-base p-3 focus:outline-none bg-white rounded-r-none rounded-l-lg"
               placeholder="Enter your message..."
+              rows={1} // Start with a single row
+              style={{ height: "auto" }} // Ensure auto-height
             />
 
             <button
@@ -139,10 +186,10 @@ const SendMessage = ({
             </button>
           </>
         )}
-
-        <div className="cursor-pointer relative p-2 lg:mr-5">
+ 
+        <div className="cursor-pointer relative p-2">
           <label htmlFor="file">
-            <div className="text-gray-700 p-1 cursor-pointer ">
+            <div className="text-gray-700 dark:text-gray-400 p-1 cursor-pointer ">
               {" "}
               <AttachFileOutlinedIcon />
             </div>
@@ -154,7 +201,39 @@ const SendMessage = ({
             onChange={(e) => setImg(e.target.files?.[0] || null)}
           />
         </div>
-      </form>
+        </form>
+        <div className="cursor-pointer relative p-2">
+        <div className="flex flex-col w-full gap-1">
+                  <button
+                    onClick={handleOpenPopupGps}
+                    className="flex text-[10px] gap-1 items-center justify-center w-full p-1 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    <LocationOnIcon /> Share Location
+                  </button>
+
+                  {showPopupGps && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
+                        <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-2 w-full  lg:max-w-4xl items-center justify-center rounded-md shadow-md relative">
+                        <div className="flex justify-between items-center mb-1">
+                        <h1 className="font-bold">Property Google Location</h1>
+                          <button
+                            onClick={handleClosePopupGps}
+                            className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
+                          >
+                            <CloseOutlinedIcon />
+                          </button>
+                        </div>
+                        <LatLngPickerAndShare
+                          name={"gps"}
+                          onChange={handleInputOnChange}
+                          onSave={handleSaveGps} // Pass the save handler to the child
+                        />
+                      </div>
+                    </div>
+                  )}  
+                  </div>
+        </div>
+    
     </div>
   );
 };

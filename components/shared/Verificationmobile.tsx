@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ShowPopup from "./ShowPopup"; // Adjust the import path accordingly
 import { v4 as uuidv4 } from "uuid";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -11,19 +11,22 @@ import { IUser } from "@/lib/database/models/user.model";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import { useRouter } from "next/navigation";
 import ShowPopupmobile from "./ShowPopupmobile";
+import { VerificationPackId } from "@/constants";
 
 interface SettingsProp {
   user: any;
   userId: string;
   isAdCreator: boolean;
+  handlePayNow: (id:string) => void;
 }
 
 const Verificationmobile: React.FC<SettingsProp> = ({
   user,
   userId,
   isAdCreator,
+  handlePayNow,
 }) => {
-  const _id = "662b9ab6dd4398a447257e59";
+  
   const router = useRouter();
   const [activationfee, setActivationFee] = useState(500);
 
@@ -48,7 +51,8 @@ const Verificationmobile: React.FC<SettingsProp> = ({
     };
     const response = await createTransaction(trans);
     if (response.status === "Pending") {
-      router.push(`/pay/${response.orderTrackingId}`);
+      //router.push(`/pay/${response.orderTrackingId}`);
+      handlePayNow(response.orderTrackingId)
     }
   };
 
@@ -102,7 +106,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
         </p>
         <div className="flex items-center pt-2">
           <button
-            onClick={() => handlePay(_id, "Verification", "0", user.fee)}
+            onClick={() => handlePay(VerificationPackId, "Verification", "0", user.fee)}
             className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-xs mt-2 p-1 rounded-lg shadow"
           >
             <CheckCircleIcon sx={{ marginRight: "5px" }} />
@@ -144,7 +148,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
           {isAdCreator ? (
             <ShowPopupmobile
               trigger={
-                <p className="text-gray-600 p-1 bg-white rounded-sm text-[10px] cursor-pointer hover:underline">
+                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-[10px] cursor-pointer hover:underline">
                   <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
                   Account unverified
                 </p>
@@ -154,7 +158,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
           ) : (
             <ShowPopupmobile
               trigger={
-                <p className="text-gray-600 p-1 bg-white rounded-sm text-[10px] cursor-pointer hover:underline">
+                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-[10px] cursor-pointer hover:underline">
                   <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
                   Account unverified
                 </p>

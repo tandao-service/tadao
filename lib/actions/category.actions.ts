@@ -8,11 +8,11 @@ import { revalidatePath } from "next/cache"
 import { UTApi } from "uploadthing/server"
 
 
-export const createCategory = async ({ category, path}: CreateCategoryParams) => {
+export const createCategory = async ({ formData, path}: CreateCategoryParams) => {
   try {
     await connectToDatabase();
   
-    const newCategory = await Category.create({ ...category});
+    const newCategory = await Category.create({ ...formData});
     revalidatePath(path)
     return JSON.parse(JSON.stringify(newCategory));
   } catch (error) {
@@ -20,14 +20,21 @@ export const createCategory = async ({ category, path}: CreateCategoryParams) =>
   }
 }
 // UPDATE
-export async function updateCategory({ category, path }: UpdateCategoryParams) {
+export async function updateCategory({ _id,formData, deleteUrl,
+  oldurl, path }: UpdateCategoryParams) {
   try {
     await connectToDatabase()
     const updatedCat = await Category.findByIdAndUpdate(
-      category._id,
-      { ...category},
+      _id,
+      { ...formData},
       { new: true }
     )
+    try{
+    if (!deleteUrl) {
+      const utapi = new UTApi();
+    await utapi.deleteFiles(oldurl);
+  }
+}catch{}
     revalidatePath(path)
 
     return JSON.parse(JSON.stringify(updatedCat))
@@ -57,105 +64,87 @@ export const getAllCategories = async () => {
     const categories = await Category.aggregate([
       {
         $lookup: {
-          from: "ads", // Assuming the collection name for ads is "ads"
-          let: { categoryId: "$_id" }, // Use a variable for category id
+          from: "dynamicads",
+          let: { categoryName: "$name" },
           pipeline: [
-            { 
-              $match: { 
-                $expr: { 
+            {
+              $match: {
+                $expr: {
                   $and: [
-                    { $eq: ["$category", "$$categoryId"] }, // Match the foreign category field
-                    { $eq: ["$adstatus", "Active"] } // Only include active ads
+                    { $eq: ["$data.category", "$$categoryName"] }, // Match category field
+                    { $eq: ["$adstatus", "Active"] } // Match active ads
                   ]
                 }
-              } 
+              }
             }
           ],
-          as: "ads"
+          as: "dynamicads"
         }
       },
       {
         $addFields: {
-          adCount: { $size: "$ads" } // Add a new field "adCount" containing the number of active ads for each category
+          adCount: { $size: "$dynamicads" } // Count active ads
         }
       },
       {
         $project: {
-          ads: 0 // Exclude the "ads" field from the result
+          dynamicads: 0 // Exclude the dynamicAds field from the output
         }
       }
     ]);
-
+    
+    //console.log(categories);
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
+    console.error("Error fetching categories:", error);
     handleError(error);
   }
 };
 
-export const getAllSubCategories = async () => {
+export const getselectedCategories = async () => {
   try {
     await connectToDatabase();
+
     const categories = await Category.aggregate([
-    //  {
-     //   $lookup: {
-      //    from: "ads", // Assuming the collection name for ads is "ads"
-      //    localField: "_id",
-     //     foreignField: "category",
-     //     as: "ads"
-     //   }
-    //  },
       {
         $lookup: {
-          from: "ads", // Assuming the collection name for ads is "ads"
-          let: { categoryId: "$_id" }, // Use a variable for category id
+          from: "subcategories",
+          let: { categoryid: "$_id" },
           pipeline: [
-            { 
-              $match: { 
-                $expr: { 
+            {
+              $match: {
+                $expr: {
                   $and: [
-                    { $eq: ["$category", "$$categoryId"] }, // Match the foreign category field
-                    { $eq: ["$adstatus", "Active"] } // Only include active ads
+                    { $eq: ["$category", "$$categoryid"] }
                   ]
                 }
-              } 
+              }
             }
           ],
-          as: "ads"
-        }
-      },
-      {
-        $unwind: "$subcategory" // Unwind to destructure subcategories array
-      },
-      {
-        $lookup: {
-          from: "ads", // Assuming the collection name for ads is "ads"
-          localField: "subcategory",
-          foreignField: "subcategory",
-          as: "subcategory.ads"
+          as: "subcategories"
         }
       },
       {
         $addFields: {
-          "subcategory.adCount": { $size: "$subcategory.ads" } // Add a new field "adCount" containing the number of ads for each subcategory
+          adCount: { $size: "$subcategories" } // Count active ads
         }
       },
       {
-        $group: {
-          _id: "$_id",
-          name: { $first: "$name" },
-          totalAdsCount: { $sum: { $cond: [{ $isArray: "$ads" }, { $size: "$ads" }, 0] } }, // Calculate the total number of ads for the category
-          subcategories: { $push: "$subcategory" }
+        $project: {
+          dynamicads: 0 // Exclude the dynamicAds field from the output
         }
       }
     ]);
-
-
-    console.log(JSON.parse(JSON.stringify(categories)))
+    
+    //console.log(categories);
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
-    handleError(error)
+    console.error("Error fetching categories:", error);
+    handleError(error);
   }
-}
+};
+
+
 // DELETE
 export async function deleteCategory({ categoryId,categoryImage, path }: DeleteCategoryParams) {
   try {
@@ -165,10 +154,14 @@ export async function deleteCategory({ categoryId,categoryImage, path }: DeleteC
     // Delete image from uploadthing
     const url = new URL(categoryImage);
     const filename = url.pathname.split('/').pop();
+    try{
     if (filename) {
         const utapi = new UTApi();
       await utapi.deleteFiles(filename);
     }
+  }catch{
+    
+  }
     if (deletedAd) revalidatePath(path)
   } catch (error) {
     handleError(error)

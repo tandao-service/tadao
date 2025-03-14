@@ -9,22 +9,31 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import Unreadmessages from "./Unreadmessages";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import ProgressPopup from "./ProgressPopup";
+import { useState } from "react";
+import { DivideSquare } from "lucide-react";
 type navprop = {
   userId: string;
+  popup: string;
+  onClose: () => void;
+  handleOpenSell: () => void;
+  handleOpenChat: () => void;
+  handleCategory: (value:string) => void;
+
 };
-const BottomNavigation = ({ userId }: navprop) => {
+const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handleOpenChat, onClose }: navprop) => {
   const router = useRouter();
   const pathname = usePathname();
-
+ 
   const isActive = (path: string) => pathname === path;
-  const shareUrl = "https://autoyard.co.ke"; // Replace with the URL you want to share
+  const shareUrl = "https://landmak.co.ke"; // Replace with the URL you want to share
 
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Check out Autoyard",
-          text: "I found this amazing site for vehicle classification!",
+          title: "Check out LandMak",
+          text: "I found this amazing site for property classification!",
           url: shareUrl,
         });
         console.log("Share was successful.");
@@ -38,12 +47,16 @@ const BottomNavigation = ({ userId }: navprop) => {
     }
   };
   return (
-    <nav className="fixed bottom-0 z-10 w-full bg-white shadow-md border-t border-gray-200">
+    <nav className="fixed dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bottom-0 z-10 w-full bg-white shadow-md border-t dark:border-gray-700 border-gray-200">
       <div className="flex justify-around py-2 relative">
-        <Link href="/" passHref>
+        <div
+          onClick={() => {
+            onClose();
+          }}
+        >
           <div
-            className={`flex flex-col items-center hover:text-emerald-400 ${
-              isActive("/") ? "text-emerald-600" : "text-gray-600"
+            className={`flex cursor-pointer flex-col items-center hover:text-green-700 ${
+              popup === "home" ? "text-green-600" : "text-gray-600"
             }`}
           >
             <span>
@@ -51,17 +64,29 @@ const BottomNavigation = ({ userId }: navprop) => {
             </span>
             <span className="text-xs">Home</span>
           </div>
-        </Link>
+        </div>
 
-        <Link
-          href={`/category?category=Vehicle&subcategory=${encodeURIComponent(
-            "Cars, Vans & Pickups"
-          )}`}
-          passHref
+        <div
+          onClick={() => {
+            handleCategory('Property');
+           // if (
+//pathname !==
+//`/category?category=Vehicle&subcategory=${encodeURIComponent(
+             //   "Cars, Vans & Pickups"
+             // )}`
+            //) {
+            //   setIsOpenP(true);
+            //  router.push(
+              //  `/category?category=Vehicle&subcategory=${encodeURIComponent(
+            //      "Cars, Vans & Pickups"
+              //  )}`
+             // );
+            //}
+          }}
         >
           <div
-            className={`flex flex-col items-center hover:text-emerald-400 ${
-              isActive("/category") ? "text-emerald-600" : "text-gray-600"
+            className={`flex flex-col cursor-pointer items-center hover:text-green-700 ${
+              popup === "category" ?  "text-green-600" : "text-gray-600"
             }`}
           >
             <span>
@@ -69,35 +94,57 @@ const BottomNavigation = ({ userId }: navprop) => {
             </span>
             <span className="text-xs">Search</span>
           </div>
-        </Link>
+        </div>
 
         {/* Sell Button */}
 
         <SignedIn>
-          <Link href="/ads/create" passHref>
+          <div
+            onClick={() => {
+              handleOpenSell();
+              //if (pathname !== "/ads/create") {
+              //  setIsOpenP(true);
+              //  router.push("/ads/create");
+              //}
+            }}
+          >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <div className="flex justify-center items-center w-16 h-16 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 active:bg-emerald-800 transition duration-200">
+              <div className="flex justify-center cursor-pointer items-center w-16 h-16 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 active:bg-emerald-800 transition duration-200">
                 <AddCircleOutlineOutlinedIcon className="text-3xl" />
               </div>
             </div>
-          </Link>
+          </div>
         </SignedIn>
 
         <SignedOut>
-          <Link href="/sign-in">
+          <div
+            onClick={() => {
+             // if (pathname !== "/sign-in") {
+              //  setIsOpenP(true);
+                router.push("/sign-in");
+//}
+            }}
+          >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <div className="flex justify-center items-center w-16 h-16 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 active:bg-emerald-800 transition duration-200">
+              <div className="flex justify-center cursor-pointer items-center w-16 h-16 bg-green-600 text-white rounded-full shadow-lg hover:bg-emerald-700 active:bg-emerald-800 transition duration-200">
                 <AddCircleOutlineOutlinedIcon className="text-3xl" />
               </div>
             </div>
-          </Link>
+          </div>
         </SignedOut>
 
         <SignedIn>
-          <Link href="/chat" passHref>
+          <div
+            onClick={() => {
+             // if (pathname !== "/chat") {
+              handleOpenChat();
+              //  router.push("/chat");
+             // }
+            }}
+          >
             <div
-              className={`flex cursor-pointer flex-col items-center hover:text-emerald-400 ${
-                isActive("/chat") ? "text-emerald-600" : "text-gray-600"
+              className={`flex cursor-pointer flex-col items-center hover:text-green-700 ${
+                popup === "chat" ? "text-green-600" : "text-gray-600"
               }`}
             >
               <span className="flex">
@@ -106,14 +153,21 @@ const BottomNavigation = ({ userId }: navprop) => {
               </span>
               <span className="text-xs">Chat</span>
             </div>
-          </Link>
+          </div>
         </SignedIn>
 
         <SignedOut>
-          <Link href="/sign-in">
+          <div
+            onClick={() => {
+             // if (pathname !== "/sign-in") {
+              //  setIsOpenP(true);
+                router.push("/sign-in");
+            //  }
+            }}
+          >
             <div
-              className={`flex flex-col items-center hover:text-emerald-400 ${
-                isActive("/chat") ? "text-emerald-600" : "text-gray-600"
+              className={`flex flex-col cursor-pointer items-center hover:text-green-700 ${
+                popup === "chat" ? "text-green-600" : "text-gray-600"
               }`}
             >
               <span className="flex">
@@ -122,12 +176,12 @@ const BottomNavigation = ({ userId }: navprop) => {
               </span>
               <span className="text-xs">Chat</span>
             </div>
-          </Link>
+          </div>
         </SignedOut>
 
         <div
-          className={`flex flex-col items-center hover:text-emerald-400 ${
-            isActive("/share") ? "text-emerald-600" : "text-gray-600"
+          className={`flex flex-col cursor-pointer items-center hover:text-green-700 ${
+            popup === "share" ? "text-green-600" : "text-gray-600"
           }`}
           onClick={handleShare}
         >
@@ -137,6 +191,7 @@ const BottomNavigation = ({ userId }: navprop) => {
           <span className="text-xs">Share</span>
         </div>
       </div>
+     
     </nav>
   );
 };

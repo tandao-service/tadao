@@ -8,7 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 import {
   getallTransaction,
   getpayTransaction,
-} from "@/lib/actions/transactionstatus";
+} from "@/lib/actions/transactions.actions";
 
 import DashboardPay from "@/components/shared/dashboardPay";
 import DashboardHistory from "@/components/shared/dashboardHistory";
@@ -28,35 +28,11 @@ const Pay = async ({ params: { id } }: payProps) => {
   const recipientUid = id;
 
   //console.log(alltrans);
-  if (!alltrans) {
-    return (
-      <div className="flex-center h-screen w-full bg-[#ebf2f7] bg-dotted-pattern bg-cover bg-fixed bg-center">
-        <div className="top-0 z-10 fixed w-full">
-          <Navbar userstatus="User" userId={recipientUid || ""} />
-        </div>
-        <div className="max-w-6xl mx-auto mt-20">
-          <div className="flex gap-1 items-center">
-            <Image
-              src="/assets/icons/loading.gif"
-              alt="edit"
-              width={60}
-              height={60}
-            />
-            Loading...
-          </div>
-        </div>
-      </div>
-    );
-  }
+ 
   return (
-    <>
-      <div className="fixed z-0 top-0 w-full">
-        <Navbar userstatus="User" userId={recipientUid || ""} />
-      </div>
-      <div className="max-w-8xl mx-auto flex mt-20 mb-0 p-1">
-        <DashboardHistory userId={userId} alltrans={alltrans} />
-      </div>
-    </>
+    
+        <DashboardHistory userId={userId} alltrans={alltrans} recipientUid={recipientUid}/>
+   
   );
 };
 

@@ -295,19 +295,20 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="p-1 flex flex-col"
+        className="p-2 flex flex-col border"
       >
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
             <AccordionTrigger>Personal Details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1 bg-white">
+              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <SignedIn>
                       <UserButton afterSignOutUrl="/" />
                     </SignedIn>
                   </div>
+
                   <div className="flex flex-col gap-5 mb-5 md:flex-row gap-1">
                     <FormField
                       control={form.control}
@@ -317,8 +318,22 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                           <FormControl>
                             <TextField
                               {...field}
-                              label="FirstName"
-                              disabled
+                              label="firstName"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -335,7 +350,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                           <FormControl>
                             <TextField
                               {...field}
-                              disabled
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               label="LastName"
                               className="w-full"
                             />
@@ -354,7 +383,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                           <FormControl>
                             <TextField
                               {...field}
-                              disabled
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               label="Personal Email"
                               className="w-full"
                             />
@@ -371,7 +414,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-2">
             <AccordionTrigger>Business details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1  bg-white">
+              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
@@ -401,6 +444,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="Business Name"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -421,6 +479,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               multiline
                               rows={5} // You can adjust this number based on your preference
                               label="About Business*"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -439,6 +512,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="Business Address"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -457,6 +545,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="Latitude"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -473,6 +576,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="Longitude"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -493,7 +611,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                                 <label>Office Open Time:</label>
 
                                 <select
-                                  className="bg-gray-100 p-1 border ml-2 rounded-sm"
+                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 rounded-sm"
                                   value={startHour}
                                   onChange={(e) => setStartHour(e.target.value)}
                                 >
@@ -509,7 +627,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                                   )}
                                 </select>
                                 <select
-                                  className="bg-gray-100 p-1 border ml-2 mr-2 rounded-sm"
+                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 mr-2 rounded-sm"
                                   value={startMinute}
                                   onChange={(e) =>
                                     setStartMinute(e.target.value)
@@ -532,7 +650,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               <div className="w-full flex gap-1">
                                 <label>Office Close Time:</label>
                                 <select
-                                  className="bg-gray-100 p-1 border ml-2 rounded-sm"
+                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 rounded-sm"
                                   value={endHour}
                                   onChange={(e) => setEndHour(e.target.value)}
                                 >
@@ -548,7 +666,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                                   )}
                                 </select>
                                 <select
-                                  className="bg-gray-100 p-1 border ml-2 rounded-sm"
+                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 rounded-sm"
                                   value={endMinute}
                                   onChange={(e) => setEndMinute(e.target.value)}
                                 >
@@ -657,7 +775,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-3">
             <AccordionTrigger>Contacts details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1  bg-white">
+              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
@@ -668,7 +786,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                           <FormControl>
                             <div className="flex w-full gap-1">
                               <select
-                                className="bg-gray-100 text-sm lg:text-base p-1 border ml-2 rounded-sm w-[120px]"
+                                className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 text-sm lg:text-base p-1 border ml-2 rounded-sm w-[120px]"
                                 value={countryCode}
                                 onChange={handleCountryCodeChange}
                               >
@@ -750,6 +868,22 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                                 type="tel"
                                 value={phoneNumber}
                                 onChange={handleInputChange}
+                                variant="outlined"
+                                InputProps={{
+                                  classes: {
+                                    root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                    notchedOutline:
+                                      "border-gray-300 dark:border-gray-600",
+                                    focused: "",
+                                  },
+                                }}
+                                InputLabelProps={{
+                                  classes: {
+                                    root: "text-gray-500 dark:text-gray-400",
+                                    focused:
+                                      "text-green-500 dark:text-green-400",
+                                  },
+                                }}
                                 className="w-full"
                               />
                             </div>
@@ -769,7 +903,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                           <FormControl>
                             <div className="flex w-full gap-1">
                               <select
-                                className="bg-gray-100 p-1 text-sm lg:text-base border ml-2 rounded-sm w-[120px]"
+                                className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 text-sm lg:text-base border ml-2 rounded-sm w-[120px]"
                                 value={countryCodeWhatsapp}
                                 onChange={handleCountryCodeChangeWhatsapp}
                               >
@@ -851,6 +985,22 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                                 type="tel"
                                 value={whatsappNumber}
                                 onChange={handleInputChangeWhatsapp}
+                                variant="outlined"
+                                InputProps={{
+                                  classes: {
+                                    root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                    notchedOutline:
+                                      "border-gray-300 dark:border-gray-600",
+                                    focused: "",
+                                  },
+                                }}
+                                InputLabelProps={{
+                                  classes: {
+                                    root: "text-gray-500 dark:text-gray-400",
+                                    focused:
+                                      "text-green-500 dark:text-green-400",
+                                  },
+                                }}
                                 className="w-full"
                               />
                             </div>
@@ -867,7 +1017,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-4">
             <AccordionTrigger>Social Media</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1  bg-white">
+              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
@@ -879,6 +1029,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="facebook link"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -897,6 +1062,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="twitter link"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -915,6 +1095,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="instagram link"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -933,6 +1128,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="tiktok link"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>
@@ -951,6 +1161,21 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                             <TextField
                               {...field}
                               label="Website"
+                              variant="outlined"
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
                               className="w-full"
                             />
                           </FormControl>

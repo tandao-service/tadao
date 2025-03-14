@@ -13,6 +13,8 @@ import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useToast } from "@/components/ui/use-toast";
+import { AdminId } from "@/constants";
+import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 type sidebarProps = {
   displayName: string;
   uid: string;
@@ -42,7 +44,7 @@ const SendMessageSupport = ({
     try {
       const userQuery = query(
         collection(db, "messages"),
-        where("uid", "==", "66dd62d837607af83cabf551"),
+        where("uid", "==", AdminId),
         where("recipientUid", "==", uid),
         where("text", "==", welcomeText)
       );
@@ -55,7 +57,7 @@ const SendMessageSupport = ({
           name: "Support Team",
           avatar: "/customer.jpg",
           createdAt: serverTimestamp(),
-          uid: "66dd62d837607af83cabf551",
+          uid: AdminId,
           recipientUid: uid,
           imageUrl,
           read,
@@ -121,15 +123,15 @@ const SendMessageSupport = ({
   };
 
   return (
-    <div className="w-full p-1 bg-[#ebf2f7]">
-      <form onSubmit={handleSendMessage} className="px-0 containerWrap flex">
+    <div className="w-full p-1 dark:bg-[#2D3236] bg-[#ebf2f7]">
+     <form onSubmit={handleSendMessage} className="px-0 containerWrap flex items-center gap-2 mt-0">
         {recipientUid ? (
           <>
             {image && (
               <div className="h-32 w-24 fixed bottom-20 bg-white shadow rounded-lg p-1">
                 <button
                   onClick={(e) => setImg(null)}
-                  className="focus:outline-none"
+                  className="flex focus:outline-none"
                 >
                   <CloseIcon className="m-1" sx={{ fontSize: 24 }} />
                 </button>
@@ -142,16 +144,19 @@ const SendMessageSupport = ({
                 />
               </div>
             )}
-            <input
+
+            <textarea
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="input w-[210px] lg:w-full  text-sm text-black p-2 focus:outline-none bg-white rounded-r-none rounded-l-lg"
-              type="text"
+              className="input flex-1 lg:w-full text-sm lg:text-base dark:bg-[#131B1E] dark:text-[#F1F3F3] text-black p-3 focus:outline-none bg-white rounded-lg"
               placeholder="Enter your message..."
+              rows={1}
+              style={{ height: "auto" }}
             />
+
             <button
               type="submit"
-              className="w-auto bg-gradient-to-b from-emerald-800 to-emerald-900 text-white rounded-r-lg px-5 text-sm"
+              className="bg-gradient-to-b from-emerald-800 to-emerald-900 text-white rounded-lg py-2 px-4"
             >
               Send
             </button>
@@ -161,26 +166,23 @@ const SendMessageSupport = ({
             <input
               value={value}
               disabled
-              className="input w-full p-2 text-black focus:outline-none bg-white rounded-r-none rounded-l-lg"
+              className="input w-full p-2 text-black focus:outline-none bg-white rounded-lg"
               type="text"
               placeholder="Enter your message..."
             />
             <button
               type="submit"
               disabled
-              className="w-auto bg-gradient-to-b from-emerald-800 to-emerald-900 text-white rounded-r-lg px-5 text-sm"
+              className="bg-gradient-to-b from-emerald-800 to-emerald-900 text-white rounded-lg px-4"
             >
               Send
             </button>
           </>
         )}
 
-        <div className="cursor-pointer relative p-2 ml-5 mr-5">
+        <div className="cursor-pointer relative">
           <label htmlFor="file">
-            <img
-              src="../assets/icons/attach.png"
-              alt="Attach"
-              className="cursor-pointer"
+            <AttachFileOutlinedIcon
             />
           </label>
           <input

@@ -9,16 +9,16 @@ const isProtectedRoute = createRouteMatcher([
   '/bookmark(.*)',
   '/reviews(.*)',
   '/settings(.*)',
-  //'/terms(.*)',
- // '/privacy(.*)',
- // '/safety(.*)',
+  '/location(.*)',
+  // '/privacy(.*)',
+  // '/safety(.*)',
   '/performance(.*)',
- // '/about(.*)',
+  // '/about(.*)',
   '/faq(.*)',
   '/home(.*)',
   '/categories(.*)',
   '/packages(.*)',
-  
+
 ]);
 
 export default clerkMiddleware((auth, req) => {
@@ -27,5 +27,5 @@ export default clerkMiddleware((auth, req) => {
 export const config = {
   // The following matcher runs middleware on all routes
   // except static assets.
-  matcher: [ '/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };

@@ -4,7 +4,7 @@ import Footersub from "@/components/shared/Footersub";
 import { getAdByUser } from "@/lib/actions/ad.actions";
 import { SearchParamProps } from "@/types";
 //import DashboardMyads from "@/components/shared/dashboardMyads";
-import { getData } from "@/lib/actions/transactionstatus";
+import { getData } from "@/lib/actions/transactions.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import Image from "next/image";
 import { Toaster } from "@/components/ui/toaster";
@@ -76,28 +76,9 @@ const Performance = async ({
     }
   } catch {}
   //console.log(planpackage + " " + daysRemaining);
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen w-full bg-[#ebf2f7] bg-dotted-pattern bg-cover bg-fixed bg-center">
-        <div className="flex gap-1 items-center justify-center">
-          <img
-            src="/assets/icons/loading.gif"
-            alt="edit"
-            width={60}
-            height={60}
-          />
-          Loading...
-        </div>
-      </div>
-    );
-  }
-
+ 
   return (
-    <div className="h-screen w-full">
-      <div className="z-10 top-0 fixed w-full">
-        <Navbar userstatus="User" userId={userId} />
-      </div>
-      <div className="mt-[50px]">
+    
         <DashboardPerformance
           userId={userId}
           loggedId={userId}
@@ -117,12 +98,7 @@ const Performance = async ({
           urlParamName="adsPage"
           //  totalPages={organizedAds?.totalPages}
         />
-        <Toaster />
-      </div>
-      <footer>
-        <Footersub />
-      </footer>
-    </div>
+    
   );
 };
 export default Performance;

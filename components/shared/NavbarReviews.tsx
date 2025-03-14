@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { UpdateUserParams } from "@/types";
 import HomeIcon from "@mui/icons-material/Home";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
@@ -12,6 +12,7 @@ import MobileNav from "./MobileNav";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import Image from "next/image";
 import MessageIcon from "@mui/icons-material/Message";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import {
   Tooltip,
   TooltipContent,
@@ -20,6 +21,8 @@ import {
 } from "../ui/tooltip";
 import dynamic from "next/dynamic";
 import Unreadmessages from "./Unreadmessages";
+import ProgressPopup from "./ProgressPopup";
+import ToggleTheme from "./toggleTheme";
 const SignedIn = dynamic(
   () => import("@clerk/nextjs").then((mod) => mod.SignedIn),
   { ssr: false }
@@ -41,16 +44,22 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const isActive = pathname === "/";
-
+  const [isOpenP, setIsOpenP] = useState(false);
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
-    <div className="flex p-2 lg:p-3 gap-1 w-full bg-gradient-to-b lg:bg-gradient-to-r from-emerald-800 to-emerald-950 ">
+    <div className="h-[60px] flex p-2 lg:p-3 gap-1 w-full bg-[#064E3B]">
       <div className="flex-1">
         <div className="flex items-center">
           {!isActive && (
             <div
               className="mr-5 w-5 h-8 flex items-center justify-center rounded-sm text-white tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Back"
-              onClick={() => router.back()}
+              onClick={() => {
+                //  setIsOpenP(true);
+                router.back();
+              }}
             >
               <TooltipProvider>
                 <Tooltip>
@@ -66,9 +75,14 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
           )}
           <div className="rounded-full overflow-hidden">
             <Image
-              src="/assets/images/logo_white.png"
+              src="/assets/images/logo.png"
               alt="logo"
-              onClick={() => router.push("/")}
+              onClick={() => {
+                if (pathname !== "/") {
+                  setIsOpenP(true);
+                  router.push("/");
+                }
+              }}
               className="hover:cursor-pointer"
               width={40}
               height={40}
@@ -77,12 +91,18 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
           <span className="logo font-bold text-white">Reviews</span>
         </div>
       </div>
+     
       <div className="hidden lg:inline">
         <div className="flex items-center gap-2">
           <div
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
-            onClick={() => router.push(`/bookmark/`)}
+            onClick={() => {
+              if (pathname !== "/bookmark/") {
+                setIsOpenP(true);
+                router.push("/bookmark/");
+              }
+            }}
           >
             <TooltipProvider>
               <Tooltip>
@@ -97,9 +117,14 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
           </div>
 
           <div
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white tooltip tooltip-bottom hover:cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
-            onClick={() => router.push(`/chat/`)}
+            onClick={() => {
+              if (pathname !== "/chat/") {
+                setIsOpenP(true);
+                router.push("/chat/");
+              }
+            }}
           >
             <TooltipProvider>
               <Tooltip>
@@ -113,7 +138,12 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <div
-                    onClick={() => router.push(`/chat/`)}
+                    onClick={() => {
+                      if (pathname !== "/chat/") {
+                        setIsOpenP(true);
+                        router.push("/chat/");
+                      }
+                    }}
                     className="flex gap-1"
                   >
                     Chats
@@ -125,9 +155,14 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
           </div>
 
           <div
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white tooltip tooltip-bottom hover:cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236]  bg-white tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
-            onClick={() => router.push(`/plan/`)}
+            onClick={() => {
+              if (pathname !== "/plan/") {
+                setIsOpenP(true);
+                router.push("/plan/");
+              }
+            }}
           >
             <TooltipProvider>
               <Tooltip>
@@ -142,23 +177,29 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
           </div>
           <div className="flex gap-1">
             <SignedIn>
-              <Link href="/ads/create">
-                <button
-                  className={`w-[100px] bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
-                >
-                  <AddCircleOutlineOutlinedIcon /> SELL
-                </button>
-              </Link>
+              <button
+                onClick={() => {
+                  if (pathname !== "/ads/create") {
+                    setIsOpenP(true);
+                    router.push("/ads/create");
+                  }
+                }}
+                className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 hover:bg-[#30AF5B] text-white p-1 rounded-full`}
+              >
+                <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+              </button>
             </SignedIn>
 
             <SignedOut>
-              <Link href="/sign-in">
-                <button
-                  className={`w-[100px] bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
-                >
-                  <AddCircleOutlineOutlinedIcon /> SELL
-                </button>
-              </Link>
+              <button
+                onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+                className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 hover:bg-[#30AF5B] text-white p-1 rounded-full`}
+              >
+                <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+              </button>
             </SignedOut>
           </div>
         </div>
@@ -169,6 +210,7 @@ const NavbarReviews = ({ recipient, userId }: sidebarProps) => {
         </div>
       </SignedIn>
       <MobileNav userstatus={"User"} userId={userId} />
+      <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );
 };

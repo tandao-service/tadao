@@ -45,7 +45,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
 import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import Verification from "./Verification";
 import { IUser } from "@/lib/database/models/user.model";
@@ -56,24 +56,46 @@ import Ratingsmobile from "./ratingsmobile";
 import Verificationmobile from "./Verificationmobile";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import ProgressPopup from "./ProgressPopup";
 type chatProps = {
   userId: string;
   userName: string;
   userImage: string;
   user: IUser;
+  handleOpenShop:(shopId:string) => void;
+  handleOpenReview:(id:string) => void;
+  handlePay: (id:string) => void;
 };
 const SellerProfilePermonance = ({
   userId,
   userName,
   userImage,
   user,
+  handleOpenShop,
+  handleOpenReview,
+  handlePay,
 }: chatProps) => {
   const pathname = usePathname();
+  const [isOpenP, setIsOpenP] = useState(false);
+  const router = useRouter();
+  const handleOpenP = () => {
+    setIsOpenP(true);
+  };
 
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
     <div className="flex gap-1 items-center">
       <div className="flex flex-col lg:flex-row gap-1 items-center p-1 w-full">
-        <Link href={`/shop/${userId}`} className="no-underline font-bold m-1">
+        <div
+          onClick={() => {
+           // handleOpenP();
+            handleOpenShop(userId);
+           // router.push(`/shop/${userId}`);
+          }}
+          className="cursor-pointer no-underline font-bold m-1"
+        >
           <div className="w-12 h-12 rounded-full bg-white">
             <Zoom>
               <Image
@@ -85,17 +107,24 @@ const SellerProfilePermonance = ({
               />
             </Zoom>
           </div>
-        </Link>
+        </div>
         <div className="flex flex-col">
-          <Link href={`/shop/${userId}`} className="no-underline font-boldm-1">
+          <div
+            onClick={() => {
+              //handleOpenP();
+              //router.push(`/shop/${userId}`);
+              handleOpenShop(userId);
+            }}
+            className="cursor-pointer no-underline font-boldm-1"
+          >
             <p className="ml-2 font-bold">{userName}</p>
-          </Link>
+          </div>
 
-          <Verification user={user} userId={userId} isAdCreator={true} />
-          <Ratingsmobile recipientUid={userId} />
+          <Verification user={user} userId={userId} isAdCreator={true} handlePayNow={handlePay}/>
+          <Ratingsmobile recipientUid={userId} handleOpenReview={handleOpenReview} />
         </div>
       </div>
-      {/* <Ratingsmobile recipientUid={userId} />*/}
+   
     </div>
   );
 };

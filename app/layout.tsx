@@ -11,8 +11,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "AutoYard",
-  description: "AutoYard | Where Every Ride Finds a Buyer",
+  title: "PocketShop",
+  description: "PocketShop | Buy and Sell Online in Kenya",
   icons: {
     icon: "/assets/images/favicon.png",
   },

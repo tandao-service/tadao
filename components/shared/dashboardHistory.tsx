@@ -1,21 +1,48 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
+import Navbar from "./navbar";
+import { mode } from "@/constants";
 
 type payProps = {
   userId: string;
+  recipientUid:string;
   alltrans: any;
 };
-const DashboardHistory = ({ userId, alltrans }: payProps) => {
+const DashboardHistory = ({ userId, alltrans,recipientUid }: payProps) => {
+  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+    
+        useEffect(() => {
+           const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+           const isDark = savedTheme === mode;
+           
+           setIsDarkMode(isDark);
+           document.documentElement.classList.toggle(mode, isDark);
+         }, []);
+       
+         useEffect(() => {
+           if (isDarkMode === null) return; // Prevent running on initial mount
+       
+           document.documentElement.classList.toggle(mode, isDarkMode);
+           localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+         }, [isDarkMode]);
+       
+         if (isDarkMode === null) return null; // Avoid flickering before state is set
+       
   if (alltrans.length === 0) {
     return (
-      <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+      <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] py-28 text-center">
         <h3 className="p-bold-20 md:h5-bold">No order found!</h3>
         <p className="p-regular-14">No data</p>
       </div>
     );
   }
   return (
+    <div className="min-h-screen dark:bg-[#131B1E] h-screen  text-black dark:text-[#F1F3F3] bg-white">
+      <div className="fixed z-0 top-0 w-full">
+        <Navbar userstatus="User" userId={recipientUid || ""} />
+      </div>
+      <div className="max-w-8xl mx-auto flex mt-[60px] mb-0 p-1">
     <div className="fixed w-full h-screen">
       <div className="p-1">
         <div className="p-1 max-w-3xl mx-auto mb-2">
@@ -24,8 +51,10 @@ const DashboardHistory = ({ userId, alltrans }: payProps) => {
               <div className="gap-1 h-[450px] mt-2 items-center w-full">
                 <div className="">
                   <div className="flex flex-col items-center">
-                    <div className="flex flex-col border shadow-lg rounded-lg bg-gray-100 p-2 mb-2 w-full">
-                     <p className="font-bold text-[25px] text-center ">History</p> 
+                    <div className="flex flex-col border shadow-lg rounded-lg dark:bg-[#2D3236] bg-gray-100 p-2 mb-2 w-full">
+                      <p className="font-bold text-[25px] text-center ">
+                        History
+                      </p>
                       <div className="grid grid-cols-6 text-gray-600 text-xs bg-grey-500 rounded-t-lg p-1 text-white">
                         <div className="justify-center items-center flex flex-col">
                           Status
@@ -98,6 +127,8 @@ const DashboardHistory = ({ userId, alltrans }: payProps) => {
           </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };

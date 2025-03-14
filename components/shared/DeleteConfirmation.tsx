@@ -15,8 +15,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { deleteAd } from "@/lib/actions/dynamicAd.actions";
 
-import { deleteAd } from "@/lib/actions/ad.actions";
+//import { deleteAd } from "@/lib/actions/ad.actions";
 type deleteProps = {
   adId: string;
   imageUrls: string[];

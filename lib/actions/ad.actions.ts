@@ -30,7 +30,7 @@ import {
 import Transaction from '../database/models/transaction.model'
 import { Model } from 'mongoose'
 import { ObjectId } from 'mongodb'
-import { createTransaction } from './transactionstatus'
+import { createTransaction } from './transactions.actions'
 
 
 const getCategoryByName = async (name: string) => {

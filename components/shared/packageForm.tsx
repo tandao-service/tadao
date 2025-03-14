@@ -27,6 +27,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IPackages } from "@/lib/database/models/packages.model";
 import { createPackage, updatePackage } from "@/lib/actions/packages.actions";
 import { FileUploaderPackage } from "./FileuploaderPackage";
+import { ScrollArea } from "../ui/scroll-area";
+import { useToast } from "../ui/use-toast";
 
 type packageFormProps = {
   type: "Create" | "Update";
@@ -54,6 +56,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
   const { startUpload } = useUploadThing("imageUploader");
   const [showmessage, setmessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof packageFormSchema>) {
     let uploadedImageUrl = values.imageUrl;
     try {
@@ -80,7 +83,13 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
         if (newPack) {
           form.reset();
           // router.push(`/packages/${newPack._id}`);
-          router.push(`/packages`);
+          // router.push(`/packages`);
+          toast({
+            title: "Created",
+            description: "Package created successfully.",
+            duration: 5000,
+            className: "bg-[#30AF5B] text-white",
+          });
         }
       } else if (type === "Update") {
         if (!packageId) {
@@ -102,7 +111,13 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
         if (updatedPack) {
           form.reset();
           //router.push(`/packages/${updatedPack._id}`);
-          router.push(`/packages`);
+          //  router.push(`/packages`);
+          toast({
+            title: "Updated",
+            description: "Package updated successfully.",
+            duration: 5000,
+            className: "bg-[#30AF5B] text-white",
+          });
         }
       }
     } catch (error) {
@@ -152,281 +167,295 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
 
   return (
     <>
-      {showAlert && (
-        <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{showmessage}</AlertDescription>
-        </Alert>
-      )}
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 m-1 gap-1"
-        >
-          <div className="">
-            <div className="flex flex-col p-2 w-full">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Package name"
-                        {...field}
-                        className="input-field"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex flex-col p-2 w-full">
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl className="h-30">
-                      <Textarea
-                        placeholder="Package Description"
-                        {...field}
-                        className="textarea rounded-2xl"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex flex-col p-2 w-full">
-              <FormField
-                control={form.control}
-                name="list"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Allowable Listing"
-                        {...field}
-                        className="input-field"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex flex-col p-2 w-full">
-              <FormField
-                control={form.control}
-                name="priority"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Priority"
-                        {...field}
-                        className="input-field"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex flex-col p-2 w-full">
-              <FormField
-                control={form.control}
-                name="features"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <div className="flex flex-col p-2 w-full rounded-2xl bg-grey-50 px-4 py-2">
-                        <div>
-                          <div className="flex items-center font-bold">
-                            <h1>Features Listings</h1>
-                          </div>
-                          <ul>
-                            {field.value &&
-                              field.value.map((feature, index) => (
-                                <li
-                                  key={index}
-                                  className="flex items-center gap-2"
-                                >
-                                  <span>{feature.title}</span>
+      <ScrollArea className="h-[400px] w-full p-3">
+        {showAlert && (
+          <Alert variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{showmessage}</AlertDescription>
+          </Alert>
+        )}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="">
+            <div className="">
+              <div className="flex flex-col p-2 w-full">
+                <div className="flex items-center font-bold">
+                  <h1>Package name</h1>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          placeholder="Name"
+                          {...field}
+                          className="input-field dark:bg-[#2D3236] bg-white"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col p-2 w-full">
+                <div className="flex items-center font-bold">
+                  <h1>Package Description</h1>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl className="h-30">
+                        <Textarea
+                          placeholder="Description"
+                          {...field}
+                          className="textarea rounded-xl dark:bg-[#2D3236] bg-white"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col p-2 w-full">
+                <div className="flex items-center font-bold">
+                  <h1>Allowable Listing</h1>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="list"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          placeholder="Allowable Listing"
+                          {...field}
+                          className="input-field dark:bg-[#2D3236] bg-white"
+                          type="number"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col p-2 w-full">
+                <div className="flex items-center font-bold">
+                  <h1>Priority</h1>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="priority"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          placeholder="Priority"
+                          {...field}
+                          className="input-field dark:bg-[#2D3236] bg-white"
+                          type="number"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex  rounded-xl border mt-3 flex-col p-2 w-full">
+                <FormField
+                  control={form.control}
+                  name="features"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="flex flex-col w-full rounded-2xl bg-grey-50">
+                          <div>
+                            <div className="flex items-center font-bold">
+                              <h1>Features Listings</h1>
+                            </div>
+                            <ul>
+                              {field.value &&
+                                field.value.map((feature, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <span>{feature.title}</span>
 
-                                  <input
-                                    type="checkbox"
-                                    checked={feature.checked}
-                                    onChange={(e) => {
-                                      const updatedFeatures = [...field.value];
-                                      updatedFeatures[index].checked =
-                                        e.target.checked;
-                                      field.onChange(updatedFeatures);
-                                    }}
-                                    className="ml-2 p-2 cursor-pointer"
-                                  />
-                                  <Image
-                                    src="/assets/icons/delete.svg"
-                                    alt="edit"
-                                    className="p-2 cursor-pointer"
-                                    width={35}
-                                    height={35}
-                                    onClick={() => {
-                                      const updatedFeatures =
-                                        field.value.filter(
-                                          (_, i) => i !== index
-                                        );
-                                      field.onChange(updatedFeatures);
-                                    }}
-                                  />
-                                </li>
-                              ))}
-                          </ul>
-                          <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
-                            <Input
-                              className="ml-2 mr-2"
-                              value={newListingTitle}
-                              onChange={handleInputChange}
-                              placeholder="Enter Feature title"
-                            />
-                            <div className="flex items-center">
-                              <label
-                                htmlFor="negotiable"
-                                className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                Enabled
-                              </label>
-                              <Checkbox
-                                onCheckedChange={() => setIsChecked(!isChecked)}
-                                checked={isChecked}
-                                id="recommended"
-                                className="mr-2 h-5 w-5 border-2 border-primary-500"
+                                    <input
+                                      type="checkbox"
+                                      checked={feature.checked}
+                                      onChange={(e) => {
+                                        const updatedFeatures = [
+                                          ...field.value,
+                                        ];
+                                        updatedFeatures[index].checked =
+                                          e.target.checked;
+                                        field.onChange(updatedFeatures);
+                                      }}
+                                      className="ml-2 p-2 cursor-pointer"
+                                    />
+                                    <Image
+                                      src="/assets/icons/delete.svg"
+                                      alt="edit"
+                                      className="p-2 cursor-pointer"
+                                      width={35}
+                                      height={35}
+                                      onClick={() => {
+                                        const updatedFeatures =
+                                          field.value.filter(
+                                            (_, i) => i !== index
+                                          );
+                                        field.onChange(updatedFeatures);
+                                      }}
+                                    />
+                                  </li>
+                                ))}
+                            </ul>
+                            <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
+                              <Input
+                                className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
+                                value={newListingTitle}
+                                onChange={handleInputChange}
+                                placeholder="Enter Feature title"
+                              />
+                              <div className="flex items-center">
+                                <label
+                                  htmlFor="negotiable"
+                                  className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                  Enabled
+                                </label>
+                                <Checkbox
+                                  onCheckedChange={() =>
+                                    setIsChecked(!isChecked)
+                                  }
+                                  checked={isChecked}
+                                  id="recommended"
+                                  className="mr-2 h-5 w-5 border-2 border-primary-500"
+                                />
+                              </div>
+
+                              <Image
+                                src="/assets/icons/add.svg"
+                                alt="edit"
+                                className="p-0 cursor-pointer"
+                                width={45}
+                                height={45}
+                                onClick={() => {
+                                  if (newListingTitle.trim() !== "") {
+                                    const updatedFeatures = [
+                                      ...(field.value || []),
+                                      {
+                                        title: newListingTitle.trim(),
+                                        checked: isChecked,
+                                      },
+                                    ];
+                                    field.onChange(updatedFeatures);
+                                    setNewListingTitle("");
+                                    setIsChecked(false); // Reset checkbox state
+                                  }
+                                }}
                               />
                             </div>
-
-                            <Image
-                              src="/assets/icons/add.svg"
-                              alt="edit"
-                              className="p-0 cursor-pointer"
-                              width={45}
-                              height={45}
-                              onClick={() => {
-                                if (newListingTitle.trim() !== "") {
-                                  const updatedFeatures = [
-                                    ...(field.value || []),
-                                    {
-                                      title: newListingTitle.trim(),
-                                      checked: isChecked,
-                                    },
-                                  ];
-                                  field.onChange(updatedFeatures);
-                                  setNewListingTitle("");
-                                  setIsChecked(false); // Reset checkbox state
-                                }
-                              }}
-                            />
                           </div>
                         </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <div className="flex flex-col p-2 w-full">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <div className="flex flex-col gap-5 md:flex-row rounded-2xl bg-grey-50 px-4 py-2">
-                        <div>
-                          <div className="flex items-center font-bold">
-                            <h1>Price Listings</h1>
-                          </div>
-                          <ul>
-                            {field.value &&
-                              field.value.map((price, index) => (
-                                <li
-                                  key={index}
-                                  className="flex items-center gap-5"
-                                >
-                                  <span>{price.period}</span>
-                                  <span>Ksh: {price.amount}</span>
+              <div className="flex mt-3 rounded-xl border flex-col p-2 w-full">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="flex flex-col gap-5 md:flex-row rounded-2xl bg-grey-50">
+                          <div>
+                            <div className="flex items-center font-bold">
+                              <h1>Price Listings</h1>
+                            </div>
+                            <ul>
+                              {field.value &&
+                                field.value.map((price, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-center gap-5"
+                                  >
+                                    <span>{price.period}</span>
+                                    <span>Ksh: {price.amount}</span>
 
-                                  <Image
-                                    src="/assets/icons/delete.svg"
-                                    alt="edit"
-                                    className="p-2 cursor-pointer"
-                                    width={35}
-                                    height={35}
-                                    onClick={() => {
-                                      const updatedPrice = field.value.filter(
-                                        (_, i) => i !== index
-                                      );
-                                      field.onChange(updatedPrice);
-                                    }}
-                                  />
-                                </li>
-                              ))}
-                          </ul>
-                          <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
-                            <Input
-                              className="ml-2 mr-2"
-                              value={newListingPeriod}
-                              onChange={handleInputChangePeriod}
-                              placeholder="Period"
-                            />
-                            <Input
-                              className="ml-2 mr-2"
-                              value={newListingAmount}
-                              onChange={handleInputChangeAmount}
-                              placeholder="Amount"
-                            />
+                                    <Image
+                                      src="/assets/icons/delete.svg"
+                                      alt="edit"
+                                      className="p-2 cursor-pointer"
+                                      width={35}
+                                      height={35}
+                                      onClick={() => {
+                                        const updatedPrice = field.value.filter(
+                                          (_, i) => i !== index
+                                        );
+                                        field.onChange(updatedPrice);
+                                      }}
+                                    />
+                                  </li>
+                                ))}
+                            </ul>
+                            <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
+                              <Input
+                                className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
+                                value={newListingPeriod}
+                                onChange={handleInputChangePeriod}
+                                placeholder="Period"
+                              />
+                              <Input
+                                className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
+                                value={newListingAmount}
+                                onChange={handleInputChangeAmount}
+                                placeholder="Amount"
+                              />
 
-                            <Image
-                              src="/assets/icons/add.svg"
-                              alt="edit"
-                              className="p-0 cursor-pointer"
-                              width={45}
-                              height={45}
-                              onClick={() => {
-                                if (newListingPeriod.trim() !== "") {
-                                  const updatedPrice = [
-                                    ...(field.value || []),
-                                    {
-                                      period: newListingPeriod.trim(),
-                                      amount: parseFloat(
-                                        newListingAmount.trim()
-                                      ),
-                                    },
-                                  ];
-                                  field.onChange(updatedPrice);
-                                  setNewListingPeriod("");
-                                  setNewListingAmount(""); // Reset checkbox state
-                                }
-                              }}
-                            />
+                              <Image
+                                src="/assets/icons/add.svg"
+                                alt="edit"
+                                className="p-0 cursor-pointer"
+                                width={45}
+                                height={45}
+                                onClick={() => {
+                                  if (newListingPeriod.trim() !== "") {
+                                    const updatedPrice = [
+                                      ...(field.value || []),
+                                      {
+                                        period: newListingPeriod.trim(),
+                                        amount: parseFloat(
+                                          newListingAmount.trim()
+                                        ),
+                                      },
+                                    ];
+                                    field.onChange(updatedPrice);
+                                    setNewListingPeriod("");
+                                    setNewListingAmount(""); // Reset checkbox state
+                                  }
+                                }}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-          </div>
-          <div className="">
-            <div className="flex flex-col p-2 w-full">
+
+            <div className="flex rounded-xl border mt-3 flex-col p-2 w-full">
               <FormField
                 control={form.control}
                 name="color"
@@ -461,7 +490,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
               />
             </div>
 
-            <div className="flex flex-col p-2 w-full">
+            <div className="flex flex-col mt-2 w-full">
               <FormField
                 control={form.control}
                 name="imageUrl"
@@ -483,7 +512,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                   type="submit"
                   size="lg"
                   disabled={form.formState.isSubmitting}
-                  className="button bg-[#000000] hover:bg-[#333333] col-span-2 w-full"
+                  className="button col-span-2 mt-3 w-full"
                 >
                   {form.formState.isSubmitting
                     ? "Submitting..."
@@ -491,9 +520,9 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                 </Button>
               </div>
             </div>
-          </div>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </ScrollArea>
     </>
   );
 };

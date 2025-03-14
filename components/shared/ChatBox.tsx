@@ -128,14 +128,21 @@ const ChatBox = ({
   };
 
   // Call the function to update the read status of the message
+  useEffect(() => {
+    const unreadMessages = messages.filter(
+      (message) => message.uid !== uid && message.read === 1
+    );
+    unreadMessages.forEach((message) => {
+      updateMessageReadStatus({ messageId: message.id });
+    });
+  }, [messages, uid]);
 
   return (
-    <div className="">
-      <ScrollArea className="h-[80vh] w-full bg-white rounded-md border p-2">
+    <div>
+      <ScrollArea className="h-[79vh] w-full dark:bg-[#2D3236] bg-white rounded-t-md border p-2">
         {messages.map((message: any) => (
-          <>
+          <div key={message.id}>
             <Message
-              key={message.id}
               message={message}
               displayName={displayName}
               uid={uid}
@@ -143,11 +150,7 @@ const ChatBox = ({
               photoURL={photoURL}
               recipient={recipient}
             />
-
-            {message.uid !== uid &&
-              message.read == 1 &&
-              updateMessageReadStatus({ messageId: message.id })}
-          </>
+          </div>
         ))}
         <div ref={messagesEndRef}></div>
       </ScrollArea>

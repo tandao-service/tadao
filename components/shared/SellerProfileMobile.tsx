@@ -45,7 +45,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
 import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import Verification from "./Verification";
 import { IUser } from "@/lib/database/models/user.model";
@@ -56,25 +56,29 @@ import Ratingsmobile from "./ratingsmobile";
 import Verificationmobile from "./Verificationmobile";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import ProgressPopup from "./ProgressPopup";
 type chatProps = {
   userId: string;
   userName: string;
   userImage: string;
   ad: IAd;
+  handleOpenReview: (value:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenShop: (value:string) => void;
+ 
 };
 const SellerProfileMobile = ({
   ad,
   userId,
   userName,
   userImage,
+  handleOpenShop,
+  handleOpenReview,handleOpenChatId,handleOpenSettings,
 }: chatProps) => {
-  const [activationfee, setactivationfee] = useState(500);
-  const [showphone, setshowphone] = useState(false);
+  
   const pathname = usePathname();
-  const isActive = pathname === "/shop/" + userId;
-  const isActiveReviews = pathname === "/reviews/" + userId;
-  const router = useRouter();
-  const isAdCreator = userId === ad.organizer._id;
+ 
 
   let formattedCreatedAt = "";
   try {
@@ -101,14 +105,16 @@ const SellerProfileMobile = ({
   } catch {
     // Handle error when formatting date
   }
-
+  
   return (
     <div className="flex gap-1 items-center">
       <div className="lg:hidden flex gap-1 items-center p-1 w-full">
-        <Link
-          href={`/shop/${ad.organizer._id}`}
-          target="_blank"
-          className="no-underline font-bold m-1"
+        <div
+          onClick={() => {
+            handleOpenShop(ad.organizer._id);
+            //router.push(`/shop/${ad.organizer._id}`);
+          }}
+          className="cursor-pointer no-underline font-bold m-1"
         >
           <div className="w-10 h-10 rounded-full bg-white">
             <Zoom>
@@ -121,26 +127,35 @@ const SellerProfileMobile = ({
               />
             </Zoom>
           </div>
-        </Link>
+        </div>
         <div className="flex flex-col">
-          <Link
-            href={`/shop/${ad.organizer._id}`}
-            target="_blank"
-            className="no-underline font-boldm-1"
+          <div
+            onClick={() => {
+              handleOpenShop(ad.organizer._id);
+              //router.push(`/shop/${ad.organizer._id}`);
+            }}
+            className="cursor-pointer no-underline font-bold m-1"
           >
             <p className="ml-2 text-xs font-bold">
               {ad.organizer.firstName} {ad.organizer.lastName}
             </p>
-          </Link>
+          </div>
 
-          <Link href={`/shop/${ad.organizer._id}`} className="no-underline m-1">
-            <p className="ml-2 text-xs text-emerald-500 hover:text-emerald-950 hover:underline">
+          <div
+            onClick={() => {
+              handleOpenShop(ad.organizer._id);
+              //router.push(`/shop/${ad.organizer._id}`);
+            }}
+            className="cursor-pointer no-underline m-1"
+          >
+            <p className="ml-2 text-xs text-emerald-500 hover:underline">
               View Seller Profile
             </p>
-          </Link>
+          </div>
         </div>
       </div>
       {/* <Ratingsmobile recipientUid={userId} />*/}
+      
     </div>
   );
 };

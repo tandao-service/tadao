@@ -4,34 +4,75 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Searchmain from "./Searchmain";
-
-export default function Header() {
+import SearchNow from "./SearchNow";
+import LocationSelection from "./LocationSelection";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+export default function Header({ onLoading ,AdsCountPerRegion }: { onLoading: () => void, AdsCountPerRegion:any }) {
   const router = useRouter();
   const [search, setSearch] = useState<string>();
-
+  const [region, setRegion] = useState("All Kenya");
   // Function to handle changes in the search input
   const handleSearchChange = (event: { target: { value: any } }) => {
     const { value } = event.target;
     setSearch(value);
   };
+ const [showPopup, setShowPopup] = useState(false);
 
+  const handleOpenPopup = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+  const handleRegion = (value:string) => {
+    setRegion(value);
+  };
   return (
-    <div className="flex max-w-6xl mx-auto">
-      {/* Right Side */}
-      {/* Middle */}
+    <div
+      className="relative flex max-w-6xl mx-auto"
+      // style={{
+      //   backgroundImage: "url('/assets/images/twn.png')",
+      //   backgroundSize: "cover",
+      //   backgroundPosition: "center",
+      //   backgroundRepeat: "no-repeat",
+      //   }}
+    >
       <div className="lg:mb-10 mx-auto md:my-auto py-2 lg:py-10 md:py-0 w-[90%] md:w-[40%] text-center">
-        <div className="">
+       <div className="mt-[60px] lg:mt-10">
           <div className="mb-5 text-white">
-            Find all in{" "}
-            <span className="bg-black text-white p-1 rounded-full">
-              <LocationOnIcon /> Kenya
-            </span>
+          What are you looking for?
           </div>
         </div>
-
-        <Searchmain />
+        <div className="flex gap-1 items-center">
+        <div className="flex">
+        <button
+        onClick={handleOpenPopup}
+        className="flex gap-1 items-center justify-center w-full py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
+        >
+        <LocationOnIcon /> {region}
+        </button>
+        </div>
+        <div className="flex-1">
+       {/* <SearchNow onLoading={onLoading} /> */}
+        </div>
+        </div>
       </div>
       {/* Left Side */}
+      {showPopup && (
+                      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
+                        <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-0 w-full  lg:max-w-3xl rounded-md shadow-md relative">
+                          
+                          <LocationSelection
+                           // selected={formData["bulkprice"] || []}
+                           // name={"bulkprice"}
+                           onSelected={handleRegion}
+                           AdsCountPerRegion={AdsCountPerRegion}
+                           onClose={handleClosePopup}
+                          />
+                        </div>
+                      </div>
+                    )}
     </div>
   );
 }

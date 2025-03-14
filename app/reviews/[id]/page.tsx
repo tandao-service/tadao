@@ -83,7 +83,7 @@ const pagechat = async ({ params: { id } }: chatProps) => {
   const recipientUid = id;
   if (!user) {
     return (
-      <div className="flex-center h-screen w-full bg-[#ebf2f7] bg-dotted-pattern bg-cover bg-fixed bg-center">
+      <div className="flex-center min-h-screen w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200 bg-dotted-pattern bg-cover bg-fixed bg-center">
         <div className="top-0 z-10 fixed w-full">
           <Navbar userstatus="User" userId={recipientUid || ""} />
         </div>
@@ -95,20 +95,19 @@ const pagechat = async ({ params: { id } }: chatProps) => {
               width={60}
               height={60}
             />
-            Loading...
           </div>
         </div>
       </div>
     );
   }
   return (
-    <div>
+    <div className="min-h-screen dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
       <div className="z-10 top-0 fixed w-full">
         <NavbarReviews recipient={user} userId={recipientUid} />
       </div>
-      <div className="mx-auto flex mt-20 p-1">
-        <div className="hidden lg:inline w-[350px] sidebar left-0 top-0 bg-[#ebf2f7] p-4">
-          <div className="w-full rounded-lg p-1">
+      <div className="mx-auto flex mt-[60px] p-1">
+        <div className="gap-2 hidden lg:inline w-[350px]  sidebar left-0 top-0 border dark:border-0 lg:p-4">
+          <div className="w-full p-0">
             <SellerProfile
               user={user}
               loggedId={senderId}
@@ -117,9 +116,9 @@ const pagechat = async ({ params: { id } }: chatProps) => {
           </div>
         </div>
 
-        <div className="w-full lg:w-3/4 chat overflow-y-auto right-0 top-0 p-0">
-          <div className="lg:hidden w-full sidebar lg:fixed left-0 top-0 bg-[#ebf2f7] mb-1">
-            <div className="w-full rounded-lg p-1">
+        <div className="w-full lg:w-3/4 chat overflow-y-auto">
+          <div className="lg:hidden border dark:border-0 w-full sidebar lg:fixed mb-2 rounded-lg">
+            <div className="w-full p-1">
               <SellerProfile
                 user={user}
                 loggedId={senderId}
@@ -128,25 +127,33 @@ const pagechat = async ({ params: { id } }: chatProps) => {
             </div>
           </div>
 
-          <div className="rounded-lg bg-white items-center max-w-6xl mx-auto flex flex-col">
-            <span className="logo font-bold text-[25px] text-emerald-950">
-              Customer feedback
-            </span>
-            <ReviewsBox
+          <div className="mt-0 p-0 min-h-screen border items-center max-w-6xl mx-auto flex rounded-lg flex-col">
+            <div className="items-center w-full flex flex-col">
+              <div className="flex gap-1 items-center">
+              {/*  <div className="font-bold dark:text-gray-400 text-emerald-950">
+                 
+                  Customer feedback for
+                </div>
+                <div className="font-bold text-emerald-600">
+                  {user.firstName} {user.lastName}
+                </div>*/} 
+              </div>
+              <ReviewsBox
+                displayName={senderName}
+                uid={senderId}
+                photoURL={senderImage}
+                recipientUid={recipientUid}
+                recipient={user}
+              />
+            </div>
+            <SendReviewMyAds
               displayName={senderName}
               uid={senderId}
               photoURL={senderImage}
               recipientUid={recipientUid}
-              recipient={user}
             />
+            <Toaster />
           </div>
-          <SendReviewMyAds
-            displayName={senderName}
-            uid={senderId}
-            photoURL={senderImage}
-            recipientUid={recipientUid}
-          />
-          <Toaster />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Dashboard from "@/components/shared/dashboard";
-import { getData } from "@/lib/actions/transactionstatus";
+import { getData } from "@/lib/actions/transactions.actions";
 import { auth } from "@clerk/nextjs/server";
 import Navbar from "@/components/shared/navbar";
 import { getAllPackages } from "@/lib/actions/packages.actions";
@@ -8,6 +8,7 @@ import BottomNavigation from "@/components/shared/BottomNavigation";
 import Footer from "@/components/shared/Footer";
 import Footersub from "@/components/shared/Footersub";
 import { Toaster } from "@/components/ui/toaster";
+import { FreePackId } from "@/constants";
 const create = async () => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.userId as string;
@@ -17,7 +18,7 @@ const create = async () => {
   let remainingads = 0;
   let listed = 0;
   let planpackage = "Free";
-  let planId = "65fa7d3fb20de072ea107223";
+  let planId = FreePackId;
   let priority = 0;
   let adstatus = "Pending";
   let color = "#000000";
@@ -63,55 +64,25 @@ const create = async () => {
       adstatus = "Active";
     }
   } catch {}
-  if (!subscription && !packagesList) {
-    return (
-      <div className="flex-center h-screen w-full bg-[#ebf2f7] bg-dotted-pattern bg-cover bg-fixed bg-center">
-        <div className="top-0 z-10 fixed w-full">
-          <Navbar userstatus="User" userId={userId || ""} />
-        </div>
-        <div className="max-w-6xl mx-auto mt-20">
-          <div className="flex gap-1 items-center">
-            <Image
-              src="/assets/icons/loading.gif"
-              alt="edit"
-              width={60}
-              height={60}
-            />
-            Loading...
-          </div>
-        </div>
-      </div>
-    );
-  }
+
   return (
     <>
-      <div className="z-10 top-0 fixed w-full">
-        <Navbar userstatus="User" userId={userId} />
-      </div>
-      <div className="mt-20 mb-20 lg:mb-0">
-        <Dashboard
-          userId={userId}
-          type="Create"
-          daysRemaining={daysRemaining}
-          packname={planpackage}
-          planId={planId}
-          userName={userName}
-          packagesList={packagesList}
-          listed={remainingads}
-          expirationDate={expirationDate}
-          priority={priority}
-          adstatus={adstatus}
-        />
-        <Toaster />
-      </div>
-      <footer>
-        <div className="hidden lg:inline">
-          <Footersub />
-        </div>
-        <div className="lg:hidden">
-          <BottomNavigation userId={userId} />
-        </div>
-      </footer>
+      
+                <Dashboard
+                  userId={userId}
+                  type="Create"
+                  daysRemaining={daysRemaining}
+                  packname={planpackage}
+                  planId={planId}
+                  userName={userName}
+                  packagesList={packagesList}
+                  listed={remainingads}
+                  expirationDate={expirationDate}
+                  priority={priority}
+                  adstatus={adstatus}
+                />
+                <Toaster />
+              
     </>
   );
 };

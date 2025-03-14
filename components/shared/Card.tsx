@@ -22,7 +22,7 @@ import { useToast } from "../ui/use-toast";
 import { updatebookmarked } from "@/lib/actions/ad.actions";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 type CardProps = {
-  ad: IAd;
+  ad: any;
   hasOrderLink?: boolean;
   hidePrice?: boolean;
   userId: string;
@@ -82,11 +82,17 @@ const Card = ({ ad, hasOrderLink, hidePrice, userId }: CardProps) => {
 
   //console.log(ad.imageUrls);
   return (
-    <div className="group relative flex min-h-[300px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[300px]">
+    <div
+      style={{
+        border: "2px solid", // Specifies border width and style
+        borderColor: ad.plan.borderColor, // Dynamic border color
+      }}
+      className="group relative flex min-h-[300px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl dark:bg-[#2D3236] text-black dark:text-gray-300 bg-white shadow-md transition-all hover:shadow-lg md:min-h-[300px]"
+    >
       <Link
         href={`/ads/${ad._id}`}
-        style={{ backgroundImage: `url(${ad.imageUrls[0]})` }}
-        className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
+        style={{ backgroundImage: `url(${ad.data.imageUrls[0]})` }}
+        className="flex-center flex-grow dark:bg-[#2D3236] bg-gray-50 bg-cover bg-center text-grey-500"
       />
       {/* IS Ad CREATOR ... */}
 
@@ -121,17 +127,17 @@ const Card = ({ ad, hasOrderLink, hidePrice, userId }: CardProps) => {
               height={20}
             />
           </Link>
-          <DeleteConfirmation adId={ad._id} imageUrls={ad.imageUrls} />
+          <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} />
         </div>
       )}
 
-      <div className="flex min-h-[80px] lg:items-center flex-col p-1">
+      <div className="flex min-h-[80px] lg:items-start flex-col p-1">
         <div className="w-full mt-[-10px] flex justify-between absolute top-1/2 left-1/2 transform -translate-x-1/2 p-1 rounded-full">
           <div className="gap-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] lg:text-xs text-white flex rounded-lg p-1 shadow-sm transition-all">
             <LocalSeeOutlinedIcon sx={{ fontSize: 16, cursor: "pointer" }} />
-            {ad.imageUrls.length}
+            {ad.data.imageUrls.length}
           </div>
-          {ad.youtube && (
+          {ad.data.youtube && (
             <div className="gap-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] lg:text-xs text-white flex rounded-lg p-1 shadow-sm transition-all">
               <YouTubeIcon
                 sx={{ fontSize: 16, cursor: "pointer" }}
@@ -184,52 +190,97 @@ const Card = ({ ad, hasOrderLink, hidePrice, userId }: CardProps) => {
 
         {!hidePrice && (
           <div className="flex">
-            <Link href={`/ads/${ad._id}`} className="no-underline">
-              <span className="text-[12px] lg:text-lg font-bold w-min rounded-full mt-1 text-emerald-950">
-                {formatKsh(ad.price)}
-              </span>
+            <Link
+              href={`/ads/${ad._id}`}
+              className="flex gap-1 items-center no-underline"
+            >
+              <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-white text-emerald-950">
+                {formatKsh(ad.data.price)}
+              </span>{" "}
+              {ad.data.per && (
+                <div className="text-xs dark:text-white">{ad.data.per}</div>
+              )}
+              {ad.data.period && (
+                <div className="text-xs dark:text-white">{ad.data.period}</div>
+              )}
             </Link>
           </div>
         )}
 
         <Link href={`/ads/${ad._id}`} className="no-underline">
-          <div className="text-gray-500 text-sm hidden lg:inline">
-            {truncateTitle(ad.title, 35)}
+          <div className="dark:text-gray-300 text-gray-500 text-sm hidden lg:inline">
+            {truncateTitle(ad.data.title, 30)}
           </div>
-          <div className="text-gray-500 text-[12px] lg:hidden">
-            {truncateTitle(ad.title, 20)}
+          <div className="dark:text-gray-300 text-gray-500 text-[12px] lg:hidden">
+            {truncateTitle(ad.data.title, 20)}
           </div>
 
           {/* Change 20 to your desired character limit */}
         </Link>
-        {ad.calcDistance && (
+
+        {/* {ad.calcDistance && (
           <div className="text-[10px] lg:text-xs text-gray-100 w-full items-center">
             {ad.calcDistance} KM Away
           </div>
-        )}
-
-        <div className="text-gray-500 text-[12px] hidden lg:inline">
+        )}*/}
+        <div className="dark:text-gray-400 text-gray-500 text-[12px] hidden lg:inline">
           <LocationOnIcon sx={{ fontSize: 14 }} />
-          {truncateaddress(ad.address, 35)}
+          {ad.data.region} - {ad.data.area}
         </div>
-        <div className="text-gray-500 text-[10px] lg:hidden">
+        <div className="dark:text-gray-400 text-gray-500 text-[10px] lg:hidden">
           <LocationOnIcon sx={{ fontSize: 14 }} />
-          {truncateaddress(ad.address, 25)}
+          {ad.data.region} - {ad.data.area}
         </div>
         <div className="flex justify-between w-full gap-1 p-1">
-          {ad.vehiclecondition && (
-            <div className="flex gap-2 text-[8px] lg:text-xs bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-              {ad.vehiclecondition}
+          {ad.data.period && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              Rent
             </div>
           )}
-          {ad.vehicleTransmissions && (
-            <div className="flex gap-2 text-[8px] lg:text-xs bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-              {ad.vehicleTransmissions}
+          {ad.data.condition && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data.condition}
             </div>
           )}
-          {ad.vehicleEngineSizesCC && (
-            <div className="flex gap-2 text-[8px] lg:text-xs bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-              {ad.vehicleEngineSizesCC}
+          {ad.data.transimmison && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data.transimmison}
+            </div>
+          )}
+          {ad.data["engine-CC"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data["engine-CC"]}
+            </div>
+          )}
+          {ad.data["property-Type"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data["property-Type"]}
+            </div>
+          )}
+          {ad.data["property-Size(sqm)"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data["property-Size(sqm)"]}
+            </div>
+          )}
+          {ad.data["land-Type"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data["land-Type"]}
+            </div>
+          )}
+
+          {ad.data["land-Area(acres)"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              {ad.data["land-Area(acres)"]}
+            </div>
+          )}
+          {ad.data["bulkprice"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              Bulkprice Options
+            </div>
+          )}
+          {ad.data["delivery"] && (
+            <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+              Delivery Options
             </div>
           )}
         </div>

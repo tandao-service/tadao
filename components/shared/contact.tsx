@@ -2,7 +2,7 @@
 import { IAd } from "@/lib/database/models/ad.model";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import React, { useState } from "react";
-import ChatButton from "./ChatButton ";
+import ChatButton from "./ChatButton";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import CallIcon from "@mui/icons-material/Call";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -13,13 +13,21 @@ import SellerProfileMobile from "./SellerProfileMobile";
 import Verificationmobile from "./Verificationmobile";
 import Ratingsmobile from "./ratingsmobile";
 import { updatecalls, updatewhatsapp } from "@/lib/actions/ad.actions";
+import ChatButtonBottom from "./ChatButtonBottom";
+import ProgressPopup from "./ProgressPopup";
 type chatProps = {
   userId: string;
   userName: string;
   userImage: string;
   ad: IAd;
+  handleOpenReview: (value:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenShop: (value:string) => void;
+  handleOpenPlan: () => void;
+  handleOpenSettings: () => void;
+  handlePay: (id:string) => void;
 };
-const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
+const Contact = ({ ad, userId, userName, userImage,handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings, handleOpenShop }: chatProps) => {
   const [showphone, setshowphone] = useState(false);
   const handleShowPhoneClick = async (e: any) => {
     setshowphone(true);
@@ -45,6 +53,14 @@ const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
   };
 
   const isAdCreator = userId === ad.organizer._id;
+   const [isOpenP, setIsOpenP] = useState(false);
+    const handleOpenP = () => {
+      setIsOpenP(true);
+    };
+  
+    const handleCloseP = () => {
+      setIsOpenP(false);
+    };
   return (
     <div className="w-full">
       <div className="lg:hidden justify-between flex w-full gap-1">
@@ -52,8 +68,9 @@ const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
           user={ad.organizer}
           userId={userId}
           isAdCreator={isAdCreator}
+          handlePayNow={handlePay}
         />
-        <Ratingsmobile recipientUid={ad.organizer._id} />
+        <Ratingsmobile recipientUid={ad.organizer._id} handleOpenReview={handleOpenReview} />
       </div>
       <div className="justify-between lg:justify-end flex w-full gap-1">
         <div className="lg:hidden flex gap-1 items-center p-1 w-full">
@@ -61,31 +78,30 @@ const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
             userId={userId}
             ad={ad}
             userName={userName}
-            userImage={userImage}
-          />
+            userImage={userImage} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handleOpenShop={handleOpenShop}/>
         </div>
-        <div className="flex gap-1 items-center p-1 lg:mr-10">
+        <div className="flex lg:flex-col items-center gap-1 p-1 lg:bottom-[10px]">
           <SignedIn>
             <button
-              className="hover:bg-emerald-700 bg-[#30AF5B] text-white text-xs mt-2 p-2 rounded-lg shadow"
+              className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
               onClick={handleShowPhoneClick}
             >
               <CallIcon sx={{ fontSize: 24 }} />
 
-              <div className="hidden lg:inline">Call</div>
+             {/* <div className="hidden lg:inline">Call</div> */}
             </button>
           </SignedIn>
           <SignedOut>
             <a href={`/sign-in`}>
-              <button className="hover:bg-emerald-700 bg-[#30AF5B] text-white text-xs mt-2 p-2 rounded-lg shadow">
+              <button className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow">
                 <CallIcon sx={{ fontSize: 24 }} />
-                <div className="hidden lg:inline">Call</div>
+               {/*  <div className="hidden lg:inline">Call</div>*/}
               </button>
             </a>
           </SignedOut>
 
           <SignedIn>
-            <ChatButton
+            <ChatButtonBottom
               ad={ad}
               userId={userId}
               userImage={userImage}
@@ -94,9 +110,9 @@ const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
           </SignedIn>
           <SignedOut>
             <a href={`/sign-in`}>
-              <button className="flex gap-1 hover:bg-emerald-700 bg-[#30AF5B] text-white text-xs mt-2 p-2 rounded-lg shadow">
+              <button className="flex gap-1 bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow">
                 <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
-                <div className="hidden lg:inline">Message</div>
+                {/*<div className="hidden lg:inline">Message</div>*/}
               </button>
             </a>
           </SignedOut>
@@ -106,19 +122,19 @@ const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
               <SignedIn>
                 <button
                   onClick={handlewhatsappClick}
-                  className="hover:bg-emerald-700 bg-[#30AF5B] text-white text-xs mt-2 p-2 rounded-lg shadow"
+                  className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
                 >
                   <WhatsAppIcon sx={{ fontSize: 24 }} />
 
-                  <div className="hidden lg:inline">WhatsApp</div>
+                 {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
                 </button>
               </SignedIn>
               <SignedOut>
                 <a href={`/sign-in`}>
-                  <button className="hover:bg-emerald-700 bg-[#30AF5B] text-white text-xs mt-2 p-2 rounded-lg shadow">
+                  <button className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow">
                     <WhatsAppIcon sx={{ fontSize: 24 }} />
 
-                    <div className="hidden lg:inline">WhatsApp</div>
+                  {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
                   </button>
                 </a>
               </SignedOut>
@@ -126,6 +142,7 @@ const Contact = ({ ad, userId, userName, userImage }: chatProps) => {
           )}
         </div>
       </div>
+      
     </div>
   );
 };

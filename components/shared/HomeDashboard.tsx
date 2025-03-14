@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AdminNavItemsMobile from "@/components/shared/AdminNavItemsMobile";
 import PieChart from "@/components/shared/PieChart";
-import { adminLinks } from "@/constants";
+import { adminLinks, mode } from "@/constants";
 import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
 import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
 import ChecklistOutlinedIcon from "@mui/icons-material/ChecklistOutlined";
@@ -20,22 +20,78 @@ import DiamondIcon from "@mui/icons-material/Diamond";
 import Menulistpackages from "./menulistpackages";
 import PackageForm from "./packageForm";
 import { getAllPackages } from "@/lib/actions/packages.actions";
-import { ScrollArea } from "../ui/scroll-area";
-import { getallTrans } from "@/lib/actions/transactionstatus";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { getallTrans } from "@/lib/actions/transactions.actions";
 import TotalRevenue from "./TotalRevenue";
 import PropertyReferrals from "./PropertyReferrals";
 import Chat from "./Chat";
+import CreateCategoryForm from "./CreateCategoryForm";
+import DisplayCategories from "./DisplayCategories";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import AddCategoryWindow from "./AddCategoryWindow";
+import DisplaySubCategories from "./DisplaySubCategories";
+import AddSubCategoryWindow from "./AddSubCategoryWindow";
+import AddPackageWindow from "./AddPackageWindow";
+import CollectionUsers from "./CollectionUsers";
+import BroadcastMessage from "./BroadcastMessage";
+import CollectionTransactions from "./CollectionTransactions";
+import AssistantPhotoOutlinedIcon from '@mui/icons-material/AssistantPhotoOutlined';
+import {
+  formUrlQuery,
+  formUrlQuerymultiple,
+  removeKeysFromQuery,
+} from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import TotalCard from "./TotalCard";
+import TrendingAds from "./TrendingAds";
+import SalesLineGraph from "./SalesLineGraph";
+import TotalCardTransactions from "./TotalCardTransactions";
+import CategoryFilterSearch from "./CategoryFilterSearch";
+import CategoryIdFilterSearch from "./CategoryIdFilterSearch";
+import Navbar from "./navbar";
+import { Toaster } from "../ui/toaster";
+import CollectionAbuse from "./CollectionAbuse";
+import Navbardashboard from "./Navbardashboard";
+
 type homeProps = {
   userId: string;
   userName: string;
   userImage: string;
+  users: any;
+  limit: number;
+  page: number;
+  transactions: any;
+  adSum: any;
+  transactionSum: any;
+  categories: any;
+  subcategories: any;
+  catList: any;
+  reported:any;
 };
-const HomeDashboard = ({ userId, userName, userImage }: homeProps) => {
+const HomeDashboard = ({
+  userId,
+  userName,
+  userImage,
+  users,
+  limit,
+  page,
+  transactions,
+  transactionSum,
+  adSum,
+  categories,
+  subcategories,
+  catList,
+  reported,
+}: homeProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("Home");
   const [categoryList, setcategoryList] = useState<any[]>([]);
   const [packList, setpackList] = useState<any[]>([]);
   const [alltrans, setalltrans] = useState<any[]>([]);
-
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const handle = async (title: string) => {
     setActiveTab(title);
     if (title === "Categories") {
@@ -62,12 +118,110 @@ const HomeDashboard = ({ userId, userName, userImage }: homeProps) => {
     };
     transactions();
   }, []);
+
+  const [isOpenPackage, setIsOpenPackage] = useState(false);
+  const handleOpenPackage = () => {
+    setIsOpenPackage(true);
+  };
+
+  const handleClosePackage = () => {
+    setIsOpenPackage(false);
+  };
+
+  const [isOpenCategory, setIsOpenCategory] = useState(false);
+  const handleOpenCategory = () => {
+    setIsOpenCategory(true);
+  };
+
+  const handleCloseCategory = () => {
+    setIsOpenCategory(false);
+  };
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+  const handleSearchDates = () => {
+    let newUrl = "";
+    if (startDate || endDate) {
+      newUrl = formUrlQuerymultiple({
+        params: "",
+        updates: {
+          start: startDate ?? "",
+          end: endDate ?? "",
+        },
+      });
+    } else {
+      newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["start", "end"],
+      });
+    }
+
+    router.push(newUrl, { scroll: false });
+  };
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    //fetchOrders(search);
+    let newUrl = "";
+
+    if (search) {
+      newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "transactionId",
+        value: search,
+      });
+    } else {
+      newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["transactionId"],
+      });
+    }
+
+    router.push(newUrl, { scroll: false });
+  };
+  const handleClear = () => {
+    setSearch("");
+    const newUrl = removeKeysFromQuery({
+      params: searchParams.toString(),
+      keysToRemove: ["transactionId", "start", "end"],
+    });
+
+    router.push(newUrl, { scroll: false });
+  };
+    const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+  
+      useEffect(() => {
+         const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+         const isDark = savedTheme === mode;
+         
+         setIsDarkMode(isDark);
+         document.documentElement.classList.toggle(mode, isDark);
+       }, []);
+     
+       useEffect(() => {
+         if (isDarkMode === null) return; // Prevent running on initial mount
+     
+         document.documentElement.classList.toggle(mode, isDarkMode);
+         localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+       }, [isDarkMode]);
+     
+       if (isDarkMode === null) return null; // Avoid flickering before state is set
+     
   return (
-    <div className="w-full flex mt-3 p-1">
+    <div className="min-h-screen dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-white">
+    <div className="fixed z-10 top-0 w-full">
+      <Navbardashboard userstatus="User" userId={userId} />
+    </div>
+    <div className="w-full flex mt-[60px] mb-0 p-1">
+    <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white w-full flex mt-3 p-1">
       <div className="hidden lg:inline mr-5">
-        <div className="bg-gray-100 w-full rounded-lg p-3">
+        <div className="bg-gray-100 dark:bg-[#131B1E] w-full rounded-lg p-3">
           <ul className="">
-            {adminLinks.map((link) => {
+            {adminLinks.map((link: any) => {
               //  const isActive = pathname === link.route;
 
               return (
@@ -75,57 +229,57 @@ const HomeDashboard = ({ userId, userName, userImage }: homeProps) => {
                   key={link.route}
                   className={`${
                     activeTab === link.label &&
-                    "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white rounded-full"
-                  } p-medium-16 whitespace-nowrap`}
+                    "dark:bg-[#064E3B] dark:text-white bg-[#064E3B] text-white rounded-xl"
+                  } dark:bg-gray-800 dark:text-gray-300 dark:rounded-xl p-medium-16 whitespace-nowrap`}
                 >
                   <div
                     onClick={() => handle(link.label)}
-                    className="flex hover:bg-emerald-100 hover:rounded-full hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer"
+                    className="flex hover:bg-gray-200 hover:rounded-xl hover:text-gray-700 p-3 mb-1 hover:cursor-pointer"
                   >
                     <span className="text-right my-auto">
                       {link.label === "Home" && (
                         <span>
-                          <CottageOutlinedIcon className="w-10 p-1 hover:text-white" />
+                          <CottageOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                       {link.label === "Categories" && (
                         <span>
-                          <ClassOutlinedIcon className="w-10 p-1 hover:text-white" />
+                          <ClassOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                       {link.label === "Packages" && (
                         <span>
-                          <DiamondIcon className="w-10 p-1 hover:text-white" />
+                          <DiamondIcon className="w-10 p-1" />
                         </span>
                       )}
                       {link.label === "Transactions" && (
                         <span>
-                          <ChecklistOutlinedIcon className="w-10 p-1 hover:text-white" />
+                          <ChecklistOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                       {link.label === "User Management" && (
                         <span>
-                          <GroupsOutlinedIcon className="w-10 p-1 hover:text-white" />
+                          <GroupsOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                       {link.label === "Communication" && (
                         <span>
-                          <ChatBubbleOutlineOutlinedIcon className="w-10 p-1 hover:text-white" />
+                          <ChatBubbleOutlineOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
-                      {link.label === "Dispute" && (
+                      {link.label === "Abuse" && (
                         <span>
-                          <CoPresentOutlinedIcon className="w-10 p-1 hover:text-white" />
+                          <AssistantPhotoOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                     </span>
 
-                    <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                    <span className="flex-1 text-xs mr-5 hover:no-underline my-auto">
                       {link.label}
                     </span>
 
                     <span className="text-right my-auto">
-                      <ArrowForwardIosIcon className="w-10 p-1 hover:text-white" />
+                      <ArrowForwardIosIcon className="w-10 p-1" />
                     </span>
                   </div>
                 </li>
@@ -136,131 +290,194 @@ const HomeDashboard = ({ userId, userName, userImage }: homeProps) => {
       </div>
 
       <div className="flex-1 rounded-lg">
-        <div className="bg-white rounded-lg lg:hidden">
-          <div className="">
-            <AdminNavItemsMobile />
+        <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-lg lg:hidden">
+          <div>
+            <ul className="grid grid-cols-2 m-1 gap-1 p-1">
+              {adminLinks.map((link: any) => {
+                //  const isActive = pathname === link.route;
+
+                return (
+                  <li key={link.route}>
+                    <div
+                      onClick={() => handle(link.label)}
+                      className={`${
+                        activeTab === link.label
+                          ? "items-center p-3 flex gap-1 bg-[#064E3B] text-white rounded-xl hover:cursor-pointers"
+                          : "items-center p-3 flex gap-1 border rounded-xl dark:bg-gray-800 dark:text-gray-300 bg-white text-black hover:cursor-pointer hover:bg-gray-200"
+                      }`}
+                    >
+                      <span className="text-right my-auto">
+                        {link.label === "Home" && (
+                          <span>
+                            <CottageOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                        {link.label === "Categories" && (
+                          <span>
+                            <ClassOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                        {link.label === "Packages" && (
+                          <span>
+                            <DiamondIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                        {link.label === "Transactions" && (
+                          <span>
+                            <ChecklistOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                        {link.label === "User Management" && (
+                          <span>
+                            <GroupsOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                        {link.label === "Communication" && (
+                          <span>
+                            <ChatBubbleOutlineOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                         {link.label === "Abuse" && (
+                        <span>
+                          <AssistantPhotoOutlinedIcon className="w-10 p-1" />
+                        </span>
+                      )}
+                      </span>
+
+                      <span className="flex text-xs hover:no-underline">
+                        {link.label}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
 
         {activeTab === "Home" && (
           <>
-            <div className="p-2 rounded-lg bg-white max-w-6xl mx-auto flex flex-col lg:flex-row mt-3">
-              <Box>
-                <Typography fontSize={25} fontWeight={700} color="#11142D">
-                  Dashboard
-                </Typography>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
+              <Box>
                 <Box mt="20px" display="flex" flexWrap="wrap" gap={2}>
-                  <PieChart
-                    title="Properties for Sale"
-                    value={684}
-                    series={[75, 25]}
-                    colors={["#275be8", "#c4e8ef"]}
-                  />
-                  <PieChart
-                    title="Properties for Rent"
-                    value={550}
-                    series={[60, 40]}
-                    colors={["#b84644", "#4576b5"]}
-                  />
-                  <PieChart
-                    title="Total customers"
-                    value={5684}
-                    series={[75, 25]}
-                    colors={["#275be8", "#c4e8ef"]}
-                  />
-                  <PieChart
-                    title="Properties for Cities"
-                    value={555}
-                    series={[75, 25]}
-                    colors={["#275be8", "#c4e8ef"]}
-                  />
+                  <TotalCard title="Total Ads" value={adSum.totalProducts} />
+                  <TotalCard title="Total Ads Worth" value={adSum.totalWorth} />
+                  <TotalCard title="Total Users" value={users.data.length} />
                 </Box>
 
+                <Box mt="20px" display="flex" flexWrap="wrap" gap={2}>
+                  {transactionSum.map((data: any, index: number) => (
+                    <>
+                      <TotalCardTransactions
+                        title={data._id}
+                        count={data.count}
+                        value={data.totalWorth}
+                      />
+                    </>
+                  ))}
+                </Box>
                 <Stack
                   mt="25px"
                   width="100%"
                   direction={{ xs: "column", lg: "row" }}
                   gap={4}
                 >
-                  <TotalRevenue />
-                  <PropertyReferrals />
-                </Stack>
-
-                <Box
-                  flex={1}
-                  borderRadius="15px"
-                  padding="20px"
-                  bgcolor="#fcfcfc"
-                  display="flex"
-                  flexDirection="column"
-                  minWidth="100%"
-                  mt="25px"
-                >
-                  <Typography fontSize="18px" fontWeight={600} color="#11142d">
-                    Latest Properties
-                  </Typography>
-
-                  <Box
-                    mt={2.5}
-                    sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}
-                  >
-                    -----------------
+                  {/* Make each child component flexible */}
+                  <Box flex={1}>
+                    <SalesLineGraph />
                   </Box>
-                </Box>
+                  <Box flex={1}>
+                    <TrendingAds />
+                  </Box>
+                </Stack>
               </Box>
             </div>
           </>
         )}
         {activeTab === "Categories" && (
           <>
-            <div className="p-2 rounded-lg bg-white max-w-6xl mx-auto flex flex-col lg:flex-row mt-3">
-              <div className="lg:flex-1 bg-white p-5 ml-2 mr-5 mb-3 lg:mb-0">
-                <div className="text-lg font-bold breadcrumbs text-gray-600">
-                  Add Category
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <div className="flex flex-col dark:bg-[#2D3236] rounded-xl p-2">
+                <div className="flex justify-between items-center w-full">
+                  <h1 className="text-2xl font-bold">Categories</h1>{" "}
+                  <button
+                    onClick={handleOpenCategory}
+                    className={`flex text-xs gap-1 items-center p-2 rounded-lg 
+    bg-black text-white hover:bg-gray-600 
+    hover:dark:bg-emerald-700 dark:bg-emerald-800`}
+                  >
+                    <AddOutlinedIcon /> Add Category
+                  </button>
                 </div>
-                <CategoryForm type="Create" />
-              </div>
 
-              <div className="lg:flex-1 bg-white p-5 ml-2 mr-5">
-                <div className="text-lg font-bold breadcrumbs text-gray-600">
-                  Category List
+                <div className="mt-2">
+                  <ScrollArea className="w-full">
+                    <DisplayCategories categories={categories} />
+                  </ScrollArea>
                 </div>
-                <Menulistcategory categoryList={categoryList} />
               </div>
+              <div className="flex mt-2 flex-col dark:bg-[#2D3236] rounded-xl p-2">
+                <div className="flex justify-between items-center gap-3 w-full">
+                  <h1 className="text-2xl font-bold">SubCategories</h1>
+                  <CategoryIdFilterSearch catList={catList} />
+                  <button
+                    onClick={handleOpen}
+                    className={`flex w-full text-xs gap-1 items-center p-2 rounded-lg 
+    bg-black text-white hover:bg-gray-600 
+    hover:dark:bg-emerald-800 dark:bg-emerald-700`}
+                  >
+                    <AddOutlinedIcon /> Add SubCategory
+                  </button>
+                </div>
+
+                <div className="mt-2">
+                  <ScrollArea className="w-full">
+                    <DisplaySubCategories subcategories={subcategories} />
+                  </ScrollArea>
+                </div>
+              </div>
+              <AddCategoryWindow
+                isOpen={isOpenCategory}
+                onClose={handleCloseCategory}
+                type={"Create"}
+              />
+              <AddSubCategoryWindow
+                isOpen={isOpen}
+                onClose={handleClose}
+                // userId={userId}
+              />
             </div>
           </>
         )}
         {activeTab === "Packages" && (
           <>
-            <div className="p-2 rounded-lg bg-white max-w-6xl mx-auto flex flex-col lg:flex-row mt-3">
-              <div className="bg-white p-5 ml-2 mr-5 mb-3">
-                <section className="bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
-                  <div className="wrapper flex items-center justify-center sm:justify-between">
-                    <h3 className="font-bold text-[25px] sm:text-left">
-                      Add Package
-                    </h3>
-                  </div>
-                </section>
-
-                <PackageForm type="Create" />
-              </div>
-
-              <div className="bg-white p-5 ml-2 mr-5">
-                <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
-                  <div className="wrapper flex items-center justify-center sm:justify-between">
-                    <h3 className="font-bold text-[25px] sm:text-left">
-                      Packages List
-                    </h3>
-                  </div>
-                </section>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <div className="flex flex-col w-full">
+                <div className="flex justify-between w-full">
+                  <h1 className="text-2xl font-bold mb-4">Packages</h1>
+                  <button
+                    onClick={handleOpenPackage}
+                    className={`flex text-xs gap-1 items-center p-2 rounded-lg 
+    bg-black text-white hover:bg-gray-600 
+    hover:dark:bg-emerald-800 dark:bg-emerald-700`}
+                  >
+                    <AddOutlinedIcon /> Add Package
+                  </button>
+                </div>
 
                 <Menulistpackages packagesList={packList} />
               </div>
+              <AddPackageWindow
+                isOpen={isOpenPackage}
+                onClose={handleClosePackage}
+                type={"Create"}
+              />
             </div>
           </>
         )}
-        {activeTab === "Communication" && (
+        {/*  {activeTab === "Communication" && (
           <>
             <div className="p-2 rounded-lg bg-white max-w-6xl mx-auto flex flex-col lg:flex-row mt-3">
               <Chat
@@ -270,83 +487,166 @@ const HomeDashboard = ({ userId, userName, userImage }: homeProps) => {
               />
             </div>
           </>
-        )}
-        {activeTab === "Transactions" && (
+        )}*/}
+        {activeTab === "User Management" && (
           <>
-            <div className="p-2 rounded-lg bg-white max-w-6xl mx-auto flex flex-col lg:flex-row mt-3">
-              <div className="flex flex-col border shadow-lg rounded-lg bg-gray-100 p-2 mb-2 w-full">
-                <p className="font-bold text-[25px]">History</p>
-                <div className="grid grid-cols-6 text-grey-600 text-xs text-[#000000] rounded-t-lg p-1">
-                  <div className="justify-center items-center flex flex-col">
-                    Status
-                  </div>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">User Management</h1>
+              <div className="flex flex-col lg:flex-row gap-3"></div>
+              {/* Date Filter Section */}
 
-                  <div className="justify-center items-center flex flex-col">
-                    Order Tracking Id
-                  </div>
-                  <div className="justify-center items-center flex flex-col">
-                    Plan
-                  </div>
-                  <div className="justify-center items-center flex flex-col">
-                    Period
-                  </div>
-                  <div className="justify-center items-center flex flex-col">
-                    Amount KES
-                  </div>
-                  <div className="justify-center items-center flex flex-col">
-                    Date
-                  </div>
-                </div>
-                <ScrollArea className="h-[350px]">
-                  <ul className="w-full">
-                    {alltrans.map((trans: any, index: any) => {
-                      return (
-                        <li
-                          className="w-full  bg-grey-100 p-1 text-gray-600"
-                          key={index}
-                        >
-                          <div
-                            className={`p-1 mt-1 rounded-sm grid grid-cols-6 gap-1 w-full text-xs`}
-                          >
-                            <div className="flex">
-                              <div
-                                className={`flex flex-col p-1 text-white justify-center items-center w-[70px] rounded-full ${
-                                  trans.status === "Pending"
-                                    ? "bg-yellow-600"
-                                    : trans.status === "Failed"
-                                    ? "bg-red-600 "
-                                    : "bg-green-600"
-                                }`}
-                              >
-                                {trans.status}
-                              </div>
-                            </div>
-
-                            <div className="justify-center items-center flex flex-col">
-                              {trans.orderTrackingId}
-                            </div>
-                            <div className="justify-center items-center flex flex-col">
-                              {trans.plan}
-                            </div>
-                            <div className="justify-center items-center flex flex-col">
-                              {trans.period}
-                            </div>
-                            <div className="justify-center items-center flex flex-col">
-                              KES {trans.amount.toFixed(2)}
-                            </div>
-                            <div className="justify-center items-center flex flex-col">
-                              {trans.createdAt}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </ScrollArea>
-              </div>
+              <ScrollArea className="w-[340px] lg:w-full">
+                <CollectionUsers
+                  data={users.data}
+                  emptyTitle={`No User Found`}
+                  emptyStateSubtext="Come back later"
+                  limit={limit}
+                  page={page}
+                  userId={userId}
+                  totalPages={users.totalPages}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
             </div>
           </>
         )}
+        {activeTab === "Communication" && (
+          <>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">
+                Send Broadcast Message
+              </h1>
+              <div className="flex flex-col lg:flex-row gap-3"></div>
+              <BroadcastMessage />
+            </div>
+          </>
+        )}
+        {activeTab === "Transactions" && (
+          <>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">Transactions</h1>
+              <div className="flex flex-col lg:flex-row gap-3">
+                <div className="flex flex-col lg:flex-row items-center gap-4 mb-4">
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="text-xs font-semibold mb-1"
+                      htmlFor="startDate"
+                    >
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      value={startDate || ""}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="dark:bg-[#2D3236] bg-white text-xs border p-2 w-full rounded"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="text-xs font-semibold mb-1"
+                      htmlFor="endDate"
+                    >
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      value={endDate || ""}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="dark:bg-[#2D3236] bg-white text-xs border w-full p-2 rounded"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="text-xs text-white font-semibold mb-1"
+                      htmlFor="endDate"
+                    ></label>
+                    <button
+                      onClick={handleSearchDates}
+                      className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+
+                {/* Search Form */}
+
+                <div className="flex flex-col lg:flex-row gap-1">
+                  <div className="flex flex-col">
+                    <label
+                      className="text-xs font-semibold mb-1"
+                      htmlFor="endDate"
+                    >
+                      TransactionId
+                    </label>
+                    <div className="flex gap-1 flex-col lg:flex-row">
+                      <input
+                        type="text"
+                        placeholder="Search by Order ID"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="dark:bg-[#2D3236] bg-white text-xs border p-2 flex rounded-md"
+                      />
+                      <button
+                        type="submit"
+                        onClick={handleSearch}
+                        className="text-xs hover:dark:bg-emerald-800 dark:bg-emerald-700 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+                      >
+                        Search
+                      </button>
+                      <button
+                        onClick={handleClear}
+                        className="text-xs hover:dark:bg-emerald-800 dark:bg-emerald-700 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Date Filter Section */}
+
+              <ScrollArea className="w-[340px] lg:w-full">
+                <CollectionTransactions
+                  data={transactions.data}
+                  emptyTitle={`No Order Found`}
+                  emptyStateSubtext="Come back later"
+                  limit={limit}
+                  page={page}
+                  totalPages={transactions.totalPages}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          </>
+        )}
+          {activeTab === "Abuse" && (
+          <>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">Abuse</h1>
+              <div className="flex flex-col lg:flex-row gap-3"></div>
+              {/* Date Filter Section */}
+
+              <ScrollArea className="w-[340px] lg:w-full">
+                <CollectionAbuse
+                  data={reported.data}
+                  emptyTitle={`No Abuse`}
+                  emptyStateSubtext="Come back later"
+                  limit={limit}
+                  page={page}
+                  userId={userId}
+                  totalPages={reported.totalPages}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+    <Toaster />
       </div>
     </div>
   );

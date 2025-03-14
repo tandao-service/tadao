@@ -11,8 +11,9 @@ import MobileNav from "./MobileNav";
 import Image from "next/image";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 //import Unreadmessages from "./Unreadmessages";
-
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   Tooltip,
   TooltipContent,
@@ -22,6 +23,10 @@ import {
 import Unreadmessages from "./Unreadmessages";
 import dynamic from "next/dynamic";
 import StyledBrandName from "./StyledBrandName";
+import ToggleTheme from "./toggleTheme";
+import ProgressPopup from "./ProgressPopup";
+import { useState } from "react";
+import { Button } from "../ui/button";
 const SignedIn = dynamic(
   () => import("@clerk/nextjs").then((mod) => mod.SignedIn),
   { ssr: false }
@@ -38,24 +43,47 @@ const UserButton = dynamic(
 type NavProps = {
   userstatus: string;
   userId: string;
+  onClose: () => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
+  handleOpenSell: () => void;
+  handleOpenShop: (shopId:string) => void;
+  handleOpenPerfomance: () => void;
+  handleOpenSettings: () => void;
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void; 
+  handleOpenSafety: () => void;
+  popup:string;
 };
 
-export default function Navbar({ userstatus, userId }: NavProps) {
+export default function Navbar({ userstatus, userId, onClose, popup, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
+  handleOpenShop,
+  handleOpenPerfomance,
+  handleOpenSettings, 
+  handleOpenAbout,
+  handleOpenTerms,
+  handleOpenPrivacy,
+  handleOpenSafety,
+}: NavProps) {
   // const [unreadCount, setUnreadCount] = useState<number>(0);
   const router = useRouter();
   // Get the params of the User
   const pathname = usePathname();
   const isActive = pathname === "/";
-
+ 
   return (
-    <div className="flex p-2 lg:p-3 gap-1 w-full bg-gradient-to-b lg:bg-gradient-to-r from-emerald-800 to-emerald-950">
+    <div className="h-[60px] flex p-2 lg:p-3 gap-1 w-full border-b bg-white">
       <div className="flex-1">
         <div className="flex items-center">
-          {!isActive && (
+       
             <div
-              className="mr-5 w-5 h-8 flex items-center justify-center rounded-sm text-white tooltip tooltip-bottom hover:cursor-pointer"
+              className="mr-2 w-5 h-8 flex items-center justify-center rounded-sm tooltip tooltip-bottom hover:cursor-pointer hover:text-green-600"
               data-tip="Back"
-              onClick={() => router.back()}
+              onClick={() => {
+                onClose()
+              }}
             >
               <TooltipProvider>
                 <Tooltip>
@@ -68,36 +96,29 @@ export default function Navbar({ userstatus, userId }: NavProps) {
                 </Tooltip>
               </TooltipProvider>
             </div>
-          )}
-          <div className="rounded-full overflow-hidden">
-            <Image
-              src="/assets/images/logo_white.png"
-              alt="logo"
-              onClick={() => router.push("/")}
-              className="hover:cursor-pointer"
-              width={36}
-              height={36}
-            />
-          </div>
-          <span
-            className="font-bold text-base lg:text-lg text-white hover:cursor-pointer"
-            onClick={() => router.push("/")}
-          >
-            <StyledBrandName />
-          </span>
+         
+           <div className="flex items-center gap-2">
+                <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
+                <span className="text-lg font-semibold">LandMak</span>
+              </div>
+        
         </div>
       </div>
+    
       <div className="hidden lg:inline">
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
+        
+      <div className="flex items-center gap-2">   
+      {popup !=="bookmark" && (<div
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
-            onClick={() => router.push(`/bookmark/`)}
+            onClick={() => {
+              handleOpenBook();
+            }}
           >
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <BookmarkIcon />
+                  <BookmarkIcon sx={{ fontSize: 16 }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Bookmark</p>
@@ -105,17 +126,19 @@ export default function Navbar({ userstatus, userId }: NavProps) {
               </Tooltip>
             </TooltipProvider>
           </div>
-
-          <div
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white tooltip tooltip-bottom hover:cursor-pointer"
+        )}    
+        {popup !=="chat" && (<div
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300  tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
-            onClick={() => router.push(`/chat/`)}
+            onClick={() => {
+              handleOpenChat();
+            }}
           >
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="relative flex items-center justify-center">
-                    <MessageIcon className="absolute" />
+                    <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
                     <div className="absolute z-10">
                       <Unreadmessages userId={userId} />
                     </div>
@@ -123,7 +146,9 @@ export default function Navbar({ userstatus, userId }: NavProps) {
                 </TooltipTrigger>
                 <TooltipContent>
                   <div
-                    onClick={() => router.push(`/chat/`)}
+                    onClick={() => {
+                      handleOpenChat();
+                    }}
                     className="flex gap-1"
                   >
                     Chats
@@ -132,53 +157,74 @@ export default function Navbar({ userstatus, userId }: NavProps) {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>
+          </div>)}  
 
-          <div
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white tooltip tooltip-bottom hover:cursor-pointer"
+         {popup !=="plan" && (<div
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
-            onClick={() => router.push(`/plan/`)}
+            onClick={() => {
+              handleOpenPlan();
+            }}
           >
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <DiamondIcon />
+                  <DiamondIcon sx={{ fontSize: 16 }} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Premium Services</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>
-          <div className="flex gap-1">
-            <SignedIn>
-              <Link href="/ads/create">
-                <button
-                  className={`w-[100px] bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
-                >
-                  <AddCircleOutlineOutlinedIcon /> SELL
-                </button>
-              </Link>
-            </SignedIn>
+          </div>)} 
 
-            <SignedOut>
-              <Link href="/sign-in">
-                <button
-                  className={`w-[100px] bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
-                >
-                  <AddCircleOutlineOutlinedIcon /> SELL
-                </button>
-              </Link>
-            </SignedOut>
-          </div>
+          {popup !=="sell" && (  <div className="flex gap-1">
+          <SignedIn>
+
+<Button  onClick={() => {
+                   handleOpenSell();
+                 
+                  }} 
+                  variant="default" className="flex bg-green-600 hover:bg-green-700 items-center gap-2">
+<AddOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+</Button>
+
+</SignedIn>
+
+<SignedOut>
+<Button  onClick={() => {
+     // setIsOpenP(true);
+      router.push("/sign-in");
+    }} variant="default" className="flex bg-green-600 hover:bg-green-700 items-center gap-2">
+<AddOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+</Button>
+
+  
+</SignedOut>
+
+          </div>)}
+        
         </div>
       </div>
       <SignedIn>
-        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white tooltip tooltip-bottom hover:cursor-pointer">
+        <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
           <UserButton afterSignOutUrl="/" />
         </div>
       </SignedIn>
-      <MobileNav userstatus={userstatus} userId={userId} />
+      <MobileNav userstatus={userstatus} userId={userId}
+      popup={popup}
+      handleOpenSell={handleOpenSell}
+      handleOpenBook={handleOpenBook}
+      handleOpenPlan={handleOpenPlan}
+      handleOpenChat={handleOpenChat}
+      handleOpenShop={handleOpenShop}
+      handleOpenPerfomance={handleOpenPerfomance}
+      handleOpenSettings={handleOpenSettings}
+      handleOpenAbout={handleOpenAbout}
+      handleOpenTerms={handleOpenTerms}
+      handleOpenPrivacy={handleOpenPrivacy}
+      handleOpenSafety={handleOpenSafety} onClose={onClose}/>
+     
     </div>
   );
 }

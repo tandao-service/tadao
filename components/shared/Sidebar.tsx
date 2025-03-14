@@ -17,8 +17,10 @@ import Image from "next/image";
 import Skeleton from "@mui/material/Skeleton";
 import { ScrollArea } from "../ui/scroll-area";
 import { format, isToday, isYesterday } from "date-fns";
+import ProgressPopup from "./ProgressPopup";
 type sidebarProps = {
   userId: string;
+  handleOpenChatId: (value:string) => void;
 };
 
 export async function updateRead(recipientUid: string, uid: string) {
@@ -41,7 +43,7 @@ export async function updateRead(recipientUid: string, uid: string) {
   });
 }
 
-const Sidebar = ({ userId }: sidebarProps) => {
+const Sidebar = ({ userId ,handleOpenChatId}: sidebarProps) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -87,12 +89,15 @@ const Sidebar = ({ userId }: sidebarProps) => {
       ? title.substring(0, maxLength) + "..."
       : title;
   };
-
+ const [recipient, setrecipient] = useState('');
+  
   const handle = (uid: string, recipientUid: string) => {
-    router.push("/chat/" + uid);
+    //setIsOpenP(true);
     updateRead(recipientUid, uid);
+    setrecipient(recipientUid);
+   handleOpenChatId(recipientUid)
   };
-
+ 
   return (
     <div>
       {loading ? (
@@ -128,9 +133,9 @@ const Sidebar = ({ userId }: sidebarProps) => {
         </div>
       ) : messages.length > 0 ? (
         <>
-          <div className="w-full bg-white rounded-lg">
-            <ScrollArea className="h-[72vh] w-full p-2">
-              <ul className="divide-y divide-gray-200">
+          <div className="w-full dark:bg-[#2D3236] bg-white rounded-lg">
+            <ScrollArea className="h-full w-full p-2">
+              <ul className="divide-y divide-gray-200 dark:divide-gray-600">
                 {messages.map((message, index) => {
                   const isActive = pathname === "/chat/" + message.uid;
                   let formattedCreatedAt = "";
@@ -155,8 +160,8 @@ const Sidebar = ({ userId }: sidebarProps) => {
                     <li
                       key={index}
                       onClick={() => handle(message.uid, message.recipientUid)}
-                      className={`p-4 flex items-center space-x-4 hover:bg-gray-100 hover:cursor-pointer ${
-                        isActive ? "bg-emerald-100" : ""
+                      className={`p-4 border-b flex items-center space-x-4 dark:hover:bg-black hover:bg-gray-100 hover:cursor-pointer ${
+                        message.recipientUid === recipient ? "dark:bg-[#131B1E] bg-emerald-100" : ""
                       }`}
                     >
                       <div className="flex-shrink-0">
@@ -169,10 +174,10 @@ const Sidebar = ({ userId }: sidebarProps) => {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-medium dark:text-gray-400 text-gray-900 truncate">
                           {message.name}
                         </p>
-                        <p className="flex gap-1 text-[10px] text-gray-500 truncate">
+                        <p className="flex gap-1 text-[10px] dark:text-gray-300 text-gray-500 truncate">
                           {truncateTitle(message.text, 18)}
                           <UnreadmessagesPeruser
                             uid={message.uid}
@@ -180,7 +185,7 @@ const Sidebar = ({ userId }: sidebarProps) => {
                           />
                         </p>
                       </div>
-                      <div className="whitespace-nowrap text-[10px] lg:text-sm text-gray-500">
+                      <div className="whitespace-nowrap text-[10px] dark:text-gray-500 text-gray-500">
                         {formattedCreatedAt}
                       </div>
                     </li>
@@ -192,12 +197,15 @@ const Sidebar = ({ userId }: sidebarProps) => {
         </>
       ) : (
         <>
-          <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+          <div className="flex-center wrapper h-full w-full flex-col gap-3 rounded-[14px] dark:bg-[#131B1E] bg-gray-50 py-28 text-center">
             <h3 className="font-bold text-[16px] lg:text-[25px]">No Chat</h3>
-            <p className="text-sm lg:p-regular-14">You have (0) messages</p>
+            <p className="text-sm dark:text-gray-500 lg:p-regular-14">
+              You have (0) messages
+            </p>
           </div>
         </>
       )}
+     
     </div>
   );
 };

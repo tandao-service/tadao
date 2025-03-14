@@ -12,11 +12,13 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useToast } from "@/components/ui/use-toast";
+import { removeImageUrl } from "@/lib/actions/dynamicAd.actions";
 
 type FileUploaderProps = {
   onFieldChange: (urls: string[]) => void;
   imageUrls: string[];
   userName: string;
+  adId: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
 };
 
@@ -107,6 +109,7 @@ const applyWatermark = (
 export function FileUploader({
   imageUrls,
   userName,
+  adId,
   onFieldChange,
   setFiles,
 }: FileUploaderProps) {
@@ -165,7 +168,7 @@ export function FileUploader({
             return await applyWatermark(
               file,
               userName.toUpperCase(),
-              "Posted on AutoYard"
+              "Posted on PocketShop"
             );
           } catch (error) {
             console.error("Watermark failed, proceeding without:", error);
@@ -187,13 +190,15 @@ export function FileUploader({
   });
 
   const handleRemoveImage = async (index: number) => {
-    const url = new URL(imageUrls[index]);
-    const deleteImage = url.pathname.split("/").pop();
-    if (deleteImage) {
-      await deleteSingleImage({
-        deleteImage,
-        path: "/profile",
-      });
+    const imageUrl = imageUrls[index];
+    // const imageUrl = new URL(imageUrls[index]);
+    // const deleteImage = url.pathname.split("/").pop();
+    if (imageUrl) {
+      await removeImageUrl(adId, imageUrl);
+      // await deleteSingleImage({
+      //  deleteImage,
+      //   path: "/profile",
+      // });
     }
     const newImageUrls = [...imageUrls];
     newImageUrls.splice(index, 1);
@@ -208,36 +213,36 @@ export function FileUploader({
   };
 
   return (
-    <div className="flex-center bg-dark-3 flex cursor-pointer p-3 flex-col overflow-hidden rounded-xl bg-grey-50">
+    <div className="w-full flex-center dark:text-gray-200 flex cursor-pointer p-1 flex-col">
       <input {...getInputProps()} className="cursor-pointer" />
-      <div className="text-left text-sm w-full mx-auto">
+      <div className="text-left text-sm w-full">
         <div className="font-semibold">Add Photo</div>
         <div>
-          <small className="text-[#464b4f]">
+          <small className="dark:text-gray-500 text-[#464b4f]">
             Add at least 3 photos for this category
           </small>
           <br />
-          <small className="text-[#464b4f]">
+          <small className="dark:text-gray-500 text-[#464b4f]">
             First picture - is the title picture.
           </small>
         </div>
 
         {imageUrls.length > 0 ? (
-          <div className="flex w-full m-1">
+          <div className="flex w-full m-1 ">
             <div {...getRootProps()}>
               <AddBoxIcon className="my-auto hover:cursor-pointer" />
             </div>
-            <div className="grid grid-cols-3 lg:grid-cols-5 w-full p-2 bg-gray-100 rounded-sm">
+            <div className="grid grid-cols-3 lg:grid-cols-5 w-full p-2 dark:bg-[#2D3236] bg-gray-200 rounded-sm">
               {imageUrls.map((url, index) => (
                 <div
                   key={index}
-                  className="relative max-h-[150px] justify-center items-center mb-1 rounded-sm shadow-sm p-1 bg-white mr-1 flex-shrink-0"
+                  className="relative justify-center items-center mb-1 rounded-sm shadow-sm p-1 bg-white mr-1 flex-shrink-0"
                 >
                   <Zoom>
                     <img
                       src={url}
                       alt={`image-${index}`}
-                      className="w-full max-h-[140px] object-cover object-center rounded-sm"
+                      className="w-full h-[100px] object-cover object-center rounded-sm"
                     />
                   </Zoom>
                   <div
@@ -275,7 +280,7 @@ export function FileUploader({
         )}
 
         <br />
-        <small className="text-[#464b4f]">
+        <small className="dark:text-gray-500 text-[#464b4f]">
           Supported formats are .jpg, .gif .svg and .png, 5MB max
         </small>
       </div>

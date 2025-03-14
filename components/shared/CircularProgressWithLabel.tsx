@@ -12,8 +12,8 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = ({
     <Box position="relative" display="inline-flex">
       {/* CircularProgress component */}
       <CircularProgress
-        sx={{ color: "#30D32C" }}
-        size={30}
+        sx={{ color: "#D1D5DB" }}
+        size={40}
         variant="determinate"
         value={value}
       />
@@ -31,9 +31,9 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = ({
       >
         <Typography
           variant="caption"
-          className="text-[10px] font-bold"
+          className="text-[8px] font-bold"
           component="div"
-          color="#30D32C"
+          color="#D1D5DB"
         >
           {`${Math.round(value)}%`}
         </Typography>

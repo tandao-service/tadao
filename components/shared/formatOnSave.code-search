@@ -1,0 +1,11 @@
+# Query: formatOnSave
+# ContextLines: 1
+
+1 result - 1 file
+
+.vscode\settings.json:
+  1  {
+  2:   "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  3  }

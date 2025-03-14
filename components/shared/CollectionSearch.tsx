@@ -7,206 +7,70 @@ import Skeleton from "@mui/material/Skeleton";
 import StreetmapAll from "./StreetmapAll";
 import Image from "next/image";
 import { getAllAd, getListingsNearLocation } from "@/lib/actions/ad.actions";
+import { getAlldynamicAd } from "@/lib/actions/dynamicAd.actions";
+import Masonry from "react-masonry-css";
+import ProgressPopup from "./ProgressPopup";
+import GoogleMapAll from "./GoogleMapAll";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Button } from "../ui/button";
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { useRouter } from "next/navigation";
 type CollectionProps = {
   userId: string;
   emptyTitle: string;
   emptyStateSubtext: string;
   limit: number;
-  Type: string;
-  urlParamName?: string;
   activeButton: number;
-  searchText: string;
-  sortby: string;
-  category: string;
-  subcategory: string;
-  make: string;
-  makeselected: string;
-  vehiclemodel: string;
-  yearfrom: string;
-  yearto: string;
-  vehiclecolor: string;
-  vehiclecondition: string;
-  vehicleTransmissions: string;
-  longitude: string;
-  latitude: string;
-  region: string;
-  membership: string;
-  vehicleFuelTypes: string;
-  vehicleEngineSizesCC: string;
-  vehicleexchangeposible: string;
-  vehicleBodyTypes: string;
-  vehicleregistered: string;
-  vehicleSeats: string;
-  vehiclesecordCondition: string;
-  vehicleyear: string;
-  Price: string;
-  bedrooms: string;
-  bathrooms: string;
-  furnishing: string;
-  amenities: any;
-  toilets: string;
-  parking: string;
-  status: string;
-  area: string;
-  landuse: string;
-  propertysecurity: string;
-  floors: string;
-  estatename: string;
-  houseclass: string;
+  queryObject: any;
+  loadPopup: boolean;
+  handleAdEdit: (id:string) => void;
+  handleOpenSell: () => void;
+  handleAdView: (id:string) => void;
+  handleOpenPlan: () => void;
 };
 
 const CollectionSearch = ({
   userId,
   emptyTitle,
   emptyStateSubtext,
-  Type,
   limit,
-  urlParamName,
   activeButton,
-  searchText,
-  sortby,
-  category,
-  subcategory,
-  make,
-  makeselected,
-  vehiclemodel,
-  yearfrom,
-  yearto,
-  vehiclecolor,
-  vehiclecondition,
-  vehicleTransmissions,
-  longitude,
-  latitude,
-  region,
-  membership,
-  vehicleFuelTypes,
-  vehicleEngineSizesCC,
-  vehicleexchangeposible,
-  vehicleBodyTypes,
-  vehicleregistered,
-  vehicleSeats,
-  vehiclesecordCondition,
-  vehicleyear,
-  Price,
-  bedrooms,
-  bathrooms,
-  furnishing,
-  amenities,
-  toilets,
-  parking,
-  status,
-  area,
-  landuse,
-  propertysecurity,
-  floors,
-  estatename,
-  houseclass,
+  queryObject,
+  loadPopup,
+  handleOpenSell,
+  handleAdEdit,
+  handleAdView,
+  handleOpenPlan,
 }: CollectionProps) => {
   const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [newpage, setnewpage] = useState(false);
-
+  const router = useRouter();
   const observer = useRef<IntersectionObserver | null>(null);
+
+
+   //const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
+ // const handleFilter = (value:any) => {
+   // setNewqueryObject({
+     // ...queryObject, // Preserve existing properties
+      //location: lat+"/"+lng,
+    //  value,
+   // });
+   // setAds([]);
+   // };
+  
+
   let Ads: any = [];
   const fetchAds = async () => {
     setLoading(true);
     try {
-      if (sortby === "nearby" && longitude && latitude) {
-        // console.log("nearby");
-
-        Ads = await getListingsNearLocation({
-          query: searchText,
-          sortby: sortby,
-          category,
-          subcategory,
-          make: makeselected,
-          vehiclemodel: vehiclemodel,
-          yearfrom: yearfrom,
-          yearto: yearto,
-          vehiclecolor: vehiclecolor,
-          vehiclecondition: vehiclecondition,
-          longitude: longitude,
-          latitude: latitude,
-          address: region,
-          membership: membership,
-          vehicleTransmissions: vehicleTransmissions,
-          vehicleFuelTypes: vehicleFuelTypes,
-          vehicleEngineSizesCC: vehicleEngineSizesCC,
-          vehicleexchangeposible: vehicleexchangeposible,
-          vehicleBodyTypes: vehicleBodyTypes,
-          vehicleregistered: vehicleregistered,
-          vehicleSeats: vehicleSeats,
-          vehiclesecordCondition: vehiclesecordCondition,
-          vehicleyear: vehicleyear,
-          Types: Type,
-          Price: Price,
-          bedrooms: bedrooms,
-          bathrooms: bathrooms,
-          furnishing: furnishing,
-          amenities: amenities,
-          toilets: toilets,
-          parking: parking,
-          status: status,
-          area: area,
-          landuse: landuse,
-          propertysecurity: propertysecurity,
-          floors: floors,
-          estatename: estatename,
-          houseclass: houseclass,
-          page,
-          limit,
-        });
-        // console.log(Ads);
-      } else {
-        //  console.log(sortby);
-
-        Ads = await getAllAd({
-          query: searchText,
-          sortby: sortby,
-          category,
-          subcategory,
-          make: makeselected,
-          vehiclemodel: vehiclemodel,
-          yearfrom: yearfrom,
-          yearto: yearto,
-          vehiclecolor: vehiclecolor,
-          vehiclecondition: vehiclecondition,
-          longitude: longitude,
-          latitude: latitude,
-          address: region,
-          membership: membership,
-          vehicleTransmissions: vehicleTransmissions,
-          vehicleFuelTypes: vehicleFuelTypes,
-          vehicleEngineSizesCC: vehicleEngineSizesCC,
-          vehicleexchangeposible: vehicleexchangeposible,
-          vehicleBodyTypes: vehicleBodyTypes,
-          vehicleregistered: vehicleregistered,
-          vehicleSeats: vehicleSeats,
-          vehiclesecordCondition: vehiclesecordCondition,
-          vehicleyear: vehicleyear,
-          Types: Type,
-          Price: Price,
-          bedrooms: bedrooms,
-          bathrooms: bathrooms,
-          furnishing: furnishing,
-          amenities: amenities,
-          toilets: toilets,
-          parking: parking,
-          status: status,
-          area: area,
-          landuse: landuse,
-          propertysecurity: propertysecurity,
-          floors: floors,
-          estatename: estatename,
-          houseclass: houseclass,
-          page,
-          limit,
-        });
-        // console.log(Ads);
-      }
-
+      Ads = await getAlldynamicAd({
+        page,
+        limit,
+        queryObject,
+      });
       // Update ads state using the latest prevAds for filtering
 
       if (newpage) {
@@ -231,54 +95,18 @@ const CollectionSearch = ({
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);
+     // setIsOpenP(false);
+      //closeLoading();
     }
   };
 
   useEffect(() => {
     if (!newpage) {
+      setAds([]);
       setPage(1);
     }
     fetchAds();
-  }, [
-    page,
-    searchText,
-    sortby,
-    category,
-    subcategory,
-    make,
-    vehiclemodel,
-    yearfrom,
-    yearto,
-    vehiclecolor,
-    vehiclecondition,
-    vehicleTransmissions,
-    longitude,
-    latitude,
-    region,
-    membership,
-    vehicleFuelTypes,
-    vehicleEngineSizesCC,
-    vehicleexchangeposible,
-    vehicleBodyTypes,
-    vehicleregistered,
-    vehicleSeats,
-    vehiclesecordCondition,
-    vehicleyear,
-    Price,
-    bedrooms,
-    bathrooms,
-    furnishing,
-    amenities,
-    toilets,
-    parking,
-    status,
-    area,
-    landuse,
-    propertysecurity,
-    floors,
-    estatename,
-    houseclass,
-  ]);
+  }, [page, queryObject]);
 
   const lastAdRef = (node: any) => {
     if (loading) return;
@@ -293,52 +121,64 @@ const CollectionSearch = ({
 
     if (node) observer.current.observe(node);
   };
-
+  const breakpointColumns = {
+    default: 4, // 3 columns on large screens
+    1100: 3, // 2 columns for screens <= 1100px
+    700: 2, // 1 column for screens <= 700px
+  };
   return (
     <>
       {data.length > 0 ? (
         <>
           {activeButton === 0 && (
             <>
-              <div className="flex flex-col items-center gap-10 p-1 bg-[#ebf2f7] rounded-lg p-1">
-                <ul className="grid w-full grid-cols-2 gap-1 lg:gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:gap-3">
-                  {data.map((ad: any, index: number) => {
-                    const isAdCreator = userId === ad.organizer._id.toString();
-                    if (data.length === index + 1) {
-                      return (
-                        <div
-                          ref={lastAdRef}
-                          key={ad._id}
-                          className="flex justify-center"
-                        >
-                          {/* Render Ad */}
-                          <VerticalCard
-                            ad={ad}
-                            userId={userId}
-                            isAdCreator={isAdCreator}
-                          />
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div key={ad._id} className="flex justify-center">
-                          {/* Render Ad */}
-                          <VerticalCard
-                            ad={ad}
-                            userId={userId}
-                            isAdCreator={isAdCreator}
-                          />
-                        </div>
-                      );
-                    }
-                  })}
-                </ul>
-              </div>
+              <Masonry
+                breakpointCols={breakpointColumns}
+                className="flex gap-4  min-h-screen"
+                columnClassName="bg-clip-padding"
+              >
+                {data.map((ad: any, index: number) => {
+                  const isAdCreator = userId === ad.organizer._id.toString();
+                  if (data.length === index + 1) {
+                    return (
+                      <div
+                        ref={lastAdRef}
+                        key={ad._id}
+                        className="flex justify-center"
+                      >
+                        {/* Render Ad */}
+                        <VerticalCard
+                          ad={ad}
+                          userId={userId}
+                          isAdCreator={isAdCreator}
+                          handleAdEdit={handleAdEdit}    
+                          handleAdView={handleAdView}
+                          handleOpenPlan={handleOpenPlan}
+                        />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={ad._id} className="flex justify-center">
+                        {/* Render Ad */}
+                        <VerticalCard
+                          ad={ad}
+                          userId={userId}
+                          isAdCreator={isAdCreator}
+                          handleAdEdit={handleAdEdit}    
+                          handleAdView={handleAdView}
+                          handleOpenPlan={handleOpenPlan}
+                        />
+                      </div>
+                    );
+                  }
+                })}
+              </Masonry>
             </>
           )}
           {activeButton === 1 && (
             <>
-              <div className="flex p-1 bg-[#ebf2f7] rounded-lg">
+              <div className="flex p-1 rounded-lg min-h-screen">
                 <ul className="w-full">
                   {data.map((ad: any, index: number) => {
                     const isAdCreator = userId === ad.organizer._id.toString();
@@ -354,6 +194,9 @@ const CollectionSearch = ({
                             ad={ad}
                             userId={userId}
                             isAdCreator={isAdCreator}
+                            handleAdEdit={handleAdEdit}    
+                            handleAdView={handleAdView}
+                            handleOpenPlan={handleOpenPlan}
                           />
                         </div>
                       );
@@ -365,7 +208,9 @@ const CollectionSearch = ({
                             ad={ad}
                             userId={userId}
                             isAdCreator={isAdCreator}
-                          />
+                            handleAdView={handleAdView} 
+                            handleAdEdit={handleAdEdit}
+                            handleOpenPlan={handleOpenPlan}                         />
                         </div>
                       );
                     }
@@ -374,27 +219,42 @@ const CollectionSearch = ({
               </div>
             </>
           )}
-          {activeButton === 2 && (
-            <>
-              <StreetmapAll data={data} />
-            </>
-          )}
+          
         </>
       ) : (
         loading === false && (
           <>
-            <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+            <div className="flex items-center min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
               <h3 className="font-bold text-[16px] lg:text-[25px]">
                 {emptyTitle}
               </h3>
               <p className="text-sm lg:p-regular-14">{emptyStateSubtext}</p>
+              <SignedIn>
+
+<Button onClick={() => {
+    handleOpenSell();
+    //router.push("/ads/create");
+}} variant="default" className="flex items-center gap-2">
+<AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+</Button>
+
+</SignedIn>
+
+<SignedOut>
+<Button  onClick={() => {
+     // setIsOpenP(true);
+      router.push("/sign-in");
+    }} variant="outline" className="flex items-center gap-2">
+<AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+</Button>
+</SignedOut>
             </div>
           </>
         )
       )}
       {loading && (
         <div>
-          <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+          <div className="w-full mt-10 h-full min-h-[200px] flex flex-col items-center justify-center">
             <Image
               src="/assets/icons/loading2.gif"
               alt="loading"
@@ -405,6 +265,7 @@ const CollectionSearch = ({
           </div>
         </div>
       )}
+    {/*  <ProgressPopup isOpen={loadPopup} onClose={handleCloseP} /> */} 
     </>
   );
 };

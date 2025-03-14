@@ -34,7 +34,7 @@ const ShowPopupmobile: React.FC<ShowPopupProps> = ({ trigger, content }) => {
       {visible && (
         <div
           ref={popupRef}
-          className="absolute z-20 bottom-0 p-2 bg-white w-[220px] border rounded shadow-lg"
+          className="absolute z-20 bottom-0 p-2 dark:bg-[#233338] dark:text-gray-300 bg-white w-[220px] border rounded shadow-lg"
         >
           {content}
         </div>

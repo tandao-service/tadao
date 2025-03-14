@@ -5,6 +5,7 @@ import { commonVehicleMakesInKenya } from "@/constants";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import InitialAvatar from "./InitialAvatar";
 type CardProps = {
   category: string;
   subcategory: string;
@@ -41,17 +42,17 @@ export default function Menumake({ category, subcategory }: CardProps) {
           commonVehicleMakesInKenya.map((vehicle: any, index: number) => (
             <div
               key={index}
-              className={`flex h-[80px] shadow flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-1 border-emerald-300 hover:bg-emerald-200 ${
+              className={`flex h-[80px] flex-col items-center justify-center cursor-pointer rounded-sm p-1 border hover:border-emerald-700 ${
                 vehicle.make === searchParams.get("make")
-                  ? "bg-[#30AF5B] text-white"
-                  : "bg-white hover:bg-emerald-200"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-900"
               }`}
             >
               <div
                 className="flex flex-col text-center items-center"
                 onClick={(e) => handleClick(vehicle.make, index)}
               >
-                <div className="h-12 w-12 rounded-full bg-white p-2">
+                {/*   <div className="h-10 w-10 rounded-full bg-white p-2">
                   <Image
                     className="w-full h-full"
                     src={vehicle.iconPath}
@@ -59,8 +60,10 @@ export default function Menumake({ category, subcategory }: CardProps) {
                     width={20}
                     height={20}
                   />
+                </div>*/}
+                <div>
+                  <InitialAvatar name={vehicle.make} color={"#2D3236"} />
                 </div>
-
                 <h2 className="text-xs">{vehicle.make}</h2>
               </div>
             </div>

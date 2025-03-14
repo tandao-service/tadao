@@ -2,67 +2,96 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import ProgressPopup from "./ProgressPopup";
+import { usePathname, useRouter } from "next/navigation";
 //import Termspopup from "./termspopup";
-
-const Footersub = () => {
+interface footProps {
+  
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  
+ 
+}
+const Footersub = ({handleOpenAbout,handleOpenTerms,handleOpenPrivacy, handleOpenSafety}:footProps) => {
   const currentYear = new Date().getFullYear();
+  const [isOpenP, setIsOpenP] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const handleOpenP = () => {
+    setIsOpenP(true);
+  };
 
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
-    <div className="p-5 max-w-6xl mx-auto">
-      <div className="border-t border-gray-300 p-2 mt-3"></div>
+    <div className="mt-3 border-t dark:border-gray-700 border-gray-300 bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] p-5 w-full">
+      <div className="mt-4 mb-4"></div>
       <div className="flex flex-col items-center justify-center">
         <p className="text-xs font-bold">
-          {currentYear} AutoYard. All Rights reserved.
+          {currentYear} LandMak. All Rights reserved.
         </p>
         <div className="flex text-xs">
           <div className="flex gap-1 w-full text-gray-600">
-            <div className="transition-colors text-[10px] hover:text-emerald-600 hover:cursor-pointer">
-              <Link
-                href="/about"
-                className="no-underline hover:text-emerald-500 "
+            <div className="transition-colors text-[12px] hover:text-green-700 hover:cursor-pointer">
+              <div
+                onClick={() => {
+                  handleOpenAbout()
+                
+                }}
+                className="cursor-pointer dark:text-gray-400 hover:text-green-700 "
               >
                 About
-              </Link>
+              </div>
             </div>
             <div>|</div>
-            <div className="transition-colors text-[10px] hover:text-emerald-600 hover:cursor-pointer">
-              <Link
-                href="/terms"
-                className="no-underline hover:text-emerald-500 "
+            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-green-700 hover:cursor-pointer">
+              <div
+                onClick={() => {
+                  handleOpenTerms()
+                }}
+                className="cursor-pointer dark:text-gray-400 hover:text-green-700 "
               >
                 <div>Terms & Conditions</div>
-              </Link>
+              </div>
             </div>
             <div>|</div>
-            <div className="transition-colors text-[10px] hover:text-emerald-600 hover:cursor-pointer">
-              <Link
-                href="/privacy"
-                className="no-underline hover:text-emerald-500 "
+            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-green-700 hover:cursor-pointer">
+              <div
+                onClick={() => {
+                  handleOpenPrivacy()
+                }}
+                className="cursor-pointer hover:text-green-700 "
               >
                 Privacy Policy
-              </Link>
+              </div>
             </div>
             <div>|</div>
-            <div className="transition-colors text-[10px] hover:text-emerald-600 hover:cursor-pointer">
-              <Link
-                href="/safety"
-                className="no-underline hover:text-emerald-500 "
+            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-emerald-600 hover:cursor-pointer">
+              <div
+                onClick={() => {
+                  handleOpenSafety()
+                }}
+                className="cursor-pointer dark:text-gray-400 hover:text-green-700 "
               >
                 Safety Tips
-              </Link>
+              </div>
             </div>
           </div>
         </div>
-        <p className="text-[8px] lg:text-xs">
-          Developed by{" "}
+        <p className="dark:text-gray-500 text-xs">
+          Powered by{" "}
           <Link
             href="https://craftinventors.co.ke"
-            className="no-underline hover:text-emerald-500 "
+            className="no-underline dark:text-gray-500 hover:underline "
           >
             Craft Inventors
           </Link>
         </p>
       </div>
+    
     </div>
   );
 };

@@ -5,6 +5,8 @@ import VerticalCard from "./VerticalCard";
 import HorizontalCard from "./HorizontalCard";
 import { getallBookmarkByuserId } from "@/lib/actions/bookmark.actions";
 import Image from "next/image";
+import Masonry from "react-masonry-css";
+import ProgressPopup from "./ProgressPopup";
 type CollectionProps = {
   userId: string;
   //data: IAd[];
@@ -17,6 +19,9 @@ type CollectionProps = {
   isAdCreator: boolean;
   isVertical: boolean;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
+  handleAdEdit: (id:string) => void;
+  handleAdView: (id:string) => void;
+  handleOpenPlan: () => void;
 };
 
 const CollectionBookmark = ({
@@ -30,6 +35,9 @@ const CollectionBookmark = ({
   urlParamName,
   isAdCreator,
   isVertical,
+  handleAdView,
+  handleAdEdit,
+  handleOpenPlan,
 }: CollectionProps) => {
   const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
@@ -78,43 +86,65 @@ const CollectionBookmark = ({
 
     if (node) observer.current.observe(node);
   };
+  const breakpointColumns = {
+    default: 4, // 3 columns on large screens
+    1100: 3, // 2 columns for screens <= 1100px
+    700: 2, // 1 column for screens <= 700px
+  };
+  const [isOpenP, setIsOpenP] = useState(false);
+  const handleOpenP = () => {
+    setIsOpenP(true);
+  };
+
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
     <>
       {data.length > 0 ? (
         isVertical ? (
-          <div className="flex flex-col bg-grey-50 rounded-lg items-center gap-10 p-1 lg:p-2">
-            <ul className="grid w-full grid-cols-2 gap-1 lg:gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:gap-3">
-              {data.map((ad: any, index: number) => {
-                if (data.length === index + 1) {
-                  return (
-                    <div
-                      ref={lastAdRef}
-                      key={ad.adId._id}
-                      className="flex justify-center"
-                    >
-                      {/* Render Ad */}
-                      <VerticalCard
-                        ad={ad.adId}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                      />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={ad.adId._id} className="flex justify-center">
-                      {/* Render Ad */}
-                      <VerticalCard
-                        ad={ad.adId}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                      />
-                    </div>
-                  );
-                }
-              })}
-            </ul>
-          </div>
+          <Masonry
+            breakpointCols={breakpointColumns}
+            className="flex gap-4"
+            columnClassName="bg-clip-padding"
+          >
+            {data.map((ad: any, index: number) => {
+              if (data.length === index + 1) {
+                return (
+                  <div
+                    ref={lastAdRef}
+                    key={index}
+                    className="flex justify-center"
+                  >
+                    {/* Render Ad */}
+                 {ad.adId && (<><VerticalCard
+                      ad={ad.adId}
+                      userId={userId}
+                      isAdCreator={isAdCreator}
+                      handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit} 
+                      handleOpenPlan={handleOpenPlan}
+                      popup={"bookmark"}/></>)}   
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={index} className="flex justify-center">
+                    {/* Render Ad */}
+                    {ad.adId && (<><VerticalCard
+                      ad={ad.adId}
+                      userId={userId}
+                      isAdCreator={isAdCreator}
+                      handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit}
+                      handleOpenPlan={handleOpenPlan}
+                      popup={"bookmark"}
+                    /></>)}  
+                  </div>
+                );
+              }
+            })}
+          </Masonry>
         ) : (
           <div className="flex p-1 bg-grey-50 rounded-lg">
             <ul className="w-full">
@@ -123,26 +153,34 @@ const CollectionBookmark = ({
                   return (
                     <div
                       ref={lastAdRef}
-                      key={ad._id}
+                      key={index}
                       className="flex justify-center"
                     >
                       {/* Render Ad */}
-                      <HorizontalCard
+                     
+                       {ad.adId && (<> <HorizontalCard
                         ad={ad}
                         userId={userId}
                         isAdCreator={isAdCreator}
-                      />
+                        handleAdView={handleAdView} 
+                        handleAdEdit={handleAdEdit}
+                        handleOpenPlan={handleOpenPlan}
+                        popup={"bookmark"}
+                      /></>)}  
                     </div>
                   );
                 } else {
                   return (
-                    <div key={ad._id} className="flex justify-center">
+                    <div key={index} className="flex justify-center">
                       {/* Render Ad */}
-                      <HorizontalCard
+                      {ad.adId && (<> <HorizontalCard
                         ad={ad}
                         userId={userId}
                         isAdCreator={isAdCreator}
-                      />
+                        handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit}
+                      handleOpenPlan={handleOpenPlan}
+                      /></>)}  
                     </div>
                   );
                 }
@@ -175,6 +213,7 @@ const CollectionBookmark = ({
           </div>
         </div>
       )}
+      
     </>
   );
 };

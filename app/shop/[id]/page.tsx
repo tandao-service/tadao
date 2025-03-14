@@ -4,7 +4,7 @@ import Dashboard from "@/components/shared/dashboard";
 import { getAdByUser } from "@/lib/actions/ad.actions";
 import { SearchParamProps } from "@/types";
 //import DashboardMyads from "@/components/shared/dashboardMyads";
-import { getData } from "@/lib/actions/transactionstatus";
+import { getData } from "@/lib/actions/transactions.actions";
 import Navbar from "@/components/shared/navbar";
 import { getUserById } from "@/lib/actions/user.actions";
 import { auth } from "@clerk/nextjs/server";
@@ -75,28 +75,10 @@ const myads = async ({ params: { id }, searchParams }: SearchParamProps) => {
       adstatus = "Active";
     }
   } catch {}
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen w-full bg-[#ebf2f7] bg-dotted-pattern bg-cover bg-fixed bg-center">
-        <div className="flex gap-1 items-center justify-center">
-          <img
-            src="/assets/icons/loading.gif"
-            alt="edit"
-            width={60}
-            height={60}
-          />
-          Loading...
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
-    <>
-      <div className="z-10 top-0 fixed w-full">
-        <Navbar userstatus="User" userId={myId} />
-      </div>
-      <div className="mt-[70px]">
+    
         <DashboardMyads
           userId={userId}
           loggedId={myId}
@@ -116,12 +98,7 @@ const myads = async ({ params: { id }, searchParams }: SearchParamProps) => {
           urlParamName="adsPage"
           //  totalPages={organizedAds?.totalPages}
         />
-        <Toaster />
-      </div>
-      <footer>
-        <Footersub />
-      </footer>
-    </>
+      
   );
 };
 

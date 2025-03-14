@@ -17,8 +17,10 @@ import Image from "next/image";
 import Skeleton from "@mui/material/Skeleton";
 import { ScrollArea } from "../ui/scroll-area";
 import { format, isToday, isYesterday } from "date-fns";
+import ProgressPopup from "./ProgressPopup";
 type sidebarProps = {
   userId: string;
+  handleOpenChatId:(value:string) => void;
 };
 
 export async function updateRead(recipientUid: string, uid: string) {
@@ -41,7 +43,7 @@ export async function updateRead(recipientUid: string, uid: string) {
   });
 }
 
-const Sidebarmain = ({ userId }: sidebarProps) => {
+const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -87,10 +89,15 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
       ? title.substring(0, maxLength) + "..."
       : title;
   };
-
+  
+  const [recipient, setrecipient] = useState('');
+  
   const handle = (uid: string, recipientUid: string) => {
-    router.push("/chat/" + uid);
+  //  setIsOpenP(true);
     updateRead(recipientUid, uid);
+   // router.push("/chat/" + uid);
+   handleOpenChatId(recipientUid);
+   setrecipient(recipientUid);
   };
 
   return (
@@ -102,27 +109,13 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-6 h-6"
+              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
             />
             <Skeleton
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-full h-6"
-            />
-          </div>
-          <div className="flex gap-2 justify-center mb-1">
-            <Skeleton
-              variant="rectangular"
-              animation="wave"
-              //  height={50}
-              className="rounded-sm w-6 h-6"
-            />
-            <Skeleton
-              variant="rectangular"
-              animation="wave"
-              //  height={50}
-              className="rounded-sm w-full h-6"
+              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
             />
           </div>
           <div className="flex gap-2 justify-center mb-1">
@@ -130,13 +123,13 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-6 h-6"
+              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
             />
             <Skeleton
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-full h-6"
+              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
             />
           </div>
           <div className="flex gap-2 justify-center mb-1">
@@ -144,23 +137,37 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-6 h-6"
+              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
             />
             <Skeleton
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-full h-6"
+              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
+            />
+          </div>
+          <div className="flex gap-2 justify-center mb-1">
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
             />
           </div>
         </div>
       ) : messages.length > 0 ? (
         <>
-          <div className="w-full bg-white rounded-lg">
+          <div className="w-full dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg">
             <ScrollArea className="h-full w-full p-2">
-              <ul className="divide-y divide-gray-200">
+              <ul className="divide-y divide-gray-200 dark:divide-gray-600">
                 {messages.map((message, index) => {
-                  const isActive = pathname === "/chat/" + message.uid;
+                //  const isActive = pathname === "/chat/" + message.uid;
                   let formattedCreatedAt = "";
                   try {
                     const createdAtDate = new Date(
@@ -183,8 +190,8 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
                     <li
                       key={index}
                       onClick={() => handle(message.uid, message.recipientUid)}
-                      className={`p-4 flex items-center space-x-4 hover:bg-gray-100 hover:cursor-pointer ${
-                        isActive ? "bg-emerald-100" : ""
+                      className={`p-4 flex items-center space-x-4 dark:hover:bg-black rounded-0 hover:bg-gray-100 hover:cursor-pointer ${
+                        message.recipientUid === recipient ? "bg-green-100" : ""
                       }`}
                     >
                       <div className="flex-shrink-0">
@@ -197,10 +204,10 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-medium dark:text-gray-400 text-gray-900 truncate">
                           {message.name}
                         </p>
-                        <p className="flex gap-1 text-sm text-gray-500 truncate">
+                        <p className="flex gap-1 text-sm dark:text-gray-300 text-gray-500 truncate">
                           {truncateTitle(message.text, 18)}
                           <UnreadmessagesPeruser
                             uid={message.uid}
@@ -208,7 +215,7 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
                           />
                         </p>
                       </div>
-                      <div className="whitespace-nowrap text-[10px] lg:text-sm text-gray-500">
+                      <div className="whitespace-nowrap text-[10px] lg:text-sm dark:text-gray-300 text-gray-500">
                         {formattedCreatedAt}
                       </div>
                     </li>
@@ -220,12 +227,15 @@ const Sidebarmain = ({ userId }: sidebarProps) => {
         </>
       ) : (
         <>
-          <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+          <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] py-28 text-center">
             <h3 className="font-bold text-[16px] lg:text-[25px]">No Chat</h3>
-            <p className="text-sm lg:p-regular-14">You have (0) messages</p>
+            <p className="text-sm dark:text-gray-500 lg:p-regular-14">
+              You have (0) messages
+            </p>
           </div>
         </>
       )}
+     
     </div>
   );
 };

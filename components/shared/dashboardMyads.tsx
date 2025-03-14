@@ -26,6 +26,11 @@ import Skeleton from "@mui/material/Skeleton";
 import { IUser } from "@/lib/database/models/user.model";
 import ReviewsBoxMyAds from "./ReviewsBoxMyAds";
 import SendReviewMyAds from "./SendReviewMyAds";
+import Footersub from "./Footersub";
+import Navbar from "./navbar";
+import { mode } from "@/constants";
+import { Toaster } from "../ui/toaster";
+import { ScrollArea } from "../ui/scroll-area";
 //import RatingsCard from "./RatingsCard";
 //import CollectionMyads from "./CollectionMyads";
 
@@ -75,11 +80,27 @@ type CollectionProps = {
   emptyTitle: string;
   emptyStateSubtext: string;
   limit: number;
-  //page: number | string;
-  // totalPages?: number;
+  queryObject:any;
   urlParamName?: string;
   isAdCreator: boolean;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
+  onClose: () => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
+  handleOpenSell: () => void;
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleAdEdit: (id:string) => void;
+  handleAdView: (id:string) => void;
+  handleOpenReview: (value:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenShop: (shopId:string) => void;
+  handleOpenPerfomance: () => void;
+  handlePay: (id:string) => void;
 };
 
 const DashboardMyads = ({
@@ -98,10 +119,19 @@ const DashboardMyads = ({
   isAdCreator,
   user,
   loggedId,
+  queryObject,
+  handlePay,
+  handleOpenReview,
+  handleOpenChatId,
+  handleOpenSettings,
+  handleOpenShop,
+  handleOpenPerfomance,
+  onClose, handleOpenChat, handleOpenBook,handleOpenPlan, handleOpenSell, handleAdEdit,handleAdView, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety,
 }: // Accept the onSortChange prop
 CollectionProps) => {
   const [activeButton, setActiveButton] = useState(0);
   const [isVertical, setisVertical] = useState(true);
+  const [loading, setLoading] = useState(false);
   const handleButtonClick = (index: number) => {
     setActiveButton(index);
     if (index === 0) {
@@ -112,119 +142,84 @@ CollectionProps) => {
   };
 
   const [query, setQuery] = useState("");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      let newUrl = "";
-
-      if (query) {
-        newUrl = formUrlQuery({
-          params: searchParams.toString(),
-          key: "query",
-          value: query,
-        });
-      } else {
-        newUrl = removeKeysFromQuery({
-          params: searchParams.toString(),
-          keysToRemove: ["query"],
-        });
-      }
-
-      router.push(newUrl, { scroll: false });
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [query, searchParams, router]);
-
+   const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
+ 
+ 
   const handleSortChange = (selectedOption: string) => {
-    if (selectedOption === "nearby") {
-      getCurrentLocation(selectedOption);
-    } else {
-      let newUrl = "";
-      if (selectedOption) {
-        newUrl = formUrlQuery({
-          params: searchParams.toString(),
-          key: "sortby",
-          value: selectedOption,
-        });
-      } else {
-        newUrl = removeKeysFromQuery({
-          params: searchParams.toString(),
-          keysToRemove: ["sortby"],
-        });
-      }
-      setQuery(selectedOption);
-      router.push(newUrl, { scroll: false });
+    //let newUrl = "";
+    if (selectedOption) {
+
+     setNewqueryObject({
+       ...queryObject, // Preserve existing properties
+       sortby:selectedOption,
+     });
+
+     setActiveButton(1);
+   
     }
-    setActiveButton(1);
+   
   };
 
-  function getCurrentLocation(selectedOption: string) {
-    // Check if geolocation is supported by the browser
-    if ("geolocation" in navigator) {
-      // Request permission to access user's location
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // Success callback, position object contains coordinates
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
+ 
 
-          let newUrl = "";
-
-          if (latitude && longitude) {
-            newUrl = formUrlQuerymultiple({
-              params: searchParams.toString(),
-              updates: {
-                latitude: latitude.toString(),
-                longitude: longitude.toString(),
-                sortby: selectedOption,
-              },
-            });
-            setQuery(selectedOption);
-          } else {
-            newUrl = removeKeysFromQuery({
-              params: searchParams.toString(),
-              keysToRemove: ["sortby"],
-            });
-          }
-
-          router.push(newUrl, { scroll: false });
-        },
-        (error) => {
-          // Error callback, handle errors here
-          console.error("Error getting location:", error.message);
-          alert("error: " + error.message.toString());
-        }
-      );
-    } else {
-      // Geolocation not supported by the browser
-      console.error("Geolocation is not supported by this browser.");
-      alert("Geolocation is not supported by this browser. ");
-    }
-  }
   //console.log("loggedId:" + loggedId);
+  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+  
+      useEffect(() => {
+         const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+         const isDark = savedTheme === mode;
+         
+         setIsDarkMode(isDark);
+         document.documentElement.classList.toggle(mode, isDark);
+       }, []);
+     
+       useEffect(() => {
+         if (isDarkMode === null) return; // Prevent running on initial mount
+     
+         document.documentElement.classList.toggle(mode, isDarkMode);
+         localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+       }, [isDarkMode]);
+     
+       if (isDarkMode === null) return null; // Avoid flickering before state is set
+     
   return (
     <>
-      <div className="max-w-6xl mx-auto flex flex-col mt-3 p-1">
+        <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+       <div className="top-0 z-10 fixed w-full">
+                        <Navbar userstatus={"User"} userId={loggedId} onClose={onClose} popup={"shop"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                                            handleOpenPerfomance={handleOpenPerfomance}
+                                            handleOpenSettings={handleOpenSettings}
+                                            handleOpenAbout={handleOpenAbout}
+                                            handleOpenTerms={handleOpenTerms}
+                                            handleOpenPrivacy={handleOpenPrivacy}
+                                            handleOpenSafety={handleOpenSafety} 
+                                            handleOpenShop={handleOpenShop}/>
+                       </div>
+      <div className="mt-[60px] p-2">
+      <div className="w-full flex flex-col mt-3 p-0">
         <div className="w-full flex">
-          <div className="hidden lg:inline mr-5">
+          <div className="hidden lg:inline mr-0">
             <div className="w-full">
-              <div className="flex justify-center items-center w-full h-full">
+             
+              <div className="border dark:border-0 rounded-lg flex justify-center items-center w-full h-full">
                 <SellerProfile
-                  user={user}
-                  loggedId={loggedId}
-                  userId={userId}
-                />
+                      user={user}
+                      loggedId={loggedId}
+                      userId={userId}
+                      handleOpenReview={handleOpenReview} 
+                      handleOpenChatId={handleOpenChatId} 
+                      handleOpenSettings={handleOpenSettings}
+                      handlePay={handlePay}
+                      />
               </div>
             </div>
           </div>
 
-          <div className="flex-1">
-            <div className="lg:hidden">
-              <SellerProfile user={user} loggedId={loggedId} userId={userId} />
+          <div className="flex-1 min-h-screen">
+          <div className="lg:hidden">
+              <SellerProfile user={user} loggedId={loggedId} userId={userId} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
-            <div className="max-w-6xl mx-auto lg:flex-row mt-3 justify-center">
+            <div className="lg:flex-row lg:m-3 justify-center">
               <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
                 <div className="flex items-center p-1 justify-between">
                   <h3 className="font-bold text-[25px] text-center sm:text-left">
@@ -265,35 +260,43 @@ CollectionProps) => {
                 </div>
               </section>
 
-              <section className=" my-2">
-                <div className="flex w-full justify-between">
-                  <div className="flex flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
-                    <div
-                      className={`bg-white rounded-sm border p-1 cursor-pointer ${
-                        activeButton === 0 ? "text-[#30AF5B]" : "text-gray-400"
-                      }`}
-                      onClick={() => handleButtonClick(0)}
-                    >
-                      <ViewModuleIcon />
-                    </div>
-                    <div
-                      className={`bg-white rounded-sm border p-1 cursor-pointer ${
-                        activeButton === 1 ? "text-[#30AF5B]" : "text-gray-400"
-                      }`}
-                      onClick={() => handleButtonClick(1)}
-                    >
-                      <ViewListIcon />
-                    </div>
+              <section className="my-2">
+                  <div className="flex mb-2 w-full justify-between">
+                  <div className="flex gap-3 flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
+                  <div
+                    className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
+                      activeButton === 0 ? "text-[#30AF5B]" : "text-gray-400"
+                    }`}
+                    onClick={() => handleButtonClick(0)}
+                  >
+                    
+                          <ViewModuleIcon /> 
+                          <div className="hidden lg:inline">   <p>Grid layout</p></div>
+                 
+                         
                   </div>
-                  <div className="rounded-full bg-white border p-1 flex items-center">
+                  <div
+                    className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
+                      activeButton === 1 ? "text-[#30AF5B]" : "text-gray-400"
+                    }`}
+                    onClick={() => handleButtonClick(1)}
+                  >
+                    
+                          <ViewListIcon />    <div className="hidden lg:inline">   <p>List layout</p></div>
+                 
+                        
+                  </div>
+                  
+                  </div>
+                  <div className="rounded-lg dark:bg-[#2D3236] dark:text-gray-100 bg-white border p-1 flex items-center">
                     <div className="text-[#30AF5B]">
                       <SwapVertIcon />
                     </div>
                     <Select onValueChange={handleSortChange}>
-                      <SelectTrigger className="w-[180px] border-0 rounded-full">
+                      <SelectTrigger className="w-[180px] dark:bg-[#2D3236] dark:text-gray-100 border-0 rounded-lg">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="dark:bg-[#222528]">
                         <SelectGroup>
                           <SelectItem value="recommeded">
                             Recommended first
@@ -311,7 +314,7 @@ CollectionProps) => {
                   </div>
                 </div>
 
-                <CollectionMyads
+              <CollectionMyads
                   // data={data}
                   emptyTitle="No ads have been created yet"
                   emptyStateSubtext="Go create some now"
@@ -319,36 +322,30 @@ CollectionProps) => {
                   limit={20}
                   sortby={sortby}
                   urlParamName="adsPage"
-                  //totalPages={totalPages}
                   userId={userId}
                   isAdCreator={isAdCreator}
                   isVertical={isVertical}
+                  loadPopup={loading}
+                  handleAdView={handleAdView}
+                  handleAdEdit={handleAdEdit}
+                  handleOpenPlan={handleOpenPlan}
                 />
               </section>
             </div>
           </div>
         </div>
-        <div className="rounded-xl w-full flex flex-col">
-          <span className=" p-2 logo font-bold text-[25px] text-emerald-950">
-            Customer feedback
-          </span>
-
-          <ReviewsBoxMyAds
-            displayName={userName}
-            uid={loggedId}
-            photoURL={userImage}
-            recipientUid={userId}
-            recipient={user}
-          />
-
-          <SendReviewMyAds
-            displayName={userName}
-            uid={loggedId}
-            photoURL={userImage}
-            recipientUid={userId}
-          />
-        </div>
+   
       </div>
+      <Toaster />
+      </div>
+      <footer>
+         <Footersub
+                handleOpenAbout={handleOpenAbout}
+                 handleOpenTerms={handleOpenTerms}
+                 handleOpenPrivacy={handleOpenPrivacy}
+                 handleOpenSafety={handleOpenSafety}/>
+      </footer>
+    </ScrollArea>
     </>
   );
 };

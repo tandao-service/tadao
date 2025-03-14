@@ -49,8 +49,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-20 right-5 bg-gradient-to-r from-[#000000] to-[#000000] rounded-lg shadow-xlg w-100 z-30">
-      <div className="bg-gradient-to-r from-[#000000] to-[#000000] text-white p-2 rounded-t-lg">
+    <div className="fixed bottom-20 right-5 bg-gradient-to-r from-green-600 to-green-600 rounded-lg shadow-xlg w-100 z-30">
+      <div className="bg-gradient-to-r from-green-600 to-green-600 text-white p-2 rounded-t-lg">
         <div className="flex justify-between w-full">
           <h3 className="font-semibold text-white">{title}</h3>
           <div onClick={onClose} className="cursor-pointer text-white">
@@ -61,34 +61,26 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       <div className="p-1">
         {activeTab === 0 && (
           <>
-            <div className="bg-gradient-to-b from-[#000000] to-[#000000] h-[400px] w-[300px] lg:w-[400px] flex flex-col p-1 mt-0">
+            <div className="bg-gradient-to-b from-green-600 to-white h-[400px] w-[300px] lg:w-[400px] flex flex-col p-1 mt-0">
               <div className="mt-5 w-full">
                 <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
-                  <div className="w-12 h-12 border-white border-2 rounded-full">
+                  <div className="w-24 h-24">
                     <Image
-                      className="w-full h-full rounded-full object-cover"
-                      src={"/customer.jpg"}
+                      className="w-full h-full object-cover"
+                      src={"/support.webp"}
                       alt="Profile Image"
                       width={120}
                       height={120}
                     />
                   </div>
-                  <div className="w-12 h-12 border-white border-2 rounded-full">
-                    <Image
-                      className="w-full h-full rounded-full object-cover"
-                      src={senderImage}
-                      alt=""
-                      width={120}
-                      height={120}
-                    />
-                  </div>
+                  
                 </div>
                 <div className="gap-2 justify-center flex w-full items-center">
                   <h3 className="font-bold text-emerald-100 text-sm lg:text-lg">
                     Hi {senderName}
                   </h3>
-                  <div className="h-14 w-14">
-                    <Image src="/hello.png" alt="logo" width={50} height={50} />
+                  <div className="h-10 w-10">
+                    <Image src="/hello.png" alt="logo" width={40} height={40} />
                   </div>
                 </div>
                 <div className="gap-2 justify-center flex w-full items-center">
@@ -102,7 +94,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         )}
         {activeTab === 1 && (
           <>
-            <div className="rounded-sm w-[300px] lg:w-[400px] bg-[#000000] flex flex-col p-1 mt-0">
+            <div className="rounded-t-sm w-[300px] lg:w-[400px] bg-white flex flex-col p-1 mt-0">
               <div className="lg:flex-1 p-0 ml-0 mr-0">
                 <ChatBoxSupport
                   displayName={senderName}
@@ -132,7 +124,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         )}
         {activeTab === 2 && (
           <>
-            <div className="rounded-lg h-[400px] w-[300px] lg:w-[400px] bg-[#000000] flex flex-col p-1 mt-0">
+            <div className="rounded-t-sm h-[400px] w-[300px] lg:w-[400px] bg-white flex flex-col p-1 mt-0">
               <div className="lg:flex-1 p-0 ml-0 mr-0">
                 <HelpBox
                   displayName={senderName}
@@ -158,7 +150,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <button
                 key={index}
                 className={`flex-1 text-xs lg:text-sm py-1 px-0 rounded-t-lg text-center ${
-                  activeTab === index ? "text-emerald-600" : "text-black"
+                  activeTab === index ? "text-green-600" : "text-black"
                 }`}
                 onClick={() => handle(index)}
               >

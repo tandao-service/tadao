@@ -1,105 +1,144 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { IAd } from "@/lib/database/models/ad.model";
-import { AdFormSchema } from "@/lib/validator";
-import CircularProgress from "@mui/material/CircularProgress";
-
-import {
-  AdDefaultValues,
-  BusesMake,
-  amenities,
-  automotivePartsCategories,
-  automotivePartsMakes,
-  bathrooms,
-  bedrooms,
-  boatTypes,
-  businessType,
-  constructionStatus,
-  equipmentMakes,
-  equipmentTypes,
-  floors,
-  furnishing,
-  interiorVehicleColors,
-  motorcycleMakes,
-  propertyCondition,
-  propertyFeature,
-  propertyType,
-  truckMakes,
-  truckTypes,
-  //  units,
-  vehicleBodyTypes,
-  vehicleColors,
-  vehicleConditions,
-  vehicleFeatures,
-  vehicleFuelTypes,
-  vehicleModels,
-  vehicleRegistered,
-  vehicleSeats,
-  vehicleSecondConditions,
-  vehicleTransmissions,
-  yesno,
-} from "@/constants";
-import "react-datepicker/dist/react-datepicker.css";
-import { startTransition, useEffect, useState } from "react";
-import Image from "next/image";
-import { Checkbox } from "../ui/checkbox";
-import { useUploadThing } from "@/lib/uploadthing";
-import { createAd, updateAd } from "@/lib/actions/ad.actions";
-import { useRouter } from "next/navigation";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import GooglePlacesAutocomplete, {
-  geocodeByAddress,
-  getLatLng,
-} from "react-google-places-autocomplete";
-
-import React from "react";
-import { getAllCategories } from "@/lib/actions/category.actions";
-import { ICategory } from "@/lib/database/models/category.model";
-import { Label } from "../ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
-import { ScrollArea } from "../ui/scroll-area";
-import Link from "next/link";
+  getallcategories,
+  getcategory,
+} from "@/lib/actions/subcategory.actions";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { createValidationSchema } from "@/lib/createValidationSchema";
+import CreateCategoryForm from "./CreateCategoryForm";
+import DisplayCategories from "./DisplayCategories";
 import { FileUploader } from "./FileUploader";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { addModelToMake } from "./addModelToMake";
+import { useUploadThing } from "@/lib/uploadthing";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
+import { Button } from "../ui/button";
+import { createData, updateAd } from "@/lib/actions/dynamicAd.actions";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import CategorySelect from "./CategorySelect";
+import SubCategorySelect from "./SubCategorySelect";
+import { Multiselect } from "./Multiselect";
+import AutoComplete from "./AutoComplete";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+} from "@mui/material";
+import CountyConstituencySelector from "./CountyConstituencySelector";
+import { REGIONS_WITH_AREA, REGIONS_WITH_CONSTITUENCIES } from "@/constants";
+import MakeModelAutocomplete from "./MakeModelAutocomplete";
+import Image from "next/image";
+import Link from "next/link";
+import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
+import { BulkPriceManager } from "./BulkPriceManager";
+import DeliveryOptions from "./DeliveryOptions";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import PriceInput from "./PriceInput";
+import PromoSelection from "./PromoSelection";
+import { DateExpressionOperatorReturningNumber } from "mongoose";
+import LatitudeLongitudeInput from "./LatitudeLongitudeInput";
+import MapAreaCalculator from "./MapAreaCalculator";
+import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
+import LatLngPicker from "./LatLngPicker";
+import LandSubdivision from "./LandSubdivision";
+import GoogleMapping from "./GoogleMapping";
+
+//import GoogleMapsPolygonEditor from "./GoogleMapsPolygonEditor";
+
+interface Field {
+  name: string;
+  type:
+    | "text"
+    | "number"
+    | "select"
+    | "radio"
+    | "checkbox"
+    | "textarea"
+    | "multi-select"
+    | "autocomplete"
+    | "phone"
+    | "year"
+    | "youtube-link"
+    | "price"
+    | "rentprice"
+    | "priceper"
+    | "bulkprice"
+    | "serviceprice"
+    | "delivery"
+    | "gps"
+    | "propertyarea"
+    | "virtualTourLink"
+    | "related-autocompletes";
+  required?: boolean;
+  options?: string[];
+}
+
+const generateDefaultValues = (fields: Field[]) => {
+  const defaults: Record<string, any> = {};
+  fields.forEach((field) => {
+    if (field.type === "text") {
+      defaults[field.name] = "";
+    } else if (field.type === "number") {
+      defaults[field.name] = 0;
+    } else if (field.type === "select") {
+      defaults[field.name] = field.options?.[0] || "";
+    } else if (field.type === "multi-select") {
+      defaults[field.name] = []; // Default to an empty array
+    } else if (field.type === "checkbox") {
+      defaults[field.name] = false;
+    } else if (field.type === "textarea") {
+      defaults[field.name] = "";
+    } else if (field.type === "autocomplete") {
+      defaults[field.name] = "";
+    } else if (field.type === "phone") {
+      defaults[field.name] = "";
+    } else if (field.type === "price") {
+      defaults["price"] = 0;
+    } else if (field.type === "rentprice") {
+      defaults["price"] = 0;
+      defaults["period"] = "";
+    } else if (field.type === "bulkprice") {
+      defaults["price"] = 0;
+      defaults["bulkprice"] = [];
+    } else if (field.type === "serviceprice") {
+      defaults["price"] = 0;
+      defaults["priceType"] = "specify";
+      defaults["unit"] = "per service";
+    } else if (field.type === "gps") {
+      defaults["gps"] = [];
+    }
+   else if (field.type === "propertyarea") {
+    defaults["propertyarea"] = [];
+  }else if (field.type === "virtualTourLink") {
+    defaults["virtualTourLink"] = "";
+  }
+  
+    else if (field.type === "delivery") {
+      defaults["delivery"] = [];
+    } else if (field.type === "year") {
+      defaults[field.name] = "";
+    } else if (field.type === "youtube-link") {
+      defaults[field.name] = "";
+    } else if (field.type === "related-autocompletes") {
+      defaults[field.name] = "";
+    } else if (field.type === "radio") {
+      defaults[field.name] = field.options?.[0] || "";
+    }
+  });
+  return defaults;
+};
 
 type Package = {
   imageUrl: string;
@@ -110,13 +149,15 @@ type Package = {
   features: string[];
   color: string;
   priority: number;
+ 
 };
 type AdFormProps = {
   userId: string;
   planId: string;
   type: string;
-  ad?: IAd;
+  ad?: any;
   adId?: string;
+  categories:any;
   userName: string;
   daysRemaining: number;
   packname: string;
@@ -125,6 +166,9 @@ type AdFormProps = {
   priority: number;
   expirationDate: Date;
   adstatus: string;
+  handleAdView?:(id:string) => void;
+  handlePay?:(id:string) => void;
+  handleOpenTerms:() => void;
 };
 
 const AdForm = ({
@@ -141,414 +185,104 @@ const AdForm = ({
   priority,
   expirationDate,
   adstatus,
+  categories,
+  handleAdView,
+  handlePay,
+  handleOpenTerms,
 }: AdFormProps) => {
-  const initialValues =
-    ad && type === "Update"
-      ? {
-          ...ad,
-        }
-      : AdDefaultValues;
-  const router = useRouter();
+  const [formData, setFormData] = useState<Record<string, any>>(
+    ad ? ad.data : []
+  );
+  const [selectedCategory, setSelectedCategory] = useState(
+    ad ? ad.data.category : ""
+  );
+  const [selectedSubCategory, setSelectedSubCategory] = useState(
+    ad ? ad.data.subcategory : ""
+  );
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(
+    ad ? ad.subcategory._id : ""
+  );
 
+  const [showGuide, setShowGuide] = useState(false);
+  // const [formData, setFormData] = useState<Record<string, any>>([]);
+  // const [selectedCategory, setSelectedCategory] = useState("");
+   const [showload, setShowLoad] = useState(true);
+
+  const [fields, setFields] = useState<Field[]>([]);
+  //const [selectedAutoComplete, setSelectedAutoComplete] = useState("");
+  const [autoCompleteValues, setAutoCompleteValues] = useState<any>({});
+  const [selectedYear, setSelectedYear] = useState("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<File[]>([]);
+  const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const form = useForm<z.infer<typeof AdFormSchema>>({
-    resolver: zodResolver(AdFormSchema),
-    defaultValues: initialValues,
-  });
+  const [defaults, setDefualts] = useState<any>([]);
+  const [negotiable, setNegotiable] = useState<"yes" | "no" | "not sure">(
+    "not sure"
+  );
+  const [selectedFeatures, setselectedFeatures] = useState<string[]>([]);
+  const { toast } = useToast();
+  const router = useRouter();
   const { startUpload } = useUploadThing("imageUploader");
   let uploadedImageUrl: string[] = [];
-  interface Location {
-    latitude: number;
-    longitude: number;
-    address: string;
-  }
-  const [location, setLocation] = useState<Location | null>(null);
-
-  const [selectedOption, setSelectedOption] = useState("search");
-
-  const [myaddress, setAddress] = useState("");
-  const [SelectedCategory, SetselectedCategory] = useState(
-    ad?.subcategory ?? ""
-  );
-  // Define custom toolbar options
-  //const modules = {
-  //  toolbar: [
-  //    [{ header: "1" }, { header: "2" }, { font: [] }],
-  //   [{ size: ["small", false, "large", "huge"] }], // Font size options
-  //   [{ list: "ordered" }, { list: "bullet" }],
-  //   ["bold", "italic", "underline", "strike", "blockquote"],
-  //    [{ color: [] }, { background: [] }], // Color options
-  //    [{ align: [] }],
-  //    ["link", "image"],
-  //    ["clean"],
-  //   ],
-  // };
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  //errors
-  const [showmessage, setmessage] = useState("");
-  const [errormake, seterrormake] = useState("");
-  const [errorprice, seterrorprice] = useState("");
-  const [errormodel, seterrormodel] = useState("");
-
-  const [errorvehicleyear, seterrorvehicleyear] = useState("");
-  const [errorvehiclecolor, seterrorvehiclecolor] = useState("");
-
-  const [errorvehicleinteriorColor, seterrorvehicleinteriorColor] =
-    useState("");
-  const [errorvehiclecondition, seterrorvehiclecondition] = useState("");
-
-  const [errorvehiclesecordCondition, seterrorvehiclesecordCondition] =
-    useState("");
-  const [errorvehicleTransmissions, seterrorvehicleTransmissions] =
-    useState("");
-  const [errorvehiclemileage, seterrorvehiclemileage] = useState("");
-  const [errorvehiclekeyfeatures, seterrorvehiclekeyfeatures] = useState("");
-  const [errorvehiclechassis, seterrorvehiclechassis] = useState("");
-  const [errorvehicleregistered, seterrorvehicleregistered] = useState("");
-  const [errorvehicleexchangeposible, seterrorvehicleexchangeposible] =
-    useState("");
-  const [errorvehicleBodyTypes, seterrorvehicleBodyTypes] = useState("");
-  const [errorvehicleFuelTypes, seterrorvehicleFuelTypes] = useState("");
-  const [errorvehicleSeats, seterrorvehicleSeats] = useState("");
-  const [errorvehicleEngineSizesCC, seterrorvehicleEngineSizesCC] =
-    useState("");
-  const [errorTypes, seterrorTypes] = useState("");
-  const [Adstatus_, setadstatus] = useState(adstatus);
-  const [Priority_, setpriority] = useState(priority);
-  const [ExpirationDate_, setexpirationDate] = useState(expirationDate);
-
-  async function getAddressFromCoordinates(
-    latitude: string,
-    longitude: string
-  ) {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (response.ok) {
-        const address = data.display_name;
-        return address;
-      } else {
-        throw new Error(data.error || "Failed to fetch address");
-      }
-    } catch (error) {
-      console.error("Error fetching address");
-      return null;
-    }
-  }
-  const parseCurrencyToNumber = (value: string): number => {
-    // Remove any commas from the string and convert to number
-    return Number(value.replace(/,/g, ""));
+  const [showPopup, setShowPopup] = useState(false);
+  const modules = {
+    toolbar: [
+     // [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+     // [{ color: [] }, { background: [] }], // Color options
+      [{ align: [] }],
+     // ["link", "image"],
+      ["clean"],
+    ],
   };
-  async function onSubmit(values: z.infer<typeof AdFormSchema>) {
-    uploadedImageUrl = values.imageUrls;
+  const handleOpenPopup = () => {
+    setShowPopup(true);
+  };
 
-    try {
-      if (
-        form.getValues("make") === "" &&
-        (SelectedCategory === "Cars, Vans & Pickups" ||
-          SelectedCategory === "Buses & Microbuses" ||
-          SelectedCategory === "Motorbikes,Tuktuks & Scooters" ||
-          SelectedCategory === "Heavy Equipment" ||
-          SelectedCategory === "Trucks & Trailers" ||
-          SelectedCategory === "Vehicle Parts & Accessories")
-      ) {
-        seterrormake("Please! Select Make");
-        return;
-      }
-      if (
-        form.getValues("vehiclemodel") === "" &&
-        SelectedCategory === "Cars, Vans & Pickups"
-      ) {
-        seterrormodel("Please! Select Model");
-        return;
-      }
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
 
-      if (
-        form.getValues("vehicleyear") === "" &&
-        (SelectedCategory === "Cars, Vans & Pickups" ||
-          SelectedCategory === "Buses & Microbuses" ||
-          SelectedCategory === "Motorbikes,Tuktuks & Scooters" ||
-          SelectedCategory === "Heavy Equipment" ||
-          SelectedCategory === "Trucks & Trailers" ||
-          SelectedCategory === "Watercraft & Boats")
-      ) {
-        seterrorvehicleyear("Please! Select Year");
-        return;
-      }
-      if (
-        form.getValues("Types") === "" &&
-        (SelectedCategory === "Heavy Equipment" ||
-          SelectedCategory === "Trucks & Trailers" ||
-          SelectedCategory === "Vehicle Parts & Accessories" ||
-          SelectedCategory === "Watercraft & Boats")
-      ) {
-        seterrorTypes("Please! Select Type");
-        return;
-      }
+  const [showPopupBulk, setShowPopupBulk] = useState(false);
 
-      // if (
-      //  form.getValues("vehicleinteriorColor") === "" &&
-      //  SelectedCategory === "Cars, Vans & Pickups"
-      // ) {
-      //  seterrorvehicleinteriorColor("Please! Select Vehicle interior color");
-      // return;
-      // }
-      if (
-        form.getValues("vehiclecondition") === "" &&
-        (SelectedCategory === "Cars, Vans & Pickups" ||
-          SelectedCategory === "Buses & Microbuses" ||
-          SelectedCategory === "Motorbikes,Tuktuks & Scooters" ||
-          SelectedCategory === "Heavy Equipment" ||
-          SelectedCategory === "Trucks & Trailers" ||
-          SelectedCategory === "Vehicle Parts & Accessories" ||
-          SelectedCategory === "Watercraft & Boats")
-      ) {
-        seterrorvehiclecondition("Please! Select Condition");
-        return;
-      }
-      //iiii
+  const handleOpenPopupBulk = () => {
+    setShowPopupBulk(true);
+  };
 
-      // if (
-      // form.getValues("vehiclesecordCondition") === "" &&
-      // SelectedCategory === "Cars, Vans & Pickups"
-      //) {
-      //  seterrorvehiclesecordCondition(
-      // "Please! Select Vehicle secord condition"
-      // );
-      // return;
-      // }
-      //  if (
-      // form.getValues("vehicleTransmissions") === "" &&
-      //  SelectedCategory === "Cars, Vans & Pickups"
-      //) {
-      // seterrorvehicleTransmissions("Please! Select Vehicle Transmissions");
-      // return;
-      //}
-      // if (
-      //   form.getValues("vehiclemileage") === "" &&
-      //   SelectedCategory === "Cars, Vans & Pickups"
-      // ) {
-      //   seterrorvehiclemileage("Please! Select Mileage");
-      //   return;
-      //   }
-      // if (
-      //   form.getValues("vehiclekeyfeatures")?.length === 0 &&
-      //  SelectedCategory === "Cars, Vans & Pickups"
-      // ) {
-      //   seterrorvehiclekeyfeatures("Please! Select Vehicle key features");
-      //  return;
-      // }
-      //  if (
-      //   form.getValues("vehiclechassis") === "" &&
-      //   SelectedCategory === "Cars, Vans & Pickups"
-      // ) {
-      //  seterrorvehiclechassis("Please! Select Vehicle VIN Chassis number");
-      //  return;
-      // }
-      if (
-        form.getValues("vehicleregistered") === "" &&
-        (SelectedCategory === "Cars, Vans & Pickups" ||
-          SelectedCategory === "Buses & Microbuses")
-      ) {
-        seterrorvehicleregistered("Please! Select Registration status");
-        return;
-      }
-      //  if (
-      //    form.getValues("vehicleexchangeposible") === "" &&
-      //    SelectedCategory === "Cars, Vans & Pickups"
-      //  ) {
-      //   seterrorvehicleexchangeposible(
-      //     "Please! Select Vehicle exchange status"
-      //   );
-      //  return;
-      //   }
-      if (
-        form.getValues("vehicleBodyTypes") === "" &&
-        SelectedCategory === "Cars, Vans & Pickups"
-      ) {
-        seterrorvehicleBodyTypes("Please! Select body type");
-        return;
-      }
-      if (
-        form.getValues("vehicleFuelTypes") === "" &&
-        (SelectedCategory === "Cars, Vans & Pickups" ||
-          SelectedCategory === "Buses & Microbuses")
-      ) {
-        seterrorvehicleFuelTypes("Please! Select Fuel Type");
-        return;
-      }
-      // if (
-      //    form.getValues("vehicleSeats") === "" &&
-      //    SelectedCategory === "Cars, Vans & Pickups"
-      // ) {
-      //  seterrorvehicleSeats("Please! Select Vehicle Seats No");
-      //  return;
-      //  }
-      if (
-        form.getValues("vehicleEngineSizesCC") === "" &&
-        SelectedCategory === "Cars, Vans & Pickups"
-      ) {
-        seterrorvehicleEngineSizesCC("Please! Select Vehicle Engine Size CC");
-        return;
-      }
-      //  if (form.getValues("price") === "" ) {
-      //    seterrorprice("Please! Enter Price!");
-      //    return;
-      //  }
+  const handleClosePopupBulk = () => {
+    setShowPopupBulk(false);
+  };
 
-      if (files.length > 10) {
-        setmessage("Please upload maximum of 10 images");
-        return;
-      }
+  const [showPopupGps, setShowPopupGps] = useState(false);
 
-      if (files.length > 0) {
-        // Upload all files concurrently
+  const handleOpenPopupGps = () => {
+    setShowPopupGps(true);
+  };
 
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          try {
-            //  console.log("fileName- " + file.name);
-            const uploadedImages = await startUpload([file]);
-            if (uploadedImages && uploadedImages.length > 0) {
-              // Push the URL to the corresponding index in uploadedImageUrl array
-              uploadedImageUrl.push(uploadedImages[0].url);
-              setUploadProgress(Math.round(((1 + i) / files.length) * 100));
-              // console.log("push- " + uploadedImages[0].url);
-            }
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        }
-      }
+  const handleClosePopupGps = () => {
+    setShowPopupGps(false);
+  };
+  const handleSaveGps = () => {
+    setShowPopupGps(false); // Close the popup after saving
+  };
 
-      if (type === "Create") {
-        uploadedImageUrl = uploadedImageUrl.filter(
-          (url) => !url.includes("blob:")
-        );
-        if (
-          form.getValues("latitude") &&
-          form.getValues("longitude") &&
-          selectedOption === "enter"
-        ) {
-          try {
-            const address = await getAddressFromCoordinates(
-              form.getValues("latitude"),
-              form.getValues("longitude")
-            );
+  const [showPopupArea, setShowPopupArea] = useState(false);
 
-            form.setValue("address", address);
-          } catch (error) {
-            // console.error("Error:", error);
-            form.setValue("address", "Unknown");
-          }
-        }
-        //alert(form.getValues("address"));
+  const handleOpenPopupArea = () => {
+    setShowPopupArea(true);
+  };
 
-        const newAd = await createAd({
-          ad: {
-            ...values,
-            priority: Priority_,
-            expirely: ExpirationDate_,
-            adstatus: Adstatus_,
-            phone: countryCode + removeLeadingZero(phoneNumber),
-            price: parseCurrencyToNumber(form.getValues("price").toString()),
-            address: form.getValues("address"),
-            vehiclekeyfeatures:
-              selectedfeaturesOptions.length > 0 ? selectedfeaturesOptions : [],
-            vehicleEngineSizesCC: (
-              form.getValues("vehicleEngineSizesCC")?.replace(/\s/g, "") ?? ""
-            ).toUpperCase(),
-
-            imageUrls: uploadedImageUrl,
-            geometry: {
-              type: "Point",
-              coordinates: [
-                parseFloat(form.getValues("longitude")),
-                parseFloat(form.getValues("latitude")),
-              ], // assuming latitude and longitude are obtained from the form
-            },
-          },
-          userId,
-          planId: PlanId,
-          pricePack: Number(priceInput),
-          periodPack: periodInput,
-          path: "/profile",
-        });
-        if (newAd) {
-          form.reset();
-          if (newAd.adstatus === "Pending") {
-            router.push(`/pay/${newAd._id}`);
-          } else {
-            router.push(`/ads/${newAd._id}`);
-          }
-        }
-      } else if (type === "Update") {
-        if (!adId) {
-          router.back();
-          return;
-        }
-        uploadedImageUrl = uploadedImageUrl.filter(
-          (url) => !url.includes("blob:")
-        );
-        if (
-          form.getValues("latitude") &&
-          form.getValues("longitude") &&
-          selectedOption === "enter"
-        ) {
-          try {
-            const address = await getAddressFromCoordinates(
-              form.getValues("latitude"),
-              form.getValues("longitude")
-            );
-
-            form.setValue("address", address);
-            //  alert("address:" + address);
-          } catch (error) {
-            //  console.error("Error:", error);
-            form.setValue("address", "Unknown");
-          }
-        }
-        const updatedAd = await updateAd({
-          userId,
-          planId: PlanId,
-          ad: {
-            ...values,
-            phone: countryCode + removeLeadingZero(phoneNumber),
-            price: parseCurrencyToNumber(form.getValues("price").toString()),
-            vehiclekeyfeatures:
-              selectedfeaturesOptions.length > 0 ? selectedfeaturesOptions : [],
-            vehicleEngineSizesCC: (
-              form.getValues("vehicleEngineSizesCC")?.replace(/\s/g, "") ?? ""
-            ).toUpperCase(),
-            address: form.getValues("address"),
-            imageUrls: uploadedImageUrl,
-            geometry: {
-              type: "Point",
-              coordinates: [
-                parseFloat(form.getValues("longitude")),
-                parseFloat(form.getValues("latitude")),
-              ], // assuming latitude and longitude are obtained from the form
-            },
-            _id: adId,
-          },
-          path: `/ads/${adId}`,
-        });
-
-        if (updatedAd) {
-          form.reset();
-          router.push(`/ads/${updatedAd._id}`);
-        }
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  }
-
-  // Your existing state variables and functions here
+  const handleClosePopupArea = () => {
+    setShowPopupArea(false);
+  };
+  const handleSaveArea = () => {
+    setShowPopupArea(false); // Close the popup after saving
+  };
+  const [selectedCategoryCommand, setSelectedCategoryCommand] = useState<
+    string[]
+  >([]);
   const [activePackage, setActivePackage] = useState<Package | null>(
     packagesList.length > 0
       ? listed > 0 && packname === "Free"
@@ -561,185 +295,322 @@ const AdForm = ({
   const [priceInput, setPriceInput] = useState("");
   const [periodInput, setPeriodInput] = useState("");
   const [PlanId, setplanId] = useState(planId);
-  //const [packNameInput, setPackNameInput] = useState(
-  //   listed > 0 && packname === "Free"
-  //     ? packagesList[0].name
-  //     : packagesList[1].name
-  //);
-
-  const [loading, setLoading] = useState(true);
-
+  const [Plan, setplan] = useState(packname);
+  const [Adstatus_, setadstatus] = useState(adstatus);
+  const [Priority_, setpriority] = useState(priority);
+  const [ExpirationDate_, setexpirationDate] = useState(expirationDate);
   useEffect(() => {
-    // Simulate fetching categories from the database
-
-    const getCategories = async () => {
+    const getCategory = async () => {
       try {
-        const categoryList = await getAllCategories();
+     
+        const uniqueCategories = categories.reduce((acc: any[], current: any) => {
+          if (
+            !acc.find((item) => item.category.name === current.category.name)
+          ) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
 
-        categoryList && setCategories(categoryList as ICategory[]);
+        setSelectedCategoryCommand(uniqueCategories);
+
+        if (type === "Update") {
+          const selectedData: any = categories.find(
+            (category: any) =>
+              category.category.name === selectedCategory &&
+              category.subcategory === selectedSubCategory
+          );
+          // Update fields if a match is found
+          setFields(selectedData ? selectedData.fields : []);
+          setFormData(ad.data);
+        
+        }
+        setShowLoad(false)
       } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setLoading(false);
+        setShowLoad(false)
+        console.error("Failed to fetch categories", error);
       }
     };
-
-    getCategories();
-    const youtubeRegex =
-      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-
-    function extractYouTubeVideoId(url: string) {
-      const match = url.match(youtubeRegex);
-      if (match && match[1]) {
-        return match[1]; // Return the video ID
-      } else {
-        return null; // Not a YouTube URL or invalid URL
-      }
-    }
-    if (type === "Update") {
-      if (ad?.youtube) {
-        const videoId = extractYouTubeVideoId(ad.youtube);
-        if (!videoId) {
-          form.setValue(
-            "youtube",
-            "https://www.youtube.com/watch?v=" + ad.youtube
-          ); // lat value
-          // console.log("YouTube Video ID:", videoId);
-        }
-      }
-      if (ad?.address) {
-        form.setValue("address", ad?.address); // Reset constituency value
-        setAddress(ad?.address);
-      }
-      if (ad?.latitude) {
-        form.setValue("latitude", ad?.latitude); // lat value
-      }
-      if (ad?.longitude) {
-        form.setValue("longitude", ad?.longitude); // longitude value
-      }
-      if (ad?.category) {
-        form.setValue("categoryId", ad?.category._id); // longitude value
-      }
-      if (ad?._id) {
-        sessionStorage.setItem("id", ad?._id);
-      }
-      if (ad?.title) {
-        sessionStorage.setItem("title", ad?.title);
-      }
-      if (ad?.description) {
-        sessionStorage.setItem("description", ad?.description);
-      }
-      //if (ad?.price) {
-      //  form.setValue("price", ad?.price.toString()); // longitude value
-      //}
-    }
-    (listed > 0 && packname === "Free"
-      ? packagesList[0]
-      : packagesList[1]
-    ).price.forEach((price: any, index: number) => {
-      if (index === activeButton) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
+    getCategory();
   }, []);
+  const validateForm = async () => {
+    //console.log("start: ");
+    const validationSchema = createValidationSchema(fields);
+    // console.log("validationSchema: " + validationSchema);
 
-  useEffect(() => {
-    const getCategories = async () => {
-      const categoryList = await getAllCategories();
-
-      categoryList && setCategories(categoryList as ICategory[]);
-    };
-
-    getCategories();
-    const youtubeRegex =
-      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-
-    function extractYouTubeVideoId(url: string) {
-      const match = url.match(youtubeRegex);
-      if (match && match[1]) {
-        return match[1]; // Return the video ID
-      } else {
-        return null; // Not a YouTube URL or invalid URL
-      }
+    const result = validationSchema.safeParse(formData);
+    // console.log("result:" + result);
+    if (!result.success) {
+      const errors = result.error.errors.reduce((acc: any, err: any) => {
+        acc[err.path[0]] = err.message;
+        //  console.log("acc:" + acc);
+        return acc;
+      }, {});
+      // console.log("faild:" + errors);
+      setFormErrors(errors);
+      return false;
     }
-    if (type === "Update") {
-      if (ad?.youtube) {
-        const videoId = extractYouTubeVideoId(ad.youtube);
-        if (!videoId) {
-          form.setValue(
-            "youtube",
-            "https://www.youtube.com/watch?v=" + ad.youtube
-          ); // lat value
-          // console.log("YouTube Video ID:", videoId);
+    //console.log("success:");
+    setFormErrors({});
+    return true;
+  };
+  const uploadFiles = async () => {
+    const uploadedUrls: string[] = [];
+    let i = 0;
+    for (const file of files) {
+      try {
+        i++;
+        const uploadedImages = await startUpload([file]);
+        if (uploadedImages && uploadedImages.length > 0) {
+          uploadedUrls.push(uploadedImages[0].url);
+          setUploadProgress(Math.round((i / files.length) * 100));
         }
+      } catch (error) {
+        console.error("Error uploading file:", error);
       }
-      if (ad?.address) {
-        form.setValue("address", ad?.address); // Reset constituency value
-        setAddress(ad?.address);
-      }
-      if (ad?.latitude) {
-        form.setValue("latitude", ad?.latitude); // lat value
-      }
-      if (ad?.longitude) {
-        form.setValue("longitude", ad?.longitude); // longitude value
-      }
-      if (ad?.category) {
-        form.setValue("categoryId", ad?.category._id); // longitude value
-      }
-      if (ad?._id) {
-        sessionStorage.setItem("id", ad?._id);
-      }
-      if (ad?.title) {
-        sessionStorage.setItem("title", ad?.title);
-      }
-      if (ad?.description) {
-        sessionStorage.setItem("description", ad?.description);
-      }
-      //if (ad?.price) {
-      //  form.setValue("price", ad?.price.toString()); // longitude value
-      //}
     }
-    (listed > 0 && packname === "Free"
-      ? packagesList[0]
-      : packagesList[1]
-    ).price.forEach((price: any, index: number) => {
-      if (index === activeButton) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
-  }, []);
+    return uploadedUrls.filter((url) => !url.includes("blob:"));
+  };
 
-  const handleSelect = (e: any) => {
-    // alert("-c " + ad?.address);
-    form.setValue("address", e.value.description); // Reset constituency value
-    geocodeByAddress(e.value.description)
-      .then((results) => getLatLng(results[0]))
-      .then(({ lat, lng }) => {
-        form.setValue("latitude", lat.toString()); // lat value
-        form.setValue("longitude", lng.toString()); // lng value
+  const handleInputChange = (field: string, value: any) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const handleInputCategoryChange = (field: string, value: any) => {
+    setSelectedCategory(value);
+    setSelectedSubCategory("");
+    setSelectedSubCategoryId("");
+    setFields([]);
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+  };
+  const handleInputSubCategoryChange = (
+    field: string,
+    value: any,
+    _id: string
+  ) => {
+    setSelectedSubCategory(value);
+    setSelectedSubCategoryId(_id);
+    const selectedData: any = categories.find(
+      (category: any) =>
+        category.category.name === selectedCategory &&
+        category.subcategory === value
+    );
+    // Update fields if a match is found
+    setFields(selectedData ? selectedData.fields : []);
+    // Set default values based on fields
+    // const defaults = generateDefaultValues(selectedData.fields);
+    setDefualts(generateDefaultValues(selectedData ? selectedData.fields : []));
+    setFormData(defaults);
+    setFormErrors({});
+    setFiles([]);
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+  };
+
+  const handleInputAutoCompleteChange = (field: string, value: any) => {
+    if (field === "make") {
+      setFormData({
+        ...formData,
+        [field]: value,
+        ...(formData.hasOwnProperty("model") && { model: "" }), // Check if 'model' exists before setting it to ""
       });
+    } else if (field === "contact" && value === "contact") {
+      setFormData({
+        ...formData,
+        [field]: value,
+        price: "0",
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
+    }
   };
 
-  const handleOptionChange = (event: any) => {
-    setSelectedOption(event.target.value);
-  };
-  const handleLongitudeChange = (event: any) => {
-    // setSelectedOption(event.target.value);
-    form.setValue("longitude", event.target.value.toString()); // longitude value
-  };
-  const handleLatitudeChange = (event: any) => {
-    // setSelectedOption(event.target.value);
-    form.setValue("latitude", event.target.value.toString()); // lat value
+  const handleInputYearChange = (field: string, value: any) => {
+    setSelectedYear(value);
+
+    setFormData({ ...formData, [field]: value });
   };
 
-  const [countryCode, setCountryCode] = useState(
-    ad?.phone.substring(0, 4) ?? "+254"
-  ); // Default country code
-  const [phoneNumber, setPhoneNumber] = useState(
-    ad?.phone.substring(ad?.phone.length - 9) ?? ""
-  );
+  const handleSave = () => {
+    setShowPopup(false); // Close the popup after saving
+  };
+
+  const handleInputOnChange = (field: string, value: any) => {
+   // console.log(value);
+    setFormData((prevData) => ({ ...prevData, [field]: value }));
+  };
+  const handlePackageOnChange = (
+    ExpirationDate_: Date,
+    Priority_: number,
+    Adstatus_: string,
+    PlanId: string,
+    Plan: string,
+    periodInput: string,
+    priceInput: string
+  ) => {
+    setexpirationDate(ExpirationDate_);
+    setpriority(Priority_);
+    setadstatus(Adstatus_);
+    setplanId(PlanId);
+    setplan(Plan);
+    setPriceInput(priceInput);
+    setPeriodInput(periodInput);
+    
+  };
+  const handleSubmit = async () => {
+    setLoading(true);
+    setUploadProgress(0);
+    try {
+      if (type === "Create") {
+        const isValid = await validateForm();
+
+        if (!isValid) return;
+        const uploadedUrls = await uploadFiles();
+        const finalData = {
+          ...formData,
+          imageUrls: uploadedUrls,
+          price: parseCurrencyToNumber(formData["price"].toString()),
+          phone: countryCode + removeLeadingZero(phoneNumber),
+        };
+        const pricePack = Number(priceInput);
+        const newAd = await createData({
+          userId: userId,
+          subcategory: selectedSubCategoryId,
+          formData: finalData,
+          expirely: ExpirationDate_,
+          priority: Priority_,
+          adstatus: Adstatus_,
+          planId: PlanId,
+          plan: Plan,
+          pricePack: pricePack,
+          periodPack: periodInput,
+          path: "/create",
+        });
+        setFormData(defaults);
+        setFiles([]);
+        setSelectedYear("");
+        setPhoneNumber("");
+        setselectedFeatures([]);
+        toast({
+          title: "Submitted",
+          description: "Ad submitted successfully.",
+          duration: 5000,
+          className: "bg-[#30AF5B] text-white",
+        });
+        if (newAd) {
+          if (newAd.adstatus === "Pending" && handlePay) {
+            handlePay(newAd._id);
+          } else {
+            if (handleAdView) {
+              handleAdView(newAd._id);
+            }
+          
+          }
+        }
+        // console.log("Data submitted successfully:", finalData);
+      }
+      if (type === "Update") {
+        const isValid = await validateForm();
+        if (!isValid) return;
+
+        const uploadedUrls = await uploadFiles();
+        // Preserve existing imageUrls if no new files are uploaded
+        const finalImageUrls =
+          uploadedUrls.length > 0 ? uploadedUrls : formData.imageUrls;
+
+        const finalData = {
+          ...formData,
+          imageUrls: finalImageUrls,
+          price: parseCurrencyToNumber(formData["price"].toString()),
+          phone: countryCode + removeLeadingZero(phoneNumber),
+        };
+        const _id = ad._id;
+        const updatedAd = await updateAd(userId, _id, finalData);
+
+        setFormData(defaults);
+        setFiles([]);
+        setSelectedYear("");
+        setPhoneNumber("");
+        setselectedFeatures([]);
+        toast({
+          title: "Updated",
+          description: "Ad updated successfully.",
+          duration: 5000,
+          className: "bg-[#30AF5B] text-white",
+        });
+        if (updatedAd && handleAdView) {
+          handleAdView(updatedAd._id);
+        //  router.push(`/ads/${updatedAd._id}`);
+        }
+        // console.log("Data submitted successfully:", finalData);
+      }
+    } catch (error) {
+      console.error("Validation or submission failed", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter the subcategories for the selected category and include both subcategory and _id
+  const filteredSubcategories = categories
+    .filter((category: any) => category.category.name === selectedCategory)
+    .map((category: any) => ({
+      subcategory: category.subcategory,
+      imageUrl: category.imageUrl[0],
+      _id: category._id,
+    }))
+    .filter(
+      (value:any, index:any, self:any) =>
+        index ===
+        self.findIndex(
+          (c:any) => c.subcategory === value.subcategory && c._id === value._id
+        )
+    ); // Get unique subcategory and _id pairs
+
+  const formatToCurrency = (value: string | number) => {
+    if (!value) return "0";
+    const numberValue =
+      typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+    return new Intl.NumberFormat("en-US", {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numberValue);
+  };
+  const parseCurrencyToNumber = (value: string): number => {
+    // Remove any commas from the string and convert to number
+    return Number(value.replace(/,/g, ""));
+  };
+  function capitalizeFirstLetter(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  const handleCheckboxChange = (field: string, value: any) => {
+    const currentSelection = formData[field] || []; // Get current selections for the field
+    const isSelected = currentSelection.includes(value);
+
+    const updatedSelection = isSelected
+      ? currentSelection.filter((selected: any) => selected !== value) // Remove if already selected
+      : [...currentSelection, value]; // Add new selection
+
+    setFormData({ ...formData, [field]: updatedSelection }); // Update formData for the specific field
+  };
+
+  const currentYear = new Date().getFullYear();
+  let years = [];
+  for (let year = currentYear; year >= 1960; year--) {
+    years.push(year.toString());
+  }
+  const [countryCode, setCountryCode] = useState("+254"); // Default country code
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const formatPhoneNumber = (input: any) => {
     // Remove all non-digit characters
@@ -759,19 +630,6 @@ const AdForm = ({
       )}`;
     }
   };
-
-  const handleCountryCodeChange = (e: any) => {
-    setCountryCode(e.target.value);
-  };
-
-  const handleInputChange = (e: any) => {
-    const input = e.target.value;
-    const formatted = formatPhoneNumber(input);
-    setPhoneNumber(formatted);
-  };
-
-  //const fullPhoneNumber = countryCode + removeLeadingZero(phoneNumber);
-
   function removeLeadingZero(numberString: string) {
     // Check if the first character is '0'
     if (numberString.charAt(0) === "0") {
@@ -782,47 +640,40 @@ const AdForm = ({
       return numberString;
     }
   }
-  const currentYear = new Date().getFullYear();
-  let years = [];
-  for (let year = currentYear; year >= 1960; year--) {
-    years.push(year.toString());
-  }
-
-  const [selectedfeaturesOptions, setSelectedfeaturesOptions] = useState<
-    string[]
-  >(ad?.vehiclekeyfeatures ?? []);
-
-  const handleFeaturesToggle = (feature: string) => {
-    if (selectedfeaturesOptions.includes(feature)) {
-      const allfeatures = selectedfeaturesOptions.filter(
-        (f: any) => f !== feature
-      );
-      form.setValue("vehiclekeyfeatures", allfeatures); // Reset constituency value
-      setSelectedfeaturesOptions(allfeatures);
-    } else {
-      const allfeatures = [...selectedfeaturesOptions, feature];
-      form.setValue("vehiclekeyfeatures", allfeatures); // Reset constituency value
-      setSelectedfeaturesOptions(allfeatures);
-    }
+  const handleCountryCodeChange = (e: any) => {
+    setCountryCode(e.target.value);
   };
 
-  const [selectedamenitiesOptions, setSelectedamenitiesOptions] = useState<
-    string[]
-  >(ad?.amenities ?? []);
-
-  const handleamenitiesToggle = (feature: string) => {
-    if (selectedamenitiesOptions.includes(feature)) {
-      const allfeatures = selectedamenitiesOptions.filter(
-        (f: any) => f !== feature
-      );
-      form.setValue("amenities", allfeatures); // Reset constituency value
-      setSelectedamenitiesOptions(allfeatures);
-    } else {
-      const allfeatures = [...selectedamenitiesOptions, feature];
-      form.setValue("amenities", allfeatures); // Reset constituency value
-      setSelectedamenitiesOptions(allfeatures);
-    }
+  const handleInputChangePhone = (e: any) => {
+    const input = e.target.value;
+    const formatted = formatPhoneNumber(input);
+    setPhoneNumber(formatted);
+    setFormData({
+      ...formData,
+      phone: countryCode + removeLeadingZero(phoneNumber),
+    });
   };
+  const [selectedCounty, setSelectedCounty] = useState<string | null>(null);
+  const [selectedConstituency, setSelectedConstituency] = useState<
+    string | null
+  >(null);
+  const constituencies =
+  REGIONS_WITH_AREA.find(
+      (county) => county.region === selectedCounty
+    )?.area || [];
+
+  const handleCounty = (field: string, value: any) => {
+    
+    setSelectedCounty(value);
+    setFormData({ ...formData, [field]: value, area: "" });
+    setSelectedConstituency(null);
+  };
+  const handleConstituency = (field: string, value: any) => {
+    setSelectedConstituency(value);
+    setFormData({ ...formData, [field]: value });
+  };
+
+  // Your existing state variables and functions here
 
   const handleButtonClick = (index: number, title: string) => {
     setActiveButton(index);
@@ -847,2995 +698,1041 @@ const AdForm = ({
     }
     setActivePackage(pack);
     setplanId(pack._id);
+    setplan(pack.name);
     setpriority(pack.priority);
     setexpirationDate(expirationDate);
     pack.price.forEach((price: any, index: number) => {
       if (index === activeButton) {
         setPriceInput(price.amount);
         setPeriodInput(price.period);
-        // alert(price.period);
       }
     });
-    //}
   };
-  const [showPop, setShowPop] = useState(false);
-
-  const togglePopup = () => {
-    setShowPop((prev) => !prev);
-  };
-
-  const [newModel, setNewModel] = useState("");
-  const [newmake, setNewMake] = useState("");
-  const handleAddModel = () => {
-    if (newmake) {
-      const formattedModel =
-        newModel.charAt(0).toUpperCase() + newModel.slice(1).toLowerCase();
-
-      addModelToMake(newmake, formattedModel);
-      form.setValue("vehiclemodel", formattedModel);
-    }
-  };
-
-  const formatToCurrency = (value: string | number) => {
-    if (!value) return "0";
-    const numberValue =
-      typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
-    return new Intl.NumberFormat("en-US", {
-      style: "decimal",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(numberValue);
-  };
-
-  // Handle changes and strip non-numeric characters
-
+  if (!selectedCategoryCommand) {
+    return (
+      <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+        <Image
+          src="/assets/icons/loading2.gif"
+          alt="loading"
+          width={40}
+          height={40}
+          unoptimized
+        />
+      </div>
+    );
+  }
   return (
     <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-1 mr-0 ml-0 lg:mr-20 lg:ml-20"
-        >
-          <div className="lg:p-1 rounded-sm m-1 shadow-lg bg-white">
-            <div className="flex flex-col">
-              <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center mb-2 mt-2 rounded-sm">
-                <div className="wrapper flex items-center justify-center sm:justify-between">
-                  <div className="lg:flex-1 p-1 ml-2 mr-5 mb-0 lg:mb-0">
-                    <div className="text-lg font-bold breadcrumbs">
-                      <h3 className="font-bold text-[25px] text-center sm:text-left">
-                        {type} Ad
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {loading ? (
-                <div className="flex justify-center items-center h-[56px]">
-                  <div className="flex gap-1 items-center">
-                    <CircularProgress sx={{ color: "black" }} size={30} />
-                    Loading categories...
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-5 md:flex-row">
-                  <FormField
-                    control={form.control}
-                    name="categoryId"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormControl>
-                          <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                            <Autocomplete
-                              id="categoryId"
-                              options={categories.filter(
-                                (category) => category.name === "Vehicle"
-                              )}
-                              getOptionLabel={(option) => option.name}
-                              value={
-                                categories.find(
-                                  (category) => category._id === field.value
-                                ) || null
-                              }
-                              onChange={(event, newValue) => {
-                                field.onChange(newValue ? newValue._id : null);
-                                // Reset subcategory value
-                                form.setValue("subcategory", "");
-                                // Trigger re-render to update subcategory options
-                                form.getValues();
-                              }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Select Category*"
-                                />
-                              )}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="subcategory"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormControl>
-                          <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                            <Autocomplete
-                              id="subcategory"
-                              options={
-                                categories
-                                  .find(
-                                    (category) =>
-                                      category._id ===
-                                      form.getValues("categoryId")
-                                  )
-                                  ?.subcategory.map((sub: any) => sub.title) ||
-                                []
-                              }
-                              value={field.value}
-                              onChange={(event, newValue) => {
-                                field.onChange(newValue);
-                                SetselectedCategory(newValue);
-                              }}
-                              renderInput={(field) => (
-                                <TextField
-                                  {...field}
-                                  label="Select Sub Category*"
-                                />
-                              )}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-
-              {SelectedCategory === "Cars, Vans & Pickups" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="make"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="make"
-                                options={vehicleModels}
-                                getOptionLabel={(option) => option.make}
-                                value={
-                                  vehicleModels.find(
-                                    (vehicle) => vehicle.make === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.make : null
-                                  );
-                                  setNewMake(newValue ? newValue?.make : "");
-                                  form.setValue("vehiclemodel", ""); // Reset constituency value
-                                  form.getValues(); // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Make*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errormake}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehiclemodel"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="flex w-full overflow-hidden rounded-full items-center">
-                              <div className="w-full overflow-hidden rounded-full p-4 py-2">
-                                <Autocomplete
-                                  id="vehiclemodel"
-                                  options={
-                                    vehicleModels.find(
-                                      (vehicle) =>
-                                        vehicle.make === form.getValues("make")
-                                    )?.models || []
-                                  }
-                                  value={field.value}
-                                  //freeSolo // This allows users to type a custom model
-                                  onChange={(event, newValue) => {
-                                    field.onChange(newValue);
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField {...params} label="Model*" />
-                                  )}
-                                />
-
-                                <div className="text-[#FF0000] text-sm">
-                                  {errormodel}
-                                </div>
-                              </div>
-                              {form.getValues("make") && (
-                                <AlertDialog>
-                                  <AlertDialogTrigger className="">
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <div className="bg-black rounded-sm flex w-[80px] text-xs p-2 text-white hover:bg-green-500 mr-4">
-                                            Add New model?
-                                          </div>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Add New model if missing!</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent className="bg-white">
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>
-                                        Add new {form.getValues("make")} model
-                                      </AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        <Input
-                                          type="text"
-                                          placeholder="Model name"
-                                          className="input-field mt-3"
-                                          onChange={(e) =>
-                                            setNewModel(e.target.value)
-                                          }
-                                        />
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>
-                                        Cancel
-                                      </AlertDialogCancel>
-                                      <AlertDialogAction
-                                        onClick={() =>
-                                          startTransition(handleAddModel)
-                                        }
-                                      >
-                                        Add
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              )}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleyear"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleyear"
-                                options={years}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  years.find((yr) => yr === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Manufacture year*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleyear}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleBodyTypes"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleBodyTypes"
-                                options={vehicleBodyTypes}
-                                getOptionLabel={(option) => option.type}
-                                value={
-                                  vehicleBodyTypes.find(
-                                    (vc) => vc.type === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.type : null
-                                  );
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Body Type*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleBodyTypes}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleFuelTypes"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleFuelTypes"
-                                options={vehicleFuelTypes}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleFuelTypes.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Fuel Type*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleFuelTypes}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleregistered"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleregistered"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Registered*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleregistered}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleEngineSizesCC"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Engine Size CC*"
-                                className="w-full"
-                              />
-
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleEngineSizesCC}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclemileage"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <div className="flex gap-1 items-center justify-between">
-                                <TextField
-                                  {...field}
-                                  label="Mileage (Optional)*"
-                                  className="w-full"
-                                />
-                                kilometers (KM)
-                              </div>
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclemileage}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehiclesecordCondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclesecordCondition"
-                                options={vehicleSecondConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleSecondConditions.find(
-                                    (ic) => ic === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Secord condition (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclesecordCondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleTransmissions"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleTransmissions"
-                                options={vehicleTransmissions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleTransmissions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Transmissions (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleTransmissions}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehiclekeyfeatures"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden px-4 py-2">
-                              {/* Trigger for Pop-up */}
-                              <div className="cursor-pointer">
-                                <TextField
-                                  {...field}
-                                  multiline
-                                  label="Features (Optional)*"
-                                  onClick={togglePopup}
-                                  className="w-full"
-                                />
-                              </div>
-
-                              {/* Custom Popup Content */}
-                              {showPop && (
-                                <div className="absolute z-10 w-[300px] shadow-lg bg-white rounded-md border p-1 mt-2">
-                                  <div className="flex justify-end">
-                                    <button
-                                      onClick={togglePopup}
-                                      className="text-gray-600 hover:text-gray-800 font-bold text-sm p-2"
-                                    >
-                                      X
-                                    </button>
-                                  </div>
-                                  <ScrollArea className="h-[200px] w-full">
-                                    {vehicleFeatures.map((option) => (
-                                      <div
-                                        key={option}
-                                        className="flex w-full gap-2 p-2"
-                                      >
-                                        <input
-                                          className="cursor-pointer"
-                                          type="checkbox"
-                                          value={option}
-                                          checked={selectedfeaturesOptions.includes(
-                                            option
-                                          )}
-                                          onChange={() =>
-                                            handleFeaturesToggle(option)
-                                          }
-                                        />
-                                        <div className="text-sm">{option}</div>
-                                      </div>
-                                    ))}
-                                  </ScrollArea>
-                                </div>
-                              )}
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclekeyfeatures}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehiclechassis"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="VIN Chassis Number (Optional)*"
-                                className="w-full"
-                              />
-
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclechassis}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehiclecolor"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecolor"
-                                options={vehicleColors}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleColors.find(
-                                    (color) => color === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Body color (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecolor}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleinteriorColor"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleinteriorColor"
-                                options={interiorVehicleColors}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  interiorVehicleColors.find(
-                                    (ic) => ic === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Interior color (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleinteriorColor}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleSeats"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleSeats"
-                                options={vehicleSeats}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleSeats.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Seats (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleSeats}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleexchangeposible"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleexchangeposible"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Exchange possible (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleexchangeposible}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              {SelectedCategory === "Buses & Microbuses" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="make"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="make"
-                                options={BusesMake}
-                                getOptionLabel={(option) => option.make}
-                                value={
-                                  BusesMake.find(
-                                    (vehicle) => vehicle.make === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.make : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Make*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehicleyear"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleyear"
-                                options={years}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  years.find((yr) => yr === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Manufacture year*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleyear}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleFuelTypes"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleFuelTypes"
-                                options={vehicleFuelTypes}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleFuelTypes.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Fuel Type*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleFuelTypes}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleregistered"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleregistered"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Registered*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleregistered}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclesecordCondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclesecordCondition"
-                                options={vehicleSecondConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleSecondConditions.find(
-                                    (ic) => ic === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Secord condition (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclesecordCondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleTransmissions"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleTransmissions"
-                                options={vehicleTransmissions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleTransmissions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Transmissions (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleTransmissions}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecolor"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecolor"
-                                options={vehicleColors}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleColors.find(
-                                    (color) => color === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Body color (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecolor}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehicleexchangeposible"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleexchangeposible"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Exchange possible (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleexchangeposible}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-
-              {SelectedCategory === "Heavy Equipment" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="Types"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="Types"
-                                options={equipmentTypes}
-                                getOptionLabel={(option) => option.type}
-                                value={
-                                  equipmentTypes.find(
-                                    (vehicle) => vehicle.type === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.type : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Type*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorTypes}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="make"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="make"
-                                options={equipmentMakes}
-                                getOptionLabel={(option) => option.make}
-                                value={
-                                  equipmentMakes.find(
-                                    (vehicle) => vehicle.make === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.make : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Make*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleyear"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleyear"
-                                options={years}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  years.find((yr) => yr === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Manufacture year*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleyear}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehicleexchangeposible"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleexchangeposible"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Exchange possible (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleexchangeposible}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              {SelectedCategory === "Motorbikes,Tuktuks & Scooters" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="make"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="make"
-                                options={motorcycleMakes}
-                                getOptionLabel={(option) => option.make}
-                                value={
-                                  motorcycleMakes.find(
-                                    (vehicle) => vehicle.make === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.make : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Make*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleyear"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleyear"
-                                options={years}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  years.find((yr) => yr === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Manufacture year*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleyear}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehicleEngineSizesCC"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Engine Size CC (Optional)*"
-                                className="w-full"
-                              />
-
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleEngineSizesCC}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleexchangeposible"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleexchangeposible"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Exchange possible (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleexchangeposible}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecolor"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecolor"
-                                options={vehicleColors}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleColors.find(
-                                    (color) => color === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Body color (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecolor}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              {SelectedCategory === "Trucks & Trailers" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="Types"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="Types"
-                                options={truckTypes}
-                                getOptionLabel={(option) => option.type}
-                                value={
-                                  truckTypes.find(
-                                    (vehicle) => vehicle.type === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.type : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Type*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="make"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="make"
-                                options={truckMakes}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  truckMakes.find(
-                                    (vehicle) => vehicle === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Make*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleyear"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleyear"
-                                options={years}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  years.find((yr) => yr === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Manufacture year*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleyear}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleTransmissions"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleTransmissions"
-                                options={vehicleTransmissions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleTransmissions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Transmissions (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleTransmissions}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehicleexchangeposible"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleexchangeposible"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Exchange possible (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleexchangeposible}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              {SelectedCategory === "Vehicle Parts & Accessories" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="Types"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="Types"
-                                options={automotivePartsCategories}
-                                getOptionLabel={(option) => option.name}
-                                value={
-                                  automotivePartsCategories.find(
-                                    (vehicle) => vehicle.name === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.name : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Type*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="make"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="make"
-                                options={automotivePartsMakes}
-                                getOptionLabel={(option) => option.make}
-                                value={
-                                  automotivePartsMakes.find(
-                                    (vehicle) => vehicle.make === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.make : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Make*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              {SelectedCategory === "Watercraft & Boats" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="Types"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="Types"
-                                options={boatTypes}
-                                getOptionLabel={(option) => option.type}
-                                value={
-                                  boatTypes.find(
-                                    (vehicle) => vehicle.type === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.type : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Type*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="vehiclecondition"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehiclecondition"
-                                options={vehicleConditions}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleConditions.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Condition*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="vehicleyear"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleyear"
-                                options={years}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  years.find((yr) => yr === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Manufacture year*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleyear}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="vehicleexchangeposible"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="vehicleexchangeposible"
-                                options={vehicleRegistered}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  vehicleRegistered.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Exchange possible (Optional)*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehicleexchangeposible}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-
-              {SelectedCategory === "New builds" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="estatename"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Estate Name*"
-                                className="w-full"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="Types"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="Types"
-                                options={propertyType}
-                                getOptionLabel={(option) => option.type}
-                                value={
-                                  propertyType.find(
-                                    (vehicle) => vehicle.type === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.type : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Type*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="status"
-                                options={constructionStatus}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  constructionStatus.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Construction Status*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="area"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Property size(sqm)*"
-                                className="w-full"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="floors"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="floors"
-                                options={floors}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  floors.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Number of Floors*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="houseclass"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="houseclass"
-                                options={businessType}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  businessType.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="housing Class*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="bedrooms"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="bedrooms"
-                                options={bedrooms}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  bedrooms.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Number of bedrooms*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="bathrooms"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="bathrooms"
-                                options={bathrooms}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  bathrooms.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Number of bathrooms*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="parking"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="parking"
-                                options={yesno}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  yesno.find((vc) => vc === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Parking*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="propertysecurity"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="propertysecurity"
-                                options={yesno}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  yesno.find((vc) => vc === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Security*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="fee"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Agency Fee*"
-                                className="w-full"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="amenities"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden px-4 py-2">
-                              <HoverCard>
-                                <HoverCardTrigger>
-                                  <TextField
-                                    {...field}
-                                    label="Amenities*"
-                                    disabled
-                                    className="w-full"
-                                  />
-                                </HoverCardTrigger>
-                                <HoverCardContent className="">
-                                  <ScrollArea className="h-[200px] w-full  bg-white rounded-md border p-1">
-                                    {amenities.map((option) => (
-                                      <>
-                                        <div
-                                          key={option}
-                                          className="flex w-full gap-2"
-                                        >
-                                          <input
-                                            className="cursor-pointer"
-                                            type="checkbox"
-                                            value={option}
-                                            checked={selectedamenitiesOptions.includes(
-                                              option
-                                            )}
-                                            onChange={() =>
-                                              handleamenitiesToggle(option)
-                                            }
-                                          />
-                                          <div className="text-sm">
-                                            {" "}
-                                            {option}
-                                          </div>
-                                        </div>
-                                      </>
-                                    ))}
-                                  </ScrollArea>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclekeyfeatures}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              {SelectedCategory === "Houses & Apartments for Sale" && (
-                <>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="estatename"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Estate Name*"
-                                className="w-full"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="Types"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="Types"
-                                options={propertyType}
-                                getOptionLabel={(option) => option.type}
-                                value={
-                                  propertyType.find(
-                                    (vehicle) => vehicle.type === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(
-                                    newValue ? newValue.type : null
-                                  );
-                                  // Trigger re-render to update constituency options
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Select Type*" />
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="status"
-                                options={propertyCondition}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  propertyCondition.find(
-                                    (vc) => vc === field.value
-                                  ) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Conditions*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="area"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <TextField
-                                {...field}
-                                label="Property size(sqm)*"
-                                className="w-full"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="floors"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="floors"
-                                options={floors}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  floors.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Number of Floors*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="bedrooms"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="bedrooms"
-                                options={bedrooms}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  bedrooms.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Number of bedrooms*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="bathrooms"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="bathrooms"
-                                options={bathrooms}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  bathrooms.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField
-                                    {...field}
-                                    label="Number of bathrooms*"
-                                  />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="parking"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="parking"
-                                options={yesno}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  yesno.find((vc) => vc === field.value) || null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Parking*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="furnishing"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                              <Autocomplete
-                                id="furnishing"
-                                options={furnishing}
-                                getOptionLabel={(option) => option}
-                                value={
-                                  furnishing.find((vc) => vc === field.value) ||
-                                  null
-                                }
-                                onChange={(event, newValue) => {
-                                  field.onChange(newValue ? newValue : null);
-                                }}
-                                renderInput={(field) => (
-                                  <TextField {...field} label="Furnishing*" />
-                                )}
-                              />
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclecondition}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="amenities"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="w-full overflow-hidden px-4 py-2">
-                              <HoverCard>
-                                <HoverCardTrigger>
-                                  <TextField
-                                    {...field}
-                                    label="Property Feature*"
-                                    className="w-full"
-                                  />
-                                </HoverCardTrigger>
-                                <HoverCardContent className="">
-                                  <div className="text-sm">OPTIONS</div>
-                                  <ScrollArea className="h-[200px] w-full  bg-white rounded-md border p-1">
-                                    {propertyFeature.map((option) => (
-                                      <>
-                                        <div
-                                          key={option}
-                                          className="flex w-full gap-2"
-                                        >
-                                          <input
-                                            className="cursor-pointer"
-                                            type="checkbox"
-                                            value={option}
-                                            checked={selectedamenitiesOptions.includes(
-                                              option
-                                            )}
-                                            onChange={() =>
-                                              handleamenitiesToggle(option)
-                                            }
-                                          />
-                                          <div className="text-sm">
-                                            {" "}
-                                            {option}
-                                          </div>
-                                        </div>
-                                      </>
-                                    ))}
-                                  </ScrollArea>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <div className="text-[#FF0000] text-sm">
-                                {errorvehiclekeyfeatures}
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </>
-              )}
-              <div className="flex flex-col gap-5 md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="w-full overflow-hidden rounded-full px-4 py-2">
-                          <TextField
-                            {...field}
-                            label="Ad Title*"
-                            className="w-full"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-5">
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="w-full overflow-hidden px-4 py-2">
-                          <div className="grid w-full gap-1.5">
-                            <TextField
-                              {...field}
-                              multiline
-                              rows={5} // You can adjust this number based on your preference
-                              label="Description*"
-                              className="w-full"
-                            />
-                          </div>
-                        </div>
-                        {/*  <div className="w-full">
-                          <div className="grid w-full px-3">
-                            <ReactQuill
-                              {...field}
-                              placeholder="Description..."
-                              className="bg-white h-[250px]text-base rounded-sm p-1 w-full h-full text-black"
-                              modules={modules} // Pass the custom toolbar modules
-                            />
-                          </div>
-                        </div>*/}
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-5 mt-2 mr-2 ml-2 md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="imageUrls"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl className="min-h-[300px]">
-                        {/*     <div className="hidden lg:inline relative w-full">
-                          <FileUploader
-                            onFieldChange={field.onChange}
-                            imageUrls={field.value}
-                            setFiles={setFiles}
-                            userName={userName}
-                          />
-                          <div className="absolute ml-2 top-1 left-0 text-[#FF0000] text-sm">
-                            {showmessage}
-                          </div>
-                        </div>
-*/}
-                        <div className="relative p-2 w-full">
-                          <FileUploader
-                            onFieldChange={field.onChange}
-                            imageUrls={field.value}
-                            setFiles={setFiles}
-                            userName={userName}
-                          />
-                          <div className="absolute ml-2 top-1 left-0 text-[#FF0000] text-sm">
-                            {showmessage}
-                          </div>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="flex flex-col gap-5 md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="flex item-center w-full gap-1 overflow-hidden rounded-full px-4 py-2">
-                          <TextField
-                            {...field}
-                            label="Price"
-                            className="w-full"
-                            value={formatToCurrency(field.value ?? 0)} // Format value as money
-                            // inputProps={{
-                            //  inputMode: "numeric",
-                            //  pattern: "[0-9]*",
-                            // }} // Ensures numeric input
-                          />
-                          <FormField
-                            control={form.control}
-                            name="negotiable"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <div className="flex items-center">
-                                    <label
-                                      htmlFor="negotiable"
-                                      className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                      Negotiable
-                                    </label>
-                                    <Checkbox
-                                      onCheckedChange={field.onChange}
-                                      checked={field.value}
-                                      id="negotiable"
-                                      className="mr-2 h-5 w-5 border-2 border-primary-500"
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-5 md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="youtube"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="flex-center w-full gap-1 overflow-hidden rounded-full px-4 py-2">
-                          <TextField
-                            {...field}
-                            label="Add Youtube link"
-                            className="w-full"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-5 px-4 mt-2 md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="flex w-full gap-1">
-                          <select
-                            className="bg-gray-100 text-sm lg:text-base p-1 border rounded-sm w-[120px] lg:w-[200px]"
-                            value={countryCode}
-                            onChange={handleCountryCodeChange}
-                          >
-                            <option value="+254">Kenya (+254)</option>
-                            <option value="+213">Algeria (+213)</option>
-                            <option value="+244">Angola (+244)</option>
-                            <option value="+229">Benin (+229)</option>
-                            <option value="+267">Botswana (+267)</option>
-                            <option value="+226">Burkina Faso (+226)</option>
-                            <option value="+257">Burundi (+257)</option>
-                            <option value="+237">Cameroon (+237)</option>
-                            <option value="+238">Cape Verde (+238)</option>
-                            <option value="+236">
-                              Central African Republic (+236)
-                            </option>
-                            <option value="+235">Chad (+235)</option>
-                            <option value="+269">Comoros (+269)</option>
-                            <option value="+243">
-                              Democratic Republic of the Congo (+243)
-                            </option>
-                            <option value="+253">Djibouti (+253)</option>
-                            <option value="+20">Egypt (+20)</option>
-                            <option value="+240">
-                              Equatorial Guinea (+240)
-                            </option>
-                            <option value="+291">Eritrea (+291)</option>
-                            <option value="+268">Eswatini (+268)</option>
-                            <option value="+251">Ethiopia (+251)</option>
-                            <option value="+241">Gabon (+241)</option>
-                            <option value="+220">Gambia (+220)</option>
-                            <option value="+233">Ghana (+233)</option>
-                            <option value="+224">Guinea (+224)</option>
-                            <option value="+245">Guinea-Bissau (+245)</option>
-                            <option value="+225">Ivory Coast (+225)</option>
-                            <option value="+266">Lesotho (+266)</option>
-                            <option value="+231">Liberia (+231)</option>
-                            <option value="+218">Libya (+218)</option>
-                            <option value="+261">Madagascar (+261)</option>
-                            <option value="+265">Malawi (+265)</option>
-                            <option value="+223">Mali (+223)</option>
-                            <option value="+222">Mauritania (+222)</option>
-                            <option value="+230">Mauritius (+230)</option>
-                            <option value="+212">Morocco (+212)</option>
-                            <option value="+258">Mozambique (+258)</option>
-                            <option value="+264">Namibia (+264)</option>
-                            <option value="+227">Niger (+227)</option>
-                            <option value="+234">Nigeria (+234)</option>
-                            <option value="+242">
-                              Republic of the Congo (+242)
-                            </option>
-                            <option value="+250">Rwanda (+250)</option>
-                            <option value="+239">
-                              Sao Tome and Principe (+239)
-                            </option>
-                            <option value="+221">Senegal (+221)</option>
-                            <option value="+248">Seychelles (+248)</option>
-                            <option value="+232">Sierra Leone (+232)</option>
-                            <option value="+252">Somalia (+252)</option>
-                            <option value="+27">South Africa (+27)</option>
-                            <option value="+211">South Sudan (+211)</option>
-                            <option value="+249">Sudan (+249)</option>
-                            <option value="+255">Tanzania (+255)</option>
-                            <option value="+228">Togo (+228)</option>
-                            <option value="+216">Tunisia (+216)</option>
-                            <option value="+256">Uganda (+256)</option>
-                            <option value="+260">Zambia (+260)</option>
-                            <option value="+263">Zimbabwe (+263)</option>
-                          </select>
-
-                          <TextField
-                            {...field}
-                            label="Contact phone number"
-                            type="tel"
-                            value={phoneNumber}
-                            onChange={handleInputChange}
-                            className="w-full"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="mb-10 mt-2">
-                <div className="w-full overflow-bg-white px-4 py-0">
-                  <div className="grid w-full gap-1.5">
-                    <h2 className="font-bold">Location: {myaddress}</h2>
-                    {/* Radio buttons for options */}
-                    <div className="flex flex-col gap-5 md:flex-row">
-                      <div className="flex w-full gap-1 p-1">
-                        <input
-                          type="radio"
-                          id="search"
-                          name="locationOption"
-                          value="search"
-                          checked={selectedOption === "search"}
-                          onChange={handleOptionChange}
+     {showload ? (<><div className="w-full p-5 h-full flex flex-col items-center justify-center">
+                        <Image
+                          src="/assets/icons/loading2.gif"
+                          alt="loading"
+                          width={40}
+                          height={40}
+                          unoptimized
                         />
-                        <label htmlFor="search">Approximate Location</label>
-                      </div>
-                      <div className=" flex w-full gap-1 p-1">
-                        <input
-                          type="radio"
-                          id="enter"
-                          name="locationOption"
-                          value="enter"
-                          checked={selectedOption === "enter"}
-                          onChange={handleOptionChange}
-                        />
-                        <label htmlFor="enter">Precise Location</label>
-                      </div>
-                    </div>
-                    {/* Conditionally render based on selected option */}
-                    {selectedOption === "search" ? (
-                      <GooglePlacesAutocomplete
-                        apiKey="AIzaSyBti8wo3gFt3cUXfe2peKbbJgzkSPnZtRk"
-                        selectProps={{
-                          placeholder: "Search your location",
-                          className: "p-1", // Add your custom class here
-                          onChange: handleSelect,
-                        }}
-                        autocompletionRequest={{
-                          componentRestrictions: {
-                            country: ["KE"], // Limits results to Kenya
-                          },
-                        }}
-                      />
-                    ) : (
-                      <div className="flex flex-col gap-5 md:flex-row">
-                        <TextField
-                          type="text"
-                          label="Latitude"
-                          className="w-full"
-                          onChange={handleLatitudeChange}
-                        />
-                        <TextField
-                          type="text"
-                          label="Longitude"
-                          className="w-full"
-                          onChange={handleLongitudeChange}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
+                      </div></>):(<>
+      <div className="bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+        <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center mb-2 mt-2 rounded-sm">
+          <div className="wrapper flex items-center justify-center sm:justify-between">
+            <div className="lg:flex-1 p-1 ml-2 mr-5 mb-0 lg:mb-0">
+              <div className="text-lg font-bold breadcrumbs">
+                <h3 className="font-bold text-[25px] text-center sm:text-left">
+                  {type} Ad
+                </h3>
               </div>
             </div>
           </div>
-          {type === "Create" && (
+          
+        </section>
+        <div className="flex flex-col w-full mt-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 flex gap-3 flex-col">
+            <div className="flex">
+              <CategorySelect
+                selected={selectedCategory}
+                data={selectedCategoryCommand}
+                onChange={handleInputCategoryChange}
+              />
+              {formErrors["category"] && (
+                <p className="text-red-500 text-sm">{formErrors["category"]}</p>
+              )}
+            </div>
+            <div className="flex">
+              <SubCategorySelect
+                selected={selectedSubCategory}
+                data={selectedCategory ? filteredSubcategories : []}
+                onChange={handleInputSubCategoryChange}
+              />
+              {formErrors["subcategory"] && (
+                <p className="text-red-500 text-sm">
+                  {formErrors["subcategory"]}
+                </p>
+              )}
+            </div>
+          </div>
+          {selectedSubCategory && (
             <>
-              <div className="p-1 rounded-sm m-1 shadow-lg bg-white">
+              <div className="grid grid-cols-1 lg:grid-cols-2 flex gap-3 mt-3 flex-col">
+                <div>
+                  <AutoComplete
+                    data={REGIONS_WITH_AREA.map(
+                      (county) => county.region
+                    )}
+                    name={"region"}
+                    onChange={handleCounty}
+                    selected={formData["region"] || ""}
+                  />
+                  {formErrors["region"] && (
+                    <p className="text-red-500 text-sm">
+                      {formErrors["region"]}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <AutoComplete
+                    data={constituencies ?? []}
+                    name={"area"}
+                    onChange={handleConstituency}
+                    selected={formData["area"] || ""}
+                  />
+                  {formErrors["area"] && (
+                    <p className="text-red-500 text-sm">{formErrors["area"]}</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+          {selectedSubCategory && (
+            <>
+              <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 items-center">
+                <FileUploader
+                  onFieldChange={(urls) => handleInputChange("imageUrls", urls)}
+                  imageUrls={formData["imageUrls"] || []} // Ensure this is an array
+                  setFiles={setFiles}
+                  adId={adId || ""}
+                  userName={userName}
+                />
+                {formErrors["imageUrls"] && (
+                  <p className="text-red-500 text-sm">
+                    {formErrors["imageUrls"]}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+
+        
+          {fields.map((field: any) => (
+            <div key={field.name} className="flex gap-3 items-center mt-3">
+              {field.type === "checkbox" && (
+                <div className="mt-3 mb-3">
+                  {capitalizeFirstLetter(field.name.replace("-", " "))}
+                </div>
+              )}
+              {field.type === "related-autocompletes" && (
+                <MakeModelAutocomplete
+                  plainTextData={field.options}
+                  make={formData["make"] || ""}
+                  formErrorsmake={formErrors["make"]}
+                  model={formData["model"] || ""}
+                  formErrorsmodel={formErrors["model"]}
+                  onChange={handleInputAutoCompleteChange}
+                />
+              )}
+              {field.type === "text" && (
+                <TextField
+                  required={field.required}
+                  id={field.name}
+                  label={capitalizeFirstLetter(field.name.replace("-", " "))}
+                  value={formData[field.name] || ""}
+                  onChange={(e) =>
+                    handleInputChange(field.name, e.target.value)
+                  }
+                  variant="outlined"
+                  placeholder={`Enter ${field.name.replace("-", " ")}`}
+                  InputProps={{
+                    classes: {
+                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      notchedOutline: "border-gray-300 dark:border-gray-600",
+                      focused: "",
+                    },
+                  }}
+                  InputLabelProps={{
+                    classes: {
+                      root: "text-gray-500 dark:text-gray-400",
+                      focused: "text-green-500 dark:text-green-400",
+                    },
+                  }}
+                  className="w-full"
+                />
+              )}
+              {field.type === "youtube-link" && (
+                <TextField
+                  required={field.required}
+                  id={field.type}
+                  label={"YouTube or TikTok Video link"}
+                  value={formData[field.type] || ""}
+                  onChange={(e) =>
+                    handleInputChange(field.type, e.target.value)
+                  }
+                  variant="outlined"
+                  placeholder={`Enter YouTube or TikTok Video link`}
+                  InputProps={{
+                    classes: {
+                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      notchedOutline: "border-gray-300 dark:border-gray-600",
+                      focused: "",
+                    },
+                  }}
+                  InputLabelProps={{
+                    classes: {
+                      root: "text-gray-500 dark:text-gray-400",
+                      focused: "text-green-500 dark:text-green-400",
+                    },
+                  }}
+                  className="w-full"
+                />
+              )}
+  {field.type === "virtualTourLink" && (
+                <TextField
+                  required={field.required}
+                  id={field.type}
+                  label={"3D Virtual Property Tour Link"}
+                  value={formData[field.type] || ""}
+                  onChange={(e) =>
+                    handleInputChange(field.type, e.target.value)
+                  }
+                  variant="outlined"
+                  placeholder={`Enter 3D Virtual Property Tour Link`}
+                  InputProps={{
+                    classes: {
+                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      notchedOutline: "border-gray-300 dark:border-gray-600",
+                      focused: "",
+                    },
+                  }}
+                  InputLabelProps={{
+                    classes: {
+                      root: "text-gray-500 dark:text-gray-400",
+                      focused: "text-green-500 dark:text-green-400",
+                    },
+                  }}
+                  className="w-full"
+                />
+              )}
+
+
+              {field.type === "price" && (
+                <div className="flex flex-col w-full">
+                  <TextField
+                    required={field.required}
+                    id={field.name}
+                    label={capitalizeFirstLetter(field.name)}
+                    value={formatToCurrency(formData[field.name] ?? 0)}
+                    onChange={(e) =>
+                      handleInputChange(field.name, e.target.value)
+                    }
+                    variant="outlined"
+                    placeholder={`Enter ${field.name.replace("-", " ")}`}
+                    InputProps={{
+                      classes: {
+                        root: "dark:bg-[#2D3236] dark:text-gray-100",
+                        notchedOutline: "border-gray-300 dark:border-gray-600",
+                        focused: "",
+                      },
+                    }}
+                    InputLabelProps={{
+                      classes: {
+                        root: "text-gray-500 dark:text-gray-400",
+                        focused: "text-green-500 dark:text-green-400",
+                      },
+                    }}
+                    className="w-full"
+                  />
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
+                    Are you open to negotiation?
+                  </h3>
+                  <div className="flex items-center space-x-4 mt-2">
+                    {["Yes", "No", "Not sure"].map((option) => (
+                      <label
+                        key={option}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          name="negotiable"
+                          value={option.toLowerCase()}
+                          checked={
+                            formData["negotiable"]
+                              ? formData["negotiable"] === option.toLowerCase()
+                              : option.toLowerCase() === "not sure"
+                          } // Default to "not sure"
+                          onChange={() => {
+                            handleInputChange(
+                              "negotiable",
+                              option.toLowerCase()
+                            );
+                          }}
+                          className="hidden peer"
+                        />
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                          {(formData["negotiable"]
+                            ? formData["negotiable"] === option.toLowerCase()
+                            : option.toLowerCase() === "not sure") && (
+                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                          )}
+                        </div>
+                        <span
+                          className={
+                            (
+                              formData["negotiable"]
+                                ? formData["negotiable"] ===
+                                  option.toLowerCase()
+                                : option.toLowerCase() === "not sure"
+                            )
+                              ? "text-green-500 font-medium"
+                              : "text-gray-600 dark:text-gray-400"
+                          }
+                        >
+                          {option}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {field.type === "rentprice" && (
+                <div className="flex flex-col w-full">
+                  <div className="flex w-full gap-1">
+                    <TextField
+                      required={field.required}
+                      id={"price"}
+                      label={capitalizeFirstLetter("price")}
+                      value={formatToCurrency(formData["price"] ?? 0)}
+                      onChange={(e) =>
+                        handleInputChange("price", e.target.value)
+                      }
+                      variant="outlined"
+                      placeholder={`Enter Price`}
+                      InputProps={{
+                        classes: {
+                          root: "dark:bg-[#2D3236] dark:text-gray-100",
+                          notchedOutline:
+                            "border-gray-300 dark:border-gray-600",
+                          focused: "",
+                        },
+                      }}
+                      InputLabelProps={{
+                        classes: {
+                          root: "text-gray-500 dark:text-gray-400",
+                          focused: "text-green-500 dark:text-green-400",
+                        },
+                      }}
+                      className="w-full"
+                    />
+                    <select
+                      className="border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
+                      value={formData["period"] || ""}
+                      onChange={(e) =>
+                        handleInputChange("period", e.target.value)
+                      }
+                    >
+                      <option value="per month" className="dark:text-gray-400">
+                      per month
+                      </option>
+                      <option value="per day">per day</option>
+                      <option value="per month">per month</option>
+                      <option value="per quarter-year">per quarter-year</option>
+                      <option value="per half-year">per half-year</option>
+                      <option value="per year">per year</option>
+                    </select>
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
+                    Are you open to negotiation?
+                  </h3>
+                  <div className="flex items-center space-x-4 mt-2">
+                    {["Yes", "No", "Not sure"].map((option) => (
+                      <label
+                        key={option}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          name="negotiable"
+                          value={option.toLowerCase()}
+                          checked={
+                            formData["negotiable"]
+                              ? formData["negotiable"] === option.toLowerCase()
+                              : option.toLowerCase() === "not sure"
+                          } // Default to "not sure"
+                          onChange={() => {
+                            handleInputChange(
+                              "negotiable",
+                              option.toLowerCase()
+                            );
+                          }}
+                          className="hidden peer"
+                        />
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                          {(formData["negotiable"]
+                            ? formData["negotiable"] === option.toLowerCase()
+                            : option.toLowerCase() === "not sure") && (
+                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                          )}
+                        </div>
+                        <span
+                          className={
+                            (
+                              formData["negotiable"]
+                                ? formData["negotiable"] ===
+                                  option.toLowerCase()
+                                : option.toLowerCase() === "not sure"
+                            )
+                              ? "text-green-500 font-medium"
+                              : "text-gray-600 dark:text-gray-400"
+                          }
+                        >
+                          {option}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {field.type === "priceper" && (
+                <div className="flex flex-col w-full">
+                  <div className="flex w-full gap-1">
+                    <TextField
+                      required={field.required}
+                      id={"price"}
+                      label={capitalizeFirstLetter("price")}
+                      value={formatToCurrency(formData["price"] ?? 0)}
+                      onChange={(e) =>
+                        handleInputChange("price", e.target.value)
+                      }
+                      variant="outlined"
+                      placeholder={`Enter Price`}
+                      InputProps={{
+                        classes: {
+                          root: "dark:bg-[#2D3236] dark:text-gray-100",
+                          notchedOutline:
+                            "border-gray-300 dark:border-gray-600",
+                          focused: "",
+                        },
+                      }}
+                      InputLabelProps={{
+                        classes: {
+                          root: "text-gray-500 dark:text-gray-400",
+                          focused: "text-green-500 dark:text-green-400",
+                        },
+                      }}
+                      className="w-full"
+                    />
+                    <select
+                      className="border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
+                      value={formData["per"] || "Outright Price"}
+                      onChange={(e) => handleInputChange("per", e.target.value)}
+                    >
+                      <option
+                        value="Outright Price"
+                        className="dark:text-gray-400"
+                      >
+                        Outright Price...
+                      </option>
+                      <option value="per acre">per acre</option>
+                      <option value="per plot">per plot</option>
+                      <option value="per SqF">per SqF</option>
+                    </select>
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
+                    Are you open to negotiation?
+                  </h3>
+                  <div className="flex items-center space-x-4 mt-2">
+                    {["Yes", "No", "Not sure"].map((option) => (
+                      <label
+                        key={option}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          name="negotiable"
+                          value={option.toLowerCase()}
+                          checked={
+                            formData["negotiable"]
+                              ? formData["negotiable"] === option.toLowerCase()
+                              : option.toLowerCase() === "not sure"
+                          } // Default to "not sure"
+                          onChange={() => {
+                            handleInputChange(
+                              "negotiable",
+                              option.toLowerCase()
+                            );
+                          }}
+                          className="hidden peer"
+                        />
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                          {(formData["negotiable"]
+                            ? formData["negotiable"] === option.toLowerCase()
+                            : option.toLowerCase() === "not sure") && (
+                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                          )}
+                        </div>
+                        <span
+                          className={
+                            (
+                              formData["negotiable"]
+                                ? formData["negotiable"] ===
+                                  option.toLowerCase()
+                                : option.toLowerCase() === "not sure"
+                            )
+                              ? "text-green-500 font-medium"
+                              : "text-gray-600 dark:text-gray-400"
+                          }
+                        >
+                          {option}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {field.type === "bulkprice" && (
+                <div className="flex flex-col w-full">
+                  <div className="flex w-full gap-1">
+                    <TextField
+                      required={field.required}
+                      id={"price"}
+                      label={capitalizeFirstLetter("price")}
+                      value={formatToCurrency(formData["price"] ?? 0)}
+                      onChange={(e) =>
+                        handleInputChange("price", e.target.value)
+                      }
+                      variant="outlined"
+                      placeholder={`Enter Price`}
+                      InputProps={{
+                        classes: {
+                          root: "dark:bg-[#2D3236] dark:text-gray-100",
+                          notchedOutline:
+                            "border-gray-300 dark:border-gray-600",
+                          focused: "",
+                        },
+                      }}
+                      InputLabelProps={{
+                        classes: {
+                          root: "text-gray-500 dark:text-gray-400",
+                          focused: "text-green-500 dark:text-green-400",
+                        },
+                      }}
+                      className="w-full"
+                    />
+
+                    <button
+                      onClick={handleOpenPopupBulk}
+                      className="flex gap-2 items-center justify-center w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
+                    >
+                      <AddOutlinedIcon /> Add Bulk Price
+                    </button>
+
+                    {showPopupBulk && (
+                      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
+                        <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white p-1 lg:p-6 w-full  lg:max-w-3xl rounded-md shadow-md relative">
+                          <div className="flex justify-end items-center mb-1">
+                            <button
+                              onClick={handleClosePopupBulk}
+                              className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
+                            >
+                              <CloseOutlinedIcon />
+                            </button>
+                          </div>
+                          <BulkPriceManager
+                            selected={formData["bulkprice"] || []}
+                            name={"bulkprice"}
+                            onChange={handleInputAutoCompleteChange}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
+                    Are you open to negotiation?
+                  </h3>
+                  <div className="flex items-center space-x-4 mt-2">
+                    {["Yes", "No", "Not sure"].map((option) => (
+                      <label
+                        key={option}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          name="negotiable"
+                          value={option.toLowerCase()}
+                          checked={
+                            formData["negotiable"]
+                              ? formData["negotiable"] === option.toLowerCase()
+                              : option.toLowerCase() === "not sure"
+                          } // Default to "not sure"
+                          onChange={() => {
+                            handleInputChange(
+                              "negotiable",
+                              option.toLowerCase()
+                            );
+                          }}
+                          className="hidden peer"
+                        />
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                          {(formData["negotiable"]
+                            ? formData["negotiable"] === option.toLowerCase()
+                            : option.toLowerCase() === "not sure") && (
+                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                          )}
+                        </div>
+                        <span
+                          className={
+                            (
+                              formData["negotiable"]
+                                ? formData["negotiable"] ===
+                                  option.toLowerCase()
+                                : option.toLowerCase() === "not sure"
+                            )
+                              ? "text-green-500 font-medium"
+                              : "text-gray-600 dark:text-gray-400"
+                          }
+                        >
+                          {option}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {field.type === "serviceprice" && (
+                <div className="flex w-full gap-1">
+                  <PriceInput
+                    priceType_={formData["contact"] || "specify"}
+                    unit_={formData["unit"] || "per service"}
+                    negotiable_={formData["negotiable"] || "not sure"}
+                    onChange={handleInputAutoCompleteChange}
+                    price_={formData["price"] || ""}
+                  />
+                </div>
+              )}
+              {field.type === "number" && (
+                <>
+                  <TextField
+                    required={field.required}
+                    id={field.name}
+                    label={capitalizeFirstLetter(field.name.replace("-", " "))}
+                    value={formData[field.name] || 0}
+                    onChange={(e) =>
+                      handleInputChange(field.name, e.target.value)
+                    }
+                    variant="outlined"
+                    placeholder={`Enter ${field.name.replace("-", " ")}`}
+                    InputProps={{
+                      classes: {
+                        root: "dark:bg-[#2D3236] dark:text-gray-100",
+                        notchedOutline: "border-gray-300 dark:border-gray-600",
+                        focused: "",
+                      },
+                    }}
+                    InputLabelProps={{
+                      classes: {
+                        root: "text-gray-500 dark:text-gray-400",
+                        focused: "text-green-500 dark:text-green-400",
+                      },
+                    }}
+                    className="w-full"
+                  />
+                </>
+              )}
+              {field.type === "select" && (
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#4B5563", // Light mode border
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#2563EB", // Border on hover
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#2563EB", // Border when focused
+                      },
+                    },
+                  }}
+                  className="rounded-md dark:border-gray-600"
+                >
+                  <InputLabel className="font-medium text-gray-500 dark:text-gray-400">
+                    {capitalizeFirstLetter(field.name.replace("-", " "))}
+                    {field.required && <>*</>}
+                  </InputLabel>
+                  <Select
+                    value={formData[field.name] || ""}
+                    onChange={(e) =>
+                      handleInputChange(field.name, e.target.value)
+                    }
+                    required={field.required}
+                    label={capitalizeFirstLetter(field.name.replace("-", " "))}
+                    className="dark:text-gray-100 dark:bg-[#2D3236] bg-white"
+                  >
+                    {field.options?.map((option: any) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+              {field.type === "year" && (
+                <AutoComplete
+                  data={years}
+                  name={field.name}
+                  onChange={handleInputYearChange}
+                  selected={formData[field.name] || ""}
+                />
+              )}
+              {field.type === "autocomplete" && (
+                <AutoComplete
+                  data={field.options}
+                  name={field.name}
+                  onChange={handleInputAutoCompleteChange}
+                  selected={formData[field.name] || ""}
+                />
+              )}
+              {field.type === "multi-select" && (
+                <div className="w-full flex py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 flex-wrap gap-2 dark:bg-[#2D3236] bg-white">
+                  <Multiselect
+                    features={field.options}
+                    name={field.name}
+                    selectedFeatures={formData[field.name] || []}
+                    onChange={handleCheckboxChange}
+                  />
+                </div>
+              )}
+
+              {field.type === "radio" && (
+                <div className="w-full flex py-2 px-3 rounded-sm border border-gray-300 dark:border-gray-600 flex-wrap gap-2 dark:bg-[#2D3236] bg-white">
+                  <FormControl>
+                    <FormLabel className="text-gray-800 dark:text-gray-200">
+                      {capitalizeFirstLetter(field.name.replace("-", " "))}
+                    </FormLabel>
+                    <RadioGroup
+                      name={field.name}
+                      value={formData[field.name]} // Default to the first option
+                      //value={formData[field.name] || field.options[0]} // Default to the first option
+                      onChange={(e) =>
+                        handleInputChange(field.name, e.target.value)
+                      }
+                      className="space-y-0"
+                    >
+                      {field.options?.map((option: any, index: number) => (
+                        <FormControlLabel
+                          key={index}
+                          value={option}
+                          control={
+                            <Radio
+                              sx={{
+                                color: "gray", // Unchecked color
+                                "&.Mui-checked": {
+                                  color: "green", // Checked color
+                                },
+                              }}
+                            />
+                          }
+                          label={option}
+                          className="text-gray-800 dark:text-gray-200"
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+              )}
+              {field.type === "checkbox" &&
+                field.options?.map((option: any, index: number) => (
+                  <label key={index}>
+                    <input
+                      type="checkbox"
+                      name={field.name}
+                      value={option}
+                      onChange={(e) =>
+                        handleInputChange(field.name, e.target.value)
+                      }
+                    />
+                    {option}
+                  </label>
+                ))}
+              {field.type === "textarea" && (<>
+                <ReactQuill
+  value={formData[field.name] || ""}
+  onChange={(value) => handleInputChange(field.name, value)}
+  className="bg-white w-full text-black mb-10"
+  modules={modules} // Pass the custom toolbar modules
+  placeholder={`Enter ${capitalizeFirstLetter(field.name.replace("-", " "))}*`}
+  style={{
+    height: "300px", // Set the desired height
+    borderRadius: "8px", // Add border radius
+    border:"1px"
+    //overflow: "hidden", // Prevent content overflow from breaking radius
+  }}
+/>
+             {/*    <TextField
+                  required={field.required}
+                  id={field.name}
+                  label={capitalizeFirstLetter(field.name.replace("-", " "))}
+                  multiline
+                  rows={8} // Number of rows for the textarea
+                  value={formData[field.name] || ""}
+                  onChange={(e) =>
+                    handleInputChange(field.name, e.target.value)
+                  }
+                  variant="outlined"
+                  placeholder={`Enter ${capitalizeFirstLetter(
+                    field.name.replace("-", " ")
+                  )}`}
+                  InputProps={{
+                    classes: {
+                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      notchedOutline: "border-gray-300 dark:border-gray-600",
+                    },
+                  }}
+                  InputLabelProps={{
+                    classes: {
+                      root: "text-gray-500 dark:text-gray-400",
+                      focused: "text-green-500 dark:text-green-400",
+                    },
+                  }}
+                  className="w-full"
+                />*/}
+             </>)}
+
+              {field.type === "phone" && (
+                <div className="flex w-full gap-1">
+                  <select
+                    className="border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
+                    value={countryCode}
+                    onChange={handleCountryCodeChange}
+                  >
+                    <option value="+254">Kenya (+254)</option>
+                    <option value="+213">Algeria (+213)</option>
+                    <option value="+244">Angola (+244)</option>
+                    <option value="+229">Benin (+229)</option>
+                    <option value="+267">Botswana (+267)</option>
+                    <option value="+226">Burkina Faso (+226)</option>
+                    <option value="+257">Burundi (+257)</option>
+                    <option value="+237">Cameroon (+237)</option>
+                    <option value="+238">Cape Verde (+238)</option>
+                    <option value="+236">
+                      Central African Republic (+236)
+                    </option>
+                    <option value="+235">Chad (+235)</option>
+                    <option value="+269">Comoros (+269)</option>
+                    <option value="+243">
+                      Democratic Republic of the Congo (+243)
+                    </option>
+                    <option value="+253">Djibouti (+253)</option>
+                    <option value="+20">Egypt (+20)</option>
+                    <option value="+240">Equatorial Guinea (+240)</option>
+                    <option value="+291">Eritrea (+291)</option>
+                    <option value="+268">Eswatini (+268)</option>
+                    <option value="+251">Ethiopia (+251)</option>
+                    <option value="+241">Gabon (+241)</option>
+                    <option value="+220">Gambia (+220)</option>
+                    <option value="+233">Ghana (+233)</option>
+                    <option value="+224">Guinea (+224)</option>
+                    <option value="+245">Guinea-Bissau (+245)</option>
+                    <option value="+225">Ivory Coast (+225)</option>
+                    <option value="+266">Lesotho (+266)</option>
+                    <option value="+231">Liberia (+231)</option>
+                    <option value="+218">Libya (+218)</option>
+                    <option value="+261">Madagascar (+261)</option>
+                    <option value="+265">Malawi (+265)</option>
+                    <option value="+223">Mali (+223)</option>
+                    <option value="+222">Mauritania (+222)</option>
+                    <option value="+230">Mauritius (+230)</option>
+                    <option value="+212">Morocco (+212)</option>
+                    <option value="+258">Mozambique (+258)</option>
+                    <option value="+264">Namibia (+264)</option>
+                    <option value="+227">Niger (+227)</option>
+                    <option value="+234">Nigeria (+234)</option>
+                    <option value="+242">Republic of the Congo (+242)</option>
+                    <option value="+250">Rwanda (+250)</option>
+                    <option value="+239">Sao Tome and Principe (+239)</option>
+                    <option value="+221">Senegal (+221)</option>
+                    <option value="+248">Seychelles (+248)</option>
+                    <option value="+232">Sierra Leone (+232)</option>
+                    <option value="+252">Somalia (+252)</option>
+                    <option value="+27">South Africa (+27)</option>
+                    <option value="+211">South Sudan (+211)</option>
+                    <option value="+249">Sudan (+249)</option>
+                    <option value="+255">Tanzania (+255)</option>
+                    <option value="+228">Togo (+228)</option>
+                    <option value="+216">Tunisia (+216)</option>
+                    <option value="+256">Uganda (+256)</option>
+                    <option value="+260">Zambia (+260)</option>
+                    <option value="+263">Zimbabwe (+263)</option>
+                  </select>
+
+                  <TextField
+                    required={field.required}
+                    id={field.name}
+                    label={capitalizeFirstLetter(field.name)}
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={handleInputChangePhone}
+                    variant="outlined"
+                    placeholder={`Enter ${field.name}`}
+                    InputProps={{
+                      classes: {
+                        root: "dark:bg-[#2D3236] dark:text-gray-100",
+                        notchedOutline: "border-gray-300 dark:border-gray-600",
+                        focused: "",
+                      },
+                    }}
+                    InputLabelProps={{
+                      classes: {
+                        root: "text-gray-500 dark:text-gray-400",
+                        focused: "text-green-500 dark:text-green-400",
+                      },
+                    }}
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              {field.type === "delivery" && (
+                <div className="flex flex-col w-full gap-1">
+                  <button
+                    onClick={handleOpenPopup}
+                    className="flex gap-2 items-center justify-center w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    <AddOutlinedIcon /> Add Delivery Option
+                  </button>
+
+                  {showPopup && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
+                      <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white p-1 lg:p-6 w-full  lg:max-w-3xl rounded-md shadow-md relative">
+                        <div className="flex justify-end items-center mb-1">
+                          <button
+                            onClick={handleClosePopup}
+                            className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
+                          >
+                            <CloseOutlinedIcon />
+                          </button>
+                        </div>
+                        <DeliveryOptions
+                          name={"delivery"}
+                          subcategory={selectedSubCategory || ""}
+                          onChange={handleInputOnChange}
+                          selected={formData["delivery"] || []}
+                          onSave={handleSave} // Pass the save handler to the child
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+                    {field.type === "propertyarea" && (
+                <div className="flex flex-col w-full gap-1">
+                  <button
+                    onClick={handleOpenPopupArea}
+                    className="flex gap-2 items-center justify-center w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    🗺️ Advanced Property Mapping
+                  </button>
+
+                  {showPopupArea && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
+                      <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-2 w-full items-center justify-center relative">
+                {/* <div className="flex mt-2 justify-between items-center">
+                  <div className="relative">
+      <button
+        onClick={() => setShowGuide(!showGuide)}
+        className="px-4 text-sm py-1 text-green-600 border border-green-600 rounded-lg shadow-md hover:bg-green-600 hover:text-white"
+      >
+        Help?
+      </button>
+
+      {showGuide && (
+        <div className="absolute z-10 right-0 lg:left-0 mt-2 w-80 bg-green-600 text-white rounded-lg shadow-lg p-4 text-sm">
+          <h3 className="font-semibold mb-2">How to Measure land Area</h3>
+          <ul className="list-disc text-xs list-inside space-y-1">
+          
+            <li><b>Find the Location</b> - Search or navigate to the property.</li>
+            <li><b>Mark the Boundary</b> - Click on corners to outline the area.</li>
+            <li><b>Close the Shape</b> - Click the starting point again to finish.</li>
+            <li><b>View Area</b> - The total area in m², hectares & acres will be displayed.</li>
+            <li><b>Click save button</b> - Clients will view property area and location:
+             
+            </li>
+          </ul>
+          <button
+            onClick={() => setShowGuide(false)}
+            className="mt-3 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+          >
+            Close
+          </button>
+        </div>
+      )}
+    </div>
+                          <button
+                            onClick={handleClosePopupArea}
+                            className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
+                          >
+                            <CloseOutlinedIcon />
+                          </button>
+                        </div> */} 
+                        <div className="flex flex-col items-center justify-center dark:bg-[#2D3236] bg-gray-200">
+                       {/* <MapAreaCalculator name={"propertyarea"}
+                          onChange={handleInputOnChange}
+                          selected={formData["propertyarea"] || []}
+                          onSave={handleSaveArea}/>
+ 
+ <LandSubdivision name={"propertyarea"}
+                          onChange={handleInputOnChange}
+                          selected={formData["propertyarea"] || []}
+                          onSave={handleSaveArea}/>*/}
+
+<GoogleMapping name={"propertyarea"}
+                          onChange={handleInputOnChange}
+                          selected={formData["propertyarea"] || []}
+                          onSave={handleSaveArea}/>
+                        </div>
+                        
+                      </div>
+                    </div>
+                     
+                  )}
+                </div>
+                 
+              )}
+              {formErrors[field.name] && (
+                <p className="text-red-500 text-sm">{formErrors[field.name]}</p>
+              )}
+            </div>
+          ))}
+           
+          {type === "Create" && selectedSubCategory && (
+            <>
+              <div className="rounded-lg mt-4 shadow-lg border p-3">
+                <PromoSelection
+                  packagesList={packagesList}
+                  packname={packname}
+                  planId={planId}
+                  expirationDate={expirationDate}
+                  listed={listed}
+                  adstatus={adstatus}
+                  priority={priority}
+                  daysRemaining={daysRemaining}
+                  onChange={handlePackageOnChange}
+                />
+              </div>
+              {/* 
+              <div className="rounded-lg mt-4 shadow-lg border">
                 <div className="m-3">
                   <div className="items-center flex">
                     <h2 className="font-bold text-[25px] p-5">
@@ -3887,7 +1784,7 @@ const AdForm = ({
                             return (
                               <div
                                 key={index}
-                                className={`shadow-md rounded-md p-0 cursor-pointer ${
+                                className={`shadow-md dark:bg-gray-800 border bg-white rounded-xl p-0 cursor-pointer ${
                                   activePackage === pack
                                     ? "bg-[#F2FFF2] border-[#4DCE7A] border-2"
                                     : ""
@@ -3963,11 +1860,11 @@ const AdForm = ({
                                             listed === 0) ? (
                                             <div>
                                               <div className="p-1 items-center justify-center flex rounded-full bg-grey-50">
-                                                <p className="text-black font-bold text-xs">
+                                                <p className="dark:text-gray-500 text-black font-bold text-xs">
                                                   Disabled
                                                 </p>
                                               </div>
-                                              <div className="text-xs text-grey-200 p-1">
+                                              <div className="text-xs text-gray-300 p-1">
                                                 You can&apos;t subscribe to Free
                                                 Package
                                               </div>
@@ -4004,9 +1901,16 @@ const AdForm = ({
                                                       : ""
                                                   }`}
                                                 >
-                                                  <p className="text-xs font-bold lg:p-16-regular">
-                                                    Ksh {price.amount}/{" "}
-                                                    {activeButtonTitle}
+                                                  <p
+                                                    className={`text-xs font-bold lg:p-16-regular ${
+                                                      activePackage === pack
+                                                        ? "text-[#30AF5B] "
+                                                        : "text-gray-300"
+                                                    }`}
+                                                  >
+                                                    Ksh{" "}
+                                                    {price.amount.toLocaleString()}
+                                                    / {activeButtonTitle}
                                                   </p>
                                                 </li>
                                               )
@@ -4023,7 +1927,7 @@ const AdForm = ({
                       </div>
 
                       <div className="h-auto md:h-24 p-3 flex flex-col md:flex-row justify-between items-center">
-                        {/* Left-aligned buttons */}
+                     
                         <div className="flex flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
                           <button
                             className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
@@ -4075,47 +1979,51 @@ const AdForm = ({
                           >
                             1 year
                           </button>
-                        </div>
-
-                        {/*<div className="flex gap-1 justify-center items-center">
-                          <label
-                            htmlFor="color"
-                            className="whitespace-nowrap p-3 font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            Charge Ksh
-                          </label>
-                          <input
-                            type="text"
-                            disabled
-                            value={priceInput}
-                            className="px-4 py-2 w-[200px] border border-gray-300 font-bold rounded-md mr-4"
-                          />
-                        </div>
-                        */}
+                        </div
                       </div>
                     </>
                   )}
                 </div>
-              </div>
+              </div>*/}
             </>
           )}
 
           <Button
-            type="submit"
+            onClick={handleSubmit}
             size="lg"
-            disabled={form.formState.isSubmitting}
-            className="button col-span-2 w-full"
+            disabled={loading}
+            className="button col-span-2 mt-3 w-full"
           >
             <div className="flex gap-1 items-center">
-              {form.formState.isSubmitting && (
-                <CircularProgressWithLabel value={uploadProgress} />
-              )}
+              {loading && <CircularProgressWithLabel value={uploadProgress} />}
 
-              {form.formState.isSubmitting ? "Submitting..." : `${type} Ad `}
+              {loading ? "Submitting..." : `${type} Ad `}
             </div>
           </Button>
-        </form>
-      </Form>
+          <p className="mt-2 text-xs text-gray-600 dark:text-gray-500 text-center">
+            By clicking on Create Ad, you accept the{" "}
+            <span onClick={() => handleOpenTerms()} className="text-green-600 cursor-pointer underline">
+              Terms of Use
+            </span>
+          </p>
+        </div>
+      </div>
+
+
+      {loading && (<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+            <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
+              {/* Header */}
+              <div className="flex gap-1 text-[#D1D5DB] items-center">
+              <CircularProgressWithLabel value={uploadProgress} />
+               {type ==="Update" ? "Updating Ad...":"Creating Ad..."} 
+              </div>
+            </div>
+          </div>)} 
+      </>)}
+
+
+     
+
     </>
   );
 };

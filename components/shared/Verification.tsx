@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ShowPopup from "./ShowPopup"; // Adjust the import path accordingly
 import { v4 as uuidv4 } from "uuid";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -10,19 +10,23 @@ import { format, isToday, isYesterday } from "date-fns";
 import { IUser } from "@/lib/database/models/user.model";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import { useRouter } from "next/navigation";
+import { VerificationPackId } from "@/constants";
 
 interface SettingsProp {
   user: any;
   userId: string;
   isAdCreator: boolean;
+  handlePayNow: (id:string) => void;
 }
 
 const Verification: React.FC<SettingsProp> = ({
   user,
   userId,
   isAdCreator,
-}) => {
-  const _id = "662b9ab6dd4398a447257e59";
+  handlePayNow}:
+  SettingsProp) => {
+
+  //const _id = "662b9ab6dd4398a447257e59";
   const router = useRouter();
   //const [activationfee, setActivationFee] = useState(user.fee);
 
@@ -47,7 +51,8 @@ const Verification: React.FC<SettingsProp> = ({
     };
     const response = await createTransaction(trans);
     if (response.status === "Pending") {
-      router.push(`/pay/${response.orderTrackingId}`);
+     // router.push(`/pay/${response.orderTrackingId}`);
+     handlePayNow(response.orderTrackingId)
     }
   };
 
@@ -67,7 +72,7 @@ const Verification: React.FC<SettingsProp> = ({
   }
 
   const verifiedContent = (
-    <div className="flex justify-between space-x-4">
+    <div className="flex justify-between dark:bg-[#233338] dark:text-gray-300 bg-white">
       <VerifiedUserOutlinedIcon
         sx={{ fontSize: 24 }}
         className="text-emerald-600"
@@ -89,7 +94,7 @@ const Verification: React.FC<SettingsProp> = ({
   );
 
   const unverifiedContentAdCreator = (
-    <div className="flex justify-between space-x-4">
+    <div className="flex dark:bg-[#233338] rounded-sm dark:text-gray-300 bg-white justify-between">
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
@@ -101,7 +106,7 @@ const Verification: React.FC<SettingsProp> = ({
         </p>
         <div className="flex items-center pt-2">
           <button
-            onClick={() => handlePay(_id, "Verification", "0", user.fee)}
+            onClick={() => handlePay(VerificationPackId, "Verification", "0", user.fee)}
             className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-xs mt-2 p-1 rounded-lg shadow"
           >
             <CheckCircleIcon sx={{ marginRight: "5px" }} />
@@ -113,7 +118,7 @@ const Verification: React.FC<SettingsProp> = ({
   );
 
   const unverifiedContent = (
-    <div className="flex justify-between space-x-4">
+    <div className="flex dark:bg-[#233338]  rounded-sm dark:text-gray-300 bg-white justify-between">
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
@@ -127,7 +132,7 @@ const Verification: React.FC<SettingsProp> = ({
   );
 
   return (
-    <div className="items-center justify-center">
+    <div className="items-center dark:bg-[#233338] rounded-sm dark:text-gray-300 bg-white justify-center">
       {user.verified && user?.verified[0]?.accountverified === true ? (
         <ShowPopup
           trigger={
@@ -143,7 +148,7 @@ const Verification: React.FC<SettingsProp> = ({
           {isAdCreator ? (
             <ShowPopup
               trigger={
-                <p className="text-gray-600 p-1 bg-white rounded-sm text-xs cursor-pointer hover:underline">
+                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-xs cursor-pointer hover:underline">
                   <ShieldOutlinedIcon sx={{ fontSize: 16 }} />
                   Account unverified
                 </p>
@@ -153,7 +158,7 @@ const Verification: React.FC<SettingsProp> = ({
           ) : (
             <ShowPopup
               trigger={
-                <p className="text-gray-600 p-1 bg-white rounded-sm text-xs cursor-pointer hover:underline">
+                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-xs cursor-pointer hover:underline">
                   <ShieldOutlinedIcon sx={{ fontSize: 16 }} />
                   Account unverified
                 </p>

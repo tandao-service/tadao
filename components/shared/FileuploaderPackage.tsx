@@ -25,18 +25,18 @@ export function FileUploaderPackage({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: "image/*" ? generateClientDropzoneAccept(["image/*"]) : undefined,
+    accept: generateClientDropzoneAccept(["image/*"]),
   });
 
   return (
     <div
       {...getRootProps()}
-      className="flex-center bg-dark-3 flex h-50 cursor-pointer flex-col overflow-hidden rounded-xl bg-grey-50"
+      className="flex-center p-1 bg-dark-3 flex h-50 cursor-pointer flex-col overflow-hidden rounded-xl border"
     >
       <input {...getInputProps()} className="cursor-pointer" />
 
       {imageUrl ? (
-        <div className="flex h-full w-full flex-1 justify-center ">
+        <div className="flex h-16 w-16 flex-1 justify-center ">
           <Image
             src={imageUrl}
             alt="image"

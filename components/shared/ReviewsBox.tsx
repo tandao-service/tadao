@@ -18,7 +18,7 @@ import React from "react";
 import { UpdateUserParams } from "@/types";
 import Reviews from "./Reviews";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import ReviewsOutlinedIcon from '@mui/icons-material/ReviewsOutlined';
 type sidebarProps = {
   displayName: string;
   uid: string;
@@ -98,8 +98,7 @@ const ReviewsBox = ({
     <div className="w-full">
       {messages.length > 0 ? (
         <>
-          {" "}
-          <ScrollArea className="w-full gap-2 p-4">
+          <ScrollArea className="h-[79vh] w-full dark:bg-[#2D3236] bg-white rounded-t-md border p-2">
             {messages
               .slice()
               .reverse()
@@ -118,8 +117,9 @@ const ReviewsBox = ({
         </>
       ) : (
         <div className="p-2 flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+        <ReviewsOutlinedIcon/>
           <h3 className="font-bold text-[16px] lg:text-[25px]">No Review</h3>
-          <p className="text-sm lg:p-regular-14">You have 0 reviews</p>
+          <p className="text-sm lg:p-regular-14">Seller has 0 reviews</p>
         </div>
       )}
     </div>

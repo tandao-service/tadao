@@ -9,61 +9,65 @@ import {
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import Image from "next/image";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
+import SubCategoryWindow from "./SubCategoryWindow";
+import { useState } from "react";
+import ProgressPopup from "./ProgressPopup";
 
 type Subcategory = {
   title: string;
 };
 
 type Category = {
-  imageUrl: string;
-  name: string;
+  adCount: number;
   _id: string;
-  subcategory: Subcategory[];
+  name: string;
+  subcategory: string;
+  fields: any;
+  imageUrl: string;
 };
 
 type MobileProps = {
   categoryList: Category[];
+  subcategoryList: any;
+  handleSubCategory: (category:string, subcategory:string) => void;
+  handleOpenSell: () => void;
 };
 
-export default function MenuSubmobile({ categoryList }: MobileProps) {
+export default function MenuSubmobile({
+  categoryList,
+  subcategoryList,
+  handleSubCategory,
+  handleOpenSell,
+}: MobileProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const handleCategory = (subcategory: string) => {
-    let newUrl = "";
-    if (subcategory) {
-      newUrl = formUrlQuerymultiple({
-        params: "",
-        updates: {
-          category: "Vehicle",
-          subcategory: subcategory.toString(),
-        },
-      });
-    } else {
-      newUrl = removeKeysFromQuery({
-        params: searchParams.toString(),
-        keysToRemove: ["subcategory"],
-      });
-    }
-
-    router.push("/category/" + newUrl, { scroll: false });
+ 
+  const [isOpen, setIsOpen] = useState(false);
+  const [category, setCategory] = useState("");
+  const handleOpen = (query: string) => {
+    setIsOpen(true);
+    setCategory(query);
   };
 
-  const vehicleCategory = categoryList.find(
-    (category) => category.name === "Vehicle"
-  );
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
 
   return (
-    <div className="mx-auto mt-10">
+    <div className="mx-auto mt-[175px] lg:mt-10">
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-1 gap-1">
         <SignedIn>
           <div
-            onClick={() => router.push("/ads/create")}
-            className="hidden lg:inline h-[100px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
+            onClick={() => {
+              handleOpenSell();
+             // router.push("/ads/create");
+            }}
+            className="hidden lg:inline h-[120px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">
-                <AddCircleOutlineOutlinedIcon />
+                <SellOutlinedIcon />
               </div>
               <h2 className="text-lg font-bold">SELL</h2>
             </div>
@@ -72,39 +76,56 @@ export default function MenuSubmobile({ categoryList }: MobileProps) {
 
         <SignedOut>
           <div
-            onClick={() => router.push("/sign-in")}
-            className="hidden lg:inline h-[100px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
+            onClick={() => {
+              //setIsOpenP(true);
+              router.push("/sign-in");
+            }}
+            className="hidden lg:inline h-[120px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">
-                <AddCircleOutlineOutlinedIcon />
+                <SellOutlinedIcon />
               </div>
               <h2 className="text-lg font-bold">SELL</h2>
             </div>
           </div>
         </SignedOut>
 
-        {vehicleCategory?.subcategory.map((sub, index) => (
+        {categoryList.map((category, index) => (
           <div
-            key={sub.title} // Using sub.title as a unique key
-            onClick={() => handleCategory(sub.title)}
-            className="h-[100px] bg-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-100"
+            key={index} // Using sub.title as a unique key
+            // onClick={() => handleCategory(category.name)}
+            onClick={() => handleOpen(category.name)}
+            className="h-[120px] dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border hover:bg-emerald-100"
           >
             <div className="flex flex-col items-center text-center justify-center">
-              <div className="rounded-full bg-white p-2">
+              <div className="rounded-full dark:bg-[#131B1E] bg-gray-100 p-2">
                 <Image
-                  className="w-full h-full object-cover"
-                  src={"/" + sub.title + ".png"}
-                  alt={sub.title}
+                  className="w-12 h-12 object-cover"
+                  src={category.imageUrl[0]}
+                  alt={category.name}
                   width={60}
                   height={60}
                 />
               </div>
-              <h2 className="text-xs">{sub.title}</h2>
+              <div className="flex flex-col">
+                <h2 className="text-xs">{category.name}</h2>
+                <p className="text-xs text-gray-500 dark:text-gray-500">
+                  {category.adCount} ads
+                </p>
+              </div>
             </div>
           </div>
         ))}
       </div>
+      <SubCategoryWindow
+        isOpen={isOpen}
+        onClose={handleClose}
+        category={category}
+        subcategoryList={subcategoryList}
+        handleSubCategory={handleSubCategory}
+      />
+      
     </div>
   );
 }

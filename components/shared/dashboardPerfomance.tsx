@@ -31,6 +31,12 @@ import AssistantDirectionOutlinedIcon from "@mui/icons-material/AssistantDirecti
 import LowPriorityOutlinedIcon from "@mui/icons-material/LowPriorityOutlined";
 import FlightTakeoffOutlinedIcon from "@mui/icons-material/FlightTakeoffOutlined";
 import { getAdByUser } from "@/lib/actions/ad.actions";
+import Footersub from "./Footersub";
+import { Toaster } from "../ui/toaster";
+import { mode } from "@/constants";
+import Navbar from "./navbar";
+import { ScrollArea } from "../ui/scroll-area";
+
 type CollectionProps = {
   userId: string;
   userName: string;
@@ -40,16 +46,29 @@ type CollectionProps = {
   packname?: string;
   color: string;
   sortby: string;
-  //data: IAd[];
   user: IUser;
   emptyTitle: string;
   emptyStateSubtext: string;
   limit: number;
-  // page: number | string;
-  // totalPages?: number;
   urlParamName?: string;
   isAdCreator: boolean;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
+  onClose: () => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
+  handleOpenSell: () => void;
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleAdEdit: (id:string) => void;
+  handleAdView: (id:string) => void;
+  handleOpenReview: (id:string) => void;
+  handleOpenShop: (shopId:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenPerfomance: () => void;
+  handlePay: (id:string) => void;
 };
 
 const DashboardPerformance = ({
@@ -62,13 +81,13 @@ const DashboardPerformance = ({
   color,
   emptyTitle,
   emptyStateSubtext,
-  // page,
-  // totalPages = 0,
   collectionType,
   urlParamName,
   isAdCreator,
   user,
-  loggedId,
+  loggedId,handlePay, handleOpenPerfomance, handleOpenSettings,
+  handleOpenShop, handleOpenReview,
+  onClose, handleOpenChat, handleOpenBook,handleOpenPlan, handleOpenSell, handleAdEdit,handleAdView, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety
 }: // Accept the onSortChange prop
 CollectionProps) => {
   const [activeButton, setActiveButton] = useState(0);
@@ -126,8 +145,41 @@ CollectionProps) => {
 
     if (node) observer.current.observe(node);
   };
+
+   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+    
+        useEffect(() => {
+           const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+           const isDark = savedTheme === mode;
+           
+           setIsDarkMode(isDark);
+           document.documentElement.classList.toggle(mode, isDark);
+         }, []);
+       
+         useEffect(() => {
+           if (isDarkMode === null) return; // Prevent running on initial mount
+       
+           document.documentElement.classList.toggle(mode, isDarkMode);
+           localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+         }, [isDarkMode]);
+       
+         if (isDarkMode === null) return null; // Avoid flickering before state is set
+       
   return (
     <>
+  <ScrollArea className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+     
+      <div className="top-0 z-10 fixed w-full">
+        <Navbar userstatus={user.status} userId={userId} onClose={onClose} popup={"performance"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+         handleOpenPerfomance={handleOpenPerfomance}
+         handleOpenSettings={handleOpenSettings}
+         handleOpenAbout={handleOpenAbout}
+         handleOpenTerms={handleOpenTerms}
+         handleOpenPrivacy={handleOpenPrivacy}
+         handleOpenSafety={handleOpenSafety} 
+         handleOpenShop={handleOpenShop}/>
+      </div>
+      <div className="min-h-screen mt-[60px]">
       <div className="w-full lg:max-w-6xl mx-auto p-1">
         <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
           <div className="flex items-center p-1 justify-between">
@@ -137,6 +189,9 @@ CollectionProps) => {
                 userName={userName}
                 userImage={userImage}
                 user={user}
+                handleOpenReview={handleOpenReview}
+                handleOpenShop={handleOpenShop}
+                handlePay={handlePay}
               />
             </div>
 
@@ -163,11 +218,14 @@ CollectionProps) => {
                   <div className="absolute top-0 shadow-lg left-0 bg-green-500 text-white text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
                     Active
                   </div>
-                  <Link href="/plan">
+                  <div 
+                  //href="/plan"
+                  onClick={()=> handleOpenPlan()}
+                  >
                     <div className="p-1 items-center flex flex-block text-black underline text-xs cursor-pointer border-2 border-transparent rounded-full hover:bg-[#000000]  hover:text-white">
                       <div>Upgrade Plan</div>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               </>
             ) : (
@@ -187,18 +245,21 @@ CollectionProps) => {
                   <div className="absolute top-0 shadow-lg left-0 bg-green-500 text-white text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
                     Active
                   </div>
-                  <Link href="/plan">
+                  <div 
+                 // href="/plan"
+                 onClick={()=> handleOpenPlan()}
+                  >
                     <div className="p-1 items-center flex flex-block text-black underline text-xs cursor-pointer border-2 border-transparent rounded-full hover:bg-[#000000]  hover:text-white">
                       <div>Upgrade Plan</div>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               </>
             )}
           </div>
         </section>
         <h1 className="text-3xl font-bold">Ad Performance</h1>
-        <h1 className="bg-white p-1 rounded-full mb-6 text-gray-500 text-sm">
+        <h1 className="border-b p-1 rounded-full mb-6 dark:text-gray-300 text-gray-500 text-sm">
           Total Ads: {data.length}
         </h1>
 
@@ -294,14 +355,16 @@ CollectionProps) => {
                           </div>
                         )}
                         <div className="flex mt-2 gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
-                          <Link href={`/ads/${ad._id}/update`}>
+                          <div 
+                          onClick={()=> handleAdEdit(ad._id)}
+                          >
                             <Image
                               src="/assets/icons/edit.svg"
                               alt="edit"
                               width={20}
                               height={20}
                             />
-                          </Link>
+                          </div>
                           <DeleteConfirmation
                             adId={ad._id}
                             imageUrls={ad.imageUrls}
@@ -461,14 +524,16 @@ CollectionProps) => {
                           </div>
                         )}
                         <div className="flex mt-2 gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
-                          <Link href={`/ads/${ad._id}/update`}>
+                        <div 
+                          onClick={()=> handleAdEdit(ad._id)}
+                          >
                             <Image
                               src="/assets/icons/edit.svg"
                               alt="edit"
                               width={20}
                               height={20}
                             />
-                          </Link>
+                          </div>
                           <DeleteConfirmation
                             adId={ad._id}
                             imageUrls={ad.imageUrls}
@@ -565,6 +630,12 @@ CollectionProps) => {
           </div>
         )}
       </div>
+      <Toaster />
+      </div>
+      <footer>
+        <Footersub handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} />
+      </footer>
+    </ScrollArea>
     </>
   );
 };

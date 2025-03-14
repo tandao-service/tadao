@@ -7,6 +7,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import Image from "next/image";
 import { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import PropertyMap from "./PropertyMap";
 interface MessageProps {
   message: {
     uid: string;
@@ -49,6 +50,7 @@ const Message = ({
   };
   const [isLoading, setIsLoading] = useState(true);
   let formattedCreatedAt = "";
+  let queryObject:any=[];
   try {
     const createdAtDate = new Date(message.createdAt.seconds * 1000);
     if (isToday(createdAtDate)) {
@@ -59,8 +61,23 @@ const Message = ({
       formattedCreatedAt = format(createdAtDate, "dd-MM-yyyy HH:mm");
     }
   } catch {}
+  
+  const containsHttpOrHttps = (str: string) => {
+    return str.includes("http://") || str.includes("https://");
+  };
+  const regex = /PropertyLocation&lat=([0-9.-]+)&lng=([0-9.-]+)/;
+  const match = message.text.match(regex);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleOpenPopup = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
   return (
-    <div className="">
+    <div className="text-gray-700">
       <div className="chatbox p-4">
         <div
           className={`flex items-start mb-4 ${
@@ -77,12 +94,45 @@ const Message = ({
           <div
             className={`message-content max-w-xs rounded-lg p-3 ${
               message.uid === uid
-                ? "bg-green-100 text-right"
+                ? "bg-green-100 text-left"
                 : "bg-blue-100 text-left"
             }`}
           >
             <h4 className="font-semibold">{message.name}</h4>
-            <p className="text-sm">{message.text}</p>
+            <div className="text-sm">
+              { match ? (<> <div className="flex flex-col w-full gap-1">
+                                <button
+                                  onClick={handleOpenPopup}
+                                  className="flex gap-2 items-center justify-center w-full p-2 border border-green-600 text-green-600 rounded-md bg-green-100"
+                                >
+                                  🗺️ Virtual Tour of Property Location
+                                </button>
+              
+                                {showPopup && (
+                                  <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
+                                    <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-2 w-full items-center justify-center relative">
+                           
+                                      <div className="flex flex-col items-center justify-center dark:bg-[#2D3236] bg-gray-200">
+                                  
+              <PropertyMap queryObject={queryObject} onClose={handleClosePopup} lat={match[1]} lng={match[2]}/>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                   
+                                )}
+                              </div></>):(<>  {containsHttpOrHttps(message.text) ? (<><a
+              href={message.text}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block  mt-2 text-blue-600 underline"
+            >
+            
+              {truncateDescription(message.text ?? "", 65)}
+            </a></>):(<>  {truncateDescription(message.text ?? "", 65)}</>)} </>)}
+          
+            
+            </div>
             <small className="text-gray-500">{formattedCreatedAt}</small>
             {message.imageUrl && (
               <div className="relative">
@@ -117,7 +167,7 @@ const Message = ({
               {message.adTitle}
             </a>
             <p className="text-sm text-gray-700">
-              {truncateDescription(message.adDescription ?? "", 80)}
+             {truncateDescription(message.adDescription ?? "", 80)}
             </p>
           </div>
         </div>

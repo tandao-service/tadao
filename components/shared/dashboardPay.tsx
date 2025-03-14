@@ -6,12 +6,33 @@ import { Requestcheckpayment } from "@/lib/actions/checkpayment";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { formatKsh } from "@/lib/help";
+import { Toaster } from "../ui/toaster";
+import Navbar from "./navbar";
+import { mode } from "@/constants";
+import { Button } from "../ui/button";
+import Footersub from "./Footersub";
 
 type payProps = {
   userId: string;
+  recipientUid:string;
   trans: any;
+  onClose: () => void;
+  handleOpenSell: () => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleOpenShop: (shopId:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenPerfomance: () => void;
+  
 };
-const DashboardPay = ({ userId, trans }: payProps) => {
+const DashboardPay = ({ userId, trans, recipientUid, handleOpenPerfomance, handleOpenSettings,
+  handleOpenShop, onClose, handleOpenSell,handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: payProps) => {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -142,25 +163,55 @@ const DashboardPay = ({ userId, trans }: payProps) => {
     // Clean up the interval on component unmount
     return () => clearInterval(interval);
   }, [orderTrackingId, adsData]); // Dependency array to watch the orderTrackingId
-
+const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+  
+      useEffect(() => {
+         const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+         const isDark = savedTheme === mode;
+         
+         setIsDarkMode(isDark);
+         document.documentElement.classList.toggle(mode, isDark);
+       }, []);
+     
+       useEffect(() => {
+         if (isDarkMode === null) return; // Prevent running on initial mount
+     
+         document.documentElement.classList.toggle(mode, isDarkMode);
+         localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+       }, [isDarkMode]);
+     
+       if (isDarkMode === null) return null; // Avoid flickering before state is set
+     
   if (trans.length === 0) {
     return (
-      <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+      <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-lg border py-28 text-center">
         <h3 className="p-bold-20 md:h5-bold">No order found!</h3>
         <p className="p-regular-14">No data</p>
       </div>
     );
   }
   return (
-    <div className="fixed w-full h-screen">
+    <div className="min-h-screen dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-gray-200">
+     <div className="top-0 z-10 fixed w-full">
+                        <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                         handleOpenPerfomance={handleOpenPerfomance}
+                         handleOpenSettings={handleOpenSettings}
+                         handleOpenAbout={handleOpenAbout}
+                         handleOpenTerms={handleOpenTerms}
+                         handleOpenPrivacy={handleOpenPrivacy}
+                         handleOpenSafety={handleOpenSafety} 
+                         handleOpenShop={handleOpenShop}/>
+                        </div>
+    <div className="max-w-6xl mx-auto flex mt-[60px] mb-0 p-1">
+  <div className="fixed w-full h-screen">
       <div className="p-1">
-        <div className="p-1 max-w-3xl mx-auto mb-2">
+        <div className="p-1 max-w-3xl bg-white mx-auto mb-2 border rounded-lg">
           <div className="p-0 w-full items-center">
             <div className="flex flex-col items-center rounded-t-lg w-full p-1">
               <div className="gap-1 h-[450px] mt-2 items-center w-full rounded-lg">
                 <div className="">
                   <div className="flex flex-col items-center">
-                    <div className="flex flex-col rounded-lg bg-white p-2 mb-2 w-full">
+                    <div className="flex flex-col rounded-lg dark:bg-[#2D3236] bg-white p-2 mb-2 w-full">
                       <div className="flex justify-between w-full items-center">
                         <div className="flex gap-1 items-center">
                           <div className="font-bold text-grey-900 font-bold p-2">
@@ -237,17 +288,17 @@ const DashboardPay = ({ userId, trans }: payProps) => {
                         <>
                           <div className="flex justify-between w-full items-center">
                             <div className="flex gap-1 items-center">
-                              <div className="text-grey-900 font-bold p-2">
+                              <div className="dark:text-gray-300 text-grey-900 font-bold p-2">
                                 Amount
                               </div>
                             </div>
                             <div className="flex items-center">
-                              <div className="text-black font-bold p-2">
+                              <div className="dark:text-gray-300 text-black font-bold p-2">
                                 {formatKsh(trans[0].amount)}
                               </div>
                             </div>
                           </div>
-                          <div className="text-lg p-1 text-gray-900">
+                          <div className="text-lg p-1 dark:text-gray-300 text-gray-900">
                             Pay via MPESA EXPRESS
                           </div>
                           <div className="flex flex-col gap-1 mb-4 w-full">
@@ -259,20 +310,38 @@ const DashboardPay = ({ userId, trans }: payProps) => {
                               onChange={(e) =>
                                 setpayphone(formatPhoneNumber(e.target.value))
                               }
+                              variant="outlined"
+                              placeholder={`M-Pesa Phone Numbers`}
+                              InputProps={{
+                                classes: {
+                                  root: "dark:bg-[#131B1E] dark:text-gray-100",
+                                  notchedOutline:
+                                    "border-gray-300 dark:border-gray-600",
+                                  focused: "",
+                                },
+                              }}
+                              InputLabelProps={{
+                                classes: {
+                                  root: "text-gray-500 dark:text-gray-400",
+                                  focused: "text-green-500 dark:text-green-400",
+                                },
+                              }}
+                              className="w-full"
                             />
                             <div className="text-red-400">
                               {errormpesaphone}
                             </div>
                           </div>
-                          <button
+                          <Button
                             onClick={handleTopup}
+                            variant="default"
                             disabled={isSubmitting}
-                            className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                            className="w-full bg-green-600 text-white hover:bg-green-700 mt-2 shadow"
                           >
                             {isSubmitting ? "Sending request..." : `Pay Now`}
-                          </button>
+                          </Button>
                           {stkresponse && (
-                            <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
+                            <div className="mt-2 text-green-700 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
                               {stkresponse}
                             </div>
                           )}
@@ -289,24 +358,20 @@ const DashboardPay = ({ userId, trans }: payProps) => {
                               PAID
                             </div>
                             <div className="flex gap-1 w-full">
-                              <button
-                                onClick={() => router.push(`/`)}
-                                className={`w-[100px] bg-gradient-to-b from-[#000000] to-[#333333] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
+                              <Button
+                              variant="outline"
+                              onClick={() => router.push(`/`)}
+                              
                               >
                                 Home
-                              </button>
-                              <button
-                                onClick={() => router.push(`/shop/${userId}`)}
-                                className={`w-[100px] bg-gradient-to-b from-[#000000] to-[#333333] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                //onClick={() => router.push(`/shop/${userId}`)}
                               >
                                 My Shop
-                              </button>
-                              <button
-                                onClick={() => router.push(`/ads/create/`)}
-                                className={`w-[100px] bg-gradient-to-b from-[#000000] to-[#333333] hover:bg-[#30AF5B] text-white p-1 rounded-full`}
-                              >
-                                Create Ad
-                              </button>
+                              </Button>
+                             
                             </div>
                           </div>
                         </>
@@ -345,6 +410,10 @@ const DashboardPay = ({ userId, trans }: payProps) => {
           </div>
         </div>
       </div>
+    </div>
+    <Toaster />
+      </div>
+      
     </div>
   );
 };

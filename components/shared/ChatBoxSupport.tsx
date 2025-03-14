@@ -7,17 +7,16 @@ import {
   orderBy,
   limit,
   where,
-  getDocs,
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import React from "react";
 import { UpdateUserParams } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Message from "./Message";
 
-type sidebarProps = {
+type SidebarProps = {
   displayName: string;
   uid: string;
   recipientUid: string;
@@ -25,129 +24,102 @@ type sidebarProps = {
   recipient: UpdateUserParams;
   client: boolean;
 };
-type propmess = {
-  messageId: string;
-};
+
 const ChatBoxSupport = ({
   uid,
   photoURL,
   displayName,
   recipientUid,
   recipient,
-  client,
-}: sidebarProps) => {
+}: SidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
-  //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  };
 
-  useEffect(scrollToBottom, [messages]);
-
-  // const [messages, setMessages] = useState<any[]>([]);
+  // Function to update the read status of a message
+  const updateMessageReadStatus = useCallback(async (messageId: string) => {
+    try {
+      const messageRef = doc(db, "messages", messageId);
+      await updateDoc(messageRef, { read: 0 });
+    } catch (error) {
+      console.error("Error updating message read status:", error);
+    }
+  }, []);
 
   useEffect(() => {
-    // console.log("chatbox:" + recipientUid);
-    const fetchMessages = () => {
-      const senderMessagesQuery = query(
-        collection(db, "messages"),
-        where("uid", "==", uid),
-        where("recipientUid", "==", recipientUid),
-        limit(50)
-      );
+    const senderMessagesQuery = query(
+      collection(db, "messages"),
+      where("uid", "==", uid),
+      where("recipientUid", "==", recipientUid),
+      orderBy("createdAt", "asc"),
+      limit(50)
+    );
 
-      const recipientMessagesQuery = query(
-        collection(db, "messages"),
-        where("uid", "==", recipientUid),
-        where("recipientUid", "==", uid),
-        limit(50)
-      );
+    const recipientMessagesQuery = query(
+      collection(db, "messages"),
+      where("uid", "==", recipientUid),
+      where("recipientUid", "==", uid),
+      orderBy("createdAt", "asc"),
+      limit(50)
+    );
 
-      const unsubscribeSender = onSnapshot(senderMessagesQuery, (snapshot) => {
-        const senderMessages = snapshot.docs.map((doc) => ({
+    const unsubscribeSender = onSnapshot(senderMessagesQuery, (snapshot) => {
+      const senderMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMessages((prevMessages) => {
+        const mergedMessages = [...prevMessages, ...senderMessages];
+        return mergedMessages.sort((a, b) => a.createdAt - b.createdAt);
+      });
+    });
+
+    const unsubscribeRecipient = onSnapshot(
+      recipientMessagesQuery,
+      (snapshot) => {
+        const recipientMessages = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setMessages((prevMessages) =>
-          [
-            ...prevMessages.filter((msg) => msg.uid !== uid), // Filter out previous messages from current user
-            ...senderMessages,
-          ].sort((a, b) => a.createdAt - b.createdAt)
-        );
-      });
+        setMessages((prevMessages) => {
+          const mergedMessages = [...prevMessages, ...recipientMessages];
+          return mergedMessages.sort((a, b) => a.createdAt - b.createdAt);
+        });
+      }
+    );
 
-      const unsubscribeRecipient = onSnapshot(
-        recipientMessagesQuery,
-        (snapshot) => {
-          const recipientMessages = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setMessages((prevMessages) =>
-            [
-              ...prevMessages.filter((msg) => msg.uid !== recipientUid), // Filter out previous messages from recipient user
-              ...recipientMessages,
-            ].sort((a, b) => a.createdAt - b.createdAt)
-          );
-        }
-      );
-
-      return () => {
-        unsubscribeSender();
-        unsubscribeRecipient();
-      };
+    return () => {
+      unsubscribeSender();
+      unsubscribeRecipient();
     };
-
-    fetchMessages();
   }, [uid, recipientUid]);
 
+  // Mark messages as read when they are received
   useEffect(() => {
-    const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-    scrollToBottom();
+    messages.forEach((message) => {
+      if (message.uid !== uid && message.read === 1) {
+        updateMessageReadStatus(message.id);
+      }
+    });
+  }, [messages, uid, updateMessageReadStatus]);
+
+  // Scroll to the bottom on new messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Function to update the read status of a message
-
-  const updateMessageReadStatus = async ({ messageId }: propmess) => {
-    try {
-      // Get a reference to the message document
-      const messageRef = doc(db, "messages", messageId);
-
-      // Update the read field to 1 (indicating read status)
-      await updateDoc(messageRef, {
-        read: 0,
-      });
-
-      console.log("Message read status updated successfully.");
-    } catch (error) {
-      console.error("Error updating message read status: ", error);
-    }
-  };
-
-  // Call the function to update the read status of the message
-
   return (
-    <div className="">
-      <ScrollArea className="h-[340px] w-full bg-white rounded-t-md border p-1">
-        {messages.map((message: any) => (
-          <>
-            <Message
-              key={message.id}
-              message={message}
-              displayName={displayName}
-              uid={uid}
-              recipientUid={recipientUid}
-              photoURL={photoURL}
-              recipient={recipient}
-            />
-
-            {message.uid !== uid &&
-              message.read == 1 &&
-              updateMessageReadStatus({ messageId: message.id })}
-          </>
+    <div>
+      <ScrollArea className="h-[340px] w-full dark:bg-[#2D3236] bg-white rounded-t-md border p-1">
+        {messages.map((message) => (
+          <Message
+            key={message.id}
+            message={message}
+            displayName={displayName}
+            uid={uid}
+            recipientUid={recipientUid}
+            photoURL={photoURL}
+            recipient={recipient}
+          />
         ))}
         <div ref={messagesEndRef}></div>
       </ScrollArea>

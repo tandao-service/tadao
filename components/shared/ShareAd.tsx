@@ -19,7 +19,7 @@ import {
 import { updateshared } from "@/lib/actions/ad.actions";
 
 interface shareProps {
-  ad: IAd;
+  ad: any;
 }
 
 const ShareAd: React.FC<shareProps> = ({ ad }) => {
@@ -29,10 +29,10 @@ const ShareAd: React.FC<shareProps> = ({ ad }) => {
     setIsOpen(!isOpen);
   };
 
-  const shareUrl = `https://autoyard.co.ke/ads/${ad._id}`;
-  const shareTitle = `${ad.title}, Price: Ksh ${ad.price}`;
-  const shareDescription = ad.description;
-  const imageUrl = ad.imageUrls[0];
+  const shareUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id;
+  const shareTitle = `${ad.data.title}, Price: Ksh ${ad.data.price}`;
+  const shareDescription = ad.data.description;
+  const imageUrl = ad.data.imageUrls[0];
   const handleShare = async () => {
     //console.log(`Shared via ${platform}`);
     const shared = (Number(ad.shared ?? "0") + 1).toString();
@@ -47,16 +47,16 @@ const ShareAd: React.FC<shareProps> = ({ ad }) => {
   return (
     <>
       <Head>
-        <meta property="og:title" content={ad.title} />
-        <meta property="og:description" content={ad.description} />
-        <meta property="og:image" content={ad.imageUrls[0]} />
+        <meta property="og:title" content={ad.data.title} />
+        <meta property="og:description" content={ad.data.description} />
+        <meta property="og:image" content={ad.data.imageUrls[0]} />
         <meta property="og:url" content={shareUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="Autoyard" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={ad.title} />
-        <meta name="twitter:description" content={ad.description} />
-        <meta name="twitter:image" content={ad.imageUrls[0]} />
+        <meta name="twitter:title" content={ad.data.title} />
+        <meta name="twitter:description" content={ad.data.description} />
+        <meta name="twitter:image" content={ad.data.imageUrls[0]} />
         <meta name="twitter:url" content={shareUrl} />
       </Head>
       <div className="flex gap-1 w-full p-1">

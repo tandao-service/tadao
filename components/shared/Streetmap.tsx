@@ -6,8 +6,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet"; // Import Leaflet library
 type CardProps = {
   id: string;
-  lat: string;
-  lng: string;
+  lat: number;
+  lng: number;
   title: string;
   price: number;
   imageUrls: string[];
@@ -26,8 +26,8 @@ const Streetmap = ({ id, title, price, imageUrls, lat, lng }: CardProps) => {
 
   return (
     <MapContainer
-      center={[parseFloat(lat), parseFloat(lng)]}
-      zoom={10}
+      center={[lat, lng]}
+      zoom={15}
       scrollWheelZoom={false}
       className="map h-72 w-full rounded-lg z-0"
     >
@@ -36,7 +36,7 @@ const Streetmap = ({ id, title, price, imageUrls, lat, lng }: CardProps) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         className="z-0"
       />
-      <Marker position={[parseFloat(lat), parseFloat(lng)]} icon={customIcon}>
+      <Marker position={[lat, lng]} icon={customIcon}>
         <Popup>
           <div className="flex gap-1 p-1 w-[200px]">
             <Image

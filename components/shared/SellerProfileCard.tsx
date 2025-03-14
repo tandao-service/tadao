@@ -45,7 +45,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
 import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import Verification from "./Verification";
 import { IUser } from "@/lib/database/models/user.model";
@@ -57,19 +57,24 @@ import Verificationmobile from "./Verificationmobile";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import RatingsCard from "./RatingsCard";
-import ChatButton from "./ChatButton ";
+import ChatButton from "./ChatButton";
 import { updatecalls, updatewhatsapp } from "@/lib/actions/ad.actions";
 import SafetyCheckOutlinedIcon from "@mui/icons-material/SafetyCheckOutlined";
 //import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 //import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import ProgressPopup from "./ProgressPopup";
+import { Button } from "../ui/button";
 type chatProps = {
   userId: string;
-  ad: IAd;
+  ad: any;
   userImage: string;
   userName: string;
+  handleOpenReview: (value:string) => void;
+  handleOpenShop: (value:string) => void;
+  handlePay: (id:string) => void;
 };
-const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
+const SellerProfileCard = ({ ad, userId, userImage, userName,handlePay, handleOpenReview,handleOpenShop, }: chatProps) => {
   const pathname = usePathname();
 
   const isAdCreator = userId === ad.organizer._id;
@@ -108,7 +113,7 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
       calls,
       path: `/ads/${ad._id}`,
     });
-    window.location.href = `tel:${ad.phone}`;
+    window.location.href = `tel:${ad.data.phone}`;
   };
   const router = useRouter();
   const handlewhatsappClick = async (e: any) => {
@@ -121,20 +126,33 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
     });
     window.location.href = `https://wa.me/${ad.organizer.whatsapp}/`;
   };
+  const [isOpenP, setIsOpenP] = useState(false);
+  const handleOpenP = () => {
+    setIsOpenP(true);
+  };
+
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
-    <div className="flex p-2 items-center flex-col">
-      <div className="flex gap-1 bg-white justify-between items-center p-1 w-full shadow-[0px_4px_20px_rgba(0,0,0,0.3)] rounded-[20px]">
-        <div className="flex flex-col w-full items-center">
-          <div className="w-24 h-24 rounded-full bg-white relative">
-            <Zoom>
-              <Image
-                className="w-full h-full rounded-full object-cover"
-                src={ad.organizer.photo ?? "/avator.png"}
-                alt="Avator"
-                width={200}
-                height={200}
-              />
-            </Zoom>
+    <div className="flex p-0 items-center flex-col">
+      <div className="flex flex-col border dark:bg-[#2D3236] dark:text-gray-100 bg-white items-center p-1 w-full rounded-lg">
+      <div className="flex gap-4 justify-center items-center p-1">
+        <div className="flex flex-col items-center">
+          <div className="w-20 h-20 rounded-full bg-white relative">
+            <Image
+              onClick={() => {
+                //handleOpenP();
+                handleOpenShop(ad.organizer._id);
+                //router.push(`/shop/${ad.organizer._id}`);
+              }}
+              className="w-full h-full cursor-pointer rounded-full object-cover"
+              src={ad.organizer.photo ?? "/avator.png"}
+              alt="Avator"
+              width={200}
+              height={200}
+            />
+
             {/* Verified Icon */}
             {ad.organizer.verified &&
             ad.organizer?.verified[0]?.accountverified === true ? (
@@ -170,7 +188,14 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
             )}
           </div>
 
-          <div className="ml-2 text-xl font-bold">
+          <div
+            onClick={() => {
+             // handleOpenP();
+             // router.push(`/shop/${ad.organizer._id}`);
+             handleOpenShop(ad.organizer._id);
+            }}
+            className="ml-2 text-xl cursor-pointer font-bold hover:underline hover:text-emerald-600"
+          >
             {ad.organizer.firstName} {ad.organizer.lastName}
           </div>
           <div className="m-1">
@@ -178,42 +203,46 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
               user={ad.organizer}
               userId={userId}
               isAdCreator={isAdCreator}
+              handlePayNow={handlePay}
             />
           </div>
         </div>
 
         <div className="flex flex-col">
-          <RatingsCard recipientUid={ad.organizer._id} />
+          <RatingsCard
+            recipientUid={ad.organizer._id}
+            handleOpenReview={handleOpenReview}
+          />
         </div>
-      </div>
-
-      <Link
-        href={`/shop/${ad.organizer._id}`}
-        className="no-underline w-full flex gap-1 items-center mt-3"
+    
+        </div>
+      {/* <div
+        onClick={() => {
+          handleOpenP();
+          router.push(`/shop/${ad.organizer._id}`);
+        }}
+        className="cursor-pointer no-underline w-full flex gap-1 items-center mt-3"
       >
         <LocalOfferOutlinedIcon sx={{ fontSize: 24 }} />
         <p className="hover:underline">View Seller Profile</p>
-      </Link>
-      {!isAds && (
-        <>
+      </div>*/}
+     
+    
           <div className="flex gap-1 items-center p-1 w-full">
             <SignedIn>
-              <button
-                className="hover:bg-emerald-700 bg-[#000000] text-white text-sm mt-2 p-2 rounded-full shadow"
-                onClick={handleShowPhoneClick}
-              >
-                <CallIcon sx={{ fontSize: 18 }} />
-
-                <div className="hidden lg:inline">Call</div>
-              </button>
+            <Button onClick={handleShowPhoneClick} variant="outline" className="flex text-emerald-600 w-full items-center gap-2">
+            <CallIcon sx={{ fontSize: 18 }} /><div className="hidden lg:inline">Call</div>
+           </Button>
+              
             </SignedIn>
             <SignedOut>
-              <a href={`/sign-in`}>
-                <button className="hover:bg-emerald-700 bg-[#000000] text-white text-sm mt-2 p-2 rounded-full shadow">
-                  <CallIcon sx={{ fontSize: 18 }} />
-                  <div className="hidden lg:inline">Call</div>
-                </button>
-              </a>
+            <Button onClick={() => {
+                 // handleOpenP();
+                  router.push(`/sign-in`);
+                }} variant="outline" className="flex text-emerald-600 w-full items-center gap-2">
+            <CallIcon sx={{ fontSize: 18 }} /><div className="hidden lg:inline">Call</div>
+           </Button>
+             
             </SignedOut>
 
             <SignedIn>
@@ -225,40 +254,50 @@ const SellerProfileCard = ({ ad, userId, userImage, userName }: chatProps) => {
               />
             </SignedIn>
             <SignedOut>
-              <a href={`/sign-in`}>
-                <button className="flex gap-1 hover:bg-emerald-700 bg-[#000000] text-white text-sm mt-2 p-2 rounded-full shadow">
-                  <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
-                  <div className="hidden lg:inline">Message</div>
-                </button>
-              </a>
+            <Button onClick={() => {
+                 // handleOpenP();
+                  router.push(`/sign-in`);
+                }}
+                 variant="outline" className="flex w-full text-emerald-600 items-center gap-2">
+            <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+            <div className="hidden lg:inline">Message</div>
+           </Button>
+
+             
             </SignedOut>
 
             {ad.organizer.whatsapp && (
               <>
                 <SignedIn>
-                  <button
-                    onClick={handlewhatsappClick}
-                    className="hover:bg-emerald-700 bg-[#000000] text-white text-sm mt-2 p-2 rounded-full shadow"
-                  >
-                    <WhatsAppIcon sx={{ fontSize: 18 }} />
+                <Button  onClick={handlewhatsappClick}
+                 variant="outline" className="flex w-full text-emerald-600 items-center gap-2">
+            <WhatsAppIcon sx={{ fontSize: 18 }} />
 
-                    <div className="hidden lg:inline">WhatsApp</div>
-                  </button>
+<div className="hidden lg:inline">WhatsApp</div>
+           </Button>
+
+                  
                 </SignedIn>
                 <SignedOut>
-                  <a href={`/sign-in`}>
-                    <button className="hover:bg-emerald-700 bg-[#000000] text-white text-sm mt-2 p-2 rounded-full shadow">
-                      <WhatsAppIcon sx={{ fontSize: 18 }} />
+                <Button  onClick={() => {
+                     // handleOpenP();
+                      router.push(`/sign-in`);
+                    }}
+                 variant="outline" className="flex text-emerald-600 w-full items-center gap-2">
+           <WhatsAppIcon sx={{ fontSize: 18 }} />
 
-                      <div className="hidden lg:inline">WhatsApp</div>
-                    </button>
-                  </a>
+<div className="hidden lg:inline">WhatsApp</div>
+           </Button>
+
+                 
                 </SignedOut>
               </>
             )}
           </div>
-        </>
-      )}
+         
+
+          </div>
+     
     </div>
   );
 };

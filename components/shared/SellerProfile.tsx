@@ -45,7 +45,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
 import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
-import { createTransaction } from "@/lib/actions/transactionstatus";
+import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import Verification from "./Verification";
 import { IUser } from "@/lib/database/models/user.model";
@@ -55,14 +55,20 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import RatingsCard from "./RatingsCard";
+import ProgressPopup from "./ProgressPopup";
+import CopyShareAdLink from "./CopyShareAdLink";
 
 type CollectionProps = {
   userId: string;
   loggedId: string;
   user: any;
+  handleOpenReview: (value:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handlePay: (id:string) => void;
 };
 
-const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
+const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings }: CollectionProps) => {
   const [activationfee, setactivationfee] = useState(500);
   const [showphone, setshowphone] = useState(false);
   const pathname = usePathname();
@@ -110,11 +116,11 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
     // Handle error when formatting date
   }
   const [isLoading, setIsLoading] = useState(true);
+ 
   return (
-    <div className="flex flex-col m-1 items-center min-w-[300px] lg:max-w-[350px]">
-      <div className="flex flex-col items-center rounded-t-lg w-full p-1"></div>
-
-      <div className="flex gap-1 bg-white justify-between items-center p-1 w-full shadow-[0px_4px_20px_rgba(0,0,0,0.3)] rounded-[20px]">
+    <div className="flex flex-col m-0 dark:text-gray-100 items-center w-full lg:w-[350px]">
+     
+      <div className="flex gap-0 dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
         <div className="flex flex-col w-full items-center">
           <div className="w-24 h-24 rounded-full bg-white relative">
             <Zoom>
@@ -168,45 +174,53 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
               user={user}
               userId={userId}
               isAdCreator={isAdCreator}
+              handlePayNow={handlePay}
             />
           </div>
         </div>
       </div>
-
-      <div className="flex flex-col mt-4 items-center bg-white rounded-xl w-full p-1">
+      <div className="flex mb-2 flex-col mt-4 border items-center dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg w-full p-1">
+        <RatingsCard recipientUid={user._id} handleOpenReview={handleOpenReview} />
+      </div>
+      <div className="flex flex-col mt-2 items-center dark:bg-[#2D3236] border dark:text-gray-100 bg-white rounded-lg w-full p-1">
         <div className="divider"></div>
         {userId === loggedId && (
           <div className="flex justify-between w-full p-1 items-center">
             <div>
-              <a href={`/settings/`}>
-                <button className="p-2 gap-1 text-xs bg-emerald-900 rounded-lg text-white  hover:bg-emerald-600">
+              <div
+                onClick={() => {
+                 // handleOpenP();
+                 handleOpenSettings();
+                  //router.push(`/settings/`);
+                }}
+                className="cursor-pointer"
+              >
+                <button className="p-2 gap-1 text-xs bg-green-900 rounded-lg text-white  hover:bg-emerald-600">
                   <EditOutlinedIcon sx={{ fontSize: 14 }} />
                   Edit your Profile
                 </button>
-              </a>
+              </div>
             </div>
 
-            <Share userId={userId} />
+           {/*<Share userId={userId} /> */} 
           </div>
         )}
-
+ 
         {isActiveReviews === false && (
           <>
             <div className="divider"></div>
             {user?.businessname?.length > 0 ? (
               <>
-                <div className="">
-                  <h1 className="mt-5 p-0 font-bold">About Seller</h1>
-                </div>
-
-                <div className="flex w-full gap-5 p-1 bg-gray-100 rounded-lg">
+                <div className="flex w-full gap-5 p-1 dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg">
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-2">
                       <AccordionTrigger>
-                        <p className="text-xs lg:text-sm">Show More...</p>
+                        <p className="text-xs lg:text-sm">
+                          Seller business details...
+                        </p>
                       </AccordionTrigger>
                       <AccordionContent>
-                        <div className="p-0 rounded-lg m-2 shadow bg-white">
+                        <div className="p-0 rounded-lg m-2">
                           {user?.imageUrl && (
                             <div className="flex h-50 w-full flex-1 justify-center">
                               <div className="relative">
@@ -240,40 +254,34 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                           <div className="m-3 p-1">
                             {user?.businessname && (
                               <div className="mb-5 md:flex-row">
-                                <div className="font-bold text-xs lg:text-sm">
+                                <div className="text-gray-500 dark:text-gray-500 text-xs">
                                   Business Name
                                 </div>
-                                <div className="lg:text-xs text-[10px]">
-                                  {user?.businessname}
-                                </div>
+                                <div>{user?.businessname}</div>
                               </div>
                             )}
                             {user?.aboutbusiness && (
                               <div className="mb-5 md:flex-row">
-                                <div className="font-bold text-xs lg:text-sm">
+                                <div className="text-gray-500 dark:text-gray-500 text-xs">
                                   About Business
                                 </div>
-                                <div className="lg:text-xs text-[10px]">
-                                  {user?.aboutbusiness}
-                                </div>
+                                <div>{user?.aboutbusiness}</div>
                               </div>
                             )}
                             {user?.businessaddress && (
                               <div className="mb-5 md:flex-row">
-                                <div className="font-bold text-xs lg:text-sm">
+                                <div className="dark:text-gray-500 text-xs">
                                   Business Address
                                 </div>
-                                <div className="lg:text-xs text-[10px]">
-                                  {user?.businessaddress}
-                                </div>
+                                <div>{user?.businessaddress}</div>
                               </div>
                             )}
                             {user?.latitude && user?.latitude && (
                               <>
-                                <div className="bg-white p-0 text-l rounded-lg overflow-hidden">
+                                <div className="p-0 text-l rounded-lg overflow-hidden">
                                   <div className="">
-                                    <p className="text-xs lg:text-sm font-bold">
-                                      Office Location
+                                    <p className="text-gray-500 dark:text-gray-500 text-xs">
+                                      Location
                                     </p>
                                     <p className="mb-1 lg:text-xs text-[10px]">
                                       <LocationOnIcon sx={{ fontSize: 20 }} />{" "}
@@ -312,13 +320,13 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                                         <div className="flex flex-col gap-5 mb-0 md:flex-row">
                                           <div>
                                             <label>
-                                              <p className="font-bold text-xs lg:text-sm">
+                                              <p className="text-gray-500 dark:text-gray-500 text-xs">
                                                 Office Open Time:
                                               </p>
                                             </label>
                                             <div className="flex flex-col gap-5 mb-5 md:flex-row text-[10px] lg:text-xs">
                                               <select
-                                                className="bg-gray-100 p-1 border rounded-sm"
+                                                className="dark:bg-[#131B1E] dark:text-[#F1F3F3] bg-gray-100 p-1 border rounded-sm"
                                                 value={
                                                   user?.businesshours?.[0]
                                                     .openHour ?? ""
@@ -341,7 +349,7 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                                                 ))}
                                               </select>
                                               <select
-                                                className="bg-gray-100 p-1 border rounded-sm"
+                                                className="dark:bg-[#131B1E] dark:text-[#F1F3F3] bg-gray-100 p-1 border rounded-sm"
                                                 value={
                                                   user?.businesshours?.[0]
                                                     .openMinute ?? ""
@@ -368,13 +376,13 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                                           <div>
                                             <label>
                                               {" "}
-                                              <p className="font-bold text-xs lg:text-sm">
+                                              <p className="dark:text-gray-500 text-xs">
                                                 Office Close Time:
                                               </p>
                                             </label>
                                             <div className="flex flex-col gap-5 mb-0 md:flex-row text-[10px] lg:text-xs">
                                               <select
-                                                className="bg-gray-100 p-1 border rounded-sm"
+                                                className="dark:bg-[#131B1E] dark:text-[#F1F3F3] bg-gray-100 p-1 border rounded-sm"
                                                 value={
                                                   user?.businesshours?.[0]
                                                     .closeHour ?? ""
@@ -397,7 +405,7 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                                                 ))}
                                               </select>
                                               <select
-                                                className="bg-gray-100 p-1 border rounded-sm"
+                                                className="dark:bg-[#131B1E] dark:text-[#F1F3F3] bg-gray-100 p-1 border rounded-sm"
                                                 value={
                                                   user?.businesshours?.[0]
                                                     .closeMinute ?? ""
@@ -434,7 +442,7 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                                     <div>
                                       <label>
-                                        <p className="font-bold text-xs lg:text-sm">
+                                        <p className="text-gray-500 dark:text-gray-500 text-xs">
                                           Office Working Days:
                                         </p>
                                       </label>
@@ -537,11 +545,11 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
               <>
                 {" "}
                 <div className="">
-                  <h1 className="mt-5 p-0 font-bold">Seller contacts</h1>
+                  <h1 className="mt-5 p-0">Seller contacts</h1>
                 </div>
               </>
             )}
-            <div className="justify-center flex w-full gap-1 p-0">
+            <div className="justify-center flex w-full gap-5 p-0">
               {user?.phone && (
                 <>
                   <SignedIn>
@@ -568,11 +576,17 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <a href={`/sign-in`}>
+                          <div
+                            onClick={() => {
+                             // handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                            className="cursor-pointer"
+                          >
                             <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
                               <CallIcon sx={{ fontSize: 16 }} />
                             </button>
-                          </a>
+                          </div>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Call Seller</p>
@@ -588,13 +602,20 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <a href={`/chat/${userId}`}>
+                          <div
+                            onClick={() => {
+                             // handleOpenP();
+                             handleOpenChatId(userId);
+                              //router.push(`/chat/${userId}`);
+                            }}
+                            className="cursor-pointer"
+                          >
                             <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
                               <ChatBubbleOutlineOutlinedIcon
                                 sx={{ fontSize: 16 }}
                               />
                             </button>
-                          </a>
+                          </div>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Chat with seller</p>
@@ -606,13 +627,19 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <a href={`/sign-in`}>
+                          <div
+                            onClick={() => {
+                              //handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                            className="cursor-pointer"
+                          >
                             <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
                               <ChatBubbleOutlineOutlinedIcon
                                 sx={{ fontSize: 16 }}
                               />
                             </button>
-                          </a>
+                          </div>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Chat with Seller</p>
@@ -645,11 +672,17 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <a href={`/sign-in`}>
+                          <div
+                            onClick={() => {
+                              //handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                            className="cursor-pointer"
+                          >
                             <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
                               <WhatsAppIcon sx={{ fontSize: 16 }} />
                             </button>
-                          </a>
+                          </div>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Whatsapp Seller</p>
@@ -669,7 +702,7 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
               <>
                 {" "}
                 <div className="">
-                  <h1 className="mt-5 p-0 font-bold">Seller Social media</h1>
+                  <h1 className="mt-5 p-0">Seller Social media</h1>
                 </div>
               </>
             )}
@@ -724,9 +757,16 @@ const SellerProfile = ({ userId, loggedId, user }: CollectionProps) => {
           </>
         )}
       </div>
-      <div className="flex mb-3 flex-col mt-4 items-center bg-white rounded-xl w-full p-1">
-        <RatingsCard recipientUid={user._id} />
-      </div>
+
+      
+      <div className="w-full mt-2 border dark:bg-[#2D3236] dark:text-gray-300 bg-white p-1 text-sm rounded-lg overflow-hidden">
+              <div className="flex w-full justify-between">
+
+           < CopyShareAdLink _id={userId} titleId={"Profile"}/>
+              
+           
+              </div>
+            </div>
     </div>
   );
 };

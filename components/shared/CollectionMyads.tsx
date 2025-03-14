@@ -3,8 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Pagination from "./Pagination";
 import VerticalCard from "./VerticalCard";
 import HorizontalCard from "./HorizontalCard";
-import { getAdByUser } from "@/lib/actions/ad.actions";
 import Image from "next/image";
+import { getAdByUser } from "@/lib/actions/dynamicAd.actions";
+import Masonry from "react-masonry-css";
+import ProgressPopup from "./ProgressPopup";
 type CollectionProps = {
   userId: string;
   sortby: string;
@@ -17,6 +19,10 @@ type CollectionProps = {
   urlParamName?: string;
   isAdCreator: boolean;
   isVertical: boolean;
+  loadPopup: boolean;
+  handleAdEdit: (id:string) => void;
+  handleAdView: (id:string) => void;
+  handleOpenPlan: () => void;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
 };
 
@@ -31,11 +37,16 @@ const CollectionMyads = ({
   urlParamName,
   isAdCreator,
   isVertical,
+  loadPopup,
+  handleAdEdit,
+  handleAdView,
+  handleOpenPlan,
 }: CollectionProps) => {
   const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+ // const [isOpenP, setIsOpenP] = useState(false);
   // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -67,6 +78,8 @@ const CollectionMyads = ({
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);
+      //setIsOpenP(false);
+      //closeLoading();
     }
   };
 
@@ -74,7 +87,7 @@ const CollectionMyads = ({
     if (userId) {
       fetchAds();
     }
-  }, [page]);
+  }, [page, sortby]);
 
   const lastAdRef = (node: any) => {
     if (loading) return;
@@ -88,46 +101,59 @@ const CollectionMyads = ({
 
     if (node) observer.current.observe(node);
   };
+  const breakpointColumns = {
+    default: 3, // 3 columns on large screens
+    1100: 3, // 2 columns for screens <= 1100px
+    700: 2, // 1 column for screens <= 700px
+  };
 
   return (
     <>
       {data.length > 0 ? (
         isVertical ? (
-          <div className="flex flex-col bg-[#ebf2f7] rounded-lg items-center gap-10 p-1 lg:p-2">
-            <ul className="grid w-full grid-cols-2 gap-1 mt-1 lg:gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:gap-3">
-              {data.map((ad: any, index: number) => {
-                if (data.length === index + 1) {
-                  return (
-                    <div
-                      ref={lastAdRef}
-                      key={ad._id}
-                      className="flex justify-center"
-                    >
-                      {/* Render Ad */}
-                      <VerticalCard
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                      />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={ad._id} className="flex justify-center">
-                      {/* Render Ad */}
-                      <VerticalCard
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                      />
-                    </div>
-                  );
-                }
-              })}
-            </ul>
-          </div>
+          <Masonry
+            breakpointCols={breakpointColumns}
+            className="flex gap-4"
+            columnClassName="bg-clip-padding"
+          >
+            {data.map((ad: any, index: number) => {
+              if (data.length === index + 1) {
+                return (
+                  <div
+                    ref={lastAdRef}
+                    key={ad._id}
+                    className="flex justify-center"
+                  >
+                    {/* Render Ad */}
+                    <VerticalCard
+                      ad={ad}
+                      userId={userId}
+                      isAdCreator={isAdCreator}
+                      handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit}
+                      handleOpenPlan={handleOpenPlan}
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={ad._id} className="flex justify-center">
+                    {/* Render Ad */}
+                    <VerticalCard
+                      ad={ad}
+                      userId={userId}
+                      isAdCreator={isAdCreator}
+                      handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit}
+                      handleOpenPlan={handleOpenPlan}
+                    />
+                  </div>
+                );
+              }
+            })}
+          </Masonry>
         ) : (
-          <div className="flex p-1 bg-[#ebf2f7] rounded-lg">
+          <div className="flex p-1 rounded-lg">
             <ul className="w-full">
               {data.map((ad: any, index: number) => {
                 if (data.length === index + 1) {
@@ -142,6 +168,9 @@ const CollectionMyads = ({
                         ad={ad}
                         userId={userId}
                         isAdCreator={isAdCreator}
+                        handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit}
+                      handleOpenPlan={handleOpenPlan}
                       />
                     </div>
                   );
@@ -153,6 +182,9 @@ const CollectionMyads = ({
                         ad={ad}
                         userId={userId}
                         isAdCreator={isAdCreator}
+                        handleAdView={handleAdView} 
+                      handleAdEdit={handleAdEdit}
+                      handleOpenPlan={handleOpenPlan}
                       />
                     </div>
                   );
@@ -186,6 +218,7 @@ const CollectionMyads = ({
           </div>
         </div>
       )}
+      
     </>
   );
 };
