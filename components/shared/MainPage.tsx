@@ -973,166 +973,121 @@ const handleCloseAdView = () => {
 
           {/* List Ads 
           <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
-          <ScrollArea className="h-[100vh] p-2 w-full bg-gray-200 rounded-t-md border">
-             <div className="lg:hidden">
-                        <MenuSubmobileMain
-                          categoryList={categoryList}
-                          subcategoryList={subcategoryList}
-                          handleSubCategory={handleSubCategory}
-                          handleOpenSell={handleOpenSell}
-                          handleCategory={handleCategory}
-                          handleOpenChat={handleOpenChat}
-                          userId={userId}
-                        />
-                      </div>
-                      {data.length > 0 ? (
-            <>
-              {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4"> */}
-          
-                <Masonry
-                  breakpointCols={breakpointColumns}
-                  className="w-full flex gap-2 lg:gap-4"
-                  columnClassName="bg-clip-padding"
-                >
-                  {data.map((ad: any, index: number) => {
-                    const hasOrderLink = collectionType === "Ads_Organized";
-                    const hidePrice = collectionType === "My_Tickets";
+         <ScrollArea className="h-[100vh] p-2 w-full bg-gray-200 rounded-t-md border overflow-hidden"> 
+  <div className="lg:hidden">
+    <MenuSubmobileMain
+      categoryList={categoryList}
+      subcategoryList={subcategoryList}
+      handleSubCategory={handleSubCategory}
+      handleOpenSell={handleOpenSell}
+      handleCategory={handleCategory}
+      handleOpenChat={handleOpenChat}
+      userId={userId}
+    />
+  </div>
 
-                    if (data.length === index + 1) {
-                      return (
-                        <div
-                          ref={lastAdRef}
-                          key={ad._id}
-                          className="flex justify-center"
-                        >
-                         
-                             <VerticalCard
-                                                    ad={ad}
-                                                    userId={userId}
-                                                    isAdCreator={true}
-                                                    handleAdEdit={handleAdEdit}    
-                                                    handleAdView={handleAdView}
-                                                    handleOpenPlan={handleOpenPlan}
-                                                  />
-                                                   {/* Render Ad 
-                          <CardAutoHeight
-                            ad={ad}
-                            hasOrderLink={hasOrderLink}
-                            hidePrice={hidePrice}
-                            userId={userId}
-                            handleAdEdit={handleAdEdit}
-                            handleAdView={handleAdView}
-                            handleOpenPlan={handleOpenPlan}
-                          />*/}
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div key={ad._id} className="flex justify-center">
-                          {/* Render Ad */}
-                          <VerticalCard
-                                                    ad={ad}
-                                                    userId={userId}
-                                                    isAdCreator={true}
-                                                    handleAdEdit={handleAdEdit}    
-                                                    handleAdView={handleAdView}
-                                                    handleOpenPlan={handleOpenPlan}
-                                                  />
-                        </div>
-                      );
-                    }
-                  })}
-                </Masonry>
-            
-            </>
-          ) : (
-            loading === false && (
-              <>
-                <div className="flex items-center justify-center min-h-[400px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
-                  <h3 className="font-bold text-[16px] lg:text-[25px]">
-                    {emptyTitle}
-                  </h3>
-                  <p className="text-sm lg:p-regular-14">{emptyStateSubtext}</p>
-                  <SignedIn>
+  {data.length > 0 ? (
+    <>
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="w-full flex gap-2 lg:gap-4 overflow-hidden"
+        columnClassName="bg-clip-padding"
+      >
+        {data.map((ad: any, index: number) => {
+          const hasOrderLink = collectionType === "Ads_Organized";
+          const hidePrice = collectionType === "My_Tickets";
 
-<Button onClick={() => {
-    handleOpenSell();
-}} variant="default" className="flex items-center gap-2">
-<AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
-</Button>
-
-</SignedIn>
-
-<SignedOut>
-<Button  onClick={() => {
-      setIsOpenP(true);
-      router.push("/sign-in");
-    }} variant="outline" className="flex items-center gap-2">
-<AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
-</Button>
-
-  
-</SignedOut>
-                </div>
-              </>
-            )
-          )}
-
-{userId && (
-            <>
-              <FloatingChatIcon onClick={toggleChat} isOpen={isChatOpen} />
-              <ChatWindow
-                isOpen={isChatOpen}
-                onClose={toggleChat}
-                senderId={userId}
-                senderName={userName}
-                senderImage={userImage}
-                recipientUid={AdminId}
+          return (
+            <div
+              ref={data.length === index + 1 ? lastAdRef : null}
+              key={ad._id}
+              className="flex justify-center w-full"
+            >
+              <CardAutoHeight
+                ad={ad}
+                hasOrderLink={hasOrderLink}
+                hidePrice={hidePrice}
+                userId={userId}
                 handleAdEdit={handleAdEdit}
-                handleAdView={handleAdView} 
-                handleCategory={handleCategory}
-                handleOpenSell={handleOpenSell}
-               handleOpenPlan={handleOpenPlan}
-              />
-            </>
-          )}
-    
-    {loading && (
-        <div>
-          {isInitialLoading ? (
-           
-           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-           {Array.from({ length: 12 }).map((_, index) => (
-             <div key={index} className="bg-gray-200 dark:bg-[#2D3236] p-4 rounded-lg shadow-md">
-               <Skeleton variant="rectangular" width="100%" height={140} />
-               <Skeleton variant="text" width="80%" height={30} className="mt-2" />
-               <Skeleton variant="text" width="60%" height={25} />
-             </div>
-           ))}
-         </div>
-          
-          ) : (
-            <div className="w-full min-h-[400px] h-full flex flex-col items-center justify-center">
-              <Image
-                src="/assets/icons/loading2.gif"
-                alt="loading"
-                width={40}
-                height={40}
-                unoptimized
+                handleAdView={handleAdView}
+                handleOpenPlan={handleOpenPlan}
+              
               />
             </div>
-          )}
+          );
+        })}
+      </Masonry>
+    </>
+  ) : (
+    !loading && (
+      <div className="flex items-center justify-center min-h-[400px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+        <h3 className="font-bold text-[16px] lg:text-[25px]">{emptyTitle}</h3>
+        <p className="text-sm lg:p-regular-14">{emptyStateSubtext}</p>
+        
+        <SignedIn>
+          <Button onClick={handleOpenSell} variant="default" className="flex items-center gap-2">
+            <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+          </Button>
+        </SignedIn>
+
+        <SignedOut>
+          <Button onClick={() => { setIsOpenP(true); router.push("/sign-in"); }} variant="outline" className="flex items-center gap-2">
+            <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+          </Button>
+        </SignedOut>
+      </div>
+    )
+  )}
+
+  {userId && (
+    <>
+      <FloatingChatIcon onClick={toggleChat} isOpen={isChatOpen} />
+      <ChatWindow
+        isOpen={isChatOpen}
+        onClose={toggleChat}
+        senderId={userId}
+        senderName={userName}
+        senderImage={userImage}
+        recipientUid={AdminId}
+        handleAdEdit={handleAdEdit}
+        handleAdView={handleAdView} 
+        handleCategory={handleCategory}
+        handleOpenSell={handleOpenSell}
+        handleOpenPlan={handleOpenPlan}
+      />
+    </>
+  )}
+
+  {loading && (
+    <div>
+      {isInitialLoading ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <div key={index} className="bg-gray-200 dark:bg-[#2D3236] p-4 rounded-lg shadow-md w-full">
+              <Skeleton variant="rectangular" width="100%" height={140} />
+              <Skeleton variant="text" width="80%" height={30} className="mt-2" />
+              <Skeleton variant="text" width="60%" height={25} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="w-full min-h-[400px] h-full flex flex-col items-center justify-center">
+          <Image src="/assets/icons/loading2.gif" alt="loading" width={40} height={40} unoptimized />
         </div>
       )}
-        
-        <div className="hidden lg:inline">
-                    <Footersub
-                           handleOpenAbout={handleOpenAbout}
-                            handleOpenTerms={handleOpenTerms}
-                            handleOpenPrivacy={handleOpenPrivacy}
-                            handleOpenSafety={handleOpenSafety}/>
-                  </div>
-          </ScrollArea>
+    </div>
+  )}
+  
+  <div className="hidden lg:inline">
+    <Footersub
+      handleOpenAbout={handleOpenAbout}
+      handleOpenTerms={handleOpenTerms}
+      handleOpenPrivacy={handleOpenPrivacy}
+      handleOpenSafety={handleOpenSafety}
+    />
+  </div>
+</ScrollArea>
+
            <footer>
                   
                   <div className="lg:hidden mt-10">
