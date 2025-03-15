@@ -1005,7 +1005,16 @@ const handleCloseAdView = () => {
                           key={ad._id}
                           className="flex justify-center"
                         >
-                          {/* Render Ad */}
+                         
+                             <VerticalCard
+                                                    ad={ad}
+                                                    userId={userId}
+                                                    isAdCreator={true}
+                                                    handleAdEdit={handleAdEdit}    
+                                                    handleAdView={handleAdView}
+                                                    handleOpenPlan={handleOpenPlan}
+                                                  />
+                                                   {/* Render Ad 
                           <CardAutoHeight
                             ad={ad}
                             hasOrderLink={hasOrderLink}
@@ -1014,22 +1023,21 @@ const handleCloseAdView = () => {
                             handleAdEdit={handleAdEdit}
                             handleAdView={handleAdView}
                             handleOpenPlan={handleOpenPlan}
-                          />
+                          />*/}
                         </div>
                       );
                     } else {
                       return (
                         <div key={ad._id} className="flex justify-center">
                           {/* Render Ad */}
-                          <CardAutoHeight
-                            ad={ad}
-                            hasOrderLink={hasOrderLink}
-                            hidePrice={hidePrice}
-                            userId={userId}
-                            handleAdEdit={handleAdEdit}
-                            handleAdView={handleAdView}
-                            handleOpenPlan={handleOpenPlan}
-                          />
+                          <VerticalCard
+                                                    ad={ad}
+                                                    userId={userId}
+                                                    isAdCreator={true}
+                                                    handleAdEdit={handleAdEdit}    
+                                                    handleAdView={handleAdView}
+                                                    handleOpenPlan={handleOpenPlan}
+                                                  />
                         </div>
                       );
                     }
