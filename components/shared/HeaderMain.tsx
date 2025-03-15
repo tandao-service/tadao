@@ -79,10 +79,10 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   <TooltipTrigger asChild>
                   <button
                     onClick={handleOpenPopupMap}
-                    className="flex gap-2 text-gray-700 items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                    className="flex gap-2 text-gray-700 justify-between items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
                   >
                    {/*  🗺️ */}
-                   
+                   <div className="flex gap-3 items-center">
                     <Image
                                    src={"/assets/icons/map-pointer.png"}
                                    alt="icon"
@@ -90,7 +90,7 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                                    width={40}
                                    height={40}
                                  />
-                    <div className="flex gap-1 items-center">Virtual Tour of Property Location <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
+                    <div className="flex gap-1 items-center">Virtual Tour </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                   </button>
                   </TooltipTrigger>
                   <TooltipContent>

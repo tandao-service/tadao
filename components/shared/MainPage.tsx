@@ -973,7 +973,7 @@ const handleCloseAdView = () => {
 
           {/* List Ads 
           <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
-          <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border">
+          <ScrollArea className="h-[100vh] p-2 w-full bg-gray-200 rounded-t-md border">
              <div className="lg:hidden">
                         <MenuSubmobileMain
                           categoryList={categoryList}
@@ -986,12 +986,12 @@ const handleCloseAdView = () => {
                         />
                       </div>
                       {data.length > 0 ? (
-            <div className="flex w-full min-h-screen flex-col items-center gap-2 p-2">
+            <>
               {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4"> */}
-              <div className="w-full">
+          
                 <Masonry
                   breakpointCols={breakpointColumns}
-                  className="flex gap-2 lg:gap-4"
+                  className="w-full flex gap-2 lg:gap-4"
                   columnClassName="bg-clip-padding"
                 >
                   {data.map((ad: any, index: number) => {
@@ -1035,8 +1035,8 @@ const handleCloseAdView = () => {
                     }
                   })}
                 </Masonry>
-              </div>
-            </div>
+            
+            </>
           ) : (
             loading === false && (
               <>
