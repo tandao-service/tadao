@@ -90,7 +90,7 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                                    width={40}
                                    height={40}
                                  />
-                    <div className="flex gap-1 items-center">Virtual Tour </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
+                    <div className="flex gap-1 items-center">Virtual Site Visit </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                   </button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -119,7 +119,7 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                                    width={40}
                                    height={40}
                                  />
-                    <div className="flex gap-1 items-center">Virtual Tour of Property Location <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
+                    <div className="flex gap-1 items-center">Virtual Property Site Visit <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
                   </button>
                   </TooltipTrigger>
                   <TooltipContent>

@@ -990,7 +990,7 @@ const handleCloseAdView = () => {
    
      <Masonry
         breakpointCols={breakpointColumns}
-        className="w-full flex gap-2 lg:gap-4 overflow-hidden"
+        className="mt-4 mb-20 lg:mb-0 lg:mt-0 w-full flex gap-2 lg:gap-4 overflow-hidden"
         columnClassName="bg-clip-padding"
       >
         {data.map((ad: any, index: number) => {
@@ -1090,7 +1090,7 @@ const handleCloseAdView = () => {
 
            <footer>
                   
-                  <div className="lg:hidden mt-10">
+                  <div className="lg:hidden">
                     <BottomNavigation userId={userId} 
                      popup={"home"}
                      onClose={handleClose} 

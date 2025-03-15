@@ -90,7 +90,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
         <div className="flex flex-col items-center w-full h-full">
           <div className="w-full h-full dark:bg-[#2D3236]">
             <Command className="w-full h-[100vh]">
-              <div className="flex justify-between items-center dark:bg-[#131B1E] border-0 border-gray-600">
+              <div className="flex text-base justify-between items-center dark:bg-[#131B1E] border-0 border-gray-600">
                 <CommandInput placeholder={`Search category`} />
                 <button
                   onClick={onClose}
@@ -105,7 +105,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                 <CommandGroup
                   className="dark:bg-[#2D3236]"
                   heading={
-                    <div className="flex gap-1 items-center text-gray-500 dark:text-gray-400">
+                    <div className="flex mb-2 text-base gap-1 items-center text-gray-500 dark:text-gray-400">
                       {totalAdCount} results for{" "}
                       <p className="text-black dark:text-white font-bold">{category}</p> in Kenya
                     </div>
@@ -133,7 +133,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                         }}
                       >
                         <div className="flex border-b border-gray-300 p-0 dark:border-0 w-full gap-0 items-center hover:bg-green-100 dark:bg-[#222528] dark:hover:bg-gray-800">
-                          <div className="flex gap-1 items-center p-2">
+                          <div className="flex gap-1 items-center p-3">
                             <div className="flex h-9 w-9 rounded-lg p-1 dark:bg-[#2D3236] bg-gray-100 items-center">
                               <Image
                                 className="h-5 w-8 object-cover"
@@ -143,7 +143,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                                 height={60}
                               />
                             </div>
-                            <div className="flex flex-col">
+                            <div className="flex text-base flex-col">
                               <div
                                 className={`w-[300px] font-bold ${
                                   sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"

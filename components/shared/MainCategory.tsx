@@ -33,6 +33,7 @@ import {
 } from "@/lib/utils";
 import ShareLocationOutlinedIcon from "@mui/icons-material/ShareLocationOutlined";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+
 import {
   Tooltip,
   TooltipContent,
@@ -455,12 +456,12 @@ CollectionProps) => {
         >
         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Categories</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Categories</>)} 
         </Button>
-        <div className="p-1 lg:p-4 h-full flex flex-col">
+        <div className="p-0 lg:p-4 h-full flex flex-col">
          {/* Header Section */}
 
       
-         <div className="mb-1 flex flex-col gap-2 fixed top-0 left-0 w-full bg-white p-1 shadow-md z-10 md:relative md:w-auto md:shadow-none">
-         
+         <div className="mb-1  flex flex-col gap-2 fixed top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+         <div className="p-2 w-full flex flex-col items-center">
             <div className="w-full justify-between flex items-center">
               <div className="flex items-center">
                     
@@ -485,7 +486,7 @@ CollectionProps) => {
                       
                         <div className="flex items-center gap-2">
                              <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-                             <span className="text-lg font-semibold">LandMak</span>
+                             <span className="text-xl font-bold">LandMak</span>
                            </div>
                      
                      </div>
@@ -502,7 +503,7 @@ CollectionProps) => {
 
 
 
-              <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center">
           <div className="hidden lg:inline">
           <div className="flex items-center gap-2">
             <div
@@ -604,7 +605,7 @@ CollectionProps) => {
           </div>
         </div>
 
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           <SignedIn>
             <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
               <UserButton afterSignOutUrl="/" />
@@ -632,8 +633,8 @@ CollectionProps) => {
             </div>
 
            
-              <div className="lg:hidden">
-                <section className="flex justify-between items-center gap-1 dark:bg-[#131B1E] bg-white bg-dotted-pattern bg-cover bg-center rounded-sm">
+              <div className="w-full lg:hidden">
+               {/*  <section className="flex w-full mt-3 justify-between items-center gap-1 dark:bg-[#131B1E] bg-white bg-dotted-pattern bg-cover bg-center rounded-sm">
                   <div className="flex w-full p-0">
                     <SubCategoryFilterSearch
                       categoryList={categoryList}
@@ -644,14 +645,60 @@ CollectionProps) => {
                   </div>
 
                  
-                </section>
-             
+                </section>*/}
+             <div className="flex w-full mt-3 gap-2 items-center">
+             {newqueryObject.category === "Property" && ( <div className="flex-1">
+          <TooltipProvider>
+                         <Tooltip>
+                           <TooltipTrigger asChild>
+                           <button
+                             onClick={handleOpenPopupMapSearch}
+                             className="flex gap-2 text-gray-700 items-center justify-between w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                           >
+                            {/*  🗺️ */}
+                            
+                            <div className="flex gap-2 items-center"> <Image
+                                                               src={"/assets/icons/travel-distance.png"}
+                                                               alt="icon"
+                                                               className="rounded-full object-cover"
+                                                               width={40}
+                                                               height={40}
+                                                             />Search Properties by Distance </div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
+                           </button>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                             <p>Search Properties by Distance</p>
+                           </TooltipContent>
+                         </Tooltip>
+                       </TooltipProvider>
+                       </div>
+                       
+         )}
+         <div className="flex gap-1 items-center">
+                  
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          onClick={togglePopup}
+                          className="flex py-4 px-3 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
+                        >
+                          <SortOutlinedIcon />
+                        <div className="flex gap-1 items-center">Filter</div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Advanced Filter</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                 
+              </div>
               </div>
 
-
-              <div className="flex gap-1 justify-center items-center mb-0">
-         
-       
+        <div className="flex w-full gap-1 mt-3 justify-center items-center mb-2">
          <button
          onClick={handleOpenPopupLocation}
          className="flex gap-1 items-center justify-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
@@ -662,7 +709,8 @@ CollectionProps) => {
          <div className="flex-1">
                <SearchNow handleFilter={handleFilter} />
          </div>
-         {newqueryObject.category === "Property" && ( <div className="flex">
+        
+         {newqueryObject.category === "Property" && ( <div className="flex hidden lg:inline">
           <TooltipProvider>
                          <Tooltip>
                            <TooltipTrigger asChild>
@@ -671,14 +719,14 @@ CollectionProps) => {
                              className="flex gap-2 text-gray-700 items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
                            >
                             {/*  🗺️ */}
-                             <Image
+                           
+                            <div className="flex gap-2 items-center"> <Image
                                                                src={"/assets/icons/travel-distance.png"}
                                                                alt="icon"
                                                                className="rounded-full object-cover"
                                                                width={40}
                                                                height={40}
-                                                             />
-                             <div className="hidden lg:inline">  <div className="flex gap-1 items-center">Search Properties by Distance </div></div>
+                                                             />Search Properties by Distance </div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                            </button>
                            </TooltipTrigger>
                            <TooltipContent>
@@ -689,7 +737,7 @@ CollectionProps) => {
                        
                          </div>
          )}
-         <div className="flex gap-1 items-center">
+         <div className="flex gap-1 items-center hidden lg:inline">
                   
 
                   <TooltipProvider>
@@ -697,10 +745,10 @@ CollectionProps) => {
                       <TooltipTrigger asChild>
                         <div
                           onClick={togglePopup}
-                          className="flex py-4 px-1 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
+                          className="flex py-4 px-2 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
                         >
                           <SortOutlinedIcon />
-                          <div className="hidden lg:inline">  <div className="flex gap-1 items-center">Filter</div></div>
+                          <div className="flex gap-1 items-center">Filter</div>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -734,14 +782,14 @@ CollectionProps) => {
          </div>
 
 
-           
+         </div>   
 
           </div>
 
           {/* List Ads 
           <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
-          <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[150px] lg:mt-0">
-          <section className="p-3 mt-2">
+          <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[180px] lg:mt-0">
+          <section className="p-1 lg:p-3 mt-2">
           <div className="flex items-center p-1 w-full justify-between">
                 <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0 ">
                   <div

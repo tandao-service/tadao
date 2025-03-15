@@ -99,7 +99,7 @@ export default function Navbar({ userstatus, userId, onClose, popup, handleOpenS
          
            <div className="flex items-center gap-2">
                 <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-                <span className="text-lg font-semibold">LandMak</span>
+                <span className="text-xl font-bold">LandMak</span>
               </div>
         
         </div>

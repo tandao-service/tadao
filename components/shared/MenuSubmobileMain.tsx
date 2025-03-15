@@ -71,7 +71,7 @@ export default function MenuSubmobileMain({
   };
   return (
     <div className="mx-auto mt-[200px]">
-      <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-2 gap-1">
+      <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-1 gap-1">
         <SignedIn>
           <div
             onClick={() => {
