@@ -1,5 +1,4 @@
 module.exports = {
-    siteUrl: 'https://autoyard.co.ke',
-    generateRobotsTxt: true,
-  };
-  
+  siteUrl: 'https://landmak.co.ke',
+  generateRobotsTxt: true,
+};
