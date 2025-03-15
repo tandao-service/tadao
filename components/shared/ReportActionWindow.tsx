@@ -24,37 +24,19 @@ const ReportActionWindow: React.FC<ChatWindowProps> = ({
   ad,
   onClose,
 }) => {
-  if (!isOpen) return null;
-
+ 
   const [status, setStatus] = useState(ad.adstatus);
   const [Userstatus, setUserStatus] = useState("User");
   const pathname = usePathname();
   const router = useRouter();
-
   const isAdCreator = true;
   const page = 1000;
   const sortby = "recommended";
   const [userId, setUserId] = useState(ad.organizer);
   const [organizerAds, setOrganizerAds] = useState<any>([]);
-
-  const fetchAds = async () => {
-    try {
-      const organizedAds = await getAdByUser({
-        userId,
-        page,
-        sortby,
-        myshop: isAdCreator,
-      });
-      setOrganizerAds(organizedAds);
-    } catch (error) {
-      console.error("Error fetching ads", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAds();
-  }, []);
-
+  const [isOpenP, setIsOpenP] = useState(false);
+  const handleOpenP = () => setIsOpenP(true);
+  const handleCloseP = () => setIsOpenP(false);
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this ad?")) {
       try {
@@ -100,10 +82,27 @@ const ReportActionWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
-  const [isOpenP, setIsOpenP] = useState(false);
-  const handleOpenP = () => setIsOpenP(true);
-  const handleCloseP = () => setIsOpenP(false);
+  const fetchAds = async () => {
+    try {
+      const organizedAds = await getAdByUser({
+        userId,
+        page,
+        sortby,
+        myshop: isAdCreator,
+      });
+      setOrganizerAds(organizedAds);
+    } catch (error) {
+      console.error("Error fetching ads", error);
+    }
+  };
 
+  useEffect(() => {
+    if (isOpen) {
+    fetchAds();
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#2D3236] dark:text-gray-300 bg-white rounded-lg p-4 lg:p-6 w-full max-w-4xl h-[90vh] flex flex-col">
