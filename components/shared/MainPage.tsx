@@ -283,7 +283,7 @@ const MainPage = ({
     setIsOpenReview(false);
   };
   const handleOpenReview = (value:string) => {
-   // handleClose();
+    handleClose();
     setrecipientUid(value)
     setIsOpenReview(true);
     };
@@ -345,7 +345,7 @@ const MainPage = ({
     setIsOpenTerms(false);
   };
   const handleOpenTerms = () => {
-   // handleClose();
+    handleClose();
     setIsOpenTerms(true);
     };
     const handleClosePrivacy = () => {
@@ -359,7 +359,7 @@ const MainPage = ({
       setIsOpenPrivacy(false);
     };
     const handleOpenPrivacy = () => {
-    //  handleClose();
+      handleClose();
       setIsOpenPrivacy(true);
       };
       const handleCloseSafety = () => {
@@ -374,7 +374,7 @@ const MainPage = ({
         setIsOpenSafety(false);
       };
       const handleOpenSafety = () => {
-       // handleClose();
+        handleClose();
         setIsOpenSafety(true);
         };
   const handleCloseAbout = () => {
@@ -389,7 +389,7 @@ const MainPage = ({
     setIsOpenAbout(false);
   };
   const handleOpenAbout = () => {
-    //handleClose();
+    handleClose();
     setIsOpenAbout(true);
     };
   
@@ -424,7 +424,7 @@ const handleCloseAdEdit = () => {
 };
 
 const handleAdEdit = (id:string) => {
- // handleClose();
+  handleClose();
   setadId(id);
   setIsOpenAdEdit(true);
   };
@@ -469,7 +469,7 @@ const handleCloseAdView = () => {
     setIsOpenSell(false);
   };
   const handleAdView = (id:string) => {
-   // handleClose();
+    handleClose();
     setadId(id);
     setIsOpenAdView(true);
     };
