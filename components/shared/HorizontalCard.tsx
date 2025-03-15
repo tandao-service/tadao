@@ -399,21 +399,7 @@ const HorizontalCard = ({
                   {ad.data["engine-CC"]}
                 </div>
               )}
-              {ad.data["property-Type"] && (
-                <div className="flex gap-2 text-[8px] lg:text-xs dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                  {ad.data["property-Type"]}
-                </div>
-              )}
-              {ad.data["property-Size(sqm)"] && (
-                <div className="flex gap-2 text-[8px] lg:text-xs dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                  {ad.data["property-Size(sqm)"]}
-                </div>
-              )}
-              {ad.data["land-Type"] && (
-                <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                  {ad.data["land-Type"]}
-                </div>
-              )}
+            
 
               {ad.data["land-Area(acres)"] && (
                 <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
@@ -422,12 +408,12 @@ const HorizontalCard = ({
               )}
               {ad.data["bulkprice"] && (
                 <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                  Bulkprice Options
+                  Bulkprice
                 </div>
               )}
               {ad.data["delivery"] && (
                 <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                  Delivery Options
+                  Delivery
                 </div>
               )}
             </div>
