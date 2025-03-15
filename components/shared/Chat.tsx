@@ -11,9 +11,19 @@ type sidebarProps = {
   senderName: string;
   senderId: string;
   senderImage: string;
+
+  handleAdEdit:(id:string)=> void;
+  handleAdView:(id:string)=> void;
+  handleCategory:(category:string)=> void;
+  handleOpenSell:()=> void;
+ handleOpenPlan:()=> void;
 };
 
-const Chat = ({ senderName, senderId, senderImage }: sidebarProps) => {
+const Chat = ({ senderName, senderId, senderImage, handleAdEdit,
+  handleAdView,
+  handleCategory,
+  handleOpenSell,
+ handleOpenPlan, }: sidebarProps) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [recipientUid, setRecipientUid] = useState<string>("");
   const [recipientUidName, setRecipientUidName] = useState<string>("");
@@ -238,6 +248,11 @@ const Chat = ({ senderName, senderId, senderImage }: sidebarProps) => {
                 // username: "",
                 photo: recipientUidImage,
               }}
+              handleAdEdit={handleAdEdit}
+              handleAdView={handleAdView} 
+              handleCategory={handleCategory}
+              handleOpenSell={handleOpenSell}
+             handleOpenPlan={handleOpenPlan}
             />
             <SendMessage
               displayName={senderName}
