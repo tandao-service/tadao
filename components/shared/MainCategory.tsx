@@ -78,7 +78,6 @@ import Footersub from "./Footersub";
 import { Toaster } from "../ui/toaster";
 import Navbar from "./navbar";
 import LocationSelection from "./LocationSelection";
-import SidebarSearch from "./SidebarSearch";
 import SidebarSearchMain from "./SidebarSearchMain";
 import CategoryFilterSearch from "./CategoryFilterSearch";
 import HeaderMain from "./HeaderMain";
@@ -923,13 +922,17 @@ CollectionProps) => {
             <>
               <FloatingChatIcon onClick={toggleChat} isOpen={isChatOpen} />
               <ChatWindow
-                isOpen={isChatOpen}
-                onClose={toggleChat}
-                senderId={userId}
-                senderName={userName}
-                senderImage={userImage}
-                recipientUid={AdminId}
-              />
+                  isOpen={isChatOpen}
+                  onClose={toggleChat}
+                  senderId={userId}
+                  senderName={userName}
+                  senderImage={userImage}
+                  recipientUid={AdminId}
+                  handleAdEdit={handleAdEdit}
+                  handleAdView={handleAdView}
+                  handleCategory={handleCategory}
+                  handleOpenSell={handleOpenSell}
+                  handleOpenPlan={handleOpenPlan}              />
             </>
           )}
 
