@@ -4,7 +4,7 @@ interface Field {
   name: string;
   type: "text" | "number" | "select" | "radio" | "checkbox" | "textarea" | "multi-select" | "autocomplete" | "phone"
   | "year" | "youtube-link" | "price" | "rentprice" | "priceper" | "bulkprice"
-  | "delivery" | "gps" | "propertyarea"  | "virtualTourLink" | "serviceprice" | "related-autocompletes";
+  | "delivery" | "gps" | "propertyarea" | "virtualTourLink" | "serviceprice" | "related-autocompletes";
   required?: boolean;
   options?: string[];
 }
@@ -23,7 +23,7 @@ const trustedDomains = [
   "sketchfab.com"
 ];
 
-function isTrustedVirtualTourUrl(url) {
+function isTrustedVirtualTourUrl(url: any) {
   try {
     const { hostname } = new URL(url);
     return trustedDomains.some((domain) => hostname.endsWith(domain));
@@ -224,23 +224,23 @@ export const createValidationSchema = (fields: Field[]) => {
             })
             .optional();
         break;
-        case "virtualTourLink":
-          fieldSchema = field.required
-            ? z
+      case "virtualTourLink":
+        fieldSchema = field.required
+          ? z
             .string()
             .url({ message: "Invalid URL format" })
             .refine((url) => isTrustedVirtualTourUrl(url), {
               message: "URL must be from a trusted 3D virtual tour platform e.g kuula.co, cloudpano.com, teliportme.com",
             })
-            : z
+          : z
             .string()
             .url({ message: "Invalid URL format" })
             .refine((url) => isTrustedVirtualTourUrl(url), {
               message: "URL must be from a trusted 3D virtual tour platform e.g kuula.co, cloudpano.com, teliportme.com",
             })
-              .optional();
-          break;
-  
+            .optional();
+        break;
+
       default:
         throw new Error(`Unsupported field type: ${field.type}`);
     }
