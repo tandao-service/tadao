@@ -75,7 +75,7 @@ export default function Navbar({ userstatus, userId, onClose, popup, handleOpenS
  
   return (
     <div className="h-[60px] flex p-2 lg:p-3 gap-1 w-full border-b bg-white">
-      <div className="flex-1">
+      <div className="flex-1 mt-1">
         <div className="flex items-center">
        
             <div
@@ -107,7 +107,7 @@ export default function Navbar({ userstatus, userId, onClose, popup, handleOpenS
     
       <div className="hidden lg:inline">
         
-      <div className="flex items-center gap-2">   
+      <div className="flex mt-1 items-center gap-2">   
       {popup !=="bookmark" && (<div
             className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"

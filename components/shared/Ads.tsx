@@ -344,7 +344,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-1 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300"
+          className="mt-20 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300"
           style={
             ad.plan.name !== "Free"
               ? {
@@ -642,7 +642,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
           )}
 
           {/* Ad details */}
-          <div className="p-3 rounded-b-xl bg-white">
+          <div className="p-3 lg:rounded-b-xl bg-white">
             <div className="lg:hidden flex justify-end mb-2 items-center w-full">
               <div className="flex flex-col justify-center">
                 <div className="flex gap-1 items-center justify-center">

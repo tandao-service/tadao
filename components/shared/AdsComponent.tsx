@@ -150,7 +150,7 @@ const AdsComponent = ({
         </div>
 
         
-        <div className="fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent  bg-white lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center">
+        <div className="fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent  bg-gray-300 lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center">
           <Contact
             ad={ad}
             userId={userId || ""}

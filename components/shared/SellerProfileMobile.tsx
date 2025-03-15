@@ -148,7 +148,7 @@ const SellerProfileMobile = ({
             }}
             className="cursor-pointer no-underline m-1"
           >
-            <p className="ml-2 text-xs text-emerald-500 hover:underline">
+            <p className="ml-2 text-xs text-gray-700 hover:underline">
               View Seller Profile
             </p>
           </div>

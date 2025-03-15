@@ -663,11 +663,11 @@ CollectionProps) => {
                                                                className="rounded-full object-cover"
                                                                width={40}
                                                                height={40}
-                                                             />Search Properties by Distance </div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
+                                                             />Search by Distance </div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                            </button>
                            </TooltipTrigger>
                            <TooltipContent>
-                             <p>Search Properties by Distance</p>
+                             <p>Search by Distance</p>
                            </TooltipContent>
                          </Tooltip>
                        </TooltipProvider>
@@ -726,11 +726,11 @@ CollectionProps) => {
                                                                className="rounded-full object-cover"
                                                                width={40}
                                                                height={40}
-                                                             />Search Properties by Distance </div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
+                                                             />Search by Distance </div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                            </button>
                            </TooltipTrigger>
                            <TooltipContent>
-                             <p>Search Properties by Distance</p>
+                             <p>Search by Distance</p>
                            </TooltipContent>
                          </Tooltip>
                        </TooltipProvider>
@@ -825,7 +825,7 @@ CollectionProps) => {
                       <SwapVertIcon />
                     </div>
                     <Select onValueChange={handleSortChange}>
-                      <SelectTrigger className="w-[180px] dark:text-gray-300 text-gray-700 dark:bg-[#2D3236] border-0 rounded-full">
+                      <SelectTrigger className="w-[200px] dark:text-gray-300 text-gray-700 dark:bg-[#2D3236] border-0 rounded-full">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
                       <SelectContent className="dark:bg-[#222528]">
