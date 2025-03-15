@@ -52,12 +52,14 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
   handleOpenSell,
   handleCategory,
 }) => {
-  if (!isOpen) return null;
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [query, setQuery] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isOpenP, setIsOpenP] = useState(false);
+
+  if (!isOpen) return null; // Keep the early return after defining hooks
+
   const handleOpenP = (query: string) => {
     setIsOpenP(true);
   };
@@ -65,16 +67,13 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
-  
+
   const handleQuery = (query: string) => {
-  
     if (query) {
       setQuery(query);
-      handleSubCategory(category.toString(),query.toString());
+      handleSubCategory(category.toString(), query.toString());
       onClose();
-    } 
-   
-    
+    }
   };
 
   const totalAdCount = subcategoryList.reduce((sum: any, item: any) => {
@@ -88,32 +87,27 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#2D3236] dark:text-gray-300 bg-gray-200 rounded-lg p-1 lg:p-6 w-full h-full flex flex-col">
         {/* Header */}
-       
         <div className="flex flex-col items-center w-full h-full">
-        
           <div className="w-full h-full dark:bg-[#2D3236]">
             <Command className="w-full h-[100vh]">
               <div className="flex justify-between items-center dark:bg-[#131B1E] border-0 border-gray-600">
                 <CommandInput placeholder={`Search category`} />
                 <button
-            onClick={onClose}
-            className="flex justify-center items-center h-12 w-12 text-gray-700 dark:text-gray-200 dark:hover:bg-gray-700 hover:text-green-600 rounded-full"
-          >
-            <CloseOutlinedIcon />
-          </button>
+                  onClick={onClose}
+                  className="flex justify-center items-center h-12 w-12 text-gray-700 dark:text-gray-200 dark:hover:bg-gray-700 hover:text-green-600 rounded-full"
+                >
+                  <CloseOutlinedIcon />
+                </button>
               </div>
-           
+
               <CommandList className="min-h-[450px] dark:bg-[#2D3236]">
-                <CommandEmpty>No sub category found</CommandEmpty>
+                <CommandEmpty>No subcategory found</CommandEmpty>
                 <CommandGroup
                   className="dark:bg-[#2D3236]"
                   heading={
                     <div className="flex gap-1 items-center text-gray-500 dark:text-gray-400">
                       {totalAdCount} results for{" "}
-                      <p className="text-black dark:text-white font-bold">
-                        {category}
-                      </p>{" "}
-                      in Kenya
+                      <p className="text-black dark:text-white font-bold">{category}</p> in Kenya
                     </div>
                   }
                 >
@@ -134,7 +128,6 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                                   No ads in <strong>{sub.subcategory}</strong> subcategory
                                 </>
                               ),
-                              //action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
                             });
                           }
                         }}
@@ -153,10 +146,8 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                             <div className="flex flex-col">
                               <div
                                 className={`w-[300px] font-bold ${
-                                  sub.adCount > 0
-                                    ? ""
-                                    : "text-gray-500 dark:text-gray-500"
-                                } `}
+                                  sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
+                                }`}
                               >
                                 {sub.subcategory}
                               </div>
@@ -168,38 +159,33 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                           </div>
                           <div
                             className={`flex items-center justify-end w-full ${
-                              sub.adCount > 0
-                                ? ""
-                                : "text-gray-500 dark:text-gray-500"
-                            } `}
+                              sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
+                            }`}
                           >
                             <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
                           </div>
                         </div>
-
                       </CommandItem>
                     ))}
                 </CommandGroup>
               </CommandList>
-              
             </Command>
           </div>
-          
         </div>
-    
-          <footer>
-                                                                 
-                                                                 <div className="lg:hidden mt-0">
-                                                                   <BottomNavigation userId={userId} 
-                                                                   popup={"category"}
-                                                                   onClose={onClose} 
-                                                                   handleOpenSell={handleOpenSell}
-                                                                   handleOpenChat={handleOpenChat}
-                                                                   handleCategory={handleCategory} />
-                                                                 </div>
-                                                               </footer>
+
+        <footer>
+          <div className="lg:hidden mt-0">
+            <BottomNavigation
+              userId={userId}
+              popup={"category"}
+              onClose={onClose}
+              handleOpenSell={handleOpenSell}
+              handleOpenChat={handleOpenChat}
+              handleCategory={handleCategory}
+            />
+          </div>
+        </footer>
       </div>
-      
     </div>
   );
 };

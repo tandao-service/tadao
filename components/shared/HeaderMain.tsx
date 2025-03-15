@@ -99,7 +99,7 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Explore the property's location through a virtual interactive tour.</p>
+                    <p>Explore the property&apos;s location through a virtual interactive tour.</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

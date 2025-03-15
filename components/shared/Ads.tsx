@@ -1371,13 +1371,13 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
            <li>📏 <span className="font-medium">Property Land Size</span> - Click the drawn area to view estimate area in square meters (m²), acres, or hectares.</li>
                  <li>📍 <span className="font-medium">Calculate Distance</span> - Find distance from key places like your workplace or shopping centers.</li>
                  <li>🛣️ <span className="font-medium">Find the Nearest Route</span> - Get directions from your location to the property.</li>
-                 <li>👥 <span className="font-medium">Analyze Population</span> - View demographic insights of the property's surroundings.</li>
+                 <li>👥 <span className="font-medium">Analyze Population</span> - View demographic insights of the property&apos;s surroundings.</li>
                  <li>🚗 <span className="font-medium">Check Road Accessibility</span> - See the distance to the nearest tarmac road.</li>
                  <li>🚏 <span className="font-medium">Locate Public Transport</span> -  Find the closest bus station and distance.</li>
                  <li>🏫 <span className="font-medium">Nearby Schools</span> - View the number of schools around.</li>
                  <li>🏥 <span className="font-medium">Healthcare Facilities</span> -  Check hospitals and clinics in the area.</li>
                  <li>🛍️ <span className="font-medium">Shopping Options</span> - See available shopping malls nearby.</li>
-                 <li>⏳ <span className="font-medium">Saves Time for Both Buyers & Sellers</span> - Only visit the site after you're satisfied with the property's location.</li>
+                 <li>⏳ <span className="font-medium">Saves Time for Both Buyers & Sellers</span> - Only visit the site after you&apos;re satisfied with the property&apos;s location.</li>
            
            
           </ul>
