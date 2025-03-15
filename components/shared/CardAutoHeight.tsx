@@ -104,7 +104,7 @@ const CardAutoHeight = ({
   return (
     <>
       <div
-        className={`mb-2 max-w-full rounded-lg border shadow-sm bg-white dark:bg-[#2D3236]`}
+        className={`mb-2 rounded-lg border shadow-sm bg-white dark:bg-[#2D3236]`}
         style={
           ad.plan.name !== "Free"
             ? {
@@ -138,7 +138,7 @@ const CardAutoHeight = ({
             width={400} // Set a width to control layout consistency
             height={0} // Proportional height
             style={{ minHeight: "200px" }} // Set the minimum height here
-            className={`w-full h-auto object-cover cursor-pointer ${
+            className={`w-full rounded-t-lg h-auto object-cover cursor-pointer ${
               isLoadingsmall ? "opacity-0" : "opacity-100"
             } transition-opacity duration-300`}
             onLoadingComplete={() => setIsLoadingsmall(false)}

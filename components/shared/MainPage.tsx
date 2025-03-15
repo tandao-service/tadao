@@ -987,12 +987,12 @@ const handleCloseAdView = () => {
   </div>
 
   {data.length > 0 ? (
-    <>
-      <Masonry
+    <div className="grid grid-cols-2 lg:grid-cols-4 w-full gap-1">
+    {/*   <Masonry
         breakpointCols={breakpointColumns}
         className="w-full flex gap-2 lg:gap-4 overflow-hidden"
         columnClassName="bg-clip-padding"
-      >
+      >*/}
         {data.map((ad: any, index: number) => {
           const hasOrderLink = collectionType === "Ads_Organized";
           const hidePrice = collectionType === "My_Tickets";
@@ -1016,8 +1016,8 @@ const handleCloseAdView = () => {
             </div>
           );
         })}
-      </Masonry>
-    </>
+     {/* </Masonry> */}
+    </div>
   ) : (
     !loading && (
       <div className="flex items-center justify-center min-h-[400px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
