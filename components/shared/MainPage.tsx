@@ -822,17 +822,18 @@ const handleCloseAdView = () => {
           </ScrollArea>
         </div>
       )}
-        <div onMouseEnter={() => setHoveredCategory(null)} className="p-4 h-full flex flex-col">
+        <div onMouseEnter={() => setHoveredCategory(null)} className="p-0 lg:p-2 h-full flex flex-col">
           {/* Header Section */}
-          <div className="mb-1 flex flex-col gap-2 fixed top-0 left-0 w-full bg-white p-1 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+          <div className="flex flex-col gap-2 fixed top-0 left-0 w-full bg-white p-1 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+          <div className="p-2 w-full flex flex-col items-center">
             <div className="w-full justify-between flex items-center">
               <div className="flex items-center gap-2">
                 <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-                <span className="text-lg font-semibold">LandMak</span>
+                <span className="text-xl font-bold">LandMak</span>
               </div>
 
               <div className="flex gap-2 items-center"><div className="hidden lg:inline">
-          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
             <div
               className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
@@ -930,7 +931,7 @@ const handleCloseAdView = () => {
           </div>
         </div>
 
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           <SignedIn>
             <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
               <UserButton afterSignOutUrl="/" />
@@ -954,7 +955,7 @@ const handleCloseAdView = () => {
         
         </div>
             </div>
-            <div className="w-full gap-2 justify-between flex items-center">
+            <div className="w-full mt-3 gap-2 justify-between flex items-center">
            
         <HeaderMain handleFilter={handleFilter} handleOpenPlan={handleOpenPlan} AdsCountPerRegion={AdsCountPerRegion} queryObject={newqueryObject}
          handleAdEdit={handleAdEdit}
@@ -962,10 +963,10 @@ const handleCloseAdView = () => {
          handleCategory={handleCategory}
          handleOpenSell={handleOpenSell}
          />
-        <AppPopup />
+       {/*  <AppPopup />*/}
        
-       
-            </div>
+          </div>
+          </div>
           </div>
 
 
@@ -990,7 +991,7 @@ const handleCloseAdView = () => {
               <div className="w-full">
                 <Masonry
                   breakpointCols={breakpointColumns}
-                  className="flex gap-4"
+                  className="flex gap-2 lg:gap-4"
                   columnClassName="bg-clip-padding"
                 >
                   {data.map((ad: any, index: number) => {
@@ -1092,7 +1093,7 @@ const handleCloseAdView = () => {
         <div>
           {isInitialLoading ? (
            
-           <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
            {Array.from({ length: 12 }).map((_, index) => (
              <div key={index} className="bg-gray-200 dark:bg-[#2D3236] p-4 rounded-lg shadow-md">
                <Skeleton variant="rectangular" width="100%" height={140} />

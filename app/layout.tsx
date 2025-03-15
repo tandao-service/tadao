@@ -11,10 +11,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "PocketShop",
-  description: "PocketShop | Buy and Sell Online in Kenya",
+  title: "LandMak",
+  description: "LandMak | Buy and Sell Online in Kenya",
   icons: {
-    icon: "/assets/images/favicon.png",
+    icon: "/assets/images/logo.png",
   },
 };
 

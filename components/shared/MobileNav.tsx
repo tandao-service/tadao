@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Separator } from "../ui/separator";
 //import NavItems from "./NavItems";
 import MenuIcon from "@mui/icons-material/Menu";
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import { useState } from "react";
 import NavItems from "./NavItems";
 import StyledBrandNameblack from "./StyledBrandNameblack";
@@ -48,7 +49,7 @@ const MobileNav = ({ userstatus, userId,popup, onClose, handleOpenSettings, hand
             setIsSheetOpen(true);
           }}
         >
-          <div className="w-8 h-8 flex items-center justify-center rounded-full tooltip tooltip-bottom hover:cursor-pointer">
+          <div className="flex p-1 items-center justify-center rounded-full tooltip tooltip-bottom hover:bg-gray-200 hover:cursor-pointer">
             <MenuIcon />
           </div>
         </SheetTrigger>

@@ -53,15 +53,10 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
   };
   return (
     <div
-      className="relative flex w-full"
+      className="relative flex flex-col w-full"
      
     >
-        {/*<div className="w-full">
-     
-         <div className="mb-0 text-gray-600">
-          What are you looking for?
-          </div>
-        </div>*/}
+        <div className="flex gap-1 items-center w-full">
         <div className="flex gap-1 items-center w-full">
         <div className="flex">
         <button
@@ -71,14 +66,14 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
         <LocationOnIcon /> {region}
         </button>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 hidden lg:inline">
         <SearchNow handleFilter={handleFilter} />
         </div>
 
  
 
 
-                <div className="flex">
+                <div className="flex-1 lg:hidden">
                 <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -95,7 +90,36 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                                    width={40}
                                    height={40}
                                  />
-                    <div className="hidden lg:inline">  <div className="flex gap-1 items-center">Virtual Tour of Property Location <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div></div>
+                    <div className="flex gap-1 items-center">Virtual Tour of Property Location <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
+                  </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Explore the property&apos;s location through a virtual interactive tour.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+                  
+                </div>
+
+
+                <div className="flex hidden lg:inline">
+                <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                  <button
+                    onClick={handleOpenPopupMap}
+                    className="flex gap-2 text-gray-700 items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                  >
+                   {/*  🗺️ */}
+                   
+                    <Image
+                                   src={"/assets/icons/map-pointer.png"}
+                                   alt="icon"
+                                   className="rounded-full object-cover"
+                                   width={40}
+                                   height={40}
+                                 />
+                    <div className="flex gap-1 items-center">Virtual Tour of Property Location <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
                   </button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -140,6 +164,11 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                         </div>
                       </div>
                     )}
+                    </div>
+                     <div className="flex-1 mt-2 lg:hidden">
+        <SearchNow handleFilter={handleFilter} />
+        </div>
+
     </div>
   );
 }
