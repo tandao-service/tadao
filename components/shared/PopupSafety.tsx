@@ -12,7 +12,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import CreateSubCategoryForm from "./CreateSubCategoryForm";
 import PackageForm from "./packageForm";
 import { IPackages } from "@/lib/database/models/packages.model";
-import Dashboard from "./dashboard";
+
 import { Toaster } from "../ui/toaster";
 import { FreePackId, mode } from "@/constants";
 import { getAllPackages } from "@/lib/actions/packages.actions";

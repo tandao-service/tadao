@@ -4,7 +4,6 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Image from "next/image";
-import NavbarChats from "@/components/shared/NavbarChats";
 import { getUserById } from "@/lib/actions/user.actions";
 import Navbar from "@/components/shared/navbar";
 import { Toaster } from "@/components/ui/toaster";
@@ -99,6 +98,9 @@ type payProps = {
     handleOpenTerms: () => void;
     handleOpenPrivacy: () => void;
     handleOpenSafety: () => void;
+    handleAdEdit:(id:string)=> void;
+    handleAdView:(id:string)=> void;
+    
 };
 const DashboardChat = ({
   recipientUid,
@@ -106,6 +108,9 @@ const DashboardChat = ({
   senderId,
   senderName,
   senderImage,
+  handleAdEdit,
+  handleAdView,
+  handleCategory,
   handleOpenAbout,
   handleOpenTerms,
   handleOpenPrivacy,
@@ -180,6 +185,11 @@ const DashboardChat = ({
                 recipientUid={recipientUid}
                 recipient={user}
                 client={false}
+                handleAdEdit={handleAdEdit}
+                handleAdView={handleAdView} 
+                handleCategory={handleCategory}
+                handleOpenSell={handleOpenSell}
+               handleOpenPlan={handleOpenPlan}
               />
 
               <SendMessage

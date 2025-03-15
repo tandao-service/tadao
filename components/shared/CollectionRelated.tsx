@@ -1,7 +1,6 @@
 "use client";
 import { IAd } from "@/lib/database/models/ad.model";
 import React, { useEffect, useRef, useState } from "react";
-import Card from "./Card";
 import Pagination from "./Pagination";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import FloatingChatIcon from "./FloatingChatIcon";

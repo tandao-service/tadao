@@ -29,6 +29,11 @@ interface MessageProps {
   photoURL: string;
   recipientUid: string | null;
   recipient: UpdateUserParams;
+  handleAdEdit:(id:string)=> void;
+  handleAdView:(id:string)=> void;
+  handleCategory:(category:string)=> void;
+  handleOpenSell:()=> void;
+ handleOpenPlan:()=> void;
 }
 
 const Message = ({
@@ -38,6 +43,11 @@ const Message = ({
   recipientUid,
   photoURL,
   recipient,
+  handleAdEdit,
+  handleAdView,
+  handleCategory,
+  handleOpenSell,
+ handleOpenPlan,
 }: MessageProps) => {
   // Convert Timestamp to Date object
 
@@ -114,7 +124,12 @@ const Message = ({
                            
                                       <div className="flex flex-col items-center justify-center dark:bg-[#2D3236] bg-gray-200">
                                   
-              <PropertyMap queryObject={queryObject} onClose={handleClosePopup} lat={match[1]} lng={match[2]}/>
+              <PropertyMap queryObject={queryObject} onClose={handleClosePopup} lat={match[1]} lng={match[2]} 
+              handleAdEdit={handleAdEdit}
+               handleAdView={handleAdView} 
+               handleCategory={handleCategory}
+               handleOpenSell={handleOpenSell}
+              handleOpenPlan={handleOpenPlan}/>
                                       </div>
                                       
                                     </div>

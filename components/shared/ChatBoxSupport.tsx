@@ -23,6 +23,11 @@ type SidebarProps = {
   photoURL: string;
   recipient: UpdateUserParams;
   client: boolean;
+  handleAdEdit:(id:string)=> void;
+  handleAdView:(id:string)=> void;
+  handleCategory:(category:string)=> void;
+  handleOpenSell:()=> void;
+ handleOpenPlan:()=> void;
 };
 
 const ChatBoxSupport = ({
@@ -31,6 +36,11 @@ const ChatBoxSupport = ({
   displayName,
   recipientUid,
   recipient,
+  handleAdEdit,
+  handleAdView,
+  handleCategory,
+  handleOpenSell,
+ handleOpenPlan,
 }: SidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -119,6 +129,11 @@ const ChatBoxSupport = ({
             recipientUid={recipientUid}
             photoURL={photoURL}
             recipient={recipient}
+            handleAdEdit={handleAdEdit}
+            handleAdView={handleAdView} 
+            handleCategory={handleCategory}
+            handleOpenSell={handleOpenSell}
+           handleOpenPlan={handleOpenPlan}
           />
         ))}
         <div ref={messagesEndRef}></div>

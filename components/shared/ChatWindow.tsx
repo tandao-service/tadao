@@ -18,6 +18,11 @@ interface ChatWindowProps {
   senderId: string;
   senderName: string;
   senderImage: string;
+  handleAdEdit:(id:string)=> void;
+  handleAdView:(id:string)=> void;
+  handleCategory:(category:string)=> void;
+  handleOpenSell:()=> void;
+ handleOpenPlan:()=> void;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -27,6 +32,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   senderName,
   senderImage,
   onClose,
+  handleAdEdit,
+  handleAdView,
+  handleCategory,
+  handleOpenSell,
+ handleOpenPlan,
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [title, settitle] = useState("Home");
@@ -109,6 +119,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     //username: "",
                     photo: "",
                   }}
+              handleAdEdit={handleAdEdit}
+               handleAdView={handleAdView} 
+               handleCategory={handleCategory}
+               handleOpenSell={handleOpenSell}
+              handleOpenPlan={handleOpenPlan}
                 />
 
                 <SendMessageSupport

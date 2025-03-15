@@ -35,7 +35,6 @@ import MenuSubmobileMain from "./MenuSubmobileMain";
 import Masonry from "react-masonry-css";
 import CardAutoHeight from "./CardAutoHeight";
 import AppPopup from "./AppPopup ";
-import Header from "./Header";
 import HeaderMain from "./HeaderMain";
 import MobileNav from "./MobileNav";
 import Unreadmessages from "./Unreadmessages";
@@ -1080,6 +1079,11 @@ const handleCloseAdView = () => {
                 senderName={userName}
                 senderImage={userImage}
                 recipientUid={AdminId}
+                handleAdEdit={handleAdEdit}
+                handleAdView={handleAdView} 
+                handleCategory={handleCategory}
+                handleOpenSell={handleOpenSell}
+               handleOpenPlan={handleOpenPlan}
               />
             </>
           )}
@@ -1198,7 +1202,9 @@ const handleCloseAdView = () => {
       <PopupChatId isOpen={isOpenChatId} onClose={handleCloseChatId} recipientUid={recipientUid} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} handleOpenShop={handleOpenShop} handleOpenChatId={handleOpenChatId}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenSettings={handleOpenSettings}
-      handleCategory={handleCategory}/>
+      handleCategory={handleCategory} 
+      handleAdEdit={handleAdEdit} 
+      handleAdView={handleAdView}/>
       
       <PopupReviews isOpen={isOpenReview} onClose={handleCloseReview} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} recipientUid={recipientUid} handleOpenSettings={handleOpenSettings} handleOpenChatId={handleOpenChatId} handleOpenReview={handleOpenReview}
       handleOpenPerfomance={handleOpenPerfomance}

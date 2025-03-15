@@ -12,7 +12,6 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import CreateSubCategoryForm from "./CreateSubCategoryForm";
 import PackageForm from "./packageForm";
 import { IPackages } from "@/lib/database/models/packages.model";
-import Dashboard from "./dashboard";
 import { Toaster } from "../ui/toaster";
 import { FreePackId, mode } from "@/constants";
 import { getAllPackages } from "@/lib/actions/packages.actions";
@@ -44,13 +43,15 @@ interface WindowProps {
   handleOpenSettings: () => void;
   handleCategory: (value:string) => void;
   handleOpenPerfomance: () => void;
+  handleAdEdit:(id:string)=> void;
+  handleAdView:(id:string)=> void;
   userImage: string;
   userId: string;
   recipientUid: string;
   userName: string;
 }
 
-const PopupChatId = ({ isOpen, userId,userName,userImage,recipientUid,
+const PopupChatId = ({ isOpen, userId,userName,userImage,recipientUid,handleAdEdit,handleAdView,
   handleOpenPerfomance, handleCategory, handleOpenSettings, onClose, handleOpenChatId, handleOpenShop, handleOpenChat,handleOpenBook,handleOpenPlan, handleOpenSell, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
   const [user, setuser] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -123,10 +124,12 @@ const PopupChatId = ({ isOpen, userId,userName,userImage,recipientUid,
             handleOpenAbout={handleOpenAbout}
             handleOpenTerms={handleOpenTerms}
             handleOpenPrivacy={handleOpenPrivacy}
-            handleOpenSafety={handleOpenSafety} 
+            handleOpenSafety={handleOpenSafety}
             handleOpenSettings={handleOpenSettings}
-            handleOpenPerfomance={handleOpenPerfomance} 
-            handleCategory={handleCategory}/>
+            handleOpenPerfomance={handleOpenPerfomance}
+            handleCategory={handleCategory} 
+            handleAdEdit={handleAdEdit} 
+            handleAdView={handleAdView}/>
                    
      )}
      

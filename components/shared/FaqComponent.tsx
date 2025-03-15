@@ -86,10 +86,10 @@ const FaqComponent =  ({userId,handleOpenSell,onClose,handleOpenAbout,handleOpen
         />
         <link rel="canonical" href="https://www.autoyard.co.ke/faq" />
       </Head>
-      <div className="z-10 top-0 fixed w-full">
+     {/* <div className="z-10 top-0 fixed w-full">
                 <Navbar userstatus="User" userId={userId} onClose={onClose} handleOpenSell={handleOpenSell} popup={"privacy"} />
               </div>
-
+ */}
       <div className="max-w-3xl mx-auto flex mt-20 p-1">
         <div className="hidden lg:inline mr-5"></div>
 

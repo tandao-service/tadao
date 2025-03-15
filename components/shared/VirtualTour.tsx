@@ -12,7 +12,7 @@ const VirtualTour = ({virtualTourLink}:Prop) => {
             height="500px"
             allowFullScreen
             loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade"
+            referrerPolicy="no-referrer-when-downgrade"
             title="3D Virtual Tour"
           ></iframe>
       

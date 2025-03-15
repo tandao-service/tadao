@@ -8,8 +8,22 @@ type payProps = {
   userId: string;
   recipientUid:string;
   alltrans: any;
+  onClose: () => void;
+  handleOpenSell: () => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleOpenShop: (shopId:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenPerfomance: () => void;
 };
-const DashboardHistory = ({ userId, alltrans,recipientUid }: payProps) => {
+const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance, handleOpenSettings,
+  handleOpenShop, onClose, handleOpenSell,handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}: payProps) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
     
         useEffect(() => {
@@ -31,16 +45,34 @@ const DashboardHistory = ({ userId, alltrans,recipientUid }: payProps) => {
        
   if (alltrans.length === 0) {
     return (
+      <div className="min-h-screen dark:bg-[#131B1E] h-screen  text-black dark:text-[#F1F3F3] bg-white">
+      <div className="fixed z-0 top-0 w-full">
+         <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                                handleOpenPerfomance={handleOpenPerfomance}
+                                handleOpenSettings={handleOpenSettings}
+                                handleOpenAbout={handleOpenAbout}
+                                handleOpenTerms={handleOpenTerms}
+                                handleOpenPrivacy={handleOpenPrivacy}
+                                handleOpenSafety={handleOpenSafety} 
+                                handleOpenShop={handleOpenShop}/>
+      </div>
       <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-[14px] py-28 text-center">
         <h3 className="p-bold-20 md:h5-bold">No order found!</h3>
         <p className="p-regular-14">No data</p>
-      </div>
+      </div> </div>
     );
   }
   return (
     <div className="min-h-screen dark:bg-[#131B1E] h-screen  text-black dark:text-[#F1F3F3] bg-white">
       <div className="fixed z-0 top-0 w-full">
-        <Navbar userstatus="User" userId={recipientUid || ""} />
+         <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                                handleOpenPerfomance={handleOpenPerfomance}
+                                handleOpenSettings={handleOpenSettings}
+                                handleOpenAbout={handleOpenAbout}
+                                handleOpenTerms={handleOpenTerms}
+                                handleOpenPrivacy={handleOpenPrivacy}
+                                handleOpenSafety={handleOpenSafety} 
+                                handleOpenShop={handleOpenShop}/>
       </div>
       <div className="max-w-8xl mx-auto flex mt-[60px] mb-0 p-1">
     <div className="fixed w-full h-screen">

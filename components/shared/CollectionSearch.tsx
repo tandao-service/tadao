@@ -10,7 +10,6 @@ import { getAllAd, getListingsNearLocation } from "@/lib/actions/ad.actions";
 import { getAlldynamicAd } from "@/lib/actions/dynamicAd.actions";
 import Masonry from "react-masonry-css";
 import ProgressPopup from "./ProgressPopup";
-import GoogleMapAll from "./GoogleMapAll";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';

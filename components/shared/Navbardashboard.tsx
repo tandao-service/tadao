@@ -31,7 +31,6 @@ import { db } from "@/lib/firebase";
 import Image from "next/image";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
-import Header from "@/components/shared/Header";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 //import Unreadmessages from "./Unreadmessages";
 
