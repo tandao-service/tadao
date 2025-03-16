@@ -20,13 +20,6 @@ const LocationSelection = ({onClose, onSelected, handleFilter, AdsCountPerRegion
   const [searchArea, setSearchArea] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
-
-  //const filteredLocations = locations.filter((loc) =>
-  //  loc.name.toLowerCase().includes(search.toLowerCase())
-  //);
-//  REGIONS_WITH_AREA.map(
-   //                     (county) => county.region
-   //                   )
   const sortedLocations = REGIONS_WITH_AREA
   .filter((loc) => loc.region.toLowerCase().includes(search.toLowerCase()))
   .sort((a, b) => a.region.localeCompare(b.region));
@@ -81,23 +74,7 @@ let lastLetter = "";
       area: area.toString(),
     });
   }
-   // let newUrl = "";
-   // if (region && area) {
-   // newUrl = formUrlQuerymultiple({
-     //       params: searchParams.toString(),
-      //      updates: {
-      //        region: region.toString(),
-    //          area: area.toString(),
-      //      },
-      //    });
-   // } else {
-     // newUrl = removeKeysFromQuery({
-     //   params: searchParams.toString(),
-     //   keysToRemove: ["area"],
-     // });
-    //}
-    //router.push(newUrl, { scroll: false });
-    // Perform any other actions you need
+ 
   };
 
   const handleClear = () => {
@@ -106,13 +83,7 @@ let lastLetter = "";
       region: '',
       area: '',
     });
-   // let newUrl = "";
-    //newUrl = removeKeysFromQuery({
-    //  params: "",
-   //   keysToRemove: ["region, area"],
-   // });
-   // router.push(newUrl, { scroll: false });
-    // Perform any other actions you need
+ 
   };
 
 
