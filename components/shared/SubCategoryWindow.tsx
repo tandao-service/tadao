@@ -105,7 +105,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                 <CommandGroup
                   className="dark:bg-[#2D3236]"
                   heading={
-                    <div className="flex mb-2 text-base gap-1 items-center text-gray-500 dark:text-gray-400">
+                    <div className="flex mb-2 text-sm gap-1 items-center text-gray-500 dark:text-gray-400">
                       {totalAdCount} results for{" "}
                       <p className="text-black dark:text-white font-bold">{category}</p> in Kenya
                     </div>
@@ -162,7 +162,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                               sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
                             }`}
                           >
-                            <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
+                         {/*   <ArrowForwardIosIcon sx={{ fontSize: 14 }} /> */}
                           </div>
                         </div>
                       </CommandItem>

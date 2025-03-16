@@ -152,17 +152,14 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   )}
       {/* Left Side */}
       {showPopup && (
-                      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
-                        <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-0 w-full  lg:max-w-3xl rounded-md shadow-md relative">
-                          
+                     
                           <LocationSelection
                            onSelected={handleRegion}
                            AdsCountPerRegion={AdsCountPerRegion}
                            onClose={handleClosePopup}
                            handleFilter={handleFilter}
                           />
-                        </div>
-                      </div>
+                       
                     )}
                     </div>
                      <div className="flex-1 mt-2 lg:hidden">

@@ -117,7 +117,7 @@ const DashboardSellMain = ({
     handleOpenPrivacy={handleOpenPrivacy}
     handleOpenSafety={handleOpenSafety}/>
     </div>
-    <div className="min-h-[100vh] max-w-3xl mx-auto flex mt-[15vh] p-1">
+    <div className="min-h-[100vh] max-w-3xl mx-auto flex mt-[14vh] p-1">
     <div className="flex-1">
             
       <div className="max-w-6xl mx-auto flex mt-0 p-2 dark:bg-[#131B1E] bg-white rounded-lg">
@@ -157,9 +157,9 @@ const DashboardSellMain = ({
       handleOpenPrivacy={handleOpenPrivacy}
       handleOpenSafety={handleOpenSafety}/>
             </div>
-            <div className="lg:hidden mt-[65px]">
+          {/* <div className="lg:hidden mt-[65px]">
               <BottomNavigation userId={userId} popup={"sell"} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenChat={handleOpenChat} handleCategory={handleCategory} />
-            </div>
+            </div>*/} 
           </div>
         </footer>
         </div>

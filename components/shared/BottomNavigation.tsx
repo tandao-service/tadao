@@ -47,7 +47,7 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
     }
   };
   return (
-    <nav className="fixed dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bottom-0 z-10 w-full bg-white shadow-md border-t dark:border-gray-700 border-gray-200">
+    <nav className="fixed dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bottom-0 z-5 w-full bg-white shadow-md border-t dark:border-gray-700 border-gray-200">
       <div className="flex justify-around py-2 relative">
         <div
           onClick={() => {
