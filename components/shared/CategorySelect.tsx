@@ -63,7 +63,7 @@ const CategorySelect = ({
             </div>
 
             <Command>
-              <div className="dark:bg-[#222528] border-b border-gray-800">
+              <div className="dark:bg-[#222528]">
                 <CommandInput placeholder="Search category..." />
               </div>
               <CommandList className="max-h-[80vh] overflow-y-auto dark:bg-[#222528] dark:text-gray-100 flex-1 overflow-auto">
@@ -112,7 +112,7 @@ const CategorySelect = ({
           className="w-80 dark:bg-[#222528] dark:text-gray-100"
         >
           <Command>
-            <div className="dark:bg-[#222528] border-b border-gray-800">
+            <div className="dark:bg-[#222528]">
               <CommandInput placeholder="Search category..." />
             </div>
             <CommandList className="dark:bg-[#222528] dark:text-gray-100">

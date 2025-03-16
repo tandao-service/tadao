@@ -71,7 +71,7 @@ const SubCategorySelect = ({
             </div>
 
             <Command>
-              <div className="dark:bg-[#222528] border-b border-gray-800 p-2">
+              <div className="dark:bg-[#222528] p-2">
                 <CommandInput
                   placeholder="Search sub category"
                   value={inputValue}
@@ -94,6 +94,7 @@ const SubCategorySelect = ({
                         onChange("subcategory", category.subcategory, category._id);
                         setOpen(false);
                       }}
+                       className="p-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
                     >
                       <div className="text-base flex gap-1 items-center">
                         <Image

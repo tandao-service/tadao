@@ -504,44 +504,31 @@ const handlePostLocation = (lat: string,lng:string) => {
 </div>
           {data.length > 0 ? (
       
-          <ScrollArea className="h-[90vh] overflow-y-auto flex p-0 bg-white rounded-lg">
-            <ul className="w-full h-full">
-              {data.map((ad: any, index: number) => {
-                if (data.length === index + 1) {
-                  return (
-                    <div
-                      ref={lastAdRef}
-                      key={ad._id}
-                      className="flex justify-center"
-                    >
-                      {/* Render Ad */}
-                      <HorizontalCardPublic
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                        handleAdView={handleAdView}
-                        handleAdEdit={handleAdEdit}
-                        handleOpenPlan={handleOpenPlan}/>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={ad._id} className="flex justify-center">
-                      {/* Render Ad */}
-                      <HorizontalCardPublic
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                        handleAdView={handleAdView}
-                        handleAdEdit={handleAdEdit}
-                        handleOpenPlan={handleOpenPlan}
-                      />
-                    </div>
-                  );
-                }
-              })}
-            </ul>
-          </ScrollArea>
+      <ScrollArea className="h-[68vh] overflow-y-auto flex p-0 bg-white rounded-lg">
+      <ul className="w-full h-full">
+        {data.map((ad: any, index: number) => {
+          const isLastAd = index === data.length - 1;
+    
+          return (
+            <div
+              key={ad._id}
+              ref={isLastAd ? lastAdRef : null}
+              className="flex justify-center"
+            >
+              <HorizontalCardPublic
+                ad={ad}
+                userId={userId}
+                isAdCreator={isAdCreator}
+                handleAdView={handleAdView}
+                handleAdEdit={handleAdEdit}
+                handleOpenPlan={handleOpenPlan}
+              />
+            </div>
+          );
+        })}
+      </ul>
+    </ScrollArea>
+    
         
       ) : (
         loading === false && (
@@ -598,19 +585,19 @@ const handlePostLocation = (lat: string,lng:string) => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full relative transition-all duration-300 h-screen ${
+      <div className={`w-full relative transition-all duration-300 h-[90vh] ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
       
         <Button
           onClick={() => setShowSidebar(!showSidebar)}
-          className="absolute bottom-[90px] left-4 z-20 md:block bg-white text-gray-700 shadow-lg hover:text-white"
+          className="absolute bottom-10 lg:bottom-[90px] left-4 z-20 md:block bg-white text-gray-700 shadow-lg hover:text-white"
         >
-         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Nearby Properties</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Nearby Properties</>)} 
+         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> <div className="hidden lg:inline">Hide Nearby Properties</div></>) : (<><KeyboardArrowRightOutlinedIcon/> <div className="hidden lg:inline">Show Nearby Properties</div></>)} 
         </Button>
         
-        <div className="absolute top-3 right-20 z-10  grid grid-cols-7 mb-0 flex gap-1">
+        <div className="absolute top-[60px] lg:top-2 left-3 lg:left-[200px] lg:right-[150px] z-10  grid grid-cols-7 mb-0 flex gap-1">
 
 <button  title="Calculate the best route from selected points" onClick={()=> {setInputMode('routeFromSelect'); setZoom(16); handleClear();}} 
   className={`p-1 flex gap-1 flex-col lg:flex-raw items-center text-[10px]  rounded-l-lg ${inputMode === 'routeFromSelect' ? 'bg-white text-gray-700  dark:bg-[#131B1E] dark:text-white' : 'bg-green-600 text-white'}`}
@@ -769,14 +756,12 @@ const handlePostLocation = (lat: string,lng:string) => {
   </div>
 )}
 {(inputMode === 'routeFromSelect') && (<>
-
-
 <Button
 onClick={()=> handleBestRouteCalculation()}
 variant="default"
-className="absolute bottom-[140px] left-4 z-20 bg-green-600 shadow-lg hover:bg-green-700"
+className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-green-600 shadow-lg hover:bg-green-700"
 >
-<TurnSharpLeftOutlinedIcon/> Get route distance
+<TurnSharpLeftOutlinedIcon/> <div className="hidden lg:inline">Get route distance</div>
 </Button>
 
 </>)}
@@ -786,18 +771,18 @@ className="absolute bottom-[140px] left-4 z-20 bg-green-600 shadow-lg hover:bg-g
 <Button
 onClick={()=> handleClear()}
 variant="default"
-className="absolute bottom-[140px] left-4 z-20 bg-red-600 shadow-lg hover:bg-red-700"
+className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-red-600 shadow-lg hover:bg-red-700"
 >
-<CloseOutlinedIcon />Clear Drawing
+<CloseOutlinedIcon /> <div className="hidden lg:inline">Clear Drawing</div>
 </Button>
 
 </>)}
 {(inputMode === 'routeFromMyLocation') && (<>
   <Button
   onClick={()=> handleDirectionClick()}
-  className="absolute bottom-[140px] left-4 z-20 bg-green-600 shadow-lg hover:bg-green-700"
+  className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-green-600 shadow-lg hover:bg-green-700"
   >
-  <TurnSharpLeftOutlinedIcon/>Get route distance
+  <TurnSharpLeftOutlinedIcon/><div className="hidden lg:inline">Get route distance</div>
   </Button>
  {/*  <div className="absolute top-[55px] w-[170px] left-[10px] z-10 shadow-md">
   <button  title="Calculate the route from your current location" onClick={()=> handleDirectionClick()} 
@@ -809,7 +794,7 @@ className="absolute bottom-[140px] left-4 z-20 bg-red-600 shadow-lg hover:bg-red
 </>)}
 {latitude && longitude && (  <DrawerPublic onChange={handlePropertyLocation} latitude={latitude} longitude={longitude}/>)}
 
-<div className="absolute top-20 right-3 z-5">
+<div className="absolute top-3 right-20 z-5">
     <button  title="Close" onClick={()=> onClose()} 
      className="p-1 flex gap-1 items-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm"
         >
@@ -846,7 +831,7 @@ className="absolute bottom-[140px] left-4 z-20 bg-red-600 shadow-lg hover:bg-red
           
    
           {showMappingInfo && (
-  <div className="fixed inset-0 p-1 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+  <div className="fixed h-[90vh] inset-0 p-2 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
     <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-xl p-4 w-full md:max-w-3xl lg:max-w-4xl shadow-lg">
       
       {/* Close Button */}

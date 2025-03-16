@@ -77,7 +77,7 @@ const AutoComplete = ({
             </div>
 
             <Command>
-              <div className="dark:bg-[#222528] border-b border-gray-800 p-2">
+              <div className="dark:bg-[#222528] p-2">
                 <CommandInput
                   placeholder={`Search or enter ${capitalizeFirstLetter(name.replace("-", " "))}`}
                   value={inputValue}
@@ -95,7 +95,7 @@ const AutoComplete = ({
                 <CommandGroup>
                   {data.map((option) => (
                     <CommandItem
-                    className="text-base"
+                    className="p-3 text-base cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
                       key={option}
                       onSelect={() => {
                         onChange(name, option);
@@ -129,7 +129,7 @@ const AutoComplete = ({
           className="dark:bg-[#222528] dark:text-gray-100 w-full"
         >
           <Command>
-            <div className="dark:bg-[#222528] border-b border-gray-800 p-2">
+            <div className="dark:bg-[#222528] p-2">
               <CommandInput
                 placeholder={`Search or enter ${capitalizeFirstLetter(name.replace("-", " "))}`}
                 value={inputValue}

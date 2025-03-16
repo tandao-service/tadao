@@ -118,7 +118,7 @@ const handleFinalUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-      {longitude && latitude ? (<Button onClick={() => setIsOpen(true)} variant="default" className="absolute bottom-10 left-4 z-20">📍 Property: ({latitude},{longitude})</Button>):(<Button onClick={() => setIsOpen(true)} variant="default" className="text-white bg-green-600 hover:bg-green-700"><AddOutlinedIcon/> Add Property coordinates </Button>)} 
+      {longitude && latitude ? (<Button onClick={() => setIsOpen(true)} variant="default" className="absolute hidden lg:inline bottom-10 left-4 z-20">📍 Property: ({latitude},{longitude})</Button>):(<Button onClick={() => setIsOpen(true)} variant="default" className="text-white bg-green-600 hover:bg-green-700"><AddOutlinedIcon/> Add Property coordinates </Button>)} 
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-md">

@@ -456,7 +456,7 @@ CollectionProps) => {
         >
         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Categories</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Categories</>)} 
         </Button>
-        <div className="bg-gray-200 p-0 lg:p-4 h-full flex flex-col">
+        <div className="bg-gray-200 p-0 h-full flex flex-col">
          {/* Header Section */}
 
       
@@ -825,7 +825,7 @@ CollectionProps) => {
                       <SwapVertIcon />
                     </div>
                     <Select onValueChange={handleSortChange}>
-                      <SelectTrigger className="w-[200px] dark:text-gray-300 text-gray-700 dark:bg-[#2D3236] border-0 rounded-full">
+                      <SelectTrigger className="lg:w-[200px] dark:text-gray-300 text-gray-700 dark:bg-[#2D3236] border-0 rounded-full">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
                       <SelectContent className="dark:bg-[#222528]">
@@ -1008,23 +1008,7 @@ CollectionProps) => {
         </div>
       </div>
       {showPopup && (
-                   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
-                   <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-0 w-full  lg:max-w-3xl rounded-md shadow-md relative">
-                     
-                      <div className="flex w-full items-center justify-between">
-                        <div className="font-bold text-lg  dark:text-gray-300 text-emerald-950 text-center sm:text-left p-2">
-                         Filter
-                        </div>
-
-                        <div onClick={togglePopup}>
-                          <button className="dark:hover:bg-gray-700 p-1 rounded-xl mr-2">
-                            <CloseIcon
-                             
-                              sx={{ fontSize: 24 }}
-                            />
-                          </button>
-                        </div>
-                      </div>
+                  
 
                       <SidebarSearchmobile
                         categoryList={categoryList}
@@ -1049,9 +1033,9 @@ CollectionProps) => {
                         handleInputAutoCompleteChange={handleInputAutoCompleteChange}
                         handleInputYearChange={handleInputYearChange}
                         handleClearForm={handleClearForm}
+                        HandletogglePopup={togglePopup}
                       />
-                    </div>
-                  </div>
+                   
                 )}
                   
     </div>

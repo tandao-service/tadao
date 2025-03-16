@@ -344,7 +344,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-20 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300"
+          className="mt-[13vh] lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300"
           style={
             ad.plan.name !== "Free"
               ? {
@@ -374,11 +374,11 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 </div>
               </div>
             )}
-  <div className="grid grid-cols-6 mb-0 flex gap-1">
+  <div className="grid grid-cols-3 mb-0 flex gap-1">
   <button
     title="Ad Pictures"
     onClick={() => setInputMode("Images")}
-    className={`p-1 flex gap-1 flex-col lg:flex-raw items-center text-[10px] lg:text-xs rounded-tl-xl ${
+    className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs rounded-tl-xl ${
       inputMode === "Images"
         ? "text-white bg-[#131B1E] dark:text-white"
         : "bg-green-600 text-white"
@@ -390,7 +390,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
   <button
     title="Ad Video"
     onClick={() => setInputMode("Video")}
-    className={`p-1 flex gap-1 flex-col lg:flex-raw items-center text-[10px] lg:text-xs ${
+    className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs ${
       inputMode === "Video"
         ? "text-white bg-[#131B1E] dark:text-white"
         : "bg-green-600 text-white"
@@ -401,7 +401,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
   <button
     title="Ad 3D Virtual"
     onClick={() => setInputMode("Virtual")}
-    className={`p-1 flex gap-1 flex-col lg:flex-raw items-center text-[10px] lg:text-xs rounded-tr-xl ${
+    className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs rounded-tr-xl ${
       inputMode === "Virtual"
         ? "text-white bg-[#131B1E] dark:text-white"
         : "bg-green-600 text-white"
@@ -412,7 +412,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
 </div>
 
 <div
-  className={`rounded-tr-xl p-2 flex flex-col ${
+  className={`rounded-0 p-2 flex flex-col ${
     (inputMode === "Video" && checkPlatform(ad.data["youtube-link"]) === "TikTok") ? " bg-white" : " bg-[#131B1E]"
   }`}
   >
