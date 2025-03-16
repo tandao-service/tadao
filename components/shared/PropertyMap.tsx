@@ -829,7 +829,7 @@ className="absolute bottom-[140px] left-4 z-20 bg-red-600 shadow-lg hover:bg-red
         >
    <CloseOutlinedIcon />
 </button>
-<div className="flex flex-col gap-2 text-[#30D32C] items-center">
+<div className="flex p-4 flex-col gap-2 text-[#30D32C] items-center">
   <DrawerPublic onChange={handlePropertyLocation} latitude={latitude} longitude={longitude} />
 
   <p className="text-xs text-gray-400 italic">

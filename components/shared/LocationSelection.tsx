@@ -54,7 +54,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
      {isMobile ? (
            
               // Fullscreen Popover for Mobile
-              <div className="fixed inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
+              <div className="fixed inset-0 z-50 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-2 flex flex-col">
                 <div className="flex justify-between items-center border-b pb-2">
                 <div onClick={() => { onSelected("All Kenya"); handleClear(); onClose(); }} className="flex hover:text-green-600 cursor-pointer gap-1 items-center">
                 <span className="font-bold">All Kenya</span>
@@ -66,7 +66,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                   </Button>
                 </div>
                 <div className="relative w-full">
-          <div className="absolute h-[80vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-5">
+          <div className="absolute h-[100vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
            
             <div className="flex w-full items-center mb-0">
                 <input
@@ -79,10 +79,10 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
              
             </div>
 
-            <div className="mt-1 max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="mt-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <ul className="cursor-pointer p-0">
                 {sortedLocations.map((location: any, index: number) => (
-                  <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 text-sm cursor-pointer rounded-0 ${selectedLocation === location.region ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}
+                  <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 cursor-pointer rounded-0 ${selectedLocation === location.region ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}
                     onClick={() => setSelectedLocation(location.region)}>
                     <span>{location.region}</span>
                     <span>.</span>
@@ -94,10 +94,10 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
           </div>
 
           {selectedLocation && (
-            <div className="absolute h-[80vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-5">
+            <div className="absolute h-[100vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
               <div className="flex justify-start items-center mb-1">
-                <button onClick={() => { setSearchArea(""); setSelectedLocation(""); }} className="flex justify-center items-center bg-white text-black dark:bg-black text-sm px-2 py-1 dark:text-gray-200 dark:hover:text-green-600 hover:text-green-600 rounded-full">
-                  <ArrowBackIosNewOutlinedIcon sx={{ fontSize: 16 }} /> Back
+                <button onClick={() => { setSearchArea(""); setSelectedLocation(""); }} className="flex gap-1 justify-center items-center bg-white text-black dark:bg-black text-sm px-2 py-1 dark:text-gray-200 dark:hover:text-green-600 hover:text-green-600 rounded-lg">
+                  <ArrowBackIosNewOutlinedIcon sx={{ fontSize: 14 }} /> Back
                 </button>
               </div>
               <div className="flex items-center border-b pb-2">
@@ -109,10 +109,10 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                   onChange={(e) => setSearchArea(e.target.value)}
                 />
               </div>
-              <div className="mt-1 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <div className="mt-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 <ul className="cursor-pointer p-0">
                   {filteredLocations.map((location: string, index: number) => (
-                    <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 text-sm cursor-pointer rounded-0 ${selectedArea === location ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}
+                    <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 cursor-pointer rounded-0 ${selectedArea === location ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}
                       onClick={() => { setSelectedArea(location); onSelected(location); handleAreaClick(selectedLocation, location); onClose(); }}>
                       <span>{location}</span>
                       <span>.</span>

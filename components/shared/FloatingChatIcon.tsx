@@ -14,7 +14,7 @@ const FloatingChatIcon: React.FC<FloatingChatIconProps> = ({
 }) => {
   return (
     <div
-      className="fixed bottom-20 lg:bottom-10 right-1 lg:right-5 bg-green-600 w-14 h-14 flex justify-center items-center rounded-full cursor-pointer z-10"
+      className="fixed bottom-20 lg:bottom-10 right-1 lg:right-5 bg-green-600 w-14 h-14 flex justify-center items-center rounded-full cursor-pointer z-5"
       onClick={onClick}
     >
       <div className="w-10 h-10 flex text-white items-center justify-center rounded-full bg-green-600 tooltip tooltip-bottom hover:cursor-pointer">
