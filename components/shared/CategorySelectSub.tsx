@@ -20,6 +20,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import React from "react";
 import { getallcategories } from "@/lib/actions/subcategory.actions";
+import { useMediaQuery } from "react-responsive"; // Import useMediaQuery
 
 const CategorySelectSub = ({
   selected,
@@ -31,6 +32,7 @@ const CategorySelectSub = ({
   onChange: (field: string, value: string, id: string) => void;
 }) => {
   const [open, setOpen] = React.useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect mobile screens
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,9 +49,12 @@ const CategorySelectSub = ({
         </div>
       </PopoverTrigger>
       <PopoverContent
-        side="bottom"
-        align="start"
-        className="dark:bg-[#222528] dark:text-gray-100"
+         side="bottom"
+               align="start"
+               className={cn(
+                 "dark:bg-[#222528] dark:text-gray-100 w-full",
+                 isMobile ? "fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#222528] p-4" : ""
+               )}
       >
         <Command>
           <div className="dark:bg-[#222528] border-b border-gray-800">

@@ -70,7 +70,7 @@ export default function MenuSubmobileMain({
     setIsOpenP(false);
   };
   return (
-    <div className="mx-auto mt-[190px]">
+    <div className="mx-auto mt-[32vh]">
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-0 gap-1">
         <SignedIn>
           <div

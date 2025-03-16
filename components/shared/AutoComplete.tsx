@@ -1,4 +1,4 @@
-import { 
+import {  
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -15,7 +15,8 @@ import {
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button"; // Ensure you have a button component
+import { Button } from "@/components/ui/button"; 
+import { useMediaQuery } from "react-responsive"; // Import useMediaQuery
 
 const AutoComplete = ({
   selected,
@@ -30,6 +31,7 @@ const AutoComplete = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect mobile screens
 
   function capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -57,7 +59,14 @@ const AutoComplete = ({
           </div>
         </div>
       </PopoverTrigger>
-      <PopoverContent side="bottom" align="start" className="dark:bg-[#222528] dark:text-gray-100 w-full">
+      <PopoverContent
+        side="bottom"
+        align="start"
+        className={cn(
+          "dark:bg-[#222528] dark:text-gray-100 w-full",
+          isMobile ? "fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#222528] p-4" : ""
+        )}
+      >
         <Command>
           <div className="dark:bg-[#222528] border-b border-gray-800 p-2">
             <CommandInput
@@ -69,11 +78,10 @@ const AutoComplete = ({
                   handleConfirm();
                 }
               }}
-             
             />
           </div>
 
-          <CommandList className="dark:bg-[#222528] dark:text-gray-100">
+          <CommandList className="dark:bg-[#222528] dark:text-gray-100 flex-1 overflow-auto">
             <CommandEmpty>No {name} found</CommandEmpty>
             <CommandGroup>
               {data.map((option) => (

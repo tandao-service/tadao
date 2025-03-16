@@ -788,7 +788,7 @@ CollectionProps) => {
 
           {/* List Ads 
           <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
-          <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[180px] lg:mt-0">
+          <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[33vh] lg:mt-0">
           <section className="p-1 lg:p-3 mt-2">
           <div className="flex items-center p-1 w-full justify-between">
                 <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0 ">

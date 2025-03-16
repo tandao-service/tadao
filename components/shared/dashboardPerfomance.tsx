@@ -179,7 +179,7 @@ CollectionProps) => {
          handleOpenSafety={handleOpenSafety} 
          handleOpenShop={handleOpenShop}/>
       </div>
-      <div className="min-h-screen mt-[60px]">
+      <div className="min-h-screen mt-[10vh]">
       <div className="w-full lg:max-w-6xl mx-auto p-1">
         <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
           <div className="flex items-center p-1 justify-between">
