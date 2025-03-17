@@ -117,13 +117,13 @@ const DashboardSellMain = ({
     handleOpenPrivacy={handleOpenPrivacy}
     handleOpenSafety={handleOpenSafety}/>
     </div>
-    <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+    <ScrollArea className="h-[80vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
     <div className="min-h-[100vh] max-w-3xl mx-auto flex p-1">
     <div className="flex-1">
             
       <div className="w-full min-h-[100vh] lg:max-w-6xl mx-auto flex mt-0 p-0 dark:bg-[#131B1E] rounded-lg">
         <div className="flex-1">
-          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-0 p-1 justify-center">
+          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-20 p-1 justify-center">
             <EventForm
               userId={userId}
               type={type}
