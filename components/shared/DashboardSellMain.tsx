@@ -123,7 +123,7 @@ const DashboardSellMain = ({
             
       <div className="w-full min-h-[100vh] lg:max-w-6xl mx-auto flex mt-0 p-0 dark:bg-[#131B1E] rounded-lg">
         <div className="flex-1">
-          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-20 p-1 justify-center">
+          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-0 p-1 justify-center">
             <EventForm
               userId={userId}
               type={type}

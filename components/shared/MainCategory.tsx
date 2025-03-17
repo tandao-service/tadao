@@ -456,7 +456,7 @@ CollectionProps) => {
         >
         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Categories</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Categories</>)} 
         </Button>
-        <div className="bg-gray-200 p-0 h-full flex flex-col">
+        <div className="bg-gray-200 h-full flex flex-col">
          {/* Header Section */}
 
       
@@ -995,7 +995,7 @@ CollectionProps) => {
           </ScrollArea>
            <footer>
                   
-                  <div className="lg:hidden mt-[65px]">
+                  <div className="lg:hidden">
                     <BottomNavigation userId={userId} 
                      popup={"category"}
                      onClose={onClose} 
