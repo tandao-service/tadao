@@ -123,9 +123,9 @@ const DashboardSellMain = ({
     />
   </div>
   
-  <div className="flex flex-col justify-center w-full h-full mt-[50px] lg:mt-[60px]">
+  <div className="flex flex-col justify-center w-full h-full mt-[60px] lg:[50px]">
       
-  <div className="p-2 lg: p-4 flex min-h-[100vh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
+  <div className="p-1 lg: p-2 flex min-h-[100vh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
    
               <EventForm
                 userId={userId}

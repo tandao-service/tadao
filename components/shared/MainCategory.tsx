@@ -403,7 +403,7 @@ CollectionProps) => {
       onClick={(e) => e.stopPropagation()} // Prevent sidebar from closing on itself click
       className={`bg-white shadow-lg transition-transform rounded-0 duration-300 ease-in-out fixed md:relative z-10 ${
         showSidebar
-          ? "w-full md:w-1/4 p-3 transform translate-x-0"
+          ? "w-full md:w-1/4 p-1 transform translate-x-0"
           : "-translate-x-full md:w-0 md:translate-x-0"
       }`}
     >
@@ -418,7 +418,7 @@ CollectionProps) => {
             </div>
           
           {/* Categories Section */}
-           <ScrollArea className="h-[100vh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-4">
+           <ScrollArea className="h-[100vh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">
                       <SidebarSearchMain
                           categoryList={categoryList}
                           category={newqueryObject.category}
@@ -446,13 +446,16 @@ CollectionProps) => {
   
     {/* Ads Section */}
     <div
-      className={`flex-1 flex-col transition-all duration-300 h-screen ${
+      className={`flex-1 flex-col bg-gray-200 lg:bg-white transition-all duration-300 h-screen ${
         showSidebar ? "hidden md:block" : "block"
       }`}
     >
+     
+  
+      <div className="relative h-full flex flex-col">
       <Button
         onClick={handleSidebarToggle}
-        className="hidden lg:inline absolute bottom-1 left-4 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
+        className="hidden lg:inline absolute bottom-5 left-4 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
       >
         {showSidebar ? (
           <>
@@ -464,10 +467,8 @@ CollectionProps) => {
           </>
         )}
       </Button>
-  
-      <div className="p-0 lg:p-2 h-full flex flex-col">
         {/* Header Section */}
-        <div className="mb-1 flex flex-col gap-2 top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+        <div className="mb-1 flex fixed flex-col gap-2 top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
   <div className="p-2 w-full flex flex-col items-center">
     <div className="w-full justify-between flex items-center">
       <div className="flex items-center">
@@ -787,8 +788,200 @@ CollectionProps) => {
 </div>
 
         {/* List Ads Section */}
-        {/* <div className="space-y-4 overflow-y-auto mt-0 flex-1"> */}
-  
+  <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[190px] lg:mb-0 lg:mt-0">
+  <section className="p-1 mb-20">
+    <div className="flex items-center p-1 w-full justify-between">
+      <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">
+        <div
+          className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
+            activeButton === 0 ? "text-[#30AF5B]" : "text-gray-500"
+          }`}
+          onClick={() => handleButtonClick(0)}
+        >
+          <ViewModuleIcon />
+          <div className="hidden lg:inline">
+            <p>Grid layout</p>
+          </div>
+        </div>
+        <div
+          className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
+            activeButton === 1 ? "text-[#30AF5B]" : "text-gray-500"
+          }`}
+          onClick={() => handleButtonClick(1)}
+        >
+          <ViewListIcon />
+          <div className="hidden lg:inline">
+            <p>List layout</p>
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-1 items-center">
+        <div className="rounded-sm dark:bg-[#2D3236] bg-white border py-1 px-2 z-5 flex items-center">
+          <div className="text-[#30AF5B]">
+            <SwapVertIcon />
+          </div>
+          <Select onValueChange={handleSortChange}>
+            <SelectTrigger className="lg:w-[200px] dark:text-gray-300 text-gray-700 dark:bg-[#2D3236] border-0 rounded-full">
+              <SelectValue placeholder="Sort By" />
+            </SelectTrigger>
+            <SelectContent className="dark:bg-[#222528]">
+              <SelectGroup>
+                <SelectItem value="recommeded">Recommended first</SelectItem>
+                <SelectItem value="new">Newest first</SelectItem>
+                <SelectItem value="lowest">Lowest price first</SelectItem>
+                <SelectItem value="highest">Highest price first</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <button
+          onClick={handleClear}
+          className="py-4 px-2 text-xs bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-300 rounded-sm flex items-center gap-1 hover:cursor-pointer"
+        >
+          <SearchOffOutlinedIcon sx={{ fontSize: 16 }} />Clear
+        </button>
+      </div>
+    </div>
+
+    <div>
+      {newqueryObject.subcategory === "Cars, Vans & Pickups" && (
+        <div className="mb-1 w-full dark:bg-[#2D3236] dark:text-gray-300 flex flex-col rounded-lg p-0">
+          <div className="grid grid-cols-4 lg:grid-cols-7 justify-between gap-1 m-0">
+            <div
+              onClick={() => handlePrice(1, "0", "500000")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 1
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              0-500K
+            </div>
+
+            <div
+              onClick={() => handlePrice(2, "500000", "1000000")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 2
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              {"500K-1M"}
+            </div>
+
+            <div
+              onClick={() => handlePrice(3, "1000000", "2000000")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 3
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              {"1M-2M"}
+            </div>
+            <div
+              onClick={() => handlePrice(4, "2000000", "3000000")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 4
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              {"2M-3M"}
+            </div>
+            <div
+              onClick={() => handlePrice(5, "3000000", "5000000")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 5
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              {"3M-5M"}
+            </div>
+            <div
+              onClick={() => handlePrice(6, "5000000", "10000000")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 6
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              {"5M-10M"}
+            </div>
+            <div
+              onClick={() => handlePrice(7, "10000000", "9999999999")}
+              className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
+                activerange === 7
+                  ? "bg-green-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+              }`}
+            >
+              {"Above 10M"}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {newqueryObject.subcategory && (
+        <div className="w-full dark:bg-[#2D3236] dark:text-gray-300 flex flex-col rounded-lg mb-1">
+          <MenuType
+            categoryList={categoryList}
+            category={newqueryObject.category}
+            subcategory={newqueryObject.subcategory}
+            clearQuery={clearQuery}
+            handleFilter={handleFilter}
+          />
+        </div>
+      )}
+    </div>
+
+    <CollectionSearch
+      emptyTitle="No ads have been created yet"
+      emptyStateSubtext="Go create some now"
+      limit={20}
+      userId={userId}
+      activeButton={activeButton}
+      queryObject={newqueryObject}
+      loadPopup={loading}
+      handleAdEdit={handleAdEdit}
+      handleOpenSell={handleOpenSell}
+      handleAdView={handleAdView}
+      handleOpenPlan={handleOpenPlan}
+    />
+  </section>
+
+  {userId && (
+    <>
+      <FloatingChatIcon onClick={toggleChat} isOpen={isChatOpen} />
+      <ChatWindow
+        isOpen={isChatOpen}
+        onClose={toggleChat}
+        senderId={userId}
+        senderName={userName}
+        senderImage={userImage}
+        recipientUid={AdminId}
+        handleAdEdit={handleAdEdit}
+        handleAdView={handleAdView}
+        handleCategory={handleCategory}
+        handleOpenSell={handleOpenSell}
+        handleOpenPlan={handleOpenPlan}
+      />
+    </>
+  )}
+
+  {/* Footer Section */}
+  <div className="hidden lg:inline">
+    <Footersub
+      handleOpenAbout={handleOpenAbout}
+      handleOpenTerms={handleOpenTerms}
+      handleOpenPrivacy={handleOpenPrivacy}
+      handleOpenSafety={handleOpenSafety}
+    />
+  </div>
+</ScrollArea>
+
         <footer>
           <div className="lg:hidden">
            <BottomNavigation 

@@ -585,7 +585,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[90vh] ${
+      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[90vh] lg:h-[100vh] ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
@@ -597,7 +597,7 @@ const handlePostLocation = (lat: string,lng:string) => {
          {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> <div className="hidden lg:inline">Hide Nearby Properties</div></>) : (<><KeyboardArrowRightOutlinedIcon/> <div className="hidden lg:inline">Show Nearby Properties</div></>)} 
         </Button>
         
-        <div className="absolute top-[60px] lg:top-2 left-3 lg:left-[200px] lg:right-[150px] z-10  grid grid-cols-7 mb-0 flex gap-1">
+        <div className="absolute top-[60px] lg:top-2 left-3 right-3 lg:left-[250px] lg:right-[150px] z-10  grid grid-cols-7 mb-0 flex gap-1">
 
 <button  title="Calculate the best route from selected points" onClick={()=> {setInputMode('routeFromSelect'); setZoom(16); handleClear();}} 
   className={`p-1 flex gap-1 flex-col lg:flex-raw items-center text-[10px]  rounded-l-lg ${inputMode === 'routeFromSelect' ? 'bg-white text-gray-700  dark:bg-[#131B1E] dark:text-white' : 'bg-green-600 text-white'}`}

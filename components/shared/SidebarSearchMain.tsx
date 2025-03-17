@@ -240,7 +240,7 @@ const SidebarSearchMain = ({
               </div>
             </div>
           </div>
-          <div className="ml-3">
+          <div>
             
             {filteredList.map((sub: any, index: number) => (
               <div

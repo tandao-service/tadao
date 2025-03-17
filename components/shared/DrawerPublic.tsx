@@ -213,20 +213,20 @@ const handleFinalUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         {/* Coordinate Input Fields */}
         {inputMode === 'coordinates' && (<div>
-          <div className="mb-2 flex gap-2 ">
+          <div className="mb-2 flex w-full flex-col lg:flex-row gap-2 ">
             <input
               type="text"
               placeholder="Latitude"
               //value={latitude}
               onChange={(e) => setlat(e.target.value)}
-              className="p-2 text-sm border dark:bg-[#2D3236] dark:text-gray-300 dark:border-gray-600 border-gray-300 rounded-md"
+              className="p-2 w-full text-sm border dark:bg-[#2D3236] dark:text-gray-300 dark:border-gray-600 border-gray-300 rounded-md"
             />
             <input
               type="text"
               placeholder="Longitude"
               //value={longitude}
               onChange={(e) => setlng(e.target.value)}
-              className="p-2 border text-sm dark:bg-[#2D3236] dark:text-gray-300 dark:border-gray-600 border-gray-300 rounded-md"
+              className="p-2 w-full border text-sm dark:bg-[#2D3236] dark:text-gray-300 dark:border-gray-600 border-gray-300 rounded-md"
             />
             <Button onClick={handleCoordinateSearch} variant="default" className="bg-blue-500 text-white rounded">Go</Button>
           </div>

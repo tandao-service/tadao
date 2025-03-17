@@ -751,12 +751,7 @@ const handleCloseAdView = () => {
           showSidebar ? "hidden md:block" : "block"
         }`}
       >
-        <Button
-          onClick={handleSidebarToggle}
-          className="hidden lg:inline absolute bottom-1 left-4 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
-        >
-        {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Categories</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Categories</>)} 
-        </Button>
+       
         {hoveredCategory && (
         <div
           className={`absolute w-64 top-20 z-20 dark:bg-[#2D3236] bg-white p-1 shadow-lg transition-all duration-300`}
@@ -822,7 +817,14 @@ const handleCloseAdView = () => {
           </ScrollArea>
         </div>
       )}
-        <div onMouseEnter={() => setHoveredCategory(null)} className="p-0 lg:p-2 h-full flex flex-col">
+        <div onMouseEnter={() => setHoveredCategory(null)} className="relative p-0 lg:p-2 h-full flex flex-col">
+        <Button
+          onClick={handleSidebarToggle}
+          className="hidden lg:inline absolute bottom-5 left-4 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
+        >
+        {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Categories</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Categories</>)} 
+        </Button>
+        
           {/* Header Section */}
           <div className="flex flex-col gap-1 top-0 left-0 w-full bg-white p-1 shadow-md z-10 md:relative md:w-auto md:shadow-none">
           <div className="p-2 w-full flex flex-col items-center">
