@@ -1240,22 +1240,14 @@ const AdForm = ({
                     </Button>
 
                     {showPopupBulk && (
-                      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
-                        <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white p-1 lg:p-6 w-full  lg:max-w-3xl rounded-md shadow-md relative">
-                          <div className="flex justify-end items-center mb-1">
-                            <Button
-                              onClick={handleClosePopupBulk}
-                              variant="outline">
-                              <CloseOutlinedIcon />
-                            </Button>
-                          </div>
+                      
                           <BulkPriceManager
                             selected={formData["bulkprice"] || []}
                             name={"bulkprice"}
                             onChange={handleInputAutoCompleteChange}
+                            handleClosePopupBulk={handleClosePopupBulk}
                           />
-                        </div>
-                      </div>
+                      
                     )}
                   </div>
 
@@ -1588,15 +1580,7 @@ const AdForm = ({
                   </Button>
 
                   {showPopup && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
-                      <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white p-1 lg:p-6 w-full  lg:max-w-3xl rounded-md shadow-md relative">
-                        <div className="flex justify-end items-center mb-1">
-                          <Button
-                            onClick={handleClosePopup}
-                            variant="outline">
-                            <CloseOutlinedIcon />
-                          </Button>
-                        </div>
+                    
                         <DeliveryOptions
                           name={"delivery"}
                           subcategory={selectedSubCategory || ""}
@@ -1604,8 +1588,7 @@ const AdForm = ({
                           selected={formData["delivery"] || []}
                           onSave={handleSave} // Pass the save handler to the child
                         />
-                      </div>
-                    </div>
+                    
                   )}
                 </div>
               )}
@@ -1624,9 +1607,8 @@ const AdForm = ({
                       <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-2 w-full items-center justify-center relative">
                 
                         <div className="flex flex-col items-center justify-center dark:bg-[#2D3236] bg-gray-200">
-                     
-
-<GoogleMapping name={"propertyarea"}
+                    
+                         <GoogleMapping name={"propertyarea"}
                           onChange={handleInputOnChange}
                           selected={formData["propertyarea"] || []}
                           onSave={handleSaveArea}/>

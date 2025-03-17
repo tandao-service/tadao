@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 const PriceInput = ({
   unit_,
   priceType_,
@@ -19,6 +18,7 @@ const PriceInput = ({
   const [price, setPrice] = useState(price_);
   const [unit, setUnit] = useState(unit_);
   const [negotiable, setNegotiable] = useState(negotiable_);
+   
   useEffect(() => {
     setPriceType(priceType_);
     setPrice(price_);

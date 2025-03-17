@@ -19,7 +19,8 @@ import { AdminId } from "@/constants";
 import { updateabused } from "@/lib/actions/dynamicAd.actions";
 import { createReport } from "@/lib/actions/report.actions";
 import { usePathname } from "next/navigation";
-
+import { useMediaQuery } from "react-responsive"; // Detect mobile screens
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 interface ReportAbuseProps {
     userId:string;
     userName:string;
@@ -35,6 +36,8 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
   const [description, setDescription] = useState("");
   const { toast } = useToast();
   const pathname = usePathname();
+   const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect mobile screens
+  
  const handleSubmit = async () => {
     // Logic to handle report submission
     // For example, send data to the admin via an API call
@@ -98,7 +101,53 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
       onClose();
     
   };
-  return (
+  return (<>
+     {isMobile && isOpen ? (
+               
+                  // Fullscreen Popover for Mobile
+                  <div className="fixed inset-0 z-10 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
+                    <div className="flex justify-between items-center border-b pb-2">
+                   <p className="font-bold"> Report for {ad.data.title}</p>
+                      <Button variant="outline" onClick={onClose}>
+                      <CloseOutlinedIcon />
+                      </Button>
+                    </div>
+                      {/* Report Reason Select */}
+        <Select onValueChange={setReason}>
+          <SelectTrigger className="w-full border p-2 rounded-md dark:text-gray-300 text-gray-700">
+            <SelectValue placeholder="Report reason" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="spam">Spam or misleading</SelectItem>
+            <SelectItem value="fraud">Fraud or scam</SelectItem>
+            <SelectItem value="wrong_category">Wrong category</SelectItem>
+            <SelectItem value="it_is_sold"> It is sold</SelectItem>
+            <SelectItem value="wrong_price">The price is wrong</SelectItem>
+            <SelectItem value="seller_asked_for_prepayment">Seller asked for prepayment</SelectItem>
+            <SelectItem value="user_is_unreachable">User is unreachable</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
+
+          </SelectContent>
+        </Select>
+
+        {/* Description Textarea */}
+        <Textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Please describe your issue"
+          maxLength={200}
+          className="w-full dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded-md mt-2"
+        />
+
+        {/* Submit Button */}
+        <Button
+          onClick={handleSubmit}
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md"
+        >
+          Send report
+        </Button>
+                    </div>
+     ):(
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md dark:bg-[#2D3236] dark:text-gray-300 bg-white rounded-lg shadow-lg p-6">
         <DialogHeader>
@@ -142,6 +191,6 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
           Send report
         </Button>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>)}
+    </>);
 };

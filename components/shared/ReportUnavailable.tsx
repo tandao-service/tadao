@@ -17,7 +17,8 @@ import {
 import { useToast } from "../ui/use-toast";
 import { AdminId } from "@/constants";
 import { updateabused } from "@/lib/actions/dynamicAd.actions";
-
+import { useMediaQuery } from "react-responsive"; // Detect mobile screens
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 interface ReportUnavailable {
     userId:string;
     userName:string;
@@ -32,6 +33,7 @@ export const ReportUnavailable: React.FC<ReportUnavailable> = ({ ad, isOpen,user
   const [reason, setReason] = useState("");
   const [description, setDescription] = useState("");
   const { toast } = useToast();
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect mobile screens
  
  const handleSubmit = async () => {
     // Logic to handle report submission
@@ -117,7 +119,27 @@ export const ReportUnavailable: React.FC<ReportUnavailable> = ({ ad, isOpen,user
       onClose();
     
   };
-  return (
+  return (<>
+     {isMobile && isOpen ? (
+               
+                  // Fullscreen Popover for Mobile
+                  <div className="fixed inset-0 z-10 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
+                    <div className="flex justify-between items-center border-b pb-2">
+                    <p className="font-bold">  Report for {ad.data.title}</p>
+                      <Button variant="outline" onClick={onClose}>
+                      <CloseOutlinedIcon />
+                      </Button>
+                    </div>  
+                    
+                     {/* Submit Button */}
+        <Button
+          onClick={handleSubmit}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+        >
+          Confirm Unavailable?
+        </Button>
+                    
+                    </div>):(
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md dark:bg-[#2D3236] dark:text-gray-300 bg-white rounded-lg shadow-lg p-6">
         <DialogHeader>
@@ -135,6 +157,6 @@ export const ReportUnavailable: React.FC<ReportUnavailable> = ({ ad, isOpen,user
           Confirm Unavailable?
         </Button>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>)}
+ </> );
 };
