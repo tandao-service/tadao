@@ -458,7 +458,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       )}
       {/* Sidebar with Toggle Button */}
       <div
-        className={`bg-white shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
+        className={`bg-white mt-5 lg:mt-0 shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
           showSidebar ? "w-full md:w-1/3 p-4" : "-translate-x-full md:w-0 md:translate-x-0"
         }`}
       >
@@ -585,7 +585,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full relative transition-all duration-300 h-[90vh] ${
+      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[90vh] ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
@@ -809,11 +809,11 @@ className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-red-600 shado
     {!latitude && !longitude && (<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
       <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
         {/* Header */}
-        <button  title="Close" onClick={()=> onClose()} 
-     className="absolute right-5 top-5 p-1 flex gap-1 items-center  hover:bg-green-600 text-gray-200 rounded-sm"
+        <Button  variant="outline" title="Close" onClick={()=> onClose()} 
+     className="absolute right-6 top-8 p-1 flex gap-1 items-center"
         >
    <CloseOutlinedIcon />
-</button>
+</Button>
 <div className="flex p-4 flex-col gap-2 text-[#30D32C] items-center">
   <DrawerPublic onChange={handlePropertyLocation} latitude={latitude} longitude={longitude} />
 

@@ -41,7 +41,7 @@ const PriceInput = ({
     return Number(value.replace(/,/g, ""));
   };
   return (
-    <div className="w-full py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100">
+    <div className="bg-white w-full py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100">
       <label className="text-lg font-semibold dark:text-gray-300">Price</label>
       <div className="flex items-center gap-4 mt-2">
         {/* Contact for Price Option */}

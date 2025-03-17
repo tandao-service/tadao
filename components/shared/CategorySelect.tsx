@@ -37,7 +37,7 @@ const CategorySelect = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
-          className="py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 items-start w-full rounded-lg cursor-pointer"
+          className="py-2 px-2 bg-white rounded-sm border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 items-start w-full rounded-lg cursor-pointer"
           onClick={() => setOpen(true)}
         >
           <div className="flex flex-col">

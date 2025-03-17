@@ -460,7 +460,7 @@ CollectionProps) => {
          {/* Header Section */}
 
       
-         <div className="mb-1  flex flex-col gap-2 fixed top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+         <div className="mb-1 flex flex-col gap-2 top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
          <div className="p-2 w-full flex flex-col items-center">
             <div className="w-full justify-between flex items-center">
               <div className="flex items-center">
@@ -698,7 +698,7 @@ CollectionProps) => {
               </div>
               </div>
 
-        <div className="flex w-full gap-1 mt-3 justify-center items-center mb-2">
+        <div className="flex w-full gap-1 mt-2 justify-center items-center mb-1">
          <button
          onClick={handleOpenPopupLocation}
          className="flex gap-1 items-center justify-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
@@ -788,8 +788,8 @@ CollectionProps) => {
 
           {/* List Ads 
           <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
-          <ScrollArea className="h-[100vh] w-full rounded-t-md border mt-[26vh] lg:mt-0">
-          <section className="p-1 lg:p-3 mt-2">
+          <ScrollArea className="h-[100vh] w-full rounded-t-md border lg:mt-0">
+          <section className="p-1">
           <div className="flex items-center p-1 w-full justify-between">
                 <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0 ">
                   <div

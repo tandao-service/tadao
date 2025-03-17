@@ -732,7 +732,7 @@ const AdForm = ({
                           unoptimized
                         />
                       </div></>):(<>
-      <div className="bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+      <div className="p-0 lg:p-2">
         <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center mb-2 mt-2 rounded-sm">
           <div className="wrapper flex items-center justify-center sm:justify-between">
             <div className="lg:flex-1 p-1 ml-2 mr-5 mb-0 lg:mb-0">
@@ -853,7 +853,7 @@ const AdForm = ({
                   placeholder={`Enter ${field.name.replace("-", " ")}`}
                   InputProps={{
                     classes: {
-                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                       notchedOutline: "border-gray-300 dark:border-gray-600",
                       focused: "",
                     },
@@ -880,7 +880,7 @@ const AdForm = ({
                   placeholder={`Enter YouTube or TikTok Video link`}
                   InputProps={{
                     classes: {
-                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                       notchedOutline: "border-gray-300 dark:border-gray-600",
                       focused: "",
                     },
@@ -907,7 +907,7 @@ const AdForm = ({
                   placeholder={`Enter 3D Virtual Property Tour Link`}
                   InputProps={{
                     classes: {
-                      root: "dark:bg-[#2D3236] dark:text-gray-100",
+                      root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                       notchedOutline: "border-gray-300 dark:border-gray-600",
                       focused: "",
                     },
@@ -937,7 +937,7 @@ const AdForm = ({
                     placeholder={`Enter ${field.name.replace("-", " ")}`}
                     InputProps={{
                       classes: {
-                        root: "dark:bg-[#2D3236] dark:text-gray-100",
+                        root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                         notchedOutline: "border-gray-300 dark:border-gray-600",
                         focused: "",
                       },
@@ -1017,7 +1017,7 @@ const AdForm = ({
                       placeholder={`Enter Price`}
                       InputProps={{
                         classes: {
-                          root: "dark:bg-[#2D3236] dark:text-gray-100",
+                          root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                           notchedOutline:
                             "border-gray-300 dark:border-gray-600",
                           focused: "",
@@ -1032,7 +1032,7 @@ const AdForm = ({
                       className="w-full"
                     />
                     <select
-                      className="border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
+                      className="bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
                       value={formData["period"] || ""}
                       onChange={(e) =>
                         handleInputChange("period", e.target.value)
@@ -1115,7 +1115,7 @@ const AdForm = ({
                       placeholder={`Enter Price`}
                       InputProps={{
                         classes: {
-                          root: "dark:bg-[#2D3236] dark:text-gray-100",
+                          root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                           notchedOutline:
                             "border-gray-300 dark:border-gray-600",
                           focused: "",
@@ -1130,7 +1130,7 @@ const AdForm = ({
                       className="w-full"
                     />
                     <select
-                      className="border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
+                      className="bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
                       value={formData["per"] || "Outright Price"}
                       onChange={(e) => handleInputChange("per", e.target.value)}
                     >
@@ -1212,7 +1212,7 @@ const AdForm = ({
                       placeholder={`Enter Price`}
                       InputProps={{
                         classes: {
-                          root: "dark:bg-[#2D3236] dark:text-gray-100",
+                          root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                           notchedOutline:
                             "border-gray-300 dark:border-gray-600",
                           focused: "",
@@ -1227,23 +1227,21 @@ const AdForm = ({
                       className="w-full"
                     />
 
-                    <button
+                    <Button
                       onClick={handleOpenPopupBulk}
-                      className="flex gap-2 items-center justify-center w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
-                    >
+                      variant="default">
                       <AddOutlinedIcon /> Add Bulk Price
-                    </button>
+                    </Button>
 
                     {showPopupBulk && (
                       <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
                         <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white p-1 lg:p-6 w-full  lg:max-w-3xl rounded-md shadow-md relative">
                           <div className="flex justify-end items-center mb-1">
-                            <button
+                            <Button
                               onClick={handleClosePopupBulk}
-                              className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
-                            >
+                              variant="outline">
                               <CloseOutlinedIcon />
-                            </button>
+                            </Button>
                           </div>
                           <BulkPriceManager
                             selected={formData["bulkprice"] || []}
@@ -1332,7 +1330,7 @@ const AdForm = ({
                     placeholder={`Enter ${field.name.replace("-", " ")}`}
                     InputProps={{
                       classes: {
-                        root: "dark:bg-[#2D3236] dark:text-gray-100",
+                        root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                         notchedOutline: "border-gray-300 dark:border-gray-600",
                         focused: "",
                       },
@@ -1465,49 +1463,18 @@ const AdForm = ({
                     {option}
                   </label>
                 ))}
-              {field.type === "textarea" && (<>
+              {field.type === "textarea" && (
+  <div style={{ width: "100%", height: "300px", borderRadius: "8px", border:"1px", overflow: "hidden" }}>
                 <ReactQuill
   value={formData[field.name] || ""}
   onChange={(value) => handleInputChange(field.name, value)}
-  className="bg-white w-full text-black mb-10"
+  className="bg-white w-full w-[200px] text-black mb-0"
   modules={modules} // Pass the custom toolbar modules
   placeholder={`Enter ${capitalizeFirstLetter(field.name.replace("-", " "))}*`}
-  style={{
-    height: "300px", // Set the desired height
-    borderRadius: "8px", // Add border radius
-    border:"1px"
-    //overflow: "hidden", // Prevent content overflow from breaking radius
-  }}
+  style={{ height: "100%", width: "100%", border:"1px", borderRadius: "8px" }}
 />
-             {/*    <TextField
-                  required={field.required}
-                  id={field.name}
-                  label={capitalizeFirstLetter(field.name.replace("-", " "))}
-                  multiline
-                  rows={8} // Number of rows for the textarea
-                  value={formData[field.name] || ""}
-                  onChange={(e) =>
-                    handleInputChange(field.name, e.target.value)
-                  }
-                  variant="outlined"
-                  placeholder={`Enter ${capitalizeFirstLetter(
-                    field.name.replace("-", " ")
-                  )}`}
-                  InputProps={{
-                    classes: {
-                      root: "dark:bg-[#2D3236] dark:text-gray-100",
-                      notchedOutline: "border-gray-300 dark:border-gray-600",
-                    },
-                  }}
-                  InputLabelProps={{
-                    classes: {
-                      root: "text-gray-500 dark:text-gray-400",
-                      focused: "text-green-500 dark:text-green-400",
-                    },
-                  }}
-                  className="w-full"
-                />*/}
-             </>)}
+</div>
+)}
 
               {field.type === "phone" && (
                 <div className="flex w-full gap-1">
@@ -1587,7 +1554,7 @@ const AdForm = ({
                     placeholder={`Enter ${field.name}`}
                     InputProps={{
                       classes: {
-                        root: "dark:bg-[#2D3236] dark:text-gray-100",
+                        root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                         notchedOutline: "border-gray-300 dark:border-gray-600",
                         focused: "",
                       },
@@ -1605,23 +1572,21 @@ const AdForm = ({
 
               {field.type === "delivery" && (
                 <div className="flex flex-col w-full gap-1">
-                  <button
+                  <Button
                     onClick={handleOpenPopup}
-                    className="flex gap-2 items-center justify-center w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
-                  >
+                    variant="default">
                     <AddOutlinedIcon /> Add Delivery Option
-                  </button>
+                  </Button>
 
                   {showPopup && (
                     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
                       <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white p-1 lg:p-6 w-full  lg:max-w-3xl rounded-md shadow-md relative">
                         <div className="flex justify-end items-center mb-1">
-                          <button
+                          <Button
                             onClick={handleClosePopup}
-                            className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
-                          >
+                            variant="outline">
                             <CloseOutlinedIcon />
-                          </button>
+                          </Button>
                         </div>
                         <DeliveryOptions
                           name={"delivery"}
@@ -1638,64 +1603,19 @@ const AdForm = ({
               
                     {field.type === "propertyarea" && (
                 <div className="flex flex-col w-full gap-1">
-                  <button
+                  <Button
                     onClick={handleOpenPopupArea}
-                    className="flex gap-2 items-center justify-center w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
+                    variant="default"
                   >
                     🗺️ Advanced Property Mapping
-                  </button>
+                  </Button>
 
                   {showPopupArea && (
                     <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
                       <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-2 w-full items-center justify-center relative">
-                {/* <div className="flex mt-2 justify-between items-center">
-                  <div className="relative">
-      <button
-        onClick={() => setShowGuide(!showGuide)}
-        className="px-4 text-sm py-1 text-green-600 border border-green-600 rounded-lg shadow-md hover:bg-green-600 hover:text-white"
-      >
-        Help?
-      </button>
-
-      {showGuide && (
-        <div className="absolute z-10 right-0 lg:left-0 mt-2 w-80 bg-green-600 text-white rounded-lg shadow-lg p-4 text-sm">
-          <h3 className="font-semibold mb-2">How to Measure land Area</h3>
-          <ul className="list-disc text-xs list-inside space-y-1">
-          
-            <li><b>Find the Location</b> - Search or navigate to the property.</li>
-            <li><b>Mark the Boundary</b> - Click on corners to outline the area.</li>
-            <li><b>Close the Shape</b> - Click the starting point again to finish.</li>
-            <li><b>View Area</b> - The total area in m², hectares & acres will be displayed.</li>
-            <li><b>Click save button</b> - Clients will view property area and location:
-             
-            </li>
-          </ul>
-          <button
-            onClick={() => setShowGuide(false)}
-            className="mt-3 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-          >
-            Close
-          </button>
-        </div>
-      )}
-    </div>
-                          <button
-                            onClick={handleClosePopupArea}
-                            className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
-                          >
-                            <CloseOutlinedIcon />
-                          </button>
-                        </div> */} 
+                
                         <div className="flex flex-col items-center justify-center dark:bg-[#2D3236] bg-gray-200">
-                       {/* <MapAreaCalculator name={"propertyarea"}
-                          onChange={handleInputOnChange}
-                          selected={formData["propertyarea"] || []}
-                          onSave={handleSaveArea}/>
- 
- <LandSubdivision name={"propertyarea"}
-                          onChange={handleInputOnChange}
-                          selected={formData["propertyarea"] || []}
-                          onSave={handleSaveArea}/>*/}
+                     
 
 <GoogleMapping name={"propertyarea"}
                           onChange={handleInputOnChange}
@@ -1718,7 +1638,7 @@ const AdForm = ({
            
           {type === "Create" && selectedSubCategory && (
             <>
-              <div className="rounded-lg mt-4 shadow-lg border p-3">
+              <div className="rounded-lg mt-4 p-0">
                 <PromoSelection
                   packagesList={packagesList}
                   packname={packname}

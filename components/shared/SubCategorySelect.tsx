@@ -46,7 +46,7 @@ const SubCategorySelect = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
-          className="py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 items-start w-full rounded-lg cursor-pointer"
+          className="py-2 px-2 bg-white rounded-sm border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 items-start w-full rounded-lg cursor-pointer"
           onClick={() => setOpen(true)}
         >
           <div className="flex flex-col">
@@ -76,11 +76,11 @@ const SubCategorySelect = ({
                   placeholder="Search sub category"
                   value={inputValue}
                   onValueChange={setInputValue}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleConfirm();
-                    }
-                  }}
+                 // onKeyDown={(e) => {
+                 //   if (e.key === "Enter") {
+                   //   handleConfirm();
+                  // }
+                  //}}
                 />
               </div>
 
@@ -113,9 +113,7 @@ const SubCategorySelect = ({
               </CommandList>
             </Command>
 
-            <div className="p-2 flex justify-end">
-              <Button size="sm" onClick={handleConfirm}>Confirm</Button>
-            </div>
+           
           </div>
         )
       ) : (
@@ -126,11 +124,11 @@ const SubCategorySelect = ({
                 placeholder="Search sub category"
                 value={inputValue}
                 onValueChange={setInputValue}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleConfirm();
-                  }
-                }}
+                //onKeyDown={(e) => {
+                //  if (e.key === "Enter") {
+                //    handleConfirm();
+                //  }
+                //}}
               />
             </div>
 
@@ -162,9 +160,7 @@ const SubCategorySelect = ({
             </CommandList>
           </Command>
 
-          <div className="p-2 flex justify-end">
-            <Button size="sm" onClick={handleConfirm}>Confirm</Button>
-          </div>
+         
         </PopoverContent>
       )}
     </Popover>

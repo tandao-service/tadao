@@ -747,7 +747,7 @@ const handleCloseAdView = () => {
 
       {/* Ads Section */}
       <div
-        className={`flex-1 relative transition-all duration-300 h-screen ${
+        className={`flex-1 flex-col transition-all duration-300 h-screen ${
           showSidebar ? "hidden md:block" : "block"
         }`}
       >
@@ -824,7 +824,7 @@ const handleCloseAdView = () => {
       )}
         <div onMouseEnter={() => setHoveredCategory(null)} className="p-0 lg:p-2 h-full flex flex-col">
           {/* Header Section */}
-          <div className="flex flex-col gap-2 fixed top-0 left-0 w-full bg-white p-1 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+          <div className="flex flex-col gap-1 top-0 left-0 w-full bg-white p-1 shadow-md z-10 md:relative md:w-auto md:shadow-none">
           <div className="p-2 w-full flex flex-col items-center">
             <div className="w-full justify-between flex items-center">
               <div className="flex items-center gap-2">
@@ -955,7 +955,7 @@ const handleCloseAdView = () => {
         
         </div>
             </div>
-            <div className="w-full mt-3 gap-2 justify-between flex items-center">
+            <div className="w-full mt-2 gap-2 justify-between flex items-center">
            
         <HeaderMain handleFilter={handleFilter} handleOpenPlan={handleOpenPlan} AdsCountPerRegion={AdsCountPerRegion} queryObject={newqueryObject}
          handleAdEdit={handleAdEdit}
@@ -973,8 +973,8 @@ const handleCloseAdView = () => {
 
           {/* List Ads 
           <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
-         <ScrollArea className="h-[100vh] p-2 w-full bg-gray-200 rounded-t-md border overflow-hidden"> 
-  <div className="lg:hidden">
+         <ScrollArea className="h-[100vh] p-0 w-full bg-gray-200 rounded-t-md border overflow-hidden"> 
+  <div className="lg:hidden p-1">
     <MenuSubmobileMain
       categoryList={categoryList}
       subcategoryList={subcategoryList}
@@ -990,7 +990,7 @@ const handleCloseAdView = () => {
    
      <Masonry
         breakpointCols={breakpointColumns}
-        className="mt-4 mb-20 lg:mb-0 lg:mt-0 w-full flex gap-2 lg:gap-4 overflow-hidden"
+        className="p-1 mt-4 mb-20 lg:mb-0 lg:mt-0 w-full flex gap-2 lg:gap-4 overflow-hidden"
         columnClassName="bg-clip-padding"
       >
         {data.map((ad: any, index: number) => {

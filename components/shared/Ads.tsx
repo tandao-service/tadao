@@ -1001,7 +1001,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                   >
                     <AccordionItem value="item-2" className="border-0">
                       <AccordionTrigger className="border-0">
-                        <div className="mt-5 flex text-emerald-950 dark:text-gray-400 gap-1 items-center font-bold no-underline">
+                        <div className="mt-0 flex text-emerald-950 dark:text-gray-400 gap-1 items-center font-bold no-underline">
                           <HelpOutlineOutlinedIcon />
                           <div className="font-bold">About Seller</div>
                         </div>

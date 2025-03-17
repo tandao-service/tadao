@@ -101,9 +101,9 @@ const DashboardSellMain = ({
        
   return (
     <>
-      <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-    <div>
-   <div className="top-0 z-10 fixed w-full">
+  <div className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+   
+   <div className="top-0 z-10 w-full">
    <Navbar userstatus="User" userId={userId} onClose={onClose} popup={popup}
     handleOpenSell={handleOpenSell} 
     handleOpenBook={handleOpenBook}
@@ -117,12 +117,13 @@ const DashboardSellMain = ({
     handleOpenPrivacy={handleOpenPrivacy}
     handleOpenSafety={handleOpenSafety}/>
     </div>
-    <div className="min-h-[100vh] max-w-3xl mx-auto flex mt-[12vh] p-1">
+    <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+    <div className="min-h-[100vh] max-w-3xl mx-auto flex p-1">
     <div className="flex-1">
             
-      <div className="max-w-6xl mx-auto flex mt-0 p-2 dark:bg-[#131B1E] bg-white rounded-lg">
+      <div className="w-full min-h-[100vh] lg:max-w-6xl mx-auto flex mt-0 p-0 dark:bg-[#131B1E] rounded-lg">
         <div className="flex-1">
-          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
+          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-20 p-1 justify-center">
             <EventForm
               userId={userId}
               type={type}
@@ -162,8 +163,9 @@ const DashboardSellMain = ({
             </div>*/} 
           </div>
         </footer>
-        </div>
         </ScrollArea>
+        </div>
+       
     </>
   );
 };
