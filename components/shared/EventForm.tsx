@@ -950,6 +950,7 @@ const AdForm = ({
                     }}
                     className="w-full"
                   />
+                  <div className="mt-3 bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-full">
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
                     Are you open to negotiation?
                   </h3>
@@ -999,6 +1000,7 @@ const AdForm = ({
                         </span>
                       </label>
                     ))}
+                  </div>
                   </div>
                 </div>
               )}
@@ -1048,6 +1050,7 @@ const AdForm = ({
                       <option value="per year">per year</option>
                     </select>
                   </div>
+                  <div className="mt-3 bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-full">
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
                     Are you open to negotiation?
                   </h3>
@@ -1097,6 +1100,7 @@ const AdForm = ({
                         </span>
                       </label>
                     ))}
+                  </div>
                   </div>
                 </div>
               )}
@@ -1145,6 +1149,7 @@ const AdForm = ({
                       <option value="per SqF">per SqF</option>
                     </select>
                   </div>
+                  <div className="mt-3 bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-full">
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
                     Are you open to negotiation?
                   </h3>
@@ -1194,6 +1199,7 @@ const AdForm = ({
                         </span>
                       </label>
                     ))}
+                  </div>
                   </div>
                 </div>
               )}
@@ -1252,6 +1258,8 @@ const AdForm = ({
                       </div>
                     )}
                   </div>
+
+                  <div className="mt-3 bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-full">
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
                     Are you open to negotiation?
                   </h3>
@@ -1301,6 +1309,7 @@ const AdForm = ({
                         </span>
                       </label>
                     ))}
+                  </div>
                   </div>
                 </div>
               )}
