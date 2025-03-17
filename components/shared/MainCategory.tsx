@@ -633,19 +633,8 @@ CollectionProps) => {
             </div>
 
            
-              <div className="w-full lg:hidden">
-               {/*  <section className="flex w-full mt-3 justify-between items-center gap-1 dark:bg-[#131B1E] bg-white bg-dotted-pattern bg-cover bg-center rounded-sm">
-                  <div className="flex w-full p-0">
-                    <SubCategoryFilterSearch
-                      categoryList={categoryList}
-                      category={newqueryObject.category}
-                      onLoading={onLoading}
-                      handleFilter={handleFilter}
-                    />
-                  </div>
-
-                 
-                </section>*/}
+              <div className="hidden">
+              
              <div className="flex w-full mt-3 gap-2 items-center">
              {newqueryObject.category === "Property" && ( <div className="flex-1">
           <TooltipProvider>
@@ -787,8 +776,8 @@ CollectionProps) => {
           </div>
 
           {/* List Ads 
-          <div className="space-y-4 overflow-y-auto mt-0 flex-1">
-          <ScrollArea className="h-[calc(100vh-4rem)] w-full rounded-t-md border lg:mt-0">
+          <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
+          <ScrollArea className="h-[100vh] w-full rounded-t-md border lg:mt-0">
           <section className="p-1">
           <div className="flex items-center p-1 w-full justify-between">
                 <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0 ">
@@ -984,7 +973,7 @@ CollectionProps) => {
             </>
           )}
 
-      
+          {/* Footer Section */}
           <div className="hidden lg:inline">
                     <Footersub
                            handleOpenAbout={handleOpenAbout}
@@ -992,10 +981,10 @@ CollectionProps) => {
                             handleOpenPrivacy={handleOpenPrivacy}
                             handleOpenSafety={handleOpenSafety}/>
                   </div>
-          </ScrollArea>*/}
+          </ScrollArea>
            <footer>
                   
-                  <div className="lg:hidden">
+                  <div className="hidden">
                     <BottomNavigation userId={userId} 
                      popup={"category"}
                      onClose={onClose} 
