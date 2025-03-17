@@ -101,8 +101,9 @@ const DashboardSellMain = ({
        
   return (
     <>
-  <div className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-  <div className="top-0 z-10 w-full">
+   <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+       
+      <div className="z-10 top-0 fixed w-full">
     <Navbar
       userstatus="User"
       userId={userId}
@@ -122,13 +123,10 @@ const DashboardSellMain = ({
     />
   </div>
   
-  <ScrollArea className="h-[calc(100vh-4rem)] overflow-y-auto bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-    {/* Scrollable area adjusts to the screen height minus the navbar */}
-    <div className="min-h-[100vh] max-w-3xl mx-auto flex p-1">
-      <div className="flex-1">
-        <div className="w-full min-h-[100vh] lg:max-w-6xl mx-auto flex mt-0 p-0 dark:bg-[#131B1E] rounded-lg">
-          <div className="flex-1">
-            <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-20 p-1 justify-center">
+  <div className="flex flex-col justify-center w-full h-full mt-[50px] lg:mt-[60px]">
+      
+  <div className="p-2 lg: p-4 flex min-h-[100vh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
+   
               <EventForm
                 userId={userId}
                 type={type}
@@ -149,10 +147,6 @@ const DashboardSellMain = ({
                 handleOpenTerms={handleOpenTerms}
               />
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <footer className="mt-10">
       <div>
@@ -166,8 +160,8 @@ const DashboardSellMain = ({
         </div>
       </div>
     </footer>
-  </ScrollArea>
-</div>
+  </div>
+</ScrollArea>
 
     </>
   );
