@@ -102,70 +102,73 @@ const DashboardSellMain = ({
   return (
     <>
   <div className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-   
-   <div className="top-0 z-10 w-full">
-   <Navbar userstatus="User" userId={userId} onClose={onClose} popup={popup}
-    handleOpenSell={handleOpenSell} 
-    handleOpenBook={handleOpenBook}
-    handleOpenPlan={handleOpenPlan}
-    handleOpenChat={handleOpenChat} 
-    handleOpenShop={handleOpenShop} 
-    handleOpenPerfomance={handleOpenPerfomance}
-    handleOpenSettings={handleOpenSettings} 
-    handleOpenAbout={handleOpenAbout} 
-    handleOpenTerms={handleOpenTerms}
-    handleOpenPrivacy={handleOpenPrivacy}
-    handleOpenSafety={handleOpenSafety}/>
-    </div>
-    <ScrollArea className="h-[80vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-    <div className="min-h-[100vh] max-w-3xl mx-auto flex p-1">
-    <div className="flex-1">
-            
-      <div className="w-full min-h-[100vh] lg:max-w-6xl mx-auto flex mt-0 p-0 dark:bg-[#131B1E] rounded-lg">
-        <div className="flex-1">
-          <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-20 p-1 justify-center">
-            <EventForm
-              userId={userId}
-              type={type}
-              ad={ad}
-              categories={categories}
-              adId={adId}
-              planId={planId}
-              userName={userName}
-              daysRemaining={daysRemaining}
-              packname={packname}
-              listed={listed}
-              priority={priority}
-              expirationDate={expirationDate}
-              adstatus={adstatus}
-              packagesList={packagesList}
-              handleAdView={handleAdView}
-              handlePay={handlePay}
-              handleOpenTerms={handleOpenTerms}
-            />
-          </div>
-        </div>
-      </div>
-      </div>
-      </div>
-     
-      
-        <footer>
-          <div>
-            <div className="hidden lg:inline">
-              <Footersub  handleOpenAbout={handleOpenAbout} 
+  <div className="top-0 z-10 w-full">
+    <Navbar
+      userstatus="User"
+      userId={userId}
+      onClose={onClose}
+      popup={popup}
+      handleOpenSell={handleOpenSell}
+      handleOpenBook={handleOpenBook}
+      handleOpenPlan={handleOpenPlan}
+      handleOpenChat={handleOpenChat}
+      handleOpenShop={handleOpenShop}
+      handleOpenPerfomance={handleOpenPerfomance}
+      handleOpenSettings={handleOpenSettings}
+      handleOpenAbout={handleOpenAbout}
       handleOpenTerms={handleOpenTerms}
       handleOpenPrivacy={handleOpenPrivacy}
-      handleOpenSafety={handleOpenSafety}/>
+      handleOpenSafety={handleOpenSafety}
+    />
+  </div>
+  
+  <ScrollArea className="h-[calc(100vh-4rem)] overflow-y-auto bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+    {/* Scrollable area adjusts to the screen height minus the navbar */}
+    <div className="min-h-[100vh] max-w-3xl mx-auto flex p-1">
+      <div className="flex-1">
+        <div className="w-full min-h-[100vh] lg:max-w-6xl mx-auto flex mt-0 p-0 dark:bg-[#131B1E] rounded-lg">
+          <div className="flex-1">
+            <div className="rounded-sm max-w-6xl mx-auto lg:flex-row mb-20 p-1 justify-center">
+              <EventForm
+                userId={userId}
+                type={type}
+                ad={ad}
+                categories={categories}
+                adId={adId}
+                planId={planId}
+                userName={userName}
+                daysRemaining={daysRemaining}
+                packname={packname}
+                listed={listed}
+                priority={priority}
+                expirationDate={expirationDate}
+                adstatus={adstatus}
+                packagesList={packagesList}
+                handleAdView={handleAdView}
+                handlePay={handlePay}
+                handleOpenTerms={handleOpenTerms}
+              />
             </div>
-          {/* <div className="lg:hidden mt-[65px]">
-              <BottomNavigation userId={userId} popup={"sell"} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenChat={handleOpenChat} handleCategory={handleCategory} />
-            </div>*/} 
           </div>
-        </footer>
-        </ScrollArea>
         </div>
-       
+      </div>
+    </div>
+
+    <footer className="mt-10">
+      <div>
+        <div className="hidden lg:inline">
+          <Footersub
+            handleOpenAbout={handleOpenAbout}
+            handleOpenTerms={handleOpenTerms}
+            handleOpenPrivacy={handleOpenPrivacy}
+            handleOpenSafety={handleOpenSafety}
+          />
+        </div>
+      </div>
+    </footer>
+  </ScrollArea>
+</div>
+
     </>
   );
 };
