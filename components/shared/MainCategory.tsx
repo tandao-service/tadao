@@ -787,7 +787,7 @@ CollectionProps) => {
           </div>
 
           {/* List Ads 
-          <div className="space-y-4 overflow-y-auto mt-0 flex-1">*/}
+          <div className="space-y-4 overflow-y-auto mt-0 flex-1">
           <ScrollArea className="h-[calc(100vh-4rem)] w-full rounded-t-md border lg:mt-0">
           <section className="p-1">
           <div className="flex items-center p-1 w-full justify-between">
@@ -984,7 +984,7 @@ CollectionProps) => {
             </>
           )}
 
-          {/* Footer Section */}
+      
           <div className="hidden lg:inline">
                     <Footersub
                            handleOpenAbout={handleOpenAbout}
@@ -992,7 +992,7 @@ CollectionProps) => {
                             handleOpenPrivacy={handleOpenPrivacy}
                             handleOpenSafety={handleOpenSafety}/>
                   </div>
-          </ScrollArea>
+          </ScrollArea>*/}
            <footer>
                   
                   <div className="lg:hidden">
