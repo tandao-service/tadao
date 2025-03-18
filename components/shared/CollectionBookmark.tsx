@@ -105,7 +105,7 @@ const CollectionBookmark = ({
         isVertical ? (
           <Masonry
             breakpointCols={breakpointColumns}
-            className="flex gap-4"
+            className="flex gap-1 lg:gap-4"
             columnClassName="bg-clip-padding"
           >
             {data.map((ad: any, index: number) => {

@@ -123,6 +123,10 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
             break;
           case 'source':
             break;
+          case 'Ad':
+            break;
+          case 'Profile':
+            break;
           case 'sortby':
             break;
           default:
@@ -230,6 +234,10 @@ export async function getListingsNearLocation({ limit = 20, queryObject
           case 'membership':
             break;
           case 'source':
+            break;
+          case 'Ad':
+            break;
+          case 'Profile':
             break;
           case 'sortby':
             break;

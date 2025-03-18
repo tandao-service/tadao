@@ -101,9 +101,9 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
 
         <div className="flex-1 h-screen ">
         
-          <div className="rounded-lg mb-20 p-1 border h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
+          <div className="rounded-lg mb-20 p-0 border h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
             <div className="lg:flex-1">
-              <div className="w-full p-1 mt-4 w-full border-b mb-2 dark:bg-[#2D3236] rounded-xl items-center">
+              <div className="w-full p-0 mt-4 w-full border-b mb-2 dark:bg-[#2D3236] rounded-xl items-center">
                 <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
                   Messanger
                 </span>

@@ -145,7 +145,7 @@ const MainPage = ({
     setIsOpenAdView(false);
     setIsOpenAdEdit(false);
     setIsOpenPay(false);
-    setIsOpenCategory(false);
+   // setIsOpenCategory(false);
   };
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

@@ -30,12 +30,14 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import AssistantDirectionOutlinedIcon from "@mui/icons-material/AssistantDirectionOutlined";
 import LowPriorityOutlinedIcon from "@mui/icons-material/LowPriorityOutlined";
 import FlightTakeoffOutlinedIcon from "@mui/icons-material/FlightTakeoffOutlined";
-import { getAdByUser } from "@/lib/actions/ad.actions";
+//import { getAdByUser } from "@/lib/actions/ad.actions";
 import Footersub from "./Footersub";
 import { Toaster } from "../ui/toaster";
 import { mode } from "@/constants";
 import Navbar from "./navbar";
 import { ScrollArea } from "../ui/scroll-area";
+import { getAdByUser } from "@/lib/actions/dynamicAd.actions";
+import { IdynamicAd } from "@/lib/database/models/dynamicAd.model";
 
 type CollectionProps = {
   userId: string;
@@ -93,7 +95,7 @@ CollectionProps) => {
   const [activeButton, setActiveButton] = useState(0);
   const [isVertical, setisVertical] = useState(true);
 
-  const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
+  const [data, setAds] = useState<IdynamicAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -111,12 +113,12 @@ CollectionProps) => {
       });
 
       // Update ads state using the latest prevAds for filtering
-      setAds((prevAds: IAd[]) => {
+      setAds((prevAds: IdynamicAd[]) => {
         const existingAdIds = new Set(prevAds.map((ad) => ad._id));
 
         // Filter out ads that are already in prevAds
         const newAds = organizedAds?.data.filter(
-          (ad: IAd) => !existingAdIds.has(ad._id)
+          (ad: IdynamicAd) => !existingAdIds.has(ad._id)
         );
 
         return [...prevAds, ...newAds]; // Return updated ads
@@ -275,12 +277,12 @@ CollectionProps) => {
                   >
                     {/* Ad Image */}
                     <img
-                      src={ad.imageUrls[0] || "/default-ad-image.jpg"}
-                      alt={ad.title}
+                      src={ad.data.imageUrls[0] || "/default-ad-image.jpg"}
+                      alt={ad.data.title}
                       className="w-full lg:w-64 h-40 lg:h-64 object-cover"
                     />
 
-                    <div className="p-2 grid grid-cols-2 lg:grid-cols-3">
+                    <div className="p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
                       {/* 1. Ad Details */}
                       <section className="mb-1 mr-1 bg-gray-100 p-1 rounded-lg">
                         <p className="text-xs lg:text-base font-bold mb-1 text-gray-800">
@@ -288,11 +290,11 @@ CollectionProps) => {
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <SplitscreenOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Title: </strong> {ad.title}
+                          <strong>Title: </strong> {ad.data.title}
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <ClassOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Category: </strong> {ad.subcategory || "N/A"}
+                          <strong>Category: </strong> {ad.data.subcategory || "N/A"}
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <AccessTimeIcon sx={{ fontSize: 14 }} />
@@ -354,7 +356,7 @@ CollectionProps) => {
                             {ad.adstatus}
                           </div>
                         )}
-                        <div className="flex mt-2 gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
+                        <div className="flex mt-2 gap-4 rounded-xl p-3 shadow-sm transition-all">
                           <div 
                           onClick={()=> handleAdEdit(ad._id)}
                           >
@@ -367,7 +369,7 @@ CollectionProps) => {
                           </div>
                           <DeleteConfirmation
                             adId={ad._id}
-                            imageUrls={ad.imageUrls}
+                            imageUrls={ad.data.imageUrls}
                           />
                         </div>
                       </section>
@@ -395,7 +397,7 @@ CollectionProps) => {
                         </h2>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <CallIcon sx={{ fontSize: 14 }} />
-                          <strong>Phone: </strong> {ad.phone || "N/A"}
+                          <strong>Phone: </strong> {ad.data.phone || "N/A"}
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <WhatsAppIcon sx={{ fontSize: 14 }} />
@@ -424,14 +426,17 @@ CollectionProps) => {
                         </h2>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <LocationOnIcon sx={{ fontSize: 14 }} />
-                          <strong>Location: </strong> {ad.address || "N/A"}
+                          <strong>Location: </strong>  {ad.data.region} - {ad.data.area}
                         </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
-                          <AssistantDirectionOutlinedIcon
-                            sx={{ fontSize: 14 }}
-                          />
-                          <strong>Map Enabled: </strong> {"Yes"}
-                        </p>
+                        {(ad.data["propertyarea"]) && (
+                                      <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
+                                      <AssistantDirectionOutlinedIcon
+                                        sx={{ fontSize: 14 }}
+                                      />
+                                      <strong>Map Enabled: </strong> {"Yes"}
+                                    </p>
+                                    )}
+
                       </section>
                     </div>
                   </div>
@@ -444,8 +449,8 @@ CollectionProps) => {
                   >
                     {/* Ad Image */}
                     <img
-                      src={ad.imageUrls[0] || "/default-ad-image.jpg"}
-                      alt={ad.title}
+                      src={ad.data.imageUrls[0] || "/default-ad-image.jpg"}
+                      alt={ad.data.title}
                       className="w-full lg:w-64 h-40 lg:h-64 object-cover"
                     />
 
@@ -457,11 +462,11 @@ CollectionProps) => {
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <SplitscreenOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Title: </strong> {ad.title}
+                          <strong>Title: </strong> {ad.data.title}
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <ClassOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Category: </strong> {ad.subcategory || "N/A"}
+                          <strong>Category: </strong> {ad.data.subcategory || "N/A"}
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <AccessTimeIcon sx={{ fontSize: 14 }} />
@@ -523,7 +528,7 @@ CollectionProps) => {
                             {ad.adstatus}
                           </div>
                         )}
-                        <div className="flex mt-2 gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
+                        <div className="flex mt-2 gap-4 rounded-xl p-3 shadow-sm transition-all">
                         <div 
                           onClick={()=> handleAdEdit(ad._id)}
                           >
@@ -536,7 +541,7 @@ CollectionProps) => {
                           </div>
                           <DeleteConfirmation
                             adId={ad._id}
-                            imageUrls={ad.imageUrls}
+                            imageUrls={ad.data.imageUrls}
                           />
                         </div>
                       </section>
@@ -564,7 +569,7 @@ CollectionProps) => {
                         </h2>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <CallIcon sx={{ fontSize: 14 }} />
-                          <strong>Phone: </strong> {ad.phone || "N/A"}
+                          <strong>Phone: </strong> {ad.data.phone || "N/A"}
                         </p>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <WhatsAppIcon sx={{ fontSize: 14 }} />
@@ -593,14 +598,18 @@ CollectionProps) => {
                         </h2>
                         <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
                           <LocationOnIcon sx={{ fontSize: 14 }} />
-                          <strong>Location: </strong> {ad.address || "N/A"}
+                          <strong>Location: </strong>  {ad.data.region} - {ad.data.area}
                         </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
-                          <AssistantDirectionOutlinedIcon
-                            sx={{ fontSize: 14 }}
-                          />
-                          <strong>Map Enabled: </strong> {"Yes"}
-                        </p>
+                         {(ad.data["propertyarea"]) && (
+                                      <p className="flex gap-1 mb-1 text-gray-700 text-[10px] lg:text-xs">
+                                      <AssistantDirectionOutlinedIcon
+                                        sx={{ fontSize: 14 }}
+                                      />
+                                      <strong>Map Enabled: </strong> {"Yes"}
+                                    </p>
+                                    )}
+
+                       
                       </section>
                     </div>
                   </div>

@@ -301,7 +301,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-1">
             <AccordionTrigger>Personal Details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
+              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <SignedIn>
@@ -414,7 +414,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-2">
             <AccordionTrigger>Business details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
+              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
@@ -775,7 +775,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-3">
             <AccordionTrigger>Contacts details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
+              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
@@ -1017,7 +1017,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-4">
             <AccordionTrigger>Social Media</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-1 dark:bg-[#131B1E] bg-white">
+              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
                 <div className="m-3">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField

@@ -76,13 +76,13 @@ const SettingsComponent = ({userId,user,onClose,
                               handleOpenSafety={handleOpenSafety} 
                               handleOpenShop={handleOpenShop}/>
                              </div>
-      <div className="max-w-3xl mx-auto flex mt-[60px] p-1 h-screen">
+      <div className="max-w-3xl mx-auto flex mt-[70px] lg:mt-[60px] p-1 min-h-screen">
         <div className="hidden lg:inline mr-5"></div>
 
         <div className="flex-1">
-          <div className="max-w-6xl bg-white rounded-lg dark:bg-[#2D3236] p-2 mb-20 lg:mb-3 mx-auto justify-center">
-            <section className="w-full p-1">
-              <div className="w-full p-2 flex flex-col lg:flex-row lg:justify-between">
+          <div className="w-full lg:max-w-6xl lg:mx-auto lg:mb-3 dark:bg-[#2D3236] p-1 mb-20 justify-center">
+            <section className="w-full p-0">
+              <div className="w-full flex flex-col lg:flex-row lg:justify-between">
                 <div className="flex text-lg mb-1 gap-1 font-bold">
                   <SettingsOutlinedIcon />
                   <h3 className="font-bold text-[25px]">Settings</h3>

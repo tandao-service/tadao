@@ -216,7 +216,7 @@ CollectionProps) => {
           </div>
 
           <div className="flex-1 min-h-screen">
-          <div className="lg:hidden">
+          <div className="hidden">
               <SellerProfile user={user} loggedId={loggedId} userId={userId} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
             <div className="lg:flex-row lg:m-3 justify-center">

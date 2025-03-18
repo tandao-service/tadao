@@ -783,6 +783,37 @@ CollectionProps) => {
           </div>
         </div>
       )}
+        {showPopup && (
+                        
+      
+                            <SidebarSearchmobile
+                              categoryList={categoryList}
+                              category={newqueryObject.category}
+                              subcategory={newqueryObject.subcategory}
+                              AdsCountPerRegion={AdsCountPerRegion}
+                              AdsCountPerVerifiedTrue={AdsCountPerVerifiedTrue}
+                              AdsCountPerVerifiedFalse={AdsCountPerVerifiedFalse}
+                              adsCount={adsCount}
+                              onLoading={onLoading}
+                              handleFilter={handleFilter}
+                              selectedVerified={selectedVerified}
+                              handleVerifiedChange={handleVerifiedChange}
+                              handleminPriceChange={handleminPriceChange}
+                              handlemaxPriceChange={handlemaxPriceChange}
+                              maxPrice={maxPrice}
+                              minPrice={minPrice}
+                              formData={formData}
+                              applyFilters={applyFilters}
+                              handleInputChange={handleInputChange}
+                              handleCheckboxChange={handleCheckboxChange}
+                              handleInputAutoCompleteChange={handleInputAutoCompleteChange}
+                              handleInputYearChange={handleInputYearChange}
+                              handleClearForm={handleClearForm}
+                              HandletogglePopup={togglePopup}
+                            />
+                         
+                      )}
+                        
     </div>
   </div>
 </div>
