@@ -123,22 +123,24 @@ export const ReportUnavailable: React.FC<ReportUnavailable> = ({ ad, isOpen,user
      {isMobile && isOpen ? (
                
                   // Fullscreen Popover for Mobile
-                  <div className="fixed inset-0 z-10 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
+                  <div className="fixed inset-0 z-20 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
                     <div className="flex justify-between items-center border-b pb-2">
-                    <p className="font-bold">  Report for {ad.data.title}</p>
+                   
                       <Button variant="outline" onClick={onClose}>
                       <CloseOutlinedIcon />
                       </Button>
                     </div>  
                     
                      {/* Submit Button */}
+                     <div className="flex justify-center items-center">
+                     <p className="font-bold">  Report for {ad.data.title}</p>
         <Button
           onClick={handleSubmit}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
         >
           Confirm Unavailable?
         </Button>
-                    
+        </div>  
                     </div>):(
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md dark:bg-[#2D3236] dark:text-gray-300 bg-white rounded-lg shadow-lg p-6">

@@ -295,14 +295,14 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="p-2 flex flex-col border"
+        className="p-0 flex flex-col border"
       >
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
             <AccordionTrigger>Personal Details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
-                <div className="m-3">
+              <div className="">
+                <div className="m-0">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <SignedIn>
                       <UserButton afterSignOutUrl="/" />
@@ -322,7 +322,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               variant="outlined"
                               InputProps={{
                                 classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                                   notchedOutline:
                                     "border-gray-300 dark:border-gray-600",
                                   focused: "",
@@ -353,7 +353,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               variant="outlined"
                               InputProps={{
                                 classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                                   notchedOutline:
                                     "border-gray-300 dark:border-gray-600",
                                   focused: "",
@@ -386,7 +386,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               variant="outlined"
                               InputProps={{
                                 classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                                   notchedOutline:
                                     "border-gray-300 dark:border-gray-600",
                                   focused: "",
@@ -414,8 +414,8 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           <AccordionItem value="item-2">
             <AccordionTrigger>Business details</AccordionTrigger>
             <AccordionContent>
-              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
-                <div className="m-3">
+              <div className="">
+                <div className="">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
                       control={form.control}
@@ -447,7 +447,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               variant="outlined"
                               InputProps={{
                                 classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                                   notchedOutline:
                                     "border-gray-300 dark:border-gray-600",
                                   focused: "",
@@ -482,7 +482,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                               variant="outlined"
                               InputProps={{
                                 classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
+                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                                   notchedOutline:
                                     "border-gray-300 dark:border-gray-600",
                                   focused: "",

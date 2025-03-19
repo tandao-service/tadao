@@ -107,12 +107,14 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
                   // Fullscreen Popover for Mobile
                   <div className="fixed inset-0 z-10 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
                     <div className="flex justify-between items-center border-b pb-2">
-                   <p className="font-bold"> Report for {ad.data.title}</p>
+                  
                       <Button variant="outline" onClick={onClose}>
                       <CloseOutlinedIcon />
                       </Button>
                     </div>
                       {/* Report Reason Select */}
+                      <div className="flex justify-center items-center">
+                      <p className="font-bold"> Report for {ad.data.title}</p>
         <Select onValueChange={setReason}>
           <SelectTrigger className="w-full border p-2 rounded-md dark:text-gray-300 text-gray-700">
             <SelectValue placeholder="Report reason" />
@@ -146,6 +148,7 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
         >
           Send report
         </Button>
+        </div>
                     </div>
      ):(
     <Dialog open={isOpen} onOpenChange={onClose}>

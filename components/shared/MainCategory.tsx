@@ -649,15 +649,15 @@ CollectionProps) => {
                 <TooltipTrigger asChild>
                   <button
                     onClick={handleOpenPopupMapSearch}
-                    className="flex gap-2 text-gray-700 items-center justify-between w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                    className="flex text-xs gap-2 text-gray-700 items-center justify-between w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
                   >
                     <div className="flex gap-2 items-center">
                       <Image
                         src={"/assets/icons/travel-distance.png"}
                         alt="icon"
                         className="rounded-full object-cover"
-                        width={40}
-                        height={40}
+                        width={30}
+                        height={30}
                       />
                       Search by Distance
                     </div>
@@ -678,9 +678,15 @@ CollectionProps) => {
               <TooltipTrigger asChild>
                 <div
                   onClick={togglePopup}
-                  className="flex py-4 px-3 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
+                  className="flex text-xs py-3 px-3 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
                 >
-                  <SortOutlinedIcon />
+                
+                  <div className="hidden lg:inline">
+           <SortOutlinedIcon/>
+           </div>
+           <div className="lg:hidden">
+           <SortOutlinedIcon sx={{ fontSize: 20 }}/>
+           </div> 
                   <div className="flex gap-1 items-center">Filter</div>
                 </div>
               </TooltipTrigger>
@@ -696,9 +702,14 @@ CollectionProps) => {
     <div className="flex w-full gap-1 mt-2 justify-center items-center mb-1">
       <button
         onClick={handleOpenPopupLocation}
-        className="flex gap-1 items-center justify-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
+        className="flex text-xs lg:text-base gap-1 items-center justify-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
       >
-        <LocationOnIcon /> {region}
+        <div className="hidden lg:inline">
+           <LocationOnIcon/>
+           </div>
+           <div className="lg:hidden">
+           <LocationOnIcon sx={{ fontSize: 20 }}/>
+           </div> {region}
       </button>
 
       <div className="flex-1">

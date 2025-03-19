@@ -74,7 +74,7 @@ export default function Navbar({ userstatus, userId, onClose, popup, handleOpenS
   const isActive = pathname === "/";
  
   return (
-    <div className="h-[60px] flex p-2 lg:p-3 gap-1 w-full border-b bg-white">
+    <div className="h-[60px] items-center flex p-2 lg:p-3 gap-1 w-full border-b bg-white">
       <div className="flex-1 mt-1">
         <div className="flex items-center">
        

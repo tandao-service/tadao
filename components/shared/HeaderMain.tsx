@@ -61,9 +61,15 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
         <div className="flex">
         <button
         onClick={handleOpenPopup}
-        className="flex gap-1 items-center justify-center w-full py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
+        className="flex text-xs lg:text-base gap-1 items-center justify-center w-full py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
         >
-        <LocationOnIcon /> {region}
+           <div className="hidden lg:inline">
+           <LocationOnIcon/>
+           </div>
+           <div className="lg:hidden">
+           <LocationOnIcon sx={{ fontSize: 20 }}/>
+           </div>
+        {region}
         </button>
         </div>
         <div className="flex-1 hidden lg:inline">
@@ -83,6 +89,7 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   >
                    {/*  🗺️ */}
                    <div className="flex gap-3 items-center">
+                    <div className="hidden lg:inline">
                     <Image
                                    src={"/assets/icons/map-pointer.png"}
                                    alt="icon"
@@ -90,7 +97,18 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                                    width={40}
                                    height={40}
                                  />
-                    <div className="flex gap-1 items-center">Virtual Site Visit </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
+                    </div>
+                    <div className="lg:hidden">
+                    <Image
+                                   src={"/assets/icons/map-pointer.png"}
+                                   alt="icon"
+                                   className="rounded-full object-cover"
+                                   width={30}
+                                   height={30}
+                                 />
+                    </div>
+                   
+                    <div className="text-xs lg:text-base flex gap-1 items-center">Virtual Site Visit </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                   </button>
                   </TooltipTrigger>
                   <TooltipContent>

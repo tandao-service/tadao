@@ -76,7 +76,7 @@ const SettingsComponent = ({userId,user,onClose,
                               handleOpenSafety={handleOpenSafety} 
                               handleOpenShop={handleOpenShop}/>
                              </div>
-      <div className="max-w-3xl mx-auto flex mt-[70px] lg:mt-[60px] p-1 min-h-screen">
+      <div className="max-w-3xl mx-auto flex mt-[80px] lg:mt-[60px] p-1 min-h-screen">
         <div className="hidden lg:inline mr-5"></div>
 
         <div className="flex-1">
