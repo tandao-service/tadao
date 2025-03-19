@@ -124,7 +124,7 @@ export const ReportUnavailable: React.FC<ReportUnavailable> = ({ ad, isOpen,user
                
                   // Fullscreen Popover for Mobile
                   <div className="fixed inset-0 z-20 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
-                    <div className="flex justify-between items-center border-b pb-2">
+                    <div className="flex justify-end items-center border-b pb-2">
                    
                       <Button variant="outline" onClick={onClose}>
                       <CloseOutlinedIcon />
@@ -132,8 +132,8 @@ export const ReportUnavailable: React.FC<ReportUnavailable> = ({ ad, isOpen,user
                     </div>  
                     
                      {/* Submit Button */}
-                     <div className="flex justify-center items-center">
-                     <p className="font-bold">  Report for {ad.data.title}</p>
+                     <div className="flex mt-10 flex-col justify-center items-center">
+                     <p className="font-bold mb-2">  Report for {ad.data.title}</p>
         <Button
           onClick={handleSubmit}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"

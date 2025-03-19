@@ -641,7 +641,7 @@ CollectionProps) => {
     </div>
 
     <div className="w-full lg:hidden">
-      <div className="flex w-full mt-3 gap-2 items-center">
+      <div className="flex w-full mt-3 gap-1 items-center">
         {newqueryObject.category === "Property" && (
           <div className="flex-1">
             <TooltipProvider>
@@ -649,7 +649,7 @@ CollectionProps) => {
                 <TooltipTrigger asChild>
                   <button
                     onClick={handleOpenPopupMapSearch}
-                    className="flex text-xs gap-2 text-gray-700 items-center justify-between w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                    className="flex text-xs gap-2 text-gray-700 items-center justify-between w-full py-3 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
                   >
                     <div className="flex gap-2 items-center">
                       <Image
@@ -678,7 +678,7 @@ CollectionProps) => {
               <TooltipTrigger asChild>
                 <div
                   onClick={togglePopup}
-                  className="flex text-xs py-3 px-3 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
+                  className="flex text-xs py-4 px-3 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
                 >
                 
                   <div className="hidden lg:inline">
@@ -708,7 +708,7 @@ CollectionProps) => {
            <LocationOnIcon/>
            </div>
            <div className="lg:hidden">
-           <LocationOnIcon sx={{ fontSize: 20 }}/>
+           <LocationOnIcon sx={{ fontSize: 24 }}/>
            </div> {region}
       </button>
 

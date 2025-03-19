@@ -105,21 +105,21 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
      {isMobile && isOpen ? (
                
                   // Fullscreen Popover for Mobile
-                  <div className="fixed inset-0 z-10 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
-                    <div className="flex justify-between items-center border-b pb-2">
+                  <div className="fixed inset-0 z-20 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
+                    <div className="flex justify-end items-center border-b pb-2">
                   
                       <Button variant="outline" onClick={onClose}>
                       <CloseOutlinedIcon />
                       </Button>
                     </div>
                       {/* Report Reason Select */}
-                      <div className="flex justify-center items-center">
-                      <p className="font-bold"> Report for {ad.data.title}</p>
+                      <div className="flex mt-10 flex-col justify-center items-center">
+                      <p className="font-bold mb-2"> Report for {ad.data.title}</p>
         <Select onValueChange={setReason}>
-          <SelectTrigger className="w-full border p-2 rounded-md dark:text-gray-300 text-gray-700">
+          <SelectTrigger className="w-full text-base border p-2 rounded-md dark:text-gray-300 text-gray-700">
             <SelectValue placeholder="Report reason" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="text-base">
             <SelectItem value="spam">Spam or misleading</SelectItem>
             <SelectItem value="fraud">Fraud or scam</SelectItem>
             <SelectItem value="wrong_category">Wrong category</SelectItem>
@@ -137,14 +137,14 @@ export const ReportAbuse: React.FC<ReportAbuseProps> = ({ ad, isOpen,userId, use
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Please describe your issue"
-          maxLength={200}
-          className="w-full dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded-md mt-2"
+          maxLength={300}
+          className="w-full mt-2 text-base dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded-md mt-2"
         />
 
         {/* Submit Button */}
         <Button
           onClick={handleSubmit}
-          className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md"
+          className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded-md"
         >
           Send report
         </Button>

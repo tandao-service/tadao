@@ -195,7 +195,7 @@ CollectionProps) => {
                                             handleOpenSafety={handleOpenSafety} 
                                             handleOpenShop={handleOpenShop}/>
                        </div>
-      <div className="mt-[60px] p-2">
+      <div className="mt-[70px] lg:mt-[60px] p-2">
       <div className="w-full flex flex-col mt-3 p-0">
         <div className="w-full flex">
           <div className="hidden lg:inline mr-0">
@@ -269,11 +269,8 @@ CollectionProps) => {
                     }`}
                     onClick={() => handleButtonClick(0)}
                   >
-                    
-                          <ViewModuleIcon /> 
-                          <div className="hidden lg:inline">   <p>Grid layout</p></div>
-                 
-                         
+                  <ViewModuleIcon /> 
+                  <div className="hidden lg:inline">   <p>Grid layout</p></div>
                   </div>
                   <div
                     className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
@@ -281,14 +278,11 @@ CollectionProps) => {
                     }`}
                     onClick={() => handleButtonClick(1)}
                   >
-                    
-                          <ViewListIcon />    <div className="hidden lg:inline">   <p>List layout</p></div>
-                 
-                        
+                  <ViewListIcon />    <div className="hidden lg:inline">   <p>List layout</p></div>   
                   </div>
                   
                   </div>
-                  <div className="rounded-lg dark:bg-[#2D3236] dark:text-gray-100 bg-white border p-1 flex items-center">
+                 {/*  <div className="rounded-lg dark:bg-[#2D3236] dark:text-gray-100 bg-white border p-1 flex items-center">
                     <div className="text-[#30AF5B]">
                       <SwapVertIcon />
                     </div>
@@ -311,7 +305,7 @@ CollectionProps) => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div>*/}
                 </div>
 
               <CollectionMyads

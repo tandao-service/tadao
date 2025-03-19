@@ -85,7 +85,7 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   <TooltipTrigger asChild>
                   <button
                     onClick={handleOpenPopupMap}
-                    className="flex gap-2 text-gray-700 justify-between items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                    className="flex gap-2 text-gray-700 justify-between items-center justify-center w-full py-3 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
                   >
                    {/*  🗺️ */}
                    <div className="flex gap-3 items-center">
@@ -103,8 +103,8 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                                    src={"/assets/icons/map-pointer.png"}
                                    alt="icon"
                                    className="rounded-full object-cover"
-                                   width={30}
-                                   height={30}
+                                   width={28}
+                                   height={28}
                                  />
                     </div>
                    
