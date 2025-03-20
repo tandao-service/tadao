@@ -195,9 +195,13 @@ CollectionProps) => {
                                             handleOpenSafety={handleOpenSafety} 
                                             handleOpenShop={handleOpenShop}/>
                        </div>
-      <div className="flex mt-[70px] mt-[60px] w-full bg-blue-500">
-     {/* <div className="flex bg-black hidden lg:inline">
-            <div className="border dark:border-0 rounded-lg flex justify-center items-center w-full h-full">
+      <div className="mt-[60px]">
+      <div className="w-full flex flex-col">
+        <div className="w-full flex">
+          <div className="hidden lg:inline">
+            <div className="w-full">
+             
+              <div className="border dark:border-0 rounded-lg flex justify-center items-center w-full h-full">
                 <SellerProfile
                       user={user}
                       loggedId={loggedId}
@@ -209,13 +213,129 @@ CollectionProps) => {
                       />
               </div>
             </div>
-          */}
+          </div>
 
-          
-          <div className="bg-red-400">
+          <div className="flex-1 min-h-screen">
+          <div className="lg:hidden">
               <SellerProfile user={user} loggedId={loggedId} userId={userId} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
-       
+            <div className="lg:flex-row lg:m-3 justify-center">
+              <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
+                <div className="flex items-center p-1 justify-between">
+                  <h3 className="font-bold text-[25px] text-center sm:text-left">
+                    Ads List
+                  </h3>
+
+                  {isAdCreator &&
+                    packname !== "Free" &&
+                    daysRemaining &&
+                    daysRemaining > 0 && (
+                      <>
+                        <div
+                          style={{
+                            backgroundColor: color,
+                          }}
+                          className="text-center sm:text-left rounded-lg p-3 text-white relative"
+                        >
+                          <div className="flex flex-col">
+                            <div className="font-bold text-sm mt-4">
+                              Plan: {packname}
+                            </div>
+                            <div className="text-xs">
+                              Days remaining: {daysRemaining}
+                            </div>
+                          </div>
+                          {/* Green ribbon */}
+                          <div className="absolute top-0 shadow-lg left-0 bg-green-500 text-white text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                            Active
+                          </div>
+                          <Link href="/plan">
+                            <div className="p-1 items-center flex flex-block text-black underline text-xs cursor-pointer border-2 border-transparent rounded-full hover:bg-[#000000]  hover:text-white">
+                              <div>Upgrade Plan</div>
+                            </div>
+                          </Link>
+                        </div>
+                      </>
+                    )}
+                </div>
+              </section>
+
+              <section className="my-2">
+                  <div className="flex mb-2 w-full justify-between">
+                  <div className="flex gap-3 flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
+                  <div
+                    className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
+                      activeButton === 0 ? "text-[#30AF5B]" : "text-gray-400"
+                    }`}
+                    onClick={() => handleButtonClick(0)}
+                  >
+                    
+                          <ViewModuleIcon /> 
+                          <div className="hidden lg:inline">   <p>Grid layout</p></div>
+                 
+                         
+                  </div>
+                  <div
+                    className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
+                      activeButton === 1 ? "text-[#30AF5B]" : "text-gray-400"
+                    }`}
+                    onClick={() => handleButtonClick(1)}
+                  >
+                    
+                          <ViewListIcon />    <div className="hidden lg:inline">   <p>List layout</p></div>
+                 
+                        
+                  </div>
+                  
+                  </div>
+                  <div className="rounded-lg dark:bg-[#2D3236] dark:text-gray-100 bg-white border p-1 flex items-center">
+                    <div className="text-[#30AF5B]">
+                      <SwapVertIcon />
+                    </div>
+                    <Select onValueChange={handleSortChange}>
+                      <SelectTrigger className="w-[180px] dark:bg-[#2D3236] dark:text-gray-100 border-0 rounded-lg">
+                        <SelectValue placeholder="Sort By" />
+                      </SelectTrigger>
+                      <SelectContent className="dark:bg-[#222528]">
+                        <SelectGroup>
+                          <SelectItem value="recommeded">
+                            Recommended first
+                          </SelectItem>
+                          <SelectItem value="new">Newest first</SelectItem>
+                          <SelectItem value="lowest">
+                            Lowest price first
+                          </SelectItem>
+                          <SelectItem value="highest">
+                            Highest price first
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+              <CollectionMyads
+                  // data={data}
+                  emptyTitle="No ads have been created yet"
+                  emptyStateSubtext="Go create some now"
+                  collectionType="Ads_Organized"
+                  limit={20}
+                  sortby={sortby}
+                  urlParamName="adsPage"
+                  userId={userId}
+                  isAdCreator={isAdCreator}
+                  isVertical={isVertical}
+                  loadPopup={loading}
+                  handleAdView={handleAdView}
+                  handleAdEdit={handleAdEdit}
+                  handleOpenPlan={handleOpenPlan}
+                />
+              </section>
+            </div>
+          </div>
+        </div>
+   
+      </div>
       <Toaster />
       </div>
       <footer>
