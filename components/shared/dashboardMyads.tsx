@@ -196,7 +196,7 @@ CollectionProps) => {
                                             handleOpenShop={handleOpenShop}/>
                        </div>
       <div className="flex mt-[70px] mt-[60px] p-2 w-full bg-blue-500">
-      <div className="flex bg-black hidden lg:inline">
+     {/* <div className="flex bg-black hidden lg:inline">
             <div className="border dark:border-0 rounded-lg flex justify-center items-center w-full h-full">
                 <SellerProfile
                       user={user}
@@ -209,7 +209,7 @@ CollectionProps) => {
                       />
               </div>
             </div>
-         
+          */}
 
           <div className="flex-1 min-h-screen">
           <div className="bg-red-400 lg:hidden">

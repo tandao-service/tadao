@@ -184,6 +184,9 @@ const [shapes, setShapes] = useState<any[]>([]);
   
       setMap(newMap);
   
+       // ✅ Add Click Event Listener to Map
+    
+    //newMap.addListener("click", (event: google.maps.MapMouseEvent) => handleClick(event));
       // Initialize Drawing Manager
       const drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode:null,
@@ -604,7 +607,7 @@ useEffect(() => {
  
   const handleMarkerDragEnd = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return; // ✅ Prevents errors if latLng is null
-  
+    alert("Clicked");
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();
     
@@ -616,6 +619,21 @@ useEffect(() => {
     if (map) {
       map.setCenter({ lat: newLat, lng: newLng });
     }
+  };
+  const handleClick = (event: google.maps.MapMouseEvent) => {
+    if (!event.latLng) return;
+alert("Clicked")
+    // Create a circle at the clicked position
+    new google.maps.Circle({
+      strokeColor: "#FF0000",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#FF0000",
+      fillOpacity: 0.35,
+      map: map,
+      center: event.latLng,
+      radius: 5, // Small circle
+    });
   };
   
   

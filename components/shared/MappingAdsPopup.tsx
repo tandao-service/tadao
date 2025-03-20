@@ -338,7 +338,10 @@ setDirections(null); // Assuming you store directions in state
   onClick={(e) => {
     if (e.latLng) {
       const newPoint = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-      setSelectedPoints([markerPosition, newPoint]);
+      if(inputMode === 'routeFromSelect'){
+        setSelectedPoints([markerPosition,newPoint]);
+       }
+      
     }
   }}
   onLoad={(map) => {

@@ -659,7 +659,9 @@ const handlePostLocation = (lat: string,lng:string) => {
         onClick={(e) => {
             if (e.latLng) {
                const newPoint = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+               if(inputMode === 'routeFromSelect'){
                 setSelectedPoints([center,newPoint]);
+               }
               
               }
           }}
@@ -736,7 +738,7 @@ const handlePostLocation = (lat: string,lng:string) => {
           />
         )}
         {area !== null && (
-  <div className="absolute top-20 left-5 p-2 text-white bg-black z-5 rounded-md shadow-md">
+  <div className="absolute top-[150px] lg:top-20 left-5 p-2 text-white bg-black z-5 rounded-md shadow-md">
     <div className="text-sm">
       <strong>Land Area:</strong>
       <div>{area.toFixed(2)} m²</div>
@@ -748,7 +750,7 @@ const handlePostLocation = (lat: string,lng:string) => {
  
   
 {distance && (
-  <div className="absolute top-20 right-5 p-2 text-white bg-black z-5 rounded-md shadow-md">
+  <div className="absolute top-[150px] lg:top-20 right-5 p-2 text-white bg-black z-5 rounded-md shadow-md">
     <div className="text-sm">
       <strong>Distance:</strong>
       <div>{distance}</div>
