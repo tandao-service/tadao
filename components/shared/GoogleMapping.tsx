@@ -764,13 +764,15 @@ setLongitude(longitude)
         </AlertDialog>
       )}
 
-      <div className="relative h-screen w-full">
+      <div className="relative mt-5 lg:mt-0 h-screen w-full">
         <div ref={mapRef} className="w-full h-screen border rounded-xl shadow-md" />
-        <div className="absolute top-[60px] lg:top-3 right-20 z-10 grid grid-cols-3 flex gap-1">
+        <div className="absolute top-[60px] lg:top-3 left-3 lg:left-[200px] z-10 grid grid-cols-3 flex gap-1">
           {/* Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline"><RoomOutlinedIcon/>Select Marker</Button>
+            <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 text-white bg-green-600 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer hover:bg-green-700"><RoomOutlinedIcon/>Select Marker</div>
+             
+             
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {markerIcons.map((item: any, index: number) => (
@@ -798,7 +800,10 @@ setLongitude(longitude)
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline"><ShowChartOutlinedIcon/>Add Line</Button>
+            
+              <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 text-white bg-green-600 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer hover:bg-green-700"><ShowChartOutlinedIcon/>Add Line</div>
+            
+            
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               {AddLineIcons.map((item: any) => (
@@ -815,7 +820,8 @@ setLongitude(longitude)
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-40 text-sm"><CropLandscapeOutlinedIcon/>Add Shape</Button>
+            <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 text-white bg-green-600 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer hover:bg-green-700"><CropLandscapeOutlinedIcon/>Add Shape</div>
+          
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => drawingManager?.setDrawingMode(google.maps.drawing.OverlayType.POLYGON)}>
@@ -884,8 +890,8 @@ setLongitude(longitude)
           </button>
    
           {showMappingInfo && (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-xl p-4 w-full md:max-w-3xl lg:max-w-4xl shadow-lg">
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 p-2 z-50">
+    <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-xl p-2 w-full md:max-w-3xl lg:max-w-4xl shadow-lg">
       
       {/* Close Button */}
       <div className="flex justify-end">

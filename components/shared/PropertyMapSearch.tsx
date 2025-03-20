@@ -162,7 +162,7 @@ useEffect(() => {
           showSidebar ? "w-full md:w-1/3 p-1" : "-translate-x-full md:w-0 md:translate-x-0"
         }`}
       >
-          <div className="flex justify-end items-center w-full">
+          <div className="flex p-2 justify-end items-center w-full">
         <Button
           onClick={() => setShowSidebar(!showSidebar)}
           className="mb-1 md:hidden"
@@ -261,7 +261,7 @@ useEffect(() => {
       
         <Button
           onClick={() => setShowSidebar(!showSidebar)}
-          className="absolute text-xs lg:text-base bottom-[140px] lg:bottom-[90px] left-3 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
+          className="absolute text-xs lg:text-base bottom-[150px] lg:bottom-[90px] left-3 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
         >
          {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Nearby Properties</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Nearby Properties</>)} 
         </Button>
@@ -269,7 +269,7 @@ useEffect(() => {
       
 
      <div className="flex flex-col items-center w-full p-0 h-[90vh] lg:h-screen">
-     <div className="h-10 flex bg-white justify-between items-center p-1 w-full">
+     <div className="h-[50px] flex bg-white justify-between items-center p-1 w-full">
            <p className="text-sm text-gray-600">Click on the map to set a location.</p>
            <div className="">
                              <Button variant="outline" title="Close" onClick={()=> onClose()} 
@@ -359,7 +359,7 @@ useEffect(() => {
                </GoogleMap>
              </div>
            
-             <div className="h-20 bg-white w-full">
+             <div className="h-[90px] lg:h-70px] bg-white w-full">
              <label className="block text-gray-700 font-medium mb-0">
                Select Distance: {radius / 1000} km
              </label>

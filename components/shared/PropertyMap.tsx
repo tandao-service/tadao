@@ -832,7 +832,7 @@ className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-red-600 shado
    
           {showMappingInfo && (
   <div className="fixed inset-0 p-2 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-xl p-4 w-full md:max-w-3xl lg:max-w-4xl shadow-lg">
+    <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-xl p-2 w-full md:max-w-3xl lg:max-w-4xl shadow-lg">
       
       {/* Close Button */}
       <div className="flex justify-end">
