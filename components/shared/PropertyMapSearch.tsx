@@ -95,7 +95,7 @@ export default function PropertyMapSearch({queryObject, lat, lng, onClose, handl
    const [radius, setRadius] = useState(5000); // Default radius: 5km
     const [selectedAd, setSelectedAd] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
-    const [zoom, setZoom] = useState<number>(13);
+    const [zoom, setZoom] = useState<number>(12);
    const [NewqueryObject, setNewqueryObject] = useState<any>(queryObject);
    // Function to calculate distance between two points (Haversine formula)
   useEffect(() => {
@@ -158,90 +158,43 @@ useEffect(() => {
     
       {/* Sidebar with Toggle Button */}
       <div
-        className={`bg-white shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
-          showSidebar ? "w-full md:w-1/3 p-4" : "-translate-x-full md:w-0 md:translate-x-0"
+        className={`bg-white mt-5 lg:mt-0 h-[100vh] shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
+          showSidebar ? "w-full md:w-1/3 p-1" : "-translate-x-full md:w-0 md:translate-x-0"
         }`}
       >
+          <div className="flex justify-end items-center w-full">
         <Button
           onClick={() => setShowSidebar(!showSidebar)}
-          className="mb-4 md:hidden"
+          className="mb-1 md:hidden"
         >
           {showSidebar ? "Hide" : "Show"} Sidebar
         </Button>
-
+        </div>
 
        
         {showSidebar && (
-          <div className="flex flex-col space-y-4">
-             <div className="flex justify-between items-center w-full lg:w-[370px]">
-             <h2 className="p-2 text-lg font-bold">PROPERTIES LIST</h2>
-
-
-
-
-            <SignedIn>
-
-<Button onClick={() => {
-    
-   // setIsOpenP(true);
-   handleOpenSell();
-  
-}} variant="outline" className="flex items-center gap-2">
-<AddOutlinedIcon sx={{ fontSize: 16 }} /> SELL PROPERTY
-</Button>
-
-</SignedIn>
-
-<SignedOut>
-<Button  onClick={() => {
-      //setIsOpenP(true);
-      router.push("/sign-in");
-    }} variant="outline" className="flex items-center gap-2">
-<AddOutlinedIcon sx={{ fontSize: 16 }} /> SELL PROPERTY
-</Button>
-
-  
-</SignedOut>
-</div>
+          <div className="flex flex-col space-y-1">
+             <div className="flex justify-between items-center w-full">
+             <h2 className="p-1 font-bold border-b w-full">Nearby Properties</h2></div>
 
       {data?.length > 0 ? (<>
-      <h3 className="text-lg font-semibold mb-2">Properties within {radius / 1000} km</h3>
+      <h3 className="font-semibold mb-2">Properties within {radius / 1000} km</h3>
           <ScrollArea className="h-[90vh] overflow-y-auto flex p-0 bg-white rounded-lg">
             <ul className="w-full h-full">
-              {data.map((ad: any, index: number) => {
-                if (data.length === index + 1) {
-                  return (
-                    <div
-                     // ref={lastAdRef}
-                      key={ad._id}
-                      className="flex justify-center"
-                    >
-                      
-                      <HorizontalCardPublic
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                        handleAdView={handleAdView}
-                        handleAdEdit={handleAdEdit}
-                        handleOpenPlan={handleOpenPlan}   
-                      />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={ad._id} className="flex justify-center">
-                     
-                      <HorizontalCardPublic
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                        handleAdView={handleAdView}
-                        handleAdEdit={handleAdEdit}
-                        handleOpenPlan={handleOpenPlan}                      />
-                    </div>
-                  );
-                }
-              })}
+            {data.map((ad: any) => (
+  <div key={ad._id} className="flex justify-center">
+    <HorizontalCardPublic
+      ad={ad}
+      userId={userId}
+      isAdCreator={isAdCreator}
+      handleAdView={handleAdView}
+      handleAdEdit={handleAdEdit}
+      handleOpenPlan={handleOpenPlan}
+    />
+  </div>
+))}
+
+
             </ul>
           </ScrollArea>
         
@@ -249,8 +202,8 @@ useEffect(() => {
         loading === false && (
           <>
             <div className="flex items-center wrapper  w-full flex-col gap-1 rounded-[14px] bg-grey-50 py-28 text-center">
-            <h3 className="text-lg font-semibold mb-2">Properties within {radius / 1000} km</h3>
-              <p className="text-gray-500">No properties found in this range.</p>
+            <h3 className="font-semibold mb-2">Properties within {radius / 1000} km</h3>
+              <p className="text-sm text-gray-500">No properties found in this range.</p>
                <SignedIn>
               
               <Button onClick={() => {
@@ -258,7 +211,7 @@ useEffect(() => {
                   handleOpenSell();
                   //router.push("/ads/create");
                 
-              }} variant="default" className="flex bg-green-600 hover:bg-green-700 items-center gap-2">
+              }} variant="default">
               <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
               </Button>
               
@@ -268,7 +221,7 @@ useEffect(() => {
               <Button  onClick={() => {
                    // setIsOpenP(true);
                     router.push("/sign-in");
-                  }} variant="outline" className="flex bg-green-600 hover:bg-green-700 items-center gap-2">
+                  }} variant="outline">
               <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
               </Button>
               
@@ -283,7 +236,7 @@ useEffect(() => {
       {loading && (
         <div>
           <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-          <h3 className="text-lg font-semibold mb-2">Properties within {radius / 1000} km</h3>
+          <h3 className="font-semibold mb-2">Properties within {radius / 1000} km</h3>
             <Image
               src="/assets/icons/loading2.gif"
               alt="loading"
@@ -301,34 +254,33 @@ useEffect(() => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full relative transition-all duration-300 h-screen ${
+      <div className={`w-full mt-5 lg:mt-0  relative transition-all duration-300 h-screen ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
       
         <Button
           onClick={() => setShowSidebar(!showSidebar)}
-          className="absolute bottom-[140px] lg:bottom-[90px] left-3 z-10 md:block bg-white text-gray-700 shadow-lg hover:text-white"
+          className="absolute text-xs lg:text-base bottom-[140px] lg:bottom-[90px] left-3 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
         >
-         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Properties within {radius / 1000} km</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Properties within {radius / 1000} km</>)} 
+         {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Nearby Properties</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Nearby Properties</>)} 
         </Button>
         
       
 
-     <div className="flex flex-col items-center w-full p-2">
-     <div className="flex justify-between items-center mb-1 w-full">
+     <div className="flex flex-col items-center w-full p-0 h-[90vh] lg:h-screen">
+     <div className="h-10 flex bg-white justify-between items-center p-1 w-full">
            <p className="text-sm text-gray-600">Click on the map to set a location.</p>
            <div className="">
-                             <button  title="Close" onClick={()=> onClose()} 
-                              className="p-1 flex gap-1 items-center text-xs bg-white hover:bg-green-600 hover:text-white text-gray-700 rounded-sm"
-                                 >
-                            <CloseOutlinedIcon />
-                         </button>
+                             <Button variant="outline" title="Close" onClick={()=> onClose()} 
+                              >
+                            <CloseOutlinedIcon sx={{ fontSize: 14 }}/>
+                         </Button>
                          </div>
                          </div>
      
           
-             <div className="w-full h-[70vh] lg:h-[80vh] rounded-lg overflow-hidden border border-gray-300">
+             <div className="w-full flex-1 overflow-hidden border border-gray-300">
                <GoogleMap
                  mapContainerStyle={{ width: "100%", height: "100%" }}
                  center={mapCenter}
@@ -407,8 +359,8 @@ useEffect(() => {
                </GoogleMap>
              </div>
            
-             <div className="mt-2 w-full">
-             <label className="block text-gray-700 font-medium mb-1">
+             <div className="h-20 bg-white w-full">
+             <label className="block text-gray-700 font-medium mb-0">
                Select Distance: {radius / 1000} km
              </label>
              <input

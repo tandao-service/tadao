@@ -766,7 +766,7 @@ setLongitude(longitude)
 
       <div className="relative h-screen w-full">
         <div ref={mapRef} className="w-full h-screen border rounded-xl shadow-md" />
-        <div className="absolute top-3 right-20 z-10 grid grid-cols-3 flex gap-1">
+        <div className="absolute top-[60px] lg:top-3 right-20 z-10 grid grid-cols-3 flex gap-1">
           {/* Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -815,7 +815,7 @@ setLongitude(longitude)
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline"><CropLandscapeOutlinedIcon/>Add Shape</Button>
+              <Button variant="outline" className="w-40 text-sm"><CropLandscapeOutlinedIcon/>Add Shape</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => drawingManager?.setDrawingMode(google.maps.drawing.OverlayType.POLYGON)}>
@@ -844,8 +844,8 @@ setLongitude(longitude)
 
         <DrawerPublic onChange={handlePropertyLocation} latitude={latitude} longitude={longitude} />
 
-        <div className="absolute top-20 right-3 z-5">
-          <button title="Close" onClick={() => onSave()} className="p-1 flex gap-1 items-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm">
+        <div className="absolute top-[65px] right-2 z-5">
+          <button title="Close" onClick={() => onSave()} className="p-1 flex gap-1 h-10 w-10 justify-center items-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm">
             <CloseOutlinedIcon />
           </button>
         </div>
@@ -853,14 +853,14 @@ setLongitude(longitude)
         <Button
           onClick={handleMapProperty}
           variant="default"
-          className="absolute bottom-[140px] left-4 z-5 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-5 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
         >
           <AddOutlinedIcon/>Map Property
         </Button>
         <Button
           onClick={resetMap}
           variant="default"
-          className="absolute bottom-[90px] left-4 z-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          className="absolute bottom-10 lg:bottom-[90px] left-4 z-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
         >
           <CloseOutlinedIcon/>Reset Map
         </Button>
@@ -870,7 +870,7 @@ setLongitude(longitude)
     {!latitude && !longitude && (
       <div className="fixed inset-0 p-1 flex items-center justify-center bg-black bg-opacity-80 z-50">
         <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
-          <button title="Close" onClick={() => onSave()} className="absolute right-5 top-5 p-1 flex gap-1 items-center hover:bg-green-600 text-gray-200 rounded-sm">
+          <button title="Close" onClick={() => onSave()} className="absolute right-5 top-3 p-1 flex gap-1 items-center hover:bg-green-600 text-gray-200 rounded-sm">
             <CloseOutlinedIcon />
           </button>
           <div className="flex flex-col gap-2 text-[#30D32C] items-center">
@@ -889,12 +889,12 @@ setLongitude(longitude)
       
       {/* Close Button */}
       <div className="flex justify-end">
-        <button
+        <Button
+        variant="outline"
           onClick={() => setShowMappingInfo(false)}
-          className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-        >
+          >
           <CloseOutlinedIcon fontSize="small" />
-        </button>
+        </Button>
       </div>
 
       {/* Scrollable Content */}

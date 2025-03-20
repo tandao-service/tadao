@@ -281,7 +281,9 @@ const HorizontalCardPublic = ({
         <p className="dark:text-gray-300 text-[12px] lg:hidden">
         <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 100) }} />
         </p>
-
+        <p className="dark:text-gray-300 text-[12px] hidden lg:inline">
+        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 70) }} />
+        </p>
           <div className="dark:text-gray-400 text-gray-500 text-[10px] lg:text-xs">
             <LocationOnIcon sx={{ fontSize: 16 }} />
             {ad.data.region} - {ad.data.area}

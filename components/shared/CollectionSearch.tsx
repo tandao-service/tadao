@@ -133,7 +133,7 @@ const CollectionSearch = ({
             <>
               <Masonry
                 breakpointCols={breakpointColumns}
-                className="flex mt-2 lg:mt-0 gap-1 lg:gap-4  min-h-screen"
+                className="flex mt-2 lg:mt-0 gap-1 lg:gap-4 min-h-screen"
                 columnClassName="bg-clip-padding"
               >
                 {data.map((ad: any, index: number) => {
