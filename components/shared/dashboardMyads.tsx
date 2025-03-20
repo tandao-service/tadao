@@ -211,11 +211,11 @@ CollectionProps) => {
             </div>
           */}
 
-          <div className="min-h-screen">
+          
           <div className="bg-red-400">
               <SellerProfile user={user} loggedId={loggedId} userId={userId} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
-          </div>
+       
       <Toaster />
       </div>
       <footer>
