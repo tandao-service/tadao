@@ -783,7 +783,7 @@ setLongitude(longitude)
       )}
 
       <div className="relative mt-5 lg:mt-0 h-screen w-full">
-        <div ref={mapRef} className="w-full h-[95vh] lg:h-screen border rounded-xl shadow-md" />
+        <div ref={mapRef} className="w-full h-[90vh] lg:h-screen border rounded-xl shadow-md" />
         <div className="absolute top-[60px] lg:top-3 left-3 lg:left-[200px] z-10 grid grid-cols-3 flex gap-1">
           {/* Dropdown Menu */}
           <DropdownMenu>
