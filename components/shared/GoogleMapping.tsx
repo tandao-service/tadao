@@ -190,7 +190,7 @@ const [shapes, setShapes] = useState<any[]>([]);
       // Initialize Drawing Manager
       const drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode:null,
-        drawingControl: true,
+        drawingControl: false,
         drawingControlOptions: {
           position: google.maps.ControlPosition.TOP_CENTER,
           drawingModes: [
@@ -674,7 +674,7 @@ const resetMap = () => {
  // Initialize Drawing Manager
  const drawingManager = new google.maps.drawing.DrawingManager({
   drawingMode:null,
-  drawingControl: true,
+  drawingControl: false,
   drawingControlOptions: {
     position: google.maps.ControlPosition.TOP_CENTER,
     drawingModes: [
@@ -731,7 +731,7 @@ setLongitude(longitude)
   // Initialize Drawing Manager
   const drawingManager = new google.maps.drawing.DrawingManager({
     drawingMode: null,
-    drawingControl: true,
+    drawingControl: false,
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
