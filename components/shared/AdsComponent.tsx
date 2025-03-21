@@ -115,7 +115,7 @@ const AdsComponent = ({
                     handleOpenSafety={handleOpenSafety} 
                     handleOpenShop={handleOpenShop}/>
                    </div>
-      <div className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] max-w-6xl mx-auto mt-[60px] lg:mt-[50px]">
+      <div className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] max-w-9xl mx-auto mt-[60px] lg:mt-[50px] mr-2 ml-2">
         <Ads
           ad={ad}
           userId={userId || ""}
@@ -150,7 +150,7 @@ const AdsComponent = ({
         </div>
 
         
-        <div className="fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent border-t bg-gray-200 lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center">
+        <div className="fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent bg-gray-200 lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center">
           <Contact
             ad={ad}
             userId={userId || ""}

@@ -85,7 +85,7 @@ const RatingsCard = ({ recipientUid, handleOpenReview }: Ratingsprop) => {
           {averangestar.toFixed(1)}
         </h1>
 
-        <p className="dark:text-gray-300 text-gray-600 hover:text-green-600 dark:hover:text-green-600 hover:underline dark:hover:underline text-xs">Ratings</p>
+        <p className="dark:text-gray-300 text-gray-600 hover:underline dark:hover:underline text-sm">Ratings</p>
 
         {averangestar < 1 && (
         <div className="w-[70px] items-center justify-center">
@@ -189,11 +189,11 @@ const RatingsCard = ({ recipientUid, handleOpenReview }: Ratingsprop) => {
         }}
         className="flex flex-col cursor-pointer dark:hover:text-green-600 hover:text-green-600 p-1 items-center w-[130px]"
       >
-        <h1 className="mt-2 p-0  font-bold dark:text-emerald-600 text-emerald-950">
+        <h1 className="mt-2 p-0 font-bold dark:text-emerald-600 text-emerald-950">
           {messagesCount}
         </h1>
 
-        <p className="dark:text-gray-300 text-gray-600 hover:text-green-600 dark:hover:text-green-600 hover:underline dark:hover:underline text-xs">Clients Reviews</p>
+        <p className="dark:text-gray-300 text-gray-600 hover:underline dark:hover:underline text-sm">Reviews</p>
       </div>
 
     </div>

@@ -80,7 +80,7 @@ const Contact = ({ ad, userId, userName, userImage,handlePay, handleOpenReview, 
             userName={userName}
             userImage={userImage} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handleOpenShop={handleOpenShop}/>
         </div>
-        <div className="flex lg:flex-col items-center gap-1 p-1 lg:bottom-[10px]">
+        <div className="flex items-center gap-2 p-1 lg:bottom-[10px]">
           <SignedIn>
             <button
               className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow"

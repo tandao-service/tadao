@@ -84,8 +84,8 @@ const [loading, setLoading] = useState<boolean>(true);
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-1 w-full h-[100vh] flex flex-col">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
+   
      {loading ? (
              <div className="h-screen w-full bg-gray-200"> 
              <div className="top-0 z-10 fixed w-full">
@@ -130,7 +130,7 @@ const [loading, setLoading] = useState<boolean>(true);
             handlePay={handlePay}/>)}
         <Toaster />
       </div>
-    </div>
+    
   );
 };
 

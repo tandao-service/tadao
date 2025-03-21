@@ -120,7 +120,7 @@ const HelpBox = ({
 
   return (
     <div className="">
-  <ScrollArea className="h-[390px] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-t-md border p-4">
+  <ScrollArea className="h-[80vh] lg:h-[335px] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-md border p-4">
     <div className="justify-start">
       <h2 className="font-bold">Frequently Asked Questions</h2>
 

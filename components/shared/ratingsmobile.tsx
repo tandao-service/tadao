@@ -70,7 +70,7 @@ const Ratingsmobile = ({ recipientUid, handleOpenReview }: Ratingsprop) => {
   const router = useRouter();
   return (
     <div className="text-[12px] flex gap-1 items-center justify-center h-full">
-      <div className="text-[12px] font-bold"> {averangestar.toFixed(1)}</div>
+      <div className="text-sm font-bold"> {averangestar.toFixed(1)}</div>
       {averangestar < 1 && (
         <div className="w-[70px] items-center justify-center">
           <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
@@ -168,7 +168,7 @@ const Ratingsmobile = ({ recipientUid, handleOpenReview }: Ratingsprop) => {
          handleOpenReview(recipientUid);
           //router.push(`/reviews/${recipientUid}`);
         }}
-        className="cursor-pointer dark:text-gray-400 text-gray-600 text-xs no-underline font-boldm-1 hover:text-emerald-500 hover:underline"
+        className="cursor-pointer dark:text-gray-400 text-gray-600 text-sm underline font-bold m-1"
       >
         <p className="items-center">{messagesCount} reviews</p>
       </div>

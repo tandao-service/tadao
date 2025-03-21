@@ -65,20 +65,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   return (<>
       {isMobile  ? (
               // Fullscreen Popover for Mobile
-              <div className="fixed inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-0 flex flex-col">
+      <div className="fixed h-screen inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-0 flex flex-col">
                 
-        <div className="bg-gradient-to-r from-green-600 to-green-600 text-white p-2 rounded-t-lg">
+        <div className="h-[50px] bg-gradient-to-r from-green-600 to-green-600 text-white p-2 rounded-t-lg">
         <div className="flex justify-between w-full">
-          <h3 className="font-semibold text-white">{title}</h3>
+          <h3 className="font-semibold text-white">{title !=="Home" && (<>{title}</>)}</h3>
           <div onClick={onClose} className="cursor-pointer text-white">
             <CloseOutlinedIcon />
           </div>
         </div>
       </div>
-      <div className="p-1">
+      <div className="flex-1 w-full">
         {activeTab === 0 && (
           <>
-            <div className="bg-gradient-to-b from-green-600 to-white h-[400px] w-full lg:w-[400px] flex flex-col p-0 mt-0">
+            <div className="bg-gradient-to-b from-green-600 to-white h-full w-full flex flex-col p-0 mt-0">
               <div className="mt-5 w-full">
                 <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
                   <div className="w-24 h-24">
@@ -111,8 +111,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         )}
         {activeTab === 1 && (
           <>
-            <div className="rounded-t-sm w-full lg:w-[400px] bg-white flex flex-col p-0 mt-0">
-              <div className="lg:flex-1">
+            <div className="rounded-t-sm w-full h-full bg-white flex flex-col p-1 mt-0">
+           
                 <ChatBoxSupport
                   displayName={senderName}
                   uid={senderId}
@@ -140,13 +140,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   client={true}
                   photoURL={senderImage}
                 />
-              </div>{" "}
+          
             </div>
           </>
         )}
         {activeTab === 2 && (
           <>
-            <div className="rounded-t-sm h-[400px] w-full lg:w-[400px] bg-white flex flex-col p-0 mt-0">
+            <div className="rounded-t-sm h-full w-full bg-white flex flex-col p-0 mt-0">
               <div className="lg:flex-1 p-0 ml-0 mr-0">
                 <HelpBox
                   displayName={senderName}
@@ -166,90 +166,58 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             </div>
           </>
         )}
-        <div className="flex flex-col items-center">
-          <div className="flex bg-white w-full rounded-b-lg p-0">
-            {tab.map((tab, index) => (
-              <button
-                key={index}
-                className={`flex-1 text-xs lg:text-sm py-1 px-0 rounded-t-lg text-center ${
-                  activeTab === index ? "text-green-600" : "text-black"
-                }`}
-                onClick={() => handle(index)}
-              >
-                {tab.title === "Home" && (
-                  <div className="flex items-center">
-                    <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />
-                    {tab.title}
-                  </div>
-                )}
-
-                {tab.title === "Message" && (
-                  <div className="flex items-center">
-                    <ChatOutlinedIcon sx={{ fontSize: 16 }} />
-                    {tab.title}
-                  </div>
-                )}
-
-                {tab.title === "Help" && (
-                  <div className="flex items-center">
-                    <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />
-                    {tab.title}
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
         </div>
-      </div>
-                </div>):(
-    <div className="fixed bottom-20 right-5 bg-gradient-to-r from-green-600 to-green-600 rounded-lg shadow-xlg w-100 z-30">
-      <div className="bg-gradient-to-r from-green-600 to-green-600 text-white p-2 rounded-t-lg">
-        <div className="flex justify-between w-full">
-          <h3 className="font-semibold text-white">{title}</h3>
-          <div onClick={onClose} className="cursor-pointer text-white">
-            <CloseOutlinedIcon />
-          </div>
-        </div>
-      </div>
-      <div className="p-1">
-        {activeTab === 0 && (
-          <>
-            <div className="bg-gradient-to-b from-green-600 to-white h-[400px] w-[300px] lg:w-[400px] flex flex-col p-1 mt-0">
-              <div className="mt-5 w-full">
-                <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
-                  <div className="w-24 h-24">
-                    <Image
-                      className="w-full h-full object-cover"
-                      src={"/support.webp"}
-                      alt="Profile Image"
-                      width={120}
-                      height={120}
-                    />
-                  </div>
-                  
-                </div>
-                <div className="gap-2 justify-center flex w-full items-center">
-                  <h3 className="font-bold text-emerald-100 text-sm lg:text-lg">
-                    Hi {senderName}
-                  </h3>
-                  <div className="h-10 w-10">
-                    <Image src="/hello.png" alt="logo" width={40} height={40} />
-                  </div>
-                </div>
-                <div className="gap-2 justify-center flex w-full items-center">
-                  <h3 className="font-semibold text-2xl lg:text-3xl text-white">
-                    How can we help?
-                  </h3>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-        {activeTab === 1 && (
-          <>
-            <div className="rounded-t-sm w-[300px] lg:w-[400px] bg-white flex flex-col p-1 mt-0">
-              <div className="lg:flex-1 p-0 ml-0 mr-0">
-                <ChatBoxSupport
+        {/* Tabs */}
+   <div className="h-[50px] flex bg-white w-full rounded-b-lg p-1">
+     {tab.map((tab, index) => (
+       <button
+         key={index}
+         className={`flex-1 text-sm py-2 rounded-t-lg text-center ${
+           activeTab === index ? "text-green-600 font-bold" : "text-gray-700"
+         }`}
+         onClick={() => handle(index)}
+       >
+         <div className="flex items-center justify-center gap-1">
+           {tab.title === "Home" && <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Message" && <ChatOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Help" && <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title}
+         </div>
+       </button>
+     ))}
+   </div>
+    </div>):(
+   <div className="fixed h-[450px] bottom-20 right-5 bg-green-600 rounded-lg shadow-xl w-[400px] max-w-sm z-30">
+   {/* Header */}
+   <div className="h-[50px] bg-green-600 text-white p-2 rounded-t-lg flex justify-between items-center">
+     <h3 className="font-semibold text-white">{title}</h3>
+     <div onClick={onClose} className="cursor-pointer text-white">
+       <CloseOutlinedIcon />
+     </div>
+   </div>
+ 
+   {/* Content */}
+   <div className="p-2 flex-1 w-full overflow-y-auto">
+     {activeTab === 0 && (
+       <div className="bg-gradient-to-b from-green-600 to-white h-[350px] flex flex-col items-center justify-center p-3">
+         <div className="w-24 h-24">
+           <Image
+             className="w-full h-full object-cover rounded-full"
+             src="/support.webp"
+             alt="Profile Image"
+             width={120}
+             height={120}
+           />
+         </div>
+         <h3 className="font-bold text-emerald-100 text-lg mt-3">Hi {senderName}</h3>
+         <Image src="/hello.png" alt="logo" width={40} height={40} />
+         <h3 className="font-semibold text-2xl text-white mt-2">How can we help?</h3>
+       </div>
+     )}
+ 
+     {activeTab === 1 && (
+       <div className="rounded-t-sm h-[350px] bg-white flex flex-col p-2">
+         <ChatBoxSupport
                   displayName={senderName}
                   uid={senderId}
                   recipientUid={recipientUid}
@@ -268,23 +236,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                handleOpenSell={handleOpenSell}
               handleOpenPlan={handleOpenPlan}
                 />
-
-                <SendMessageSupport
-                  displayName={senderName}
-                  uid={senderId}
-                  recipientUid={recipientUid}
-                  client={true}
-                  photoURL={senderImage}
-                />
-              </div>{" "}
-            </div>
-          </>
-        )}
-        {activeTab === 2 && (
-          <>
-            <div className="rounded-t-sm h-[400px] w-[300px] lg:w-[400px] bg-white flex flex-col p-1 mt-0">
-              <div className="lg:flex-1 p-0 ml-0 mr-0">
-                <HelpBox
+         <SendMessageSupport
+           displayName={senderName}
+           uid={senderId}
+           recipientUid={recipientUid}
+           client={true}
+           photoURL={senderImage}
+         />
+       </div>
+     )}
+ 
+     {activeTab === 2 && (
+       <div className="rounded-t-sm h-[350px] bg-white flex flex-col p-2">
+         <HelpBox
                   displayName={senderName}
                   uid={senderId}
                   recipientUid={recipientUid}
@@ -298,46 +262,32 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     photo: "",
                   }}
                 />
-              </div>
-            </div>
-          </>
-        )}
-        <div className="flex flex-col items-center">
-          <div className="flex bg-white w-full rounded-b-lg p-1">
-            {tab.map((tab, index) => (
-              <button
-                key={index}
-                className={`flex-1 text-xs lg:text-sm py-1 px-0 rounded-t-lg text-center ${
-                  activeTab === index ? "text-green-600" : "text-black"
-                }`}
-                onClick={() => handle(index)}
-              >
-                {tab.title === "Home" && (
-                  <div className="flex items-center">
-                    <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />
-                    {tab.title}
-                  </div>
-                )}
-
-                {tab.title === "Message" && (
-                  <div className="flex items-center">
-                    <ChatOutlinedIcon sx={{ fontSize: 16 }} />
-                    {tab.title}
-                  </div>
-                )}
-
-                {tab.title === "Help" && (
-                  <div className="flex items-center">
-                    <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />
-                    {tab.title}
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>)}
+       </div>
+     )}
+   </div>
+ 
+   {/* Tabs */}
+   <div className="h-[50px] flex bg-white w-full rounded-b-lg p-1">
+     {tab.map((tab, index) => (
+       <button
+         key={index}
+         className={`flex-1 text-sm py-2 rounded-t-lg text-center ${
+           activeTab === index ? "text-green-600 font-bold" : "text-gray-700"
+         }`}
+         onClick={() => handle(index)}
+       >
+         <div className="flex items-center justify-center gap-1">
+           {tab.title === "Home" && <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Message" && <ChatOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Help" && <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title}
+         </div>
+       </button>
+     ))}
+   </div>
+ </div>
+ 
+  )}
     </>
   );
 };

@@ -167,7 +167,7 @@ useEffect(() => {
           onClick={() => setShowSidebar(!showSidebar)}
           className="mb-1 md:hidden"
         >
-          {showSidebar ? "Hide" : "Show"} <KeyboardArrowLeftOutlinedIcon/> Sidebar
+          <KeyboardArrowLeftOutlinedIcon/> {showSidebar ? "Hide" : "Show"} Sidebar
         </Button>
         </div>
 
@@ -269,7 +269,7 @@ useEffect(() => {
       
 
      <div className="flex flex-col items-center w-full p-0 h-[90vh] lg:h-screen">
-     <div className="h-[60px] lg:h-[50px] flex bg-white justify-between items-center p-1 w-full">
+     <div className="h-[65px] lg:h-[50px] flex bg-white justify-between items-center p-1 w-full">
            <p className="text-sm text-gray-600">Click on the map to set a location.</p>
            <div className="">
                              <Button variant="outline" title="Close" onClick={()=> onClose()} 

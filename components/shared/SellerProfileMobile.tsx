@@ -136,7 +136,7 @@ const SellerProfileMobile = ({
             }}
             className="cursor-pointer no-underline font-bold m-1"
           >
-            <p className="ml-2 text-xs font-bold">
+            <p className="ml-2 text-sm font-bold">
               {ad.organizer.firstName} {ad.organizer.lastName}
             </p>
           </div>
@@ -148,7 +148,7 @@ const SellerProfileMobile = ({
             }}
             className="cursor-pointer no-underline m-1"
           >
-            <p className="ml-2 text-xs text-gray-700 hover:underline">
+            <p className="ml-2 text-sm text-gray-700 underline">
               View Seller Profile
             </p>
           </div>

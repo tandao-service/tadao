@@ -27,6 +27,7 @@ import SellerProfile from "./SellerProfile";
 import ReviewsBox from "./ReviewsBox";
 import SendReviewMyAds from "./SendReviewMyAds";
 import { ScrollArea } from "../ui/scroll-area";
+import ReviewSection from "./ReviewSection";
 
 //import { getAllPackages, getData } from "@/lib/api";
 
@@ -99,8 +100,9 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
                  </div>
                  </div>
                 
-               ) : (
-              <ScrollArea className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+               ) : (<>
+            
+          <div className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
                  
                 <div className="top-0 z-10 fixed w-full">
                   <Navbar userstatus={user.status} userId={userId} onClose={onClose} popup={"reviews"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
@@ -112,67 +114,23 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
                   handleOpenSafety={handleOpenSafety} 
                   handleOpenShop={handleOpenShop}/>
                  </div>
-                <div className="mx-auto flex mt-[60px] p-1">
-                  <div className="gap-2 hidden lg:inline w-[350px]  sidebar left-0 top-0 lg:p-4">
-                    <div className="w-full p-0">
-                      <SellerProfile
-                        user={user}
-                        loggedId={userId}
-                         userId={userId}
-                         handleOpenReview={handleOpenReview} 
-                         handleOpenChatId={handleOpenChatId} 
-                         handleOpenSettings={handleOpenSettings}
-                         handlePay={handlePay}
-                      />
-                    </div>
-                  </div>
-          
-                  <div className="w-full lg:w-3/4 chat overflow-y-auto">
-                    <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
-                      <div className="w-full p-1">
-                        <SellerProfile
-                          user={user}
-                          loggedId={userId}
-                          userId={userId}
-                          handleOpenReview={handleOpenReview} 
-                         handleOpenChatId={handleOpenChatId} 
-                         handleOpenSettings={handleOpenSettings}
-                         handlePay={handlePay}
-                        />
-                      </div>
-                    </div>
-          
-                    <div className="mt-0 p-0 min-h-screen border items-center max-w-6xl mx-auto flex rounded-lg flex-col">
-                      <div className="items-center w-full flex flex-col">
-                        <div className="flex gap-1 items-center">
-                        {/*  <div className="font-bold dark:text-gray-400 text-emerald-950">
-                           
-                            Customer feedback for
-                          </div>
-                          <div className="font-bold text-emerald-600">
-                            {user.firstName} {user.lastName}
-                          </div>*/} 
-                        </div>
-                        <ReviewsBox
-                          displayName={userName}
-                          uid={userId}
-                          photoURL={userImage}
-                          recipientUid={recipientUid}
-                          recipient={user}
-                        />
-                      </div>
-                      <SendReviewMyAds
-                        displayName={userName}
-                        uid={userId}
-                        photoURL={userImage}
-                        recipientUid={recipientUid}
-                      />
-                      <Toaster />
-                    </div>
-                  </div>
+                <div className="w-full flex mt-[60px] p-1">
+
+                <ReviewSection
+                displayName={userName}
+                uid={userId}
+                photoURL={userImage}
+                recipientUid={recipientUid}
+                recipient={user}
+                />
+
+
+              
+
+<Toaster />
                 </div>
-              </ScrollArea>
-            )}
+              </div>
+          </>  )}
      
         <Toaster />
       </div>

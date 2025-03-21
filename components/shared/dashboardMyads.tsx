@@ -195,7 +195,7 @@ CollectionProps) => {
                                             handleOpenSafety={handleOpenSafety} 
                                             handleOpenShop={handleOpenShop}/>
                        </div>
-      <div className="mt-[60px]">
+      <div className="lg:p-4 mt-[60px]">
       <div className="w-full flex flex-col">
         <div className="w-full flex">
           <div className="hidden lg:inline">
@@ -223,7 +223,7 @@ CollectionProps) => {
               <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center p-1 rounded-sm">
                 <div className="flex items-center p-1 justify-between">
                   <h3 className="font-bold text-[25px] text-center sm:text-left">
-                    Ads List
+                    Seller Ads
                   </h3>
 
                   {isAdCreator &&
@@ -261,7 +261,7 @@ CollectionProps) => {
               </section>
 
               <section className="my-2 p-1">
-                  <div className="flex mb-2 w-full justify-between">
+               {/*   <div className="flex mb-2 w-full justify-between">
                   <div className="flex gap-3 flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
                   <div
                     className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
@@ -313,7 +313,7 @@ CollectionProps) => {
                     </Select>
                   </div>
                 </div>
-
+ */}
               <CollectionMyads
                   // data={data}
                   emptyTitle="No ads have been created yet"

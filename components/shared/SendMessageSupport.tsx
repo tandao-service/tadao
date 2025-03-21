@@ -123,7 +123,7 @@ const SendMessageSupport = ({
   };
 
   return (
-    <div className="w-full p-1 dark:bg-[#2D3236] bg-[#ebf2f7]">
+    <div className="h-[50px] border w-full p-1 dark:bg-[#2D3236] items-center">
      <form onSubmit={handleSendMessage} className="px-0 containerWrap flex items-center gap-2 mt-0">
         {recipientUid ? (
           <>

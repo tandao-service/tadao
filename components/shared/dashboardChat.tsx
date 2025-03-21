@@ -148,7 +148,7 @@ const DashboardChat = ({
      
   return (
     <div className="min-h-screen w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
-     <div className="w-full">
+     <div className="fixed z-10 w-full">
                      <Navbar userstatus={user.status} userId={senderId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenPlan={handleOpenPlan} popup={"chat"} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
         handleOpenPerfomance={handleOpenPerfomance}
         handleOpenSettings={handleOpenSettings}
@@ -159,7 +159,7 @@ const DashboardChat = ({
         handleOpenShop={handleOpenShop}/>
                    </div>
 
-      <div className="max-w-6xl mx-auto flex mb-0 p-1">
+      <div className="max-w-6xl mx-auto mt-[60px] flex mb-0 p-1">
         <div className="hidden lg:inline mr-2">
           <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89vh] rounded-lg">
             <div className="p-1 w-full items-center justify-center">

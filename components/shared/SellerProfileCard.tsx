@@ -165,7 +165,7 @@ const SellerProfileCard = ({ ad, userId, userImage, userName,handlePay, handleOp
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-emerald-500">Verified Account</p>
+                      <p className="text-emerald-500">Verified Seller</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -180,7 +180,7 @@ const SellerProfileCard = ({ ad, userId, userImage, userName,handlePay, handleOp
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-red-500">Un Verified Account</p>
+                      <p className="text-red-500">Unverified Seller</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

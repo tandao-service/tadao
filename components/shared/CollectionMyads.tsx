@@ -107,17 +107,41 @@ const CollectionMyads = ({
     700: 2, // 1 column for screens <= 700px
   };
 
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  // Get unique categories
+const categories = Array.from(new Set(data.map((item: any) => item.data.category)));
+
+// Filter data
+const filteredAds = selectedCategory
+  ? data.filter((item: any) => item.data.category === selectedCategory)
+  : data;
+
+
   return (
-    <>
-      {data.length > 0 ? (
+    <div>
+   <div className="flex items-center justify-between  mb-2 p-1 rounded-md border-b w-full">   
+    <label>Filter by Category: </label>
+      <select
+      className="py-2 border rounded-md"
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+      >
+        <option value="">All</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>{category}</option>
+        ))}
+      </select>
+      </div>
+      {filteredAds.length > 0 ? (
         isVertical ? (
           <Masonry
             breakpointCols={breakpointColumns}
             className="flex gap-1 lg:gap-4"
             columnClassName="bg-clip-padding"
           >
-            {data.map((ad: any, index: number) => {
-              if (data.length === index + 1) {
+            {filteredAds.map((ad: any, index: number) => {
+              if (filteredAds.length === index + 1) {
                 return (
                   <div
                     ref={lastAdRef}
@@ -155,8 +179,8 @@ const CollectionMyads = ({
         ) : (
           <div className="flex p-1 rounded-lg">
             <ul className="w-full">
-              {data.map((ad: any, index: number) => {
-                if (data.length === index + 1) {
+              {filteredAds.map((ad: any, index: number) => {
+                if (filteredAds.length === index + 1) {
                   return (
                     <div
                       ref={lastAdRef}
@@ -219,7 +243,7 @@ const CollectionMyads = ({
         </div>
       )}
       
-    </>
+    </div>
   );
 };
 

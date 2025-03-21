@@ -289,7 +289,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
     <>
       <div className="text-sm p-0 hidden lg:inline">
         <div className="flex">
-          <div className="mt-3 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-500 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-500 bg-white py-1 px-2 rounded-full mr-2">
             <div
               onClick={() => {
                 //setIsOpenP(true);
@@ -302,7 +302,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
               </div>
             </div>
           </div>
-          <div className="mt-3 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-500 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-500 bg-white py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
@@ -318,7 +318,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
               )}
             </div>
           </div>
-          <div className="mt-3 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-500 py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-500 py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
@@ -334,7 +334,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
               )}
             </div>
           </div>
-          <div className="mt-3 border text-gray-700 dark:bg-[#2D3236] dark:text-gray-300 bg-white py-1 px-2 rounded-full">
+          <div className="mt-4 border text-gray-700 dark:bg-[#2D3236] dark:text-gray-300 bg-white py-1 px-2 rounded-full">
             <div className="flex items-center">
            
               {ad && <p className="text-xs lg:text-sm">{ad.data.title}</p>}

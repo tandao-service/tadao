@@ -79,10 +79,10 @@ const Verification: React.FC<SettingsProp> = ({
       />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-emerald-600">
-          Account Verified
+        Verified Seller
         </h4>
         <p className="text-sm">
-          This account has been fully verified and is genuine.
+          This seller account has been fully verified and is genuine.
         </p>
         <div className="flex items-center pt-2">
           <span className="text-[10px] text-muted-foreground">
@@ -98,16 +98,16 @@ const Verification: React.FC<SettingsProp> = ({
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
-          Account unverified
+        Unverified Seller
         </h4>
         <p className="text-sm">
-          This account is currently unverified. Request verification to enhance
+          This seller account is currently unverified. Request verification to enhance
           client confidence and attract more clients.
         </p>
         <div className="flex items-center pt-2">
           <button
             onClick={() => handlePay(VerificationPackId, "Verification", "0", user.fee)}
-            className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-xs mt-2 p-1 rounded-lg shadow"
+            className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
           >
             <CheckCircleIcon sx={{ marginRight: "5px" }} />
             Request Verification
@@ -122,7 +122,7 @@ const Verification: React.FC<SettingsProp> = ({
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
-          Account unverified
+          Unverified Seller
         </h4>
         <p className="text-sm">
           The seller&apos;s account has not been verified.
@@ -136,9 +136,9 @@ const Verification: React.FC<SettingsProp> = ({
       {user.verified && user?.verified[0]?.accountverified === true ? (
         <ShowPopup
           trigger={
-            <p className="text-white p-1 bg-[#30AF5B] rounded-sm text-xs cursor-pointer hover:underline">
+            <p className="text-white p-1 bg-[#30AF5B] rounded-sm text-sm cursor-pointer hover:underline">
               <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-              Account Verified
+              Verified Seller
             </p>
           }
           content={verifiedContent}
@@ -148,9 +148,9 @@ const Verification: React.FC<SettingsProp> = ({
           {isAdCreator ? (
             <ShowPopup
               trigger={
-                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-xs cursor-pointer hover:underline">
+                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-sm cursor-pointer hover:underline">
                   <ShieldOutlinedIcon sx={{ fontSize: 16 }} />
-                  Account unverified
+                  Unverified Seller
                 </p>
               }
               content={unverifiedContentAdCreator}
@@ -158,9 +158,9 @@ const Verification: React.FC<SettingsProp> = ({
           ) : (
             <ShowPopup
               trigger={
-                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-xs cursor-pointer hover:underline">
+                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-sm cursor-pointer hover:underline">
                   <ShieldOutlinedIcon sx={{ fontSize: 16 }} />
-                  Account unverified
+                  Verified Seller
                 </p>
               }
               content={unverifiedContent}

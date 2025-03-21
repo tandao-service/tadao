@@ -73,7 +73,7 @@ const Ratings = ({ recipientUid }: Ratingsprop) => {
       </h1>
       <Link
         href={`/reviews/${recipientUid}`}
-        className="text-gray-600 text-sm no-underline font-boldm-1 hover:text-emerald-500 hover:underline"
+        className="text-gray-600 text-sm no-underline font-boldm-1 hover:underline"
       >
         <p className="items-center">{messagesCount} reviews</p>
       </Link>
