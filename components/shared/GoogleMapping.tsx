@@ -783,7 +783,7 @@ setLongitude(longitude)
       )}
 
       <div className="relative mt-5 lg:mt-0 h-screen w-full">
-        <div ref={mapRef} className="w-full h-screen border rounded-xl shadow-md" />
+        <div ref={mapRef} className="w-full h-[95vh] lg:h-screen border rounded-xl shadow-md" />
         <div className="absolute top-[60px] lg:top-3 left-3 lg:left-[200px] z-10 grid grid-cols-3 flex gap-1">
           {/* Dropdown Menu */}
           <DropdownMenu>
@@ -868,7 +868,7 @@ setLongitude(longitude)
 
         <DrawerPublic onChange={handlePropertyLocation} latitude={latitude} longitude={longitude} />
 
-        <div className="absolute top-[65px] right-2 z-5">
+        <div className="absolute top-[100px] lg:top-[65px] right-[10px] z-5">
           <button title="Close" onClick={() => onSave()} className="p-1 flex gap-1 h-10 w-10 justify-center items-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm">
             <CloseOutlinedIcon />
           </button>
@@ -892,8 +892,8 @@ setLongitude(longitude)
     </div>
 
     {!latitude && !longitude && (
-      <div className="fixed inset-0 p-1 flex items-center justify-center bg-black bg-opacity-80 z-50">
-        <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
+      <div className="fixed inset-0 p-1 flex items-center justify-center bg-black h-screen bg-opacity-80 z-50">
+        <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-screen flex flex-col">
           <button title="Close" onClick={() => onSave()} className="absolute right-5 top-3 p-1 flex gap-1 items-center hover:bg-green-600 text-gray-200 rounded-sm">
             <CloseOutlinedIcon />
           </button>

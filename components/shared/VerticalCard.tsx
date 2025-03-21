@@ -146,7 +146,7 @@ const VerticalCard = ({
   return (
     <>
       <div
-        className={`mb-2 rounded-lg border shadow-sm bg-white dark:bg-[#2D3236] overflow-hidden`}
+        className={`mb-2 w-[150px] lg:w-full rounded-lg border shadow-sm bg-white dark:bg-[#2D3236] overflow-hidden`}
         style={
           ad.plan.name !== "Free"
             ? {
@@ -391,7 +391,7 @@ const VerticalCard = ({
         </div>
 
         {/* Text section */}
-        <div className="p-4">
+        <div className="p-2 lg:p-4">
           <div
             onClick={() => {
              handleAdView(ad._id);
@@ -416,10 +416,10 @@ const VerticalCard = ({
             className="flex gap-1 cursor-pointer items-center dark:text-green-500 text-emerald-700 no-underline"
           >
             {ad.data.contact && ad.data.contact === "contact" ? (
-              <div className="font-bold">Contact for price</div>
+              <div className="text-sm lg:text-base font-bold">Contact for price</div>
             ) : (
               <>
-                <span className="font-bold">
+                <span className="text-sm lg:text-base font-bold">
                   Ksh {ad.data.price.toLocaleString()}
                 </span>
               </>

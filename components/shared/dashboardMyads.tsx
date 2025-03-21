@@ -201,7 +201,7 @@ CollectionProps) => {
           <div className="hidden lg:inline">
             <div className="w-full">
              
-              <div className="border dark:border-0 rounded-lg flex justify-center items-center w-full h-full">
+              <div className="border rounded-lg flex justify-center items-center w-full h-full">
                 <SellerProfile
                       user={user}
                       loggedId={loggedId}
@@ -220,7 +220,7 @@ CollectionProps) => {
               <SellerProfile user={user} loggedId={loggedId} userId={userId} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
             <div className="lg:flex-row lg:m-3 justify-center">
-              <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
+              <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center  rounded-sm">
                 <div className="flex items-center p-1 justify-between">
                   <h3 className="font-bold text-[25px] text-center sm:text-left">
                     Ads List
@@ -260,7 +260,7 @@ CollectionProps) => {
                 </div>
               </section>
 
-              <section className="my-2">
+              <section className="my-0">
                   <div className="flex mb-2 w-full justify-between">
                   <div className="flex gap-3 flex-wrap justify-center md:justify-start items-center mb-4 md:mb-0">
                   <div

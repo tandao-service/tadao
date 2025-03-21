@@ -458,8 +458,8 @@ const handlePostLocation = (lat: string,lng:string) => {
       )}
       {/* Sidebar with Toggle Button */}
       <div
-        className={`bg-white mt-5 lg:mt-0 shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
-          showSidebar ? "w-full md:w-1/3 p-4" : "-translate-x-full md:w-0 md:translate-x-0"
+        className={`bg-white h-screen mt-5 lg:mt-0 shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
+          showSidebar ? "w-full md:w-1/3 p-1" : "-translate-x-full md:w-0 md:translate-x-0"
         }`}
       >
         <Button
@@ -504,7 +504,7 @@ const handlePostLocation = (lat: string,lng:string) => {
 </div>
           {data.length > 0 ? (
       
-      <ScrollArea className="h-[68vh] overflow-y-auto flex p-0 bg-white rounded-lg">
+      <ScrollArea className="h-[63vh] lg:h-[80vh] overflow-y-auto flex p-0 bg-white rounded-lg">
       <ul className="w-full h-full">
         {data.map((ad: any, index: number) => {
           const isLastAd = index === data.length - 1;
@@ -585,7 +585,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[90vh] lg:h-[100vh] ${
+      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[85vh] lg:h-[100vh] ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
@@ -796,9 +796,9 @@ className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-red-600 shado
 </>)}
 {latitude && longitude && (  <DrawerPublic onChange={handlePropertyLocation} latitude={latitude} longitude={longitude}/>)}
 
-<div className="absolute top-3 right-20 z-5">
+<div className="absolute top-[10px] right-20 z-5">
     <button  title="Close" onClick={()=> onClose()} 
-     className="p-1 flex gap-1 items-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm"
+     className="p-1 flex gap-1 h-10 w-10 justify-center items-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-sm"
         >
    <CloseOutlinedIcon />
 </button></div>
@@ -808,8 +808,8 @@ className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-red-600 shado
      
     </div>
 
-    {!latitude && !longitude && (<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
-      <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
+    {!latitude && !longitude && (<div className="fixed inset-0 h-screen flex items-center justify-center bg-black bg-opacity-80 z-50">
+      <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-screen flex flex-col">
         {/* Header */}
         <Button  variant="outline" title="Close" onClick={()=> onClose()} 
      className="absolute right-6 top-8 p-1 flex gap-1 items-center"

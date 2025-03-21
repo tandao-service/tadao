@@ -167,7 +167,7 @@ useEffect(() => {
           onClick={() => setShowSidebar(!showSidebar)}
           className="mb-1 md:hidden"
         >
-          {showSidebar ? "Hide" : "Show"} Sidebar
+          {showSidebar ? "Hide" : "Show"} <KeyboardArrowLeftOutlinedIcon/> Sidebar
         </Button>
         </div>
 
@@ -175,7 +175,7 @@ useEffect(() => {
         {showSidebar && (
           <div className="flex flex-col space-y-1">
              <div className="flex justify-between items-center w-full">
-             <h2 className="p-1 font-bold border-b w-full">Nearby Properties</h2></div>
+             <h2 className="p-1 text-lg border-b w-full">Nearby Properties</h2></div>
 
       {data?.length > 0 ? (<>
       <h3 className="font-semibold mb-2">Properties within {radius / 1000} km</h3>
@@ -261,7 +261,7 @@ useEffect(() => {
       
         <Button
           onClick={() => setShowSidebar(!showSidebar)}
-          className="absolute text-xs lg:text-base bottom-[150px] lg:bottom-[90px] left-3 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
+          className="absolute text-xs lg:text-base bottom-[180px] lg:bottom-[90px] left-3 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
         >
          {showSidebar ? (<><KeyboardArrowLeftOutlinedIcon/> Hide Nearby Properties</>) : (<><KeyboardArrowRightOutlinedIcon/> Show Nearby Properties</>)} 
         </Button>
@@ -269,7 +269,7 @@ useEffect(() => {
       
 
      <div className="flex flex-col items-center w-full p-0 h-[90vh] lg:h-screen">
-     <div className="h-[50px] flex bg-white justify-between items-center p-1 w-full">
+     <div className="h-[60px] lg:h-[50px] flex bg-white justify-between items-center p-1 w-full">
            <p className="text-sm text-gray-600">Click on the map to set a location.</p>
            <div className="">
                              <Button variant="outline" title="Close" onClick={()=> onClose()} 

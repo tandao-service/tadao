@@ -279,10 +279,10 @@ const HorizontalCardPublic = ({
           </div>
         
         <p className="dark:text-gray-300 text-[12px] lg:hidden">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 100) }} />
+        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 70) }} />
         </p>
         <p className="dark:text-gray-300 text-[12px] hidden lg:inline">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 70) }} />
+        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 50) }} />
         </p>
           <div className="dark:text-gray-400 text-gray-500 text-[10px] lg:text-xs">
             <LocationOnIcon sx={{ fontSize: 16 }} />
@@ -302,12 +302,12 @@ const HorizontalCardPublic = ({
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-green-500 text-emerald-700">
+                  <div className="text-[12px] w-full lg:text-sm font-bold rounded-full dark:text-green-500 text-emerald-700">
                     Contact for price
                   </div>
                 ) : (
                   <>
-                    <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-green-500 text-emerald-700">
+                    <span className="text-[12px] lg:text-sm font-bold w-min rounded-full dark:text-green-500 text-emerald-700">
                       {formatKsh(ad.data.price)}
                     </span>
                   </>
@@ -351,7 +351,7 @@ const HorizontalCardPublic = ({
                 }}
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
-                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-green-500 text-emerald-700">
+                <span className="text-[12px] lg:text-sm font-bold w-min rounded-full dark:text-green-500 text-emerald-700">
                   {formatKsh(ad.data.price)}
                 </span>{" "}
                 {ad.data.per && (
