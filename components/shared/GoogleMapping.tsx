@@ -783,12 +783,12 @@ setLongitude(longitude)
       )}
 
       <div className="relative mt-5 lg:mt-0 h-screen w-full">
-        <div ref={mapRef} className="w-full h-[90vh] lg:h-screen border rounded-xl shadow-md" />
+        <div ref={mapRef} className="w-full h-[95vh] lg:h-screen border rounded-xl shadow-md" />
         <div className="absolute top-[60px] lg:top-3 left-3 lg:left-[200px] z-10 grid grid-cols-3 flex gap-1">
           {/* Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 text-white bg-green-600 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer hover:bg-green-700"><RoomOutlinedIcon/>Select Marker</div>
+            <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 bg-gray-100 hover:bg-gray-200 text-gray-700 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer"><RoomOutlinedIcon/>Select Marker</div>
              
              
             </DropdownMenuTrigger>
@@ -819,7 +819,7 @@ setLongitude(longitude)
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
             
-              <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 text-white bg-green-600 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer hover:bg-green-700"><ShowChartOutlinedIcon/>Add Line</div>
+              <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 bg-gray-100 hover:bg-gray-200 text-gray-700 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer"><ShowChartOutlinedIcon/>Add Line</div>
             
             
             </DropdownMenuTrigger>
@@ -838,7 +838,7 @@ setLongitude(longitude)
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 text-white bg-green-600 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer hover:bg-green-700"><CropLandscapeOutlinedIcon/>Add Shape</div>
+            <div className="flex rounded-sm shadow-sm p-1 lg:py-2 lg:px-1 bg-gray-100 hover:bg-gray-200 text-gray-700 gap-1 lg:gap-2 text-xs lg:text-base items-center cursor-pointer"><CropLandscapeOutlinedIcon/>Add Shape</div>
           
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

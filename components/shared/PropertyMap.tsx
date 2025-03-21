@@ -847,7 +847,7 @@ className="absolute bottom-[90px] lg:bottom-[140px] left-4 z-20 bg-red-600 shado
       </div>
 
       {/* Scrollable Content */}
-      <ScrollArea className="h-[70vh] bg-gray-50 dark:bg-[#131B1E] rounded-lg p-4">
+      <ScrollArea className="h-[60vh] bg-gray-50 dark:bg-[#131B1E] rounded-lg p-4">
         
         {/* Title */}
         <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 text-center border-b pb-2">

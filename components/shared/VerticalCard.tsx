@@ -401,8 +401,11 @@ const VerticalCard = ({
             <h2>{ad.data.title}</h2>
           </div>
          
-          <p className="dark:text-gray-300 text-gray-700 text-[12px]">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad.data.description, 200) }} />
+          <p className="dark:text-gray-300 text-gray-700 text-[12px] hidden lg:inline">
+        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad.data.description, 180) }} />
+        </p>
+        <p className="dark:text-gray-300 text-gray-700 text-[12px] lg:inline">
+        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad.data.description, 100) }} />
         </p>
           <div className="text-gray-500 flex gap-1 items-center dark:text-gray-500 text-[12px] lg:text-xs">
             <LocationOnIcon sx={{ fontSize: 14 }} />
