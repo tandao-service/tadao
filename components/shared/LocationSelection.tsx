@@ -66,7 +66,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                   </Button>
                 </div>
                 <div className="relative w-full">
-          <div className="absolute h-[90vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
+          <div className="absolute h-[95vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
            
             <div className="flex w-full items-center mb-0">
                 <input
@@ -79,7 +79,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
              
             </div>
 
-            <div className="mt-1 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="mt-1 max-h-[75vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <ul className="cursor-pointer p-0">
                 {sortedLocations.map((location: any, index: number) => (
                   <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 cursor-pointer rounded-0 ${selectedLocation === location.region ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}

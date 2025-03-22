@@ -57,6 +57,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import RatingsCard from "./RatingsCard";
 import ProgressPopup from "./ProgressPopup";
 import CopyShareAdLink from "./CopyShareAdLink";
+import { Email } from "@mui/icons-material";
+import { Button } from "../ui/button";
 
 type CollectionProps = {
   userId: string;
@@ -120,8 +122,9 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
   return (
     <div className="flex flex-col m-0 dark:text-gray-100 items-center w-full lg:w-[350px]">
      
-      <div className="flex gap-0 dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
-        <div className="flex flex-col w-full items-center">
+     <div className="flex flex-col dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
+      <div className="flex gap-4 dark:bg-[#2D3236] dark:text-gray-100 border bg-white  items-center p-1 w-full rounded-lg">
+        <div className="flex flex-col w-full items-center w-full">
           <div className="w-24 h-24 rounded-full bg-white relative">
             <Zoom>
               <Image
@@ -177,15 +180,8 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
               handlePayNow={handlePay}
             />
           </div>
-        </div>
-      </div>
-      <div className="flex mb-2 flex-col mt-4 border items-center dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg w-full p-1">
-        <RatingsCard recipientUid={user._id} handleOpenReview={handleOpenReview} />
-      </div>
-      <div className="flex flex-col mt-2 items-center dark:bg-[#2D3236] border dark:text-gray-100 bg-white rounded-lg w-full p-1">
-        <div className="divider"></div>
-        {userId === loggedId && (
-          <div className="flex justify-between w-full p-1 items-center">
+          {userId === loggedId && (
+          <div className="flex justify-center items-center">
             <div>
               <div
                 onClick={() => {
@@ -195,17 +191,230 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
                 }}
                 className="cursor-pointer"
               >
-                <button className="p-2 gap-1 text-xs bg-green-900 rounded-lg text-white  hover:bg-emerald-600">
+                <Button variant="outline">
                   <EditOutlinedIcon sx={{ fontSize: 14 }} />
                   Edit your Profile
-                </button>
+                </Button>
               </div>
             </div>
 
            {/*<Share userId={userId} /> */} 
           </div>
         )}
+        </div>
+        <div className="flex mb-2 flex-col mt-4 items-center dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg w-full p-1">
+        <RatingsCard recipientUid={user._id} handleOpenReview={handleOpenReview} />
+      </div>
+      </div>
+     
  
+      <div className="flex flex-col gap-4 mt-2 mb-2 dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
+      <h1 className="mt-2 p-0">Seller contacts</h1>
+      <div className="flex gap-4 text-gray-600">
+     
+      {user?.phone && (
+                <>
+                  <SignedIn>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className={`hover:bg-[emerald-700] bg-[#000000] text-white mt-2 p-2 shadow  ${
+                              showphone ? "rounded-sm" : "rounded-full"
+                            }`}
+                            onClick={handleShowPhoneClick}
+                          >
+                            <CallIcon/>
+                            {showphone ? <>{user?.phone}</> : <> </>}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Call Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SignedIn>
+                  <SignedOut>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div
+                            onClick={() => {
+                             // handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <button className="hover:bg-emerald-700 bg-[#000000] text-white mt-2 p-2 rounded-full shadow">
+                              <CallIcon />
+                            </button>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Call Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SignedOut>
+                </>
+              )}
+              {userId !== loggedId && (
+                <>
+                  <SignedIn>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div
+                            onClick={() => {
+                             // handleOpenP();
+                             handleOpenChatId(userId);
+                              //router.push(`/chat/${userId}`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <button className="hover:bg-emerald-700 bg-[#000000] text-white mt-2 p-2 rounded-full shadow">
+                              <ChatBubbleOutlineOutlinedIcon
+                                
+                              />
+                            </button>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Chat with seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SignedIn>
+                  <SignedOut>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div
+                            onClick={() => {
+                              //handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <button className="hover:bg-emerald-700 bg-[#000000] text-white mt-2 p-2 rounded-full shadow">
+                              <ChatBubbleOutlineOutlinedIcon
+                                
+                              />
+                            </button>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Chat with Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SignedOut>
+                </>
+              )}
+              {user?.whatsapp && (
+                <>
+                  <SignedIn>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <a href={`https://wa.me/${user?.whatsapp}/`}>
+                            <button className="hover:bg-emerald-700 bg-[#000000] text-white mt-2 p-2 rounded-full shadow">
+                              <WhatsAppIcon/>
+                            </button>
+                          </a>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Whatsapp Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SignedIn>
+                  <SignedOut>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div
+                            onClick={() => {
+                              //handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <button className="hover:bg-emerald-700 bg-[#000000] text-white mt-2 p-2 rounded-full shadow">
+                              <WhatsAppIcon />
+                            </button>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Whatsapp Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SignedOut>
+                </>
+              )}
+
+                </div>
+
+                <h1 className="mt-2 p-0">Seller Social media</h1>
+
+                <div className="justify-center gap-5">
+                {user?.whatsapp && (
+                  <Link
+                    href={`${user?.facebook}`}
+                    className="no-underline font-boldm-1 mr-2"
+                  >
+                    <FontAwesomeIcon icon={faFacebook} className="text-2xl" />
+                  </Link>
+                )}
+
+                {user?.twitter && (
+                  <Link
+                    href={`${user?.twitter}`}
+                    className="no-underline font-boldm-1 mr-2"
+                  >
+                    <FontAwesomeIcon icon={faTwitter} className="text-2xl" />
+                  </Link>
+                )}
+
+                {user?.instagram && (
+                  <Link
+                    href={`${user?.instagram}`}
+                    className="no-underline font-boldm-1 mr-2"
+                  >
+                    <FontAwesomeIcon icon={faInstagram} className="text-2xl" />
+                  </Link>
+                )}
+                {user?.tiktok && (
+                  <Link
+                    href={`${user?.tiktok}`}
+                    className="no-underline font-boldm-1 mr-2"
+                  >
+                    <FontAwesomeIcon icon={faTiktok} className="text-2xl" />
+                  </Link>
+                )}
+
+                {user?.website && (
+                  <Link
+                    href={`${user?.website}`}
+                    className="no-underline font-boldm-1 mr-2"
+                  >
+                    <FontAwesomeIcon icon={faChrome} className="text-2xl" />
+                  </Link>
+                )}
+              </div>
+              </div>
+
+
+                < CopyShareAdLink _id={userId} titleId={"Profile"}/>
+              
+
+
+                </div>
+     
+      <div className="flex flex-col mt-2 items-center dark:bg-[#2D3236] border dark:text-gray-100 bg-white rounded-lg w-full p-1">
+        <div className="divider"></div>
+      
         {isActiveReviews === false && (
           <>
             <div className="divider"></div>
@@ -215,7 +424,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-2">
                       <AccordionTrigger>
-                        <p className="text-xs lg:text-sm">
+                        <p className="">
                           Seller business details...
                         </p>
                       </AccordionTrigger>
@@ -540,233 +749,12 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
               )}*/}
               </>
             )}
-            <div className="divider"></div>
-            {(user?.phone || userId !== loggedId || user?.whatsapp) && (
-              <>
-                {" "}
-                <div className="">
-                  <h1 className="mt-5 p-0">Seller contacts</h1>
-                </div>
-              </>
-            )}
-            <div className="justify-center flex w-full gap-5 p-0">
-              {user?.phone && (
-                <>
-                  <SignedIn>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            className={`hover:bg-[emerald-700] bg-[#000000] text-white text-xs mt-2 p-2 shadow  ${
-                              showphone ? "rounded-sm" : "rounded-full"
-                            }`}
-                            onClick={handleShowPhoneClick}
-                          >
-                            <CallIcon sx={{ fontSize: 16 }} />
-                            {showphone ? <>{user?.phone}</> : <> </>}
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Call Seller</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </SignedIn>
-                  <SignedOut>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div
-                            onClick={() => {
-                             // handleOpenP();
-                              router.push(`/sign-in`);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
-                              <CallIcon sx={{ fontSize: 16 }} />
-                            </button>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Call Seller</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </SignedOut>
-                </>
-              )}
-              {userId !== loggedId && (
-                <>
-                  <SignedIn>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div
-                            onClick={() => {
-                             // handleOpenP();
-                             handleOpenChatId(userId);
-                              //router.push(`/chat/${userId}`);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
-                              <ChatBubbleOutlineOutlinedIcon
-                                sx={{ fontSize: 16 }}
-                              />
-                            </button>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Chat with seller</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </SignedIn>
-                  <SignedOut>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div
-                            onClick={() => {
-                              //handleOpenP();
-                              router.push(`/sign-in`);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
-                              <ChatBubbleOutlineOutlinedIcon
-                                sx={{ fontSize: 16 }}
-                              />
-                            </button>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Chat with Seller</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </SignedOut>
-                </>
-              )}
-              {user?.whatsapp && (
-                <>
-                  {" "}
-                  <SignedIn>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <a href={`https://wa.me/${user?.whatsapp}/`}>
-                            <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
-                              <WhatsAppIcon sx={{ fontSize: 16 }} />
-                            </button>
-                          </a>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Whatsapp Seller</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </SignedIn>
-                  <SignedOut>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div
-                            onClick={() => {
-                              //handleOpenP();
-                              router.push(`/sign-in`);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-full shadow">
-                              <WhatsAppIcon sx={{ fontSize: 16 }} />
-                            </button>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Whatsapp Seller</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </SignedOut>
-                </>
-              )}
-            </div>
-            <div className="divider"></div>
-            {(user?.whatsapp ||
-              user.twitter ||
-              user.instagram ||
-              user.tiktok ||
-              user.website) && (
-              <>
-                {" "}
-                <div className="">
-                  <h1 className="mt-5 p-0">Seller Social media</h1>
-                </div>
-              </>
-            )}
-
-            <div className="flex space-x-2">
-              <div className="ml-1 justify-center gap-5 w-full">
-                {user?.whatsapp && (
-                  <Link
-                    href={`${user?.facebook}`}
-                    className="no-underline font-boldm-1 mr-2"
-                  >
-                    <FontAwesomeIcon icon={faFacebook} className="text-2xl" />
-                  </Link>
-                )}
-
-                {user.twitter && (
-                  <Link
-                    href={`${user?.twitter}`}
-                    className="no-underline font-boldm-1 mr-2"
-                  >
-                    <FontAwesomeIcon icon={faTwitter} className="text-2xl" />
-                  </Link>
-                )}
-
-                {user.instagram && (
-                  <Link
-                    href={`${user?.instagram}`}
-                    className="no-underline font-boldm-1 mr-2"
-                  >
-                    <FontAwesomeIcon icon={faInstagram} className="text-2xl" />
-                  </Link>
-                )}
-                {user.tiktok && (
-                  <Link
-                    href={`${user?.tiktok}`}
-                    className="no-underline font-boldm-1 mr-2"
-                  >
-                    <FontAwesomeIcon icon={faTiktok} className="text-2xl" />
-                  </Link>
-                )}
-
-                {user.website && (
-                  <Link
-                    href={`${user?.website}`}
-                    className="no-underline font-boldm-1 mr-2"
-                  >
-                    <FontAwesomeIcon icon={faChrome} className="text-2xl" />
-                  </Link>
-                )}
-              </div>
-            </div>
+           
           </>
         )}
       </div>
 
-      
-      <div className="w-full mt-2 border dark:bg-[#2D3236] dark:text-gray-300 bg-white p-1 text-sm rounded-lg overflow-hidden">
-              <div className="flex w-full justify-between">
-
-           < CopyShareAdLink _id={userId} titleId={"Profile"}/>
-              
-           
-              </div>
-            </div>
+    
     </div>
   );
 };

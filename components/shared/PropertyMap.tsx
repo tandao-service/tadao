@@ -585,7 +585,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[85vh] lg:h-[100vh] ${
+      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[95vh] lg:h-[100vh] ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       

@@ -185,7 +185,7 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
     }
     const Ads = await populateAd(AdQuery);
     const AdCount = await DynamicAd.countDocuments(conditions)
-    console.log(Ads);
+    //console.log(Ads);
     return {
       data: JSON.parse(JSON.stringify(Ads)),
       totalPages: Math.ceil(AdCount / limit),
@@ -278,7 +278,7 @@ export async function getListingsNearLocation({ limit = 20, queryObject
           }
         }
       ]);
-      console.log(ads)
+      //console.log(ads)
       // Step 2: Populate the aggregated results
       const populatedAds = await Ad.populate(ads, [
         { path: 'organizer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified' },

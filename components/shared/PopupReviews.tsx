@@ -122,10 +122,11 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
                 photoURL={userImage}
                 recipientUid={recipientUid}
                 recipient={user}
+                handleOpenReview={handleOpenReview} 
+                handleOpenChatId={handleOpenChatId} 
+                handleOpenSettings={handleOpenSettings}
+                handlePay={handlePay}
                 />
-
-
-              
 
 <Toaster />
                 </div>

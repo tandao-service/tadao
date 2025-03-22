@@ -8,6 +8,8 @@ import { db } from "@/lib/firebase";
 import { IUser } from "@/lib/database/models/user.model";
 import { ScrollArea } from "../ui/scroll-area";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import SellerProfile from "./SellerProfile";
+import SellerProfileReviews from "./SellerProfileReviews";
 interface Revieww {
   id: number;
   name: string;
@@ -22,6 +24,10 @@ type sidebarProps = {
   recipientUid: string;
   photoURL: string;
   recipient: IUser;
+  handleOpenReview: (value:string) => void;
+  handleOpenChatId: (value:string) => void;
+  handleOpenSettings: () => void;
+  handlePay: (id:string) => void;
 };
 interface Review {
   text: string;
@@ -38,6 +44,10 @@ const ReviewSection = ({
     displayName,
     recipientUid,
     recipient,
+    handleOpenReview,
+                      handleOpenChatId,
+                      handleOpenSettings,
+                      handlePay,
   }: sidebarProps) => {
 
 const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -218,75 +228,28 @@ const handleReviewSubmit = async () => {
 
      <div className="gap-2 hidden lg:inline w-[350px]  sidebar left-0 top-0 lg:p-4">
                     {/* Seller Profile Section */}
-      <div className="p-4 flex items-center border-b bg-gray-50">
-        <Image
-           src={recipient.photo ?? "/avator.png"}
-          alt="Seller"
-          width={60}
-          height={60}
-          className="rounded-full"
-        />
-        <div className="ml-4">
-          <h2 className="text-lg font-semibold text-gray-800">{recipient.firstName} {recipient.lastName}</h2>
-          <div className="flex items-center gap-1 text-green-600">
-            <CheckCircle size={16} />
-            <span className="text-sm">Verified Seller</span>
-          </div>
-          <div className="flex flex-col gap-4 text-gray-600 mt-1">
-            <div className="flex items-center gap-1">
-              <Phone size={16} />
-              <span className="text-sm">{recipient?.phone ?? ''}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Mail size={16} />
-              <span className="text-sm">{recipient?.email ?? ''}</span>
-            </div>
-            
-          </div>
-        </div>
-      </div>
+                    <div className="border rounded-lg flex w-full">
+                <SellerProfileReviews
+                      user={recipient}
+                      loggedId={uid}
+                      userId={uid}
+                      handleOpenReview={handleOpenReview} 
+                      handleOpenChatId={handleOpenChatId} 
+                      handleOpenSettings={handleOpenSettings}
+                      handlePay={handlePay}
+                      />
+              </div>
                   </div>
          
                   <div className="w-full lg:w-3/4 chat overflow-y-auto">
                     <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
                       {/* Seller Profile Section */}
-      <div className="p-4 flex items-center rounded-md border-b bg-gray-50">
-        <Image
-           src={recipient.photo ?? "/avator.png"}
-          alt="Seller"
-          width={60}
-          height={60}
-          className="rounded-full"
-        />
-        <div className="ml-4">
-          <h2 className="text-lg font-semibold text-gray-800">{recipient.firstName} {recipient.lastName}</h2>
-          
-          {recipient.verified && recipient?.verified[0]?.accountverified === true ? 
-          (<> <div className="flex items-center gap-1 text-green-600">
-            <CheckCircle size={16} />
-            <span className="text-sm">Verified Seller</span>
-          </div></>):(<> <div className="flex items-center gap-1 text-gray-600">
-            <CheckCircle size={16} />
-            <span className="text-sm">Unverified Seller</span>
-          </div></>)}
-          
-         
-          <div className="flex gap-4 text-gray-600 mt-1">
-            <div className="flex items-center gap-1">
-              <Phone size={16} />
-              <span className="text-sm">{recipient?.phone ?? ''}</span>
+                      <div className="p-1 lg:hidden">
+              <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
-            <div className="flex items-center gap-1">
-              <Mail size={16} />
-              <span className="text-sm">{recipient?.email ?? ''}</span>
-            </div>
-            
-          </div>
-        </div>
-      </div>
                     </div>
           
-                    <ScrollArea className="h-[65vh] lg:h-[88vh] w-full dark:bg-[#2D3236] bg-white rounded-md border p-2">
+                    <ScrollArea className="h-[65vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border p-2">
                       
  {/* Reviews List (Scrollable) */}
  <div className="flex-1 overflow-y-auto p-1 space-y-4 w-full">

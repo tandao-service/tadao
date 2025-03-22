@@ -20,7 +20,8 @@ import "react-medium-image-zoom/dist/styles.css";
 import LatLngPickerAndShare from "./LatLngPickerAndShare";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+import MenuComponent from "./MenubarSettings";
 type sidebarProps = {
   displayName: string;
   uid: string;
@@ -37,11 +38,13 @@ const SendMessage = ({
 }: sidebarProps) => {
   const [value, setValue] = useState<string>("");
   const [image, setImg] = useState<File | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleMenu = () => setIsOpen(!isOpen);
   // const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSendMessage = async () => {
+   
 
     if (value.trim() === "") {
       toast({
@@ -117,15 +120,12 @@ const SendMessage = ({
     //setValue(process.env.NEXT_PUBLIC_DOMAIN_URL+"location?title="+value.title+"&price="+value.price+"&lat="+value.lat+"&lng="+value.lng)
   };
   return (
-    <div className="border dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black rounded-b-md right-0 bg-white dark:bg-[#131B1E] h-auto z-10 p-0 flex flex-col md:flex-row justify-end items-center">
-      <form
-        onSubmit={handleSendMessage}
-        className="flex w-full p-0 justify-end items-center"
-      >
+    <div className="border gap-1 p-1 dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black rounded-b-md right-0 bg-white dark:bg-[#131B1E] h-auto z-10  flex justify-end items-center">
+   
         {recipientUid ? (
           <>
             {image && (
-              <div className="h-32 w-24 fixed bottom-20 bg-white shadow rounded-lg p-1">
+              <div className="h-32 w-24 right-[50px] fixed bottom-20 bg-white shadow rounded-lg p-1">
                 <button
                   onClick={(e) => setImg(null)}
                   className="focus:outline-none"
@@ -157,11 +157,12 @@ const SendMessage = ({
             />
 
             <button
-              type="submit"
+              onClick={() =>handleSendMessage()}
               className="text-sm p-3 lg:text-base bg-gradient-to-b from-emerald-800 to-emerald-900 text-white rounded-r-lg"
             >
               Send
             </button>
+            <MenuComponent setImg={setImg} handleOpenPopupGps={handleOpenPopupGps}/>
           </>
         ) : (
           <>
@@ -179,39 +180,19 @@ const SendMessage = ({
             />
 
             <button
-              type="submit"
+              onClick={() =>handleSendMessage()}
               className="text-sm p-3 lg:text-base bg-gradient-to-b from-emerald-800 to-emerald-900 text-white rounded-r-lg"
             >
               Send
             </button>
+           <MenuComponent setImg={setImg} handleOpenPopupGps={handleOpenPopupGps}/>
           </>
         )}
- 
-        <div className="cursor-pointer relative p-2">
-          <label htmlFor="file">
-            <div className="text-gray-700 dark:text-gray-400 p-1 cursor-pointer ">
-              {" "}
-              <AttachFileOutlinedIcon />
-            </div>
-          </label>
-          <input
-            type="file"
-            id="file"
-            className="absolute top-0 left-0 opacity-0 h-0 w-0"
-            onChange={(e) => setImg(e.target.files?.[0] || null)}
-          />
-        </div>
-        </form>
-        <div className="cursor-pointer relative p-2">
-        <div className="flex flex-col w-full gap-1">
-                  <button
-                    onClick={handleOpenPopupGps}
-                    className="flex text-[10px] gap-1 items-center justify-center w-full p-1 border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 rounded-md hover:bg-gray-200"
-                  >
-                    <LocationOnIcon /> Share Location
-                  </button>
 
-                  {showPopupGps && (
+ 
+     
+   
+{showPopupGps && (
                     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
                         <div className="dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-2 w-full  lg:max-w-4xl items-center justify-center rounded-md shadow-md relative">
                         <div className="flex justify-between items-center mb-1">
@@ -231,8 +212,8 @@ const SendMessage = ({
                       </div>
                     </div>
                   )}  
-                  </div>
-        </div>
+                
+       
     
     </div>
   );

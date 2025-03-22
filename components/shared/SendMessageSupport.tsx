@@ -123,28 +123,11 @@ const SendMessageSupport = ({
   };
 
   return (
-    <div className="h-[50px] border w-full p-1 dark:bg-[#2D3236] items-center">
-     <form onSubmit={handleSendMessage} className="px-0 containerWrap flex items-center gap-2 mt-0">
+    <div className="h-[50px] border w-full bg-white dark:bg-[#2D3236] items-center mb-1">
+     <form onSubmit={handleSendMessage} className="flex items-center gap-2 ">
         {recipientUid ? (
           <>
-            {image && (
-              <div className="h-32 w-24 fixed bottom-20 bg-white shadow rounded-lg p-1">
-                <button
-                  onClick={(e) => setImg(null)}
-                  className="flex focus:outline-none"
-                >
-                  <CloseIcon className="m-1" sx={{ fontSize: 24 }} />
-                </button>
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="image"
-                  width={50}
-                  height={50}
-                  className="w-full object-center rounded-lg"
-                />
-              </div>
-            )}
-
+           
             <textarea
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -180,18 +163,6 @@ const SendMessageSupport = ({
           </>
         )}
 
-        <div className="cursor-pointer relative">
-          <label htmlFor="file">
-            <AttachFileOutlinedIcon
-            />
-          </label>
-          <input
-            type="file"
-            id="file"
-            className="absolute top-0 left-0 opacity-0 h-0 w-0"
-            onChange={(e) => setImg(e.target.files?.[0] || null)}
-          />
-        </div>
       </form>
     </div>
   );

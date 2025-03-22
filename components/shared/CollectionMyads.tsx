@@ -120,10 +120,14 @@ const filteredAds = selectedCategory
 
   return (
     <div>
-   <div className="flex items-center justify-between  mb-2 p-1 rounded-md border-b w-full">   
-    <label>Filter by Category: </label>
+  <div className="flex flex-col lg:flex-row items-center justify-between w-full">
+  <h3 className="font-bold text-[25px] text-center sm:text-left">
+                    Seller Ads
+                  </h3>
+   <div className="w-full lg:w-[450px] justify-between lg:justify-end flex items-center gap-4 mb-2 p-1 bg-white rounded-md">   
+      <label>Filter by Category: </label>
       <select
-      className="py-2 border rounded-md"
+      className="py-2 border rounded-md w-[250px]"
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
@@ -132,6 +136,8 @@ const filteredAds = selectedCategory
           <option key={category} value={category}>{category}</option>
         ))}
       </select>
+      </div>
+
       </div>
       {filteredAds.length > 0 ? (
         isVertical ? (

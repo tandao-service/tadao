@@ -12,7 +12,7 @@ import SendMessageSupport from "./SendMessageSupport";
 import HelpBox from "./HelpBox";
 import { useMediaQuery } from "react-responsive"; // Detect mobile screens
 import { Button } from "../ui/button";
-
+import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
 interface ChatWindowProps {
   isOpen: boolean;
   onClose: () => void;
@@ -48,6 +48,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     { title: "Home", content: "Home" },
     { title: "Message", content: "Message" },
     { title: "Help", content: "Help" },
+    { title: "Call Support" , content: "Call Support"  },
+   
   ];
   const handle = async (index: number) => {
     setActiveTab(index);
@@ -58,6 +60,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     } else if (index == 2) {
       settitle("Help");
     }
+    else if (index == 3) {
+      settitle("Call Support");
+    }
   };
 
   if (!isOpen) return null;
@@ -66,7 +71,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       {isMobile  ? (
               // Fullscreen Popover for Mobile
       <div className="fixed h-screen inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-0 flex flex-col">
-                
+        <div className="h-[95vh] lg:h-screen flex flex-col">
         <div className="h-[50px] bg-gradient-to-r from-green-600 to-green-600 text-white p-2 rounded-t-lg">
         <div className="flex justify-between w-full">
           <h3 className="font-semibold text-white">{title !=="Home" && (<>{title}</>)}</h3>
@@ -166,6 +171,38 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             </div>
           </>
         )}
+           {activeTab === 3 && (
+          <>
+          <div className="bg-gradient-to-b from-green-600 to-white h-full w-full flex flex-col p-0 mt-0">
+              <div className="mt-5 w-full">
+                <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
+                  <div className="w-24 h-24">
+                    <Image
+                      className="w-full h-full object-cover"
+                      src={"/support.webp"}
+                      alt="Profile Image"
+                      width={120}
+                      height={120}
+                    />
+                  </div>
+                  
+                </div>
+                <div className="gap-2 justify-center flex w-full items-center">
+                <h3 className="font-semibold text-2xl lg:text-lg text-emerald-100 mb-4">
+                  Call Support
+                </h3>
+                 
+                </div>
+                <div className="gap-2 justify-center flex w-full items-center">
+                  <a href="tel:+254769722932" className="font-semibold text-2xl lg:text-3xl text-white">
+                  +254 769 722 932
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </>
+        )}
         </div>
         {/* Tabs */}
    <div className="h-[50px] flex bg-white w-full rounded-b-lg p-1">
@@ -181,13 +218,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
            {tab.title === "Home" && <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Message" && <ChatOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Help" && <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Call Support" && <CallOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title}
          </div>
        </button>
      ))}
    </div>
-    </div>):(
-   <div className="fixed h-[450px] bottom-20 right-5 bg-green-600 rounded-lg shadow-xl w-[400px] max-w-sm z-30">
+   </div>
+   </div>
+    ):(
+   <div className="fixed h-[500px] bottom-20 right-5 bg-green-600 rounded-lg shadow-xl w-[460px] z-30">
    {/* Header */}
    <div className="h-[50px] bg-green-600 text-white p-2 rounded-t-lg flex justify-between items-center">
      <h3 className="font-semibold text-white">{title}</h3>
@@ -197,9 +237,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
    </div>
  
    {/* Content */}
-   <div className="p-2 flex-1 w-full overflow-y-auto">
+   <div className="flex-1 w-full overflow-y-auto">
      {activeTab === 0 && (
-       <div className="bg-gradient-to-b from-green-600 to-white h-[350px] flex flex-col items-center justify-center p-3">
+       <div className="bg-gradient-to-b from-green-600 to-white h-[400px] flex flex-col items-center justify-center p-3">
          <div className="w-24 h-24">
            <Image
              className="w-full h-full object-cover rounded-full"
@@ -216,7 +256,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
      )}
  
      {activeTab === 1 && (
-       <div className="rounded-t-sm h-[350px] bg-white flex flex-col p-2">
+       <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-green-600 to-white flex flex-col p-2">
          <ChatBoxSupport
                   displayName={senderName}
                   uid={senderId}
@@ -247,7 +287,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
      )}
  
      {activeTab === 2 && (
-       <div className="rounded-t-sm h-[350px] bg-white flex flex-col p-2">
+       <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-green-600 to-white flex flex-col p-2">
          <HelpBox
                   displayName={senderName}
                   uid={senderId}
@@ -264,6 +304,37 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 />
        </div>
      )}
+      {activeTab === 3 && (
+          <>
+           <div className="bg-gradient-to-b from-green-600 to-white h-[400px] w-full flex flex-col p-0 mt-0">
+              <div className="mt-5 w-full">
+                <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
+                  <div className="w-24 h-24">
+                    <Image
+                      className="w-full h-full object-cover"
+                      src={"/support.webp"}
+                      alt="Profile Image"
+                      width={120}
+                      height={120}
+                    />
+                  </div>
+                  
+                </div>
+                <div className="gap-2 justify-center flex w-full items-center">
+                <h3 className="font-semibold text-2xl lg:text-lg text-emerald-100 mb-4">
+                  Call Support
+                </h3>
+                 
+                </div>
+                <div className="gap-2 justify-center flex w-full items-center">
+                  <a href="tel:+254769722932" className="font-semibold text-2xl lg:text-3xl text-white">
+                  +254 769 722 932
+                  </a>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
    </div>
  
    {/* Tabs */}
@@ -276,10 +347,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
          }`}
          onClick={() => handle(index)}
        >
-         <div className="flex items-center justify-center gap-1">
+         <div className="flex text-sm items-center justify-center gap-1">
            {tab.title === "Home" && <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Message" && <ChatOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Help" && <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Call Support" && <CallOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title}
          </div>
        </button>

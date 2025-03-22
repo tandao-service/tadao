@@ -109,27 +109,13 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
+              className="rounded-sm w-6 h-10 dark:bg-[#2D3236]"
             />
             <Skeleton
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
-            />
-          </div>
-          <div className="flex gap-2 justify-center mb-1">
-            <Skeleton
-              variant="rectangular"
-              animation="wave"
-              //  height={50}
-              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
-            />
-            <Skeleton
-              variant="rectangular"
-              animation="wave"
-              //  height={50}
-              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
+              className="rounded-sm w-full h-10 dark:bg-[#2D3236]"
             />
           </div>
           <div className="flex gap-2 justify-center mb-1">
@@ -137,13 +123,13 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
+              className="rounded-sm w-6 h-10 dark:bg-[#2D3236]"
             />
             <Skeleton
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
+              className="rounded-sm w-full h-10 dark:bg-[#2D3236]"
             />
           </div>
           <div className="flex gap-2 justify-center mb-1">
@@ -151,13 +137,27 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-6 h-6 dark:bg-[#2D3236]"
+              className="rounded-sm w-6 h-10 dark:bg-[#2D3236]"
             />
             <Skeleton
               variant="rectangular"
               animation="wave"
               //  height={50}
-              className="rounded-sm w-full h-6 dark:bg-[#2D3236]"
+              className="rounded-sm w-full h-10 dark:bg-[#2D3236]"
+            />
+          </div>
+          <div className="flex gap-2 justify-center mb-1">
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-6 h-10 dark:bg-[#2D3236]"
+            />
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              //  height={50}
+              className="rounded-sm w-full h-10 dark:bg-[#2D3236]"
             />
           </div>
         </div>
