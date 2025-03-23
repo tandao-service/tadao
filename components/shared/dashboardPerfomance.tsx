@@ -169,7 +169,7 @@ CollectionProps) => {
        
   return (
     <>
-  <ScrollArea className="h-[100dvh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+  <ScrollArea className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
      
       <div className="top-0 z-10 fixed w-full">
         <Navbar userstatus={user.status} userId={userId} onClose={onClose} popup={"performance"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
@@ -181,7 +181,7 @@ CollectionProps) => {
          handleOpenSafety={handleOpenSafety} 
          handleOpenShop={handleOpenShop}/>
       </div>
-      <div className="min-h-[100dvh] pt-[60px]">
+      <div className="min-h-screen mt-[10vh]">
       <div className="w-full lg:max-w-6xl mx-auto p-1">
         <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
           <div className="flex items-center p-1 justify-between">

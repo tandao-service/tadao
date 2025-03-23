@@ -45,7 +45,7 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
        
   if (alltrans.length === 0) {
     return (
-      <div className="h-[100dvh] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-white">
+      <div className="dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-white">
       <div className="fixed z-10 top-0 w-full">
          <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                                 handleOpenPerfomance={handleOpenPerfomance}
@@ -63,7 +63,7 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
     );
   }
   return (
-    <div className="h-[100dvh] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-white">
+    <div className="min-h-screen dark:bg-[#131B1E] h-screen  text-black dark:text-[#F1F3F3] bg-white">
       <div className="fixed z-0 top-0 w-full">
          <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                                 handleOpenPerfomance={handleOpenPerfomance}
@@ -74,8 +74,8 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
                                 handleOpenSafety={handleOpenSafety} 
                                 handleOpenShop={handleOpenShop}/>
       </div>
-      <div className="max-w-8xl mx-auto flex pt-[60px] p-1">
-    <div className="w-full h-[100dvh]">
+      <div className="max-w-8xl mx-auto flex mt-[60px] mb-0 p-1">
+    <div className="fixed w-full h-screen">
       <div className="p-1">
         <div className="p-1 max-w-3xl mx-auto mb-2">
           <div className="p-0 w-full items-center">

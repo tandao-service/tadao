@@ -76,8 +76,8 @@ const PopupBookmark = ({ isOpen, userId, onClose, handleOpenShop,
   if (!isOpen) return null;
      
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-1 w-full h-[100vh] flex flex-col">
+    <div className="fixed inset-0 flex items-center justify-center dark:bg-[#131B1E] dark:text-gray-300 bg-gray-200 h-screen z-50">
+     
           {loading ? (
                  <div className="h-screen w-full bg-gray-200"> 
                  <div className="top-0 z-10 fixed w-full">
@@ -122,7 +122,7 @@ const PopupBookmark = ({ isOpen, userId, onClose, handleOpenShop,
      
         <Toaster />
       </div>
-    </div>
+    
   );
 };
 

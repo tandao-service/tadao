@@ -101,7 +101,7 @@ const DashboardSellMain = ({
        
   return (
     <>
-   <ScrollArea className="h-[100dvh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+   <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        
       <div className="z-10 top-0 fixed w-full">
     <Navbar
@@ -123,9 +123,9 @@ const DashboardSellMain = ({
     />
   </div>
   
-  <div className="flex flex-col justify-center w-full h-full pt-[60px]">
+  <div className="flex flex-col justify-center w-full h-full mt-[70px] lg:[50px]">
       
-  <div className="p-1 lg:p-2 flex min-h-[100dvh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
+  <div className="p-1 lg: p-2 flex min-h-[100vh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
    
               <EventForm
                 userId={userId}

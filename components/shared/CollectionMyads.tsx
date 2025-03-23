@@ -124,8 +124,8 @@ const filteredAds = selectedCategory
   <h3 className="font-bold text-[25px] text-center sm:text-left">
                     Seller Ads
                   </h3>
-   <div className="w-full lg:w-[450px] justify-between lg:justify-end flex items-center gap-4 mb-2 p-1 bg-white rounded-md">   
-      <label>Filter by Category: </label>
+   <div className="w-full lg:w-[450px] justify-between lg:justify-end flex items-center gap-4 mb-2 p-1 rounded-md">   
+      <label className="text-xs lg:text-base">Filter by Category: </label>
       <select
       className="py-2 border rounded-md w-[250px]"
         value={selectedCategory}

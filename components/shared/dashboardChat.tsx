@@ -170,7 +170,7 @@ const DashboardChat = ({
   </div>
 
   {/* Main Content with Padding to Prevent Overlap */}
-  <div className="max-w-6xl mx-auto pt-[60px] flex">
+  <div className="max-w-6xl mx-auto pt-[70px] lg:pt-[60px] flex">
     
     <div className="hidden lg:inline mr-2">
       <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89dvh] rounded-lg">

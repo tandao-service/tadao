@@ -184,7 +184,7 @@ CollectionProps) => {
      
   return (
     <>
-        <ScrollArea className="h-[100dvh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+        <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        <div className="top-0 z-10 fixed w-full">
                         <Navbar userstatus={"User"} userId={loggedId} onClose={onClose} popup={"shop"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                                             handleOpenPerfomance={handleOpenPerfomance}
@@ -195,7 +195,7 @@ CollectionProps) => {
                                             handleOpenSafety={handleOpenSafety} 
                                             handleOpenShop={handleOpenShop}/>
                        </div>
-      <div className="lg:p-4 pt-[60px]">
+      <div className="lg:p-4 mt-[70px] lg:mt-[60px]">
       <div className="w-full flex flex-col">
         <div className="w-full flex">
           <div className="hidden lg:inline">
