@@ -66,7 +66,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                   </Button>
                 </div>
                 <div className="relative w-full">
-          <div className="absolute h-[95vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
+          <div className="absolute h-[95dvh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
            
             <div className="flex w-full items-center mb-0">
                 <input
@@ -79,7 +79,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
              
             </div>
 
-            <div className="mt-1 max-h-[75vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="mt-1 max-h-[75dvh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <ul className="cursor-pointer p-0">
                 {sortedLocations.map((location: any, index: number) => (
                   <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 cursor-pointer rounded-0 ${selectedLocation === location.region ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}
@@ -94,7 +94,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
           </div>
 
           {selectedLocation && (
-            <div className="absolute h-[90vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
+            <div className="absolute h-[90dvh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
               <div className="flex justify-start items-center mb-1">
                 <button onClick={() => { setSearchArea(""); setSelectedLocation(""); }} className="flex gap-1 justify-center items-center bg-white text-black dark:bg-black text-sm px-2 py-1 dark:text-gray-200 dark:hover:text-green-600 hover:text-green-600 rounded-lg">
                   <ArrowBackIosNewOutlinedIcon sx={{ fontSize: 14 }} /> Back
@@ -109,7 +109,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                   onChange={(e) => setSearchArea(e.target.value)}
                 />
               </div>
-              <div className="mt-1 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <div className="mt-1 max-h-[70dvh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 <ul className="cursor-pointer p-0">
                   {filteredLocations.map((location: string, index: number) => (
                     <li key={index} className={`flex items-center dark:bg-[#222528] bg-white gap-2 p-2 cursor-pointer rounded-0 ${selectedArea === location ? "bg-green-100 text-green-600" : "hover:text-green-600"}`}
@@ -127,9 +127,9 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                 </div>
      ):(
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
-      <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-0 w-full lg:max-w-3xl rounded-md shadow-md relative">
+      <div className="h-[90dvh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-0 w-full lg:max-w-3xl rounded-md shadow-md relative">
         <div className="relative w-full">
-          <div className="absolute h-[90vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-5">
+          <div className="absolute h-[90dvh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-5">
             <div className="flex justify-end items-center mb-1">
             <Button variant="outline" onClick={onClose}>
                   <CloseOutlinedIcon />
@@ -168,7 +168,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
           </div>
 
           {selectedLocation && (
-            <div className="absolute h-[90vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-5">
+            <div className="absolute h-[90dvh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-5">
               <div className="flex justify-start items-center mb-3">
                 <button onClick={() => { setSearchArea(""); setSelectedLocation(""); }} className="flex justify-center items-center bg-white text-black dark:bg-black text-sm px-2 py-1 dark:text-gray-200 dark:hover:text-green-600 hover:text-green-600 rounded-full">
                   <ArrowBackIosNewOutlinedIcon sx={{ fontSize: 16 }} /> Back

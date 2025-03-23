@@ -504,7 +504,7 @@ const handlePostLocation = (lat: string,lng:string) => {
 </div>
           {data.length > 0 ? (
       
-      <ScrollArea className="h-[63dvh] lg:h-[80dvh] overflow-y-auto flex p-0 bg-white rounded-lg">
+      <ScrollArea className="h-[90dvh] lg:h-[90dvh] overflow-y-auto flex p-0 bg-white rounded-lg">
       <ul className="w-full h-full">
         {data.map((ad: any, index: number) => {
           const isLastAd = index === data.length - 1;

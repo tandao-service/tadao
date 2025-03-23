@@ -782,8 +782,8 @@ setLongitude(longitude)
         </AlertDialog>
       )}
 
-      <div className="relative mt-5 lg:mt-0 h-screen w-full">
-        <div ref={mapRef} className="w-full h-[95vh] lg:h-screen border rounded-xl shadow-md" />
+      <div className="relative mt-5 lg:mt-0 h-[100dvh] w-full">
+        <div ref={mapRef} className="w-full h-[100dvh] border rounded-xl shadow-md" />
         <div className="absolute top-[60px] lg:top-3 left-3 lg:left-[200px] z-10 grid grid-cols-3 flex gap-1">
           {/* Dropdown Menu */}
           <DropdownMenu>
@@ -922,7 +922,7 @@ setLongitude(longitude)
       </div>
 
       {/* Scrollable Content */}
-      <ScrollArea className="h-[70vh] bg-gray-50 dark:bg-[#131B1E] rounded-lg p-4">
+      <ScrollArea className="h-[70dvh] bg-gray-50 dark:bg-[#131B1E] rounded-lg p-4">
         
         {/* Title */}
         <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 text-center border-b pb-2">

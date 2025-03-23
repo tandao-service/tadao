@@ -124,7 +124,7 @@ const LatLngPickerAndShare = ({
   return (<>
       {isMobile ? (
               // Fullscreen Popover for Mobile
-              <div className="fixed inset-0 z-50 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
+              <div className="fixed inset-0 z-50 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-1 lg:p-4 flex flex-col">
                 <div className="flex justify-between items-center border-b pb-2">
                   <h4 className="font-medium text-lg">Share property location</h4>
                   <Button variant="outline" onClick={() => onSave()}>
@@ -162,8 +162,8 @@ const LatLngPickerAndShare = ({
       <div className="flex flex-col">
       
       <div className="flex w-full gap-2 mb-2">
-        <input type="text" placeholder="Latitude" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="p-2 text-sm w-[150px] dark:bg-[#131B1E] dark:text-gray-300 dark:border-gray-600  border rounded" />
-        <input type="text" placeholder="Longitude" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="p-2 w-[150px] text-sm dark:bg-[#131B1E] dark:text-gray-300 dark:border-gray-600  border rounded" />
+        <input type="text" placeholder="Latitude" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="p-2 text-sm w-[100px] lg:w-[150px] dark:bg-[#131B1E] dark:text-gray-300 dark:border-gray-600  border rounded" />
+        <input type="text" placeholder="Longitude" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="p-2 w-[100px] lg:w-[150px] text-sm dark:bg-[#131B1E] dark:text-gray-300 dark:border-gray-600  border rounded" />
         <Button  variant="default" onClick={handleCoordinateSearch} className="bg-blue-500 text-white rounded">Go</Button>
         {longitude && longitude && (
         <Button
