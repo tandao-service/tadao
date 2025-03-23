@@ -418,7 +418,7 @@ CollectionProps) => {
             </div>
           
           {/* Categories Section */}
-           <ScrollArea className="h-[100dvh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">
+           <ScrollArea className="h-[100vh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">
                       <SidebarSearchMain
                           categoryList={categoryList}
                           category={newqueryObject.category}
@@ -446,7 +446,7 @@ CollectionProps) => {
   
     {/* Ads Section */}
     <div
-      className={`flex-1 flex-col bg-gray-200 lg:bg-white transition-all duration-300 h-[100dvh] ${
+      className={`flex-1 flex-col bg-gray-200 lg:bg-white transition-all duration-300 h-screen ${
         showSidebar ? "hidden md:block" : "block"
       }`}
     >
@@ -827,7 +827,7 @@ CollectionProps) => {
 </div>
 
         {/* List Ads Section */}
-  <ScrollArea className="h-[100dvh] pt-[210px] lg:pt-0 w-full bg-gray-200 rounded-t-md border">
+  <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[210px] lg:mb-0 lg:mt-0">
   <section className="p-1 mb-20">
     <div className="flex items-center p-1 w-full justify-between">
       <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">
