@@ -171,8 +171,9 @@ const DashboardChat = ({
 
   {/* Main Content with Padding to Prevent Overlap */}
   <div className="max-w-6xl mx-auto pt-[60px] flex mb-0 p-1">
+    
     <div className="hidden lg:inline mr-2">
-      <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89vh] rounded-lg">
+      <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89dvh] rounded-lg">
         <div className="p-1 w-full items-center justify-center">
           <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
             Messanger

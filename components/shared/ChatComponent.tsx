@@ -69,7 +69,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
        if (isDarkMode === null) return null; // Avoid flickering before state is set
      
   return (
-     <div className="h-[100vh] bg-white lg:bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+     <div className="h-[100dvh] bg-white lg:bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        
       <div className="z-10 top-0 fixed w-full">
                  <Navbar userstatus={user.status} userId={senderId} onClose={onClose} 
@@ -86,7 +86,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
                   handleOpenPrivacy={handleOpenPrivacy}
                   handleOpenSafety={handleOpenSafety}/>
                </div>
-      <div className="w-full lg:max-w-6xl lg:mx-auto h-full flex mt-[60px] mb-0 p-1">
+      <div className="w-full lg:max-w-6xl lg:mx-auto h-full flex pt-[60px] mb-0 p-1">
         <div className="hidden lg:inline mr-5">
           <div className="w-full rounded-lg p-1">
             <SellerProfileReviews
@@ -102,9 +102,9 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
 
         <div className="flex-1 h-screen ">
         
-          <div className="rounded-lg mb-20 h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
-            <div className="lg:flex-1 h-screen p-1">
-              <div className="mt-0 lg:mt-[10px] w-full w-full p-1 bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
+          <div className="rounded-lg mb-20 h-full max-w-6xl mx-auto flex flex-col">
+            <div className="lg:flex-1 h-[90dvh]">
+              <div className="w-full w-full p-1 bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
                 <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
                   Messanger
                 </span>
@@ -113,7 +113,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
                   Latest Chats
                 </div>
               </div>
-              <ScrollArea className="h-[75vh] bg-white p-1 rounded-b-lg">
+              <ScrollArea className="h-[75dvh] bg-white p-1 rounded-b-lg">
     
               <Sidebarmain userId={senderId} handleOpenChatId={handleOpenChatId}/>
 </ScrollArea>
