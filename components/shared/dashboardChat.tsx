@@ -147,7 +147,7 @@ const DashboardChat = ({
        if (isDarkMode === null) return null; // Avoid flickering before state is set
      
   return (
-    <div className="h-[100dvh] w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
+    <div className="h-[100dvh] w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-white lg:bg-gray-200">
   {/* Fixed Navbar */}
   <div className="fixed top-0 left-0 w-full z-50">
     <Navbar
@@ -170,7 +170,7 @@ const DashboardChat = ({
   </div>
 
   {/* Main Content with Padding to Prevent Overlap */}
-  <div className="max-w-6xl mx-auto pt-[60px] flex mb-0 p-1">
+  <div className="max-w-6xl mx-auto pt-[60px] flex">
     
     <div className="hidden lg:inline mr-2">
       <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89dvh] rounded-lg">
@@ -188,8 +188,8 @@ const DashboardChat = ({
     </div>
 
     <div className="flex-1 w-full flex-col">
-      <div className="rounded-lg max-w-6xl mx-auto flex flex-col p-0 mt-0">
-        <div className="w-full flex flex-col">
+      <div className="rounded-0 lg:rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto flex flex-col">
+       
           <ChatBox
             displayName={senderName}
             uid={senderId}
@@ -211,7 +211,7 @@ const DashboardChat = ({
             recipientUid={recipientUid}
             client={false}
           />
-        </div>
+        
       </div>
     </div>
     <Toaster />

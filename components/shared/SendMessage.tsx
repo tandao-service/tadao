@@ -120,7 +120,7 @@ const SendMessage = ({
     //setValue(process.env.NEXT_PUBLIC_DOMAIN_URL+"location?title="+value.title+"&price="+value.price+"&lat="+value.lat+"&lng="+value.lng)
   };
   return (
-    <div className="border gap-1 p-1 dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black rounded-b-md right-0 bg-white dark:bg-[#131B1E] h-auto z-10  flex justify-end items-center">
+    <div className="border-t gap-1 p-1 dark:bg-[#2D3236] dark:text-[#F1F3F3] text-black rounded-b-md right-0 bg-white dark:bg-[#131B1E] h-auto z-10  flex justify-end items-center">
    
         {recipientUid ? (
           <>
