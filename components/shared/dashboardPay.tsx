@@ -191,7 +191,7 @@ const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
     );
   }
   return (
-    <div className="min-h-screen dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-gray-200">
+    <div className="h-[100dvh] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
      <div className="top-0 z-10 fixed w-full">
                         <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                          handleOpenPerfomance={handleOpenPerfomance}
@@ -202,8 +202,8 @@ const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
                          handleOpenSafety={handleOpenSafety} 
                          handleOpenShop={handleOpenShop}/>
                         </div>
-    <div className="max-w-6xl mx-auto flex mt-[60px] mb-0 p-1">
-  <div className="fixed w-full h-screen">
+    <div className="max-w-6xl mx-auto flex pt-[60px] mb-0 p-1">
+  <div className="fixed w-full h-[100dvh]">
       <div className="p-1">
         <div className="p-1 max-w-3xl bg-white mx-auto mb-2 border rounded-lg">
           <div className="p-0 w-full items-center">
