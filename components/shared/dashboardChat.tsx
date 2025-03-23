@@ -147,64 +147,76 @@ const DashboardChat = ({
        if (isDarkMode === null) return null; // Avoid flickering before state is set
      
   return (
-    <div className="h-screen w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
-     <div className="fixed z-10 w-full">
-      <Navbar userstatus={user.status} userId={senderId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenPlan={handleOpenPlan} popup={"chat"} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
-        handleOpenPerfomance={handleOpenPerfomance}
-        handleOpenSettings={handleOpenSettings}
-        handleOpenAbout={handleOpenAbout}
-        handleOpenTerms={handleOpenTerms}
-        handleOpenPrivacy={handleOpenPrivacy}
-        handleOpenSafety={handleOpenSafety} 
-        handleOpenShop={handleOpenShop}/>
-        </div>
+    <div className="h-[100dvh] w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
+  {/* Fixed Navbar */}
+  <div className="fixed top-0 left-0 w-full z-50">
+    <Navbar
+      userstatus={user.status}
+      userId={senderId}
+      onClose={onClose}
+      handleOpenSell={handleOpenSell}
+      handleOpenPlan={handleOpenPlan}
+      popup={"chat"}
+      handleOpenBook={handleOpenBook}
+      handleOpenChat={handleOpenChat}
+      handleOpenPerfomance={handleOpenPerfomance}
+      handleOpenSettings={handleOpenSettings}
+      handleOpenAbout={handleOpenAbout}
+      handleOpenTerms={handleOpenTerms}
+      handleOpenPrivacy={handleOpenPrivacy}
+      handleOpenSafety={handleOpenSafety}
+      handleOpenShop={handleOpenShop}
+    />
+  </div>
 
-      <div className="max-w-6xl mx-auto mt-[60px] flex mb-0 p-1">
-        <div className="hidden lg:inline mr-2">
-          <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89vh] rounded-lg">
-            <div className="p-1 w-full items-center justify-center">
-              <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
-                Messanger
-              </span>
-              <div className="flex gap-1 items-center">
-                <PeopleOutlinedIcon />
-                Latest Chats
-              </div>
-            </div>
-            <Sidebar userId={senderId} handleOpenChatId={handleOpenChatId}/>
+  {/* Main Content with Padding to Prevent Overlap */}
+  <div className="max-w-6xl mx-auto pt-[60px] flex mb-0 p-1">
+    <div className="hidden lg:inline mr-2">
+      <div className="w-full dark:bg-[#2D3236] bg-white p-1 max-h-[89vh] rounded-lg">
+        <div className="p-1 w-full items-center justify-center">
+          <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
+            Messanger
+          </span>
+          <div className="flex gap-1 items-center">
+            <PeopleOutlinedIcon />
+            Latest Chats
           </div>
         </div>
-
-        <div className="flex-1 w-full flex-col">
-          <div className="rounded-lg max-w-6xl mx-auto flex flex-col p-0 mt-0">
-            <div className="w-full flex flex-col">
-              <ChatBox
-                displayName={senderName}
-                uid={senderId}
-                photoURL={senderImage}
-                recipientUid={recipientUid}
-                recipient={user}
-                client={false}
-                handleAdEdit={handleAdEdit}
-                handleAdView={handleAdView} 
-                handleCategory={handleCategory}
-                handleOpenSell={handleOpenSell}
-               handleOpenPlan={handleOpenPlan}
-              />
-
-              <SendMessage
-                displayName={senderName}
-                uid={senderId}
-                photoURL={senderImage}
-                recipientUid={recipientUid}
-                client={false}
-              />
-            </div>
-          </div>
-        </div>
-        <Toaster />
+        <Sidebar userId={senderId} handleOpenChatId={handleOpenChatId} />
       </div>
     </div>
+
+    <div className="flex-1 w-full flex-col">
+      <div className="rounded-lg max-w-6xl mx-auto flex flex-col p-0 mt-0">
+        <div className="w-full flex flex-col">
+          <ChatBox
+            displayName={senderName}
+            uid={senderId}
+            photoURL={senderImage}
+            recipientUid={recipientUid}
+            recipient={user}
+            client={false}
+            handleAdEdit={handleAdEdit}
+            handleAdView={handleAdView}
+            handleCategory={handleCategory}
+            handleOpenSell={handleOpenSell}
+            handleOpenPlan={handleOpenPlan}
+          />
+
+          <SendMessage
+            displayName={senderName}
+            uid={senderId}
+            photoURL={senderImage}
+            recipientUid={recipientUid}
+            client={false}
+          />
+        </div>
+      </div>
+    </div>
+    <Toaster />
+  </div>
+</div>
+
   );
 };
 

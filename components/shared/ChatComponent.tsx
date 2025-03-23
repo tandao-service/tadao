@@ -104,7 +104,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
         
           <div className="rounded-lg mb-20 h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
             <div className="lg:flex-1 h-screen p-1">
-              <div className="w-full w-full p-1 bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
+              <div className="mt-0 lg:mt-[10px] w-full w-full p-1 bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
                 <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
                   Messanger
                 </span>
