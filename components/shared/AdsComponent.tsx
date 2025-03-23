@@ -103,7 +103,7 @@ const AdsComponent = ({
    
 
   return (
-    <ScrollArea className="h-[100dvh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+    <ScrollArea className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
    
       <div className="top-0 z-10 fixed w-full">
                     <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
@@ -115,7 +115,7 @@ const AdsComponent = ({
                     handleOpenSafety={handleOpenSafety} 
                     handleOpenShop={handleOpenShop}/>
                    </div>
-      <div className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] max-w-9xl mx-auto pt-[80px] lg:pt-[60px] mr-2 ml-2">
+      <div className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] max-w-9xl mx-auto mt-[80px] lg:mt-[60px] mr-2 ml-2">
         <Ads
           ad={ad}
           userId={userId || ""}

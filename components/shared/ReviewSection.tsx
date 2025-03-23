@@ -244,12 +244,12 @@ const handleReviewSubmit = async () => {
                   <div className="w-full lg:w-3/4 chat overflow-y-auto">
                     <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
                       {/* Seller Profile Section */}
-                      <div className="mt-2 lg:mt-0 lg:hidden">
+                      <div className="mt-10 lg:mt-0 lg:hidden">
               <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
                     </div>
           
-                    <ScrollArea className="h-[65vh] lg:h-[88vh] mb-20 w-full dark:bg-[#2D3236] rounded-md border  lg:p-2">
+                    <ScrollArea className="h-[65vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border  lg:p-2">
                       
  {/* Reviews List (Scrollable) */}
  <div className="flex-1 overflow-y-auto space-y-2 w-full">
