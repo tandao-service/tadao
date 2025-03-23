@@ -12,7 +12,7 @@
     return (
       <Menubar className="bg-transparent shadow-none">
         <MenubarMenu>
-          <MenubarTrigger className="p-2 bg-gray-200 rounded-md hover:bg-gray-300">
+          <MenubarTrigger className="p-2 rounded-md hover:bg-gray-200">
             <MoreVertOutlined />
           </MenubarTrigger>
           <MenubarContent align="end" className="w-40">

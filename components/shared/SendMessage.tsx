@@ -21,7 +21,7 @@ import LatLngPickerAndShare from "./LatLngPickerAndShare";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
-import MenuComponent from "./MenubarSettings";
+import MenuComponent from "./MenuComponent";
 type sidebarProps = {
   displayName: string;
   uid: string;

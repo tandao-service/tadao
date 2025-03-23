@@ -48,7 +48,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     { title: "Home", content: "Home" },
     { title: "Message", content: "Message" },
     { title: "Help", content: "Help" },
-    { title: "Call Support" , content: "Call Support"  },
+    { title: "Call" , content: "Call"  },
    
   ];
   const handle = async (index: number) => {
@@ -61,7 +61,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       settitle("Help");
     }
     else if (index == 3) {
-      settitle("Call Support");
+      settitle("Call");
     }
   };
 
@@ -71,7 +71,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       {isMobile  ? (
               // Fullscreen Popover for Mobile
       <div className="fixed h-screen inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-0 flex flex-col">
-        <div className="h-[95vh] lg:h-screen flex flex-col">
+        <div className="h-[90vh] lg:h-screen flex flex-col">
         <div className="h-[50px] bg-gradient-to-r from-green-600 to-green-600 text-white p-2 rounded-t-lg">
         <div className="flex justify-between w-full">
           <h3 className="font-semibold text-white">{title !=="Home" && (<>{title}</>)}</h3>
@@ -218,7 +218,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
            {tab.title === "Home" && <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Message" && <ChatOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Help" && <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />}
-           {tab.title === "Call Support" && <CallOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Call" && <CallOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title}
          </div>
        </button>
@@ -351,7 +351,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
            {tab.title === "Home" && <OtherHousesOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Message" && <ChatOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title === "Help" && <ContactSupportOutlinedIcon sx={{ fontSize: 16 }} />}
-           {tab.title === "Call Support" && <CallOutlinedIcon sx={{ fontSize: 16 }} />}
+           {tab.title === "Call" && <CallOutlinedIcon sx={{ fontSize: 16 }} />}
            {tab.title}
          </div>
        </button>

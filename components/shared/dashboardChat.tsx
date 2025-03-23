@@ -147,9 +147,9 @@ const DashboardChat = ({
        if (isDarkMode === null) return null; // Avoid flickering before state is set
      
   return (
-    <div className="min-h-screen w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
+    <div className="h-screen w-full dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-200">
      <div className="fixed z-10 w-full">
-                     <Navbar userstatus={user.status} userId={senderId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenPlan={handleOpenPlan} popup={"chat"} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
+      <Navbar userstatus={user.status} userId={senderId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenPlan={handleOpenPlan} popup={"chat"} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
         handleOpenPerfomance={handleOpenPerfomance}
         handleOpenSettings={handleOpenSettings}
         handleOpenAbout={handleOpenAbout}
@@ -157,7 +157,7 @@ const DashboardChat = ({
         handleOpenPrivacy={handleOpenPrivacy}
         handleOpenSafety={handleOpenSafety} 
         handleOpenShop={handleOpenShop}/>
-                   </div>
+        </div>
 
       <div className="max-w-6xl mx-auto mt-[60px] flex mb-0 p-1">
         <div className="hidden lg:inline mr-2">
