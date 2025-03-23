@@ -244,7 +244,7 @@ const handleReviewSubmit = async () => {
                   <div className="w-full lg:w-3/4 chat overflow-y-auto">
                     <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
                       {/* Seller Profile Section */}
-                      <div className="mt-10 lg:mt-0 lg:hidden">
+                      <div className="mt-5 lg:mt-0 lg:hidden">
               <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
                     </div>
