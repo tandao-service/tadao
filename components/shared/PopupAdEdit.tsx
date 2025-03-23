@@ -112,8 +112,9 @@ const PopupAdEdit = ({ isOpen, type, userId, userName, adId, handleOpenPerfomanc
   if (!isOpen) return null;
      
   return (
-    <div className="fixed h-screen inset-0 flex items-center justify-center dark:bg-[#131B1E] dark:text-gray-300 bg-gray-200 z-50">
- 
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-z-50">
+      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-1 w-full h-[100vh] flex flex-col">
+       
       {loading ? (
               <div className="h-screen w-full bg-gray-200"> 
               <div className="top-0 z-10 fixed w-full">
@@ -175,7 +176,7 @@ const PopupAdEdit = ({ isOpen, type, userId, userName, adId, handleOpenPerfomanc
               handleCategory={handleCategory}/>)}
         <Toaster />
       </div>
-   
+    </div>
   );
 };
 

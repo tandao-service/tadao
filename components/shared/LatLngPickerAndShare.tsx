@@ -125,7 +125,7 @@ const LatLngPickerAndShare = ({
       {isMobile ? (
               // Fullscreen Popover for Mobile
               <div className="fixed inset-0 z-50 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-1 lg:p-4 flex flex-col">
-                <div className="flex justify-between items-center border-b pb-2">
+                <div className="flex mt-[60px] justify-between items-center border-b pb-2">
                   <h4 className="font-medium text-lg">Share property location</h4>
                   <Button variant="outline" onClick={() => onSave()}>
                     Close

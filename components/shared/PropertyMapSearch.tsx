@@ -158,7 +158,7 @@ useEffect(() => {
     
       {/* Sidebar with Toggle Button */}
       <div
-        className={`bg-white h-[100dvh] shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
+        className={`bg-white mt-5 lg:mt-0 h-[100vh] shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
           showSidebar ? "w-full md:w-1/3 p-1" : "-translate-x-full md:w-0 md:translate-x-0"
         }`}
       >
@@ -179,7 +179,7 @@ useEffect(() => {
 
       {data?.length > 0 ? (<>
       <h3 className="font-semibold mb-2">Properties within {radius / 1000} km</h3>
-          <ScrollArea className="h-[90dvh] overflow-y-auto flex p-0 bg-white rounded-lg">
+          <ScrollArea className="h-[90vh] overflow-y-auto flex p-0 bg-white rounded-lg">
             <ul className="w-full h-full">
             {data.map((ad: any) => (
   <div key={ad._id} className="flex justify-center">
@@ -254,7 +254,7 @@ useEffect(() => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full  relative transition-all duration-300 h-[100dvh] ${
+      <div className={`w-full mt-5 lg:mt-0  relative transition-all duration-300 h-screen ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
@@ -268,7 +268,7 @@ useEffect(() => {
         
       
 
-     <div className="flex flex-col items-center w-full p-0 h-[100dvh]">
+     <div className="flex flex-col items-center w-full p-0 h-[90vh] lg:h-screen">
      <div className="h-[65px] lg:h-[50px] flex bg-white justify-between items-center p-1 w-full">
            <p className="text-sm text-gray-600">Click on the map to set a location.</p>
            <div className="">

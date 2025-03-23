@@ -100,20 +100,20 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
           </div>
         </div>
 
-        <div className="flex-1 h-screen ">
+        <div className="flex-1 h-screen">
         
           <div className="rounded-lg mb-20 h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
             <div className="lg:flex-1 h-screen p-1">
-              <div className="w-full mt-4 w-full bg-white rounded-lg border-b mb-2 dark:bg-[#2D3236] items-center">
-                <span className="logo font-bold text-[25px] dark:text-gray-400 text-emerald-950">
+              <div className="w-full p-1 w-full bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
+                <span className="logo font-bold text-base lg:text-[25px] dark:text-gray-400 text-emerald-950">
                   Messanger
                 </span>
-                <div className="flex gap-1 items-center">
+                <div className="text-xs lg:text-base flex gap-1 items-center">
                   <PeopleOutlinedIcon />
                   Latest Chats
                 </div>
               </div>
-              <ScrollArea className="h-[70vh]">
+              <ScrollArea className="h-[75vh] p-1 bg-white rounded-b-lg dark:bg-[#2D3236]">
     
               <Sidebarmain userId={senderId} handleOpenChatId={handleOpenChatId}/>
 </ScrollArea>

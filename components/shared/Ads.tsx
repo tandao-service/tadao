@@ -1359,7 +1359,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 <p className="lg:mt-5 dark:text-gray-400 font-bold">Property Google Mapping</p>
                 <button
         onClick={() => setShowGuide(!showGuide)}
-        className="px-3 text-xs py-1 text-gray-600 border border-gray-600 bg-white rounded-lg shadow-md hover:bg-gray-600 hover:text-white"
+        className="hidden lg:inline px-3 text-xs py-1 text-gray-600 border border-gray-600 bg-white rounded-lg shadow-md hover:bg-gray-600 hover:text-white"
       >
         Map Hint?
       </button>
