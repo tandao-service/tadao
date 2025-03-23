@@ -115,7 +115,7 @@ const AdsComponent = ({
                     handleOpenSafety={handleOpenSafety} 
                     handleOpenShop={handleOpenShop}/>
                    </div>
-      <div className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] max-w-9xl mx-auto pt-[60px] mr-2 ml-2">
+      <div className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] max-w-9xl mx-auto pt-[70px] lg:pt-[60px] mr-2 ml-2">
         <Ads
           ad={ad}
           userId={userId || ""}
