@@ -468,7 +468,7 @@ CollectionProps) => {
         )}
       </Button>
         {/* Header Section */}
-        <div className="mb-1 flex flex-col gap-2 top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+        <div className="mb-1 flex fixed flex-col gap-2 top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
   <div className="p-2 w-full flex flex-col items-center">
     <div className="w-full justify-between flex items-center">
       <div className="flex items-center">
@@ -827,7 +827,7 @@ CollectionProps) => {
 </div>
 
         {/* List Ads Section */}
-  <ScrollArea className="h-[100dvh] w-full bg-gray-200 rounded-t-md border">
+  <ScrollArea className="h-[100dvh] pt-[190px] lg:pt-0 w-full bg-gray-200 rounded-t-md border">
   <section className="p-1 mb-20">
     <div className="flex items-center p-1 w-full justify-between">
       <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">

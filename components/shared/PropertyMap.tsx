@@ -439,7 +439,7 @@ const handlePostLocation = (lat: string,lng:string) => {
   
   const [showGuide, setShowGuide] = useState(false);
    return isLoaded ? (  <>
-    <div className="flex w-full h-screen">
+    <div className="flex w-full h-[100dvh]">
     
         {/* Alert Dialog */}
         {error && (
@@ -458,7 +458,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       )}
       {/* Sidebar with Toggle Button */}
       <div
-        className={`bg-white h-screen mt-5 lg:mt-0 shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
+        className={`bg-white h-[100dvh] shadow-lg transition-transform duration-300 ease-in-out fixed md:relative ${
           showSidebar ? "w-full md:w-1/3 p-1" : "-translate-x-full md:w-0 md:translate-x-0"
         }`}
       >
@@ -504,7 +504,7 @@ const handlePostLocation = (lat: string,lng:string) => {
 </div>
           {data.length > 0 ? (
       
-      <ScrollArea className="h-[63vh] lg:h-[80vh] overflow-y-auto flex p-0 bg-white rounded-lg">
+      <ScrollArea className="h-[63dvh] lg:h-[80dvh] overflow-y-auto flex p-0 bg-white rounded-lg">
       <ul className="w-full h-full">
         {data.map((ad: any, index: number) => {
           const isLastAd = index === data.length - 1;
@@ -585,7 +585,7 @@ const handlePostLocation = (lat: string,lng:string) => {
       </div>
 
       {/* Map Section with Toggle Button */}
-      <div className={`w-full mt-5 lg:mt-0 relative transition-all duration-300 h-[95vh] lg:h-[100vh] ${
+      <div className={`w-full mt-0 lg:mt-0 relative transition-all duration-300 h-[100dvh] ${
         showSidebar ? "hidden md:block" : "block"
       }`}>
       
