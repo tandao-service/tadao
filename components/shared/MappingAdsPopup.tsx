@@ -277,9 +277,9 @@ const MappingAdsPopup = ({ id, title, price, imageUrls, propertyarea, onClose}: 
     mapTypeId: "satellite", // Set default to Satellite mode
   }}
 >
- {/* Show marker if propertyarea.shapes is empty */}
+ {/* Show marker if propertyarea.shapes is empty 
  
-<Marker position={markerPosition} title="Property Location" />
+<Marker position={markerPosition} title="Property Location" />*/}
     
   {/* Render Markers */}
   {propertyarea.markers.map((markerData: any, index: number) => {

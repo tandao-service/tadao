@@ -114,7 +114,7 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
                   handleOpenSafety={handleOpenSafety} 
                   handleOpenShop={handleOpenShop}/>
                  </div>
-                <div className="w-full flex mt-[60px] p-1">
+                <div className="w-full flex mt-[70px] lg:mt-[60px] p-1">
 
                 <ReviewSection
                 displayName={userName}

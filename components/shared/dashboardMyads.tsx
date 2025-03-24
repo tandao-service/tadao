@@ -195,7 +195,7 @@ CollectionProps) => {
                                             handleOpenSafety={handleOpenSafety} 
                                             handleOpenShop={handleOpenShop}/>
                        </div>
-      <div className="lg:p-4 mt-[70px] lg:mt-[60px]">
+      <div className="lg:p-4 mt-[80px] lg:mt-[60px]">
       <div className="w-full flex flex-col">
         <div className="w-full flex">
           <div className="hidden lg:inline">

@@ -7,10 +7,20 @@ import { addDoc, collection, getDocs, limit, onSnapshot, query, serverTimestamp,
 import { db } from "@/lib/firebase";
 import { IUser } from "@/lib/database/models/user.model";
 import { ScrollArea } from "../ui/scroll-area";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import SellerProfile from "./SellerProfile";
 import SellerProfileReviews from "./SellerProfileReviews";
 import CircularProgress from "@mui/material/CircularProgress";
+import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 interface Revieww {
   id: number;
   name: string;
@@ -138,6 +148,12 @@ const [starClicked, setStarClicked] = useState([
   ]);
 
   // Function to handle click on a star
+   const router = useRouter();
+   const [showphone, setshowphone] = useState(false);
+    const handleShowPhoneClick = (e: any) => {
+      setshowphone(true);
+      window.location.href = `tel:${recipient.phone}`;
+    };
   const handleStarClick = (index: number) => {
     const updatedStarClicked = [...starClicked];
     updatedStarClicked[index] = !updatedStarClicked[index];
@@ -250,12 +266,87 @@ const handleReviewSubmit = async () => {
                   <div className="w-full lg:w-3/4 chat overflow-y-auto">
                     <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
                       {/* Seller Profile Section */}
-                      <div className="hidden">
-              <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
+                      <div className="lg:hidden">
+                         {/* Seller Profile Section */}
+      <div className="p-4 flex items-center rounded-lg bg-gray-50">
+        <Image
+         src={recipient.photo ?? "/avator.png"}
+          alt="Seller"
+          width={60}
+          height={60}
+          className="rounded-full"
+        />
+        <div className="ml-4">
+          <h2 className="text-lg font-semibold text-gray-800">{recipient.firstName} {recipient.lastName}</h2>
+          <div className="flex items-center gap-1 text-green-600">
+            {recipient.verified && recipient?.verified[0]?.accountverified === true ? (
+                         <>
+                           <TooltipProvider>
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-white bottom-0 right-0 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full p-1">
+                                   <VerifiedUserOutlinedIcon />
+                                 </div>
+                               </TooltipTrigger>
+                               <TooltipContent>
+                                 <p className="text-emerald-500">Verified Seller</p>
+                               </TooltipContent>
+                             </Tooltip>
+                           </TooltipProvider>
+                         </>
+                       ) : (
+                         <>
+                           <TooltipProvider>
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-gray-100 bottom-0 right-0 bg-gradient-to-b from-gray-500 to-gray-600 rounded-full p-1">
+                                   <ShieldOutlinedIcon />
+                                 </div>
+                               </TooltipTrigger>
+                               <TooltipContent>
+                                 <p className="text-red-500">Unverified Seller</p>
+                               </TooltipContent>
+                             </Tooltip>
+                           </TooltipProvider>
+                         </>
+                       )}
+          </div>
+          <div className="flex gap-4 text-gray-600 mt-1">
+            <div className="flex items-center gap-1">
+             
+               <SignedIn>
+
+               <div onClick={handleShowPhoneClick} className="flex items-center gap-1">
+              <Phone size={16} />
+              <span className="text-sm">Call</span>
+            </div>
+                        
+                           
+                         </SignedIn>
+                         <SignedOut>
+
+                          
+               <div onClick={() => {
+                              // handleOpenP();
+                               router.push(`/sign-in`);
+                             }} className="flex items-center gap-1">
+              <Phone size={16} />
+              <span className="text-sm">Call</span>
+            </div>
+          </SignedOut>
+            </div>
+            <a href={`mailto:${recipient.email}`} className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
+  <Mail size={16} />
+  <span className="text-sm">Email</span>
+</a>
+          </div>
+        </div>
+      </div>
+
+{/* <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/> */}
             </div>
                     </div>
-          
-                    <ScrollArea className="h-[90vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border  lg:p-2">
+<ScrollArea className="h-[70vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border lg:p-2">
                       
  {/* Reviews List (Scrollable) */}
  <div className="flex-1 overflow-y-auto space-y-2 w-full">
@@ -299,7 +390,7 @@ const handleReviewSubmit = async () => {
 
       {/* Leave a Review Button (Fixed) */}
       <button
-        className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-5 py-2 rounded-full shadow-lg"
+        className="fixed bottom-4 right-5 transform -translate-x-1/2 bg-green-600 text-white px-5 py-2 rounded-full shadow-lg"
         onClick={() => setShowForm(true)}
       >
         Leave a Review
@@ -351,8 +442,7 @@ const handleReviewSubmit = async () => {
           </div>
         </div>
       )}
-                     
-                    </ScrollArea>
+      </ScrollArea>
                   </div>
  
     </> );
