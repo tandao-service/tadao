@@ -16,6 +16,7 @@ import { io, Socket } from "socket.io-client";
 import SendChat from "./SendChat";
 import { updateinquiries } from "@/lib/actions/dynamicAd.actions";
 import { Button } from "../ui/button";
+import sanitizeHtml from "sanitize-html";
 let socket: Socket;
 type chatProps = {
   userId: string;
@@ -81,13 +82,13 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
         imageUrl: ad.data.imageUrls[0],
         adTitle: ad.data.title,
         adDescription: ad.data.description,
-        adUrl:process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id,
+        adUrl:process.env.NEXT_PUBLIC_DOMAIN_URL+"?Ad="+ad._id,
         read: "1",
       });
 
-      const adTitle = ad.data.title;
-      const adUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id;
-      const phoneNumber = ad.data.phone;
+     // const adTitle = ad.data.title;
+      //const adUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id;
+      //const phoneNumber = ad.data.phone;
       const recipientEmail = ad?.organizer?.email;
       const callbackUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"chat"
       sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
@@ -132,7 +133,14 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
     "Can we negotiate?",
     "Where can I view this?",
   ];
-
+  const truncateDescription = (description: string, charLimit: number) => {
+      const safeMessage = sanitizeHtml(description); 
+      const truncatedMessage =
+      safeMessage.length > charLimit
+        ? `${safeMessage.slice(0, charLimit)}...`
+        : safeMessage;
+      return truncatedMessage;
+    };
   const handleQuickMessageClick = (text: string) => {
     setMessage(text);
   };
@@ -165,9 +173,8 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
            
 
             <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-              {ad.data.description.length > 80
-                ? `${ad.data.description.substring(0, 80)}...`
-                : ad.data.description}
+            <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad.data.description ?? "", 65) }} />
+            
             </p>
             <span className="font-bold w-min rounded-full mt-1 dark:text-green-600 text-green-600">
               {formatKsh(ad.data.price)}
@@ -178,7 +185,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
               alt={ad.data.title}
               className="w-full h-16 object-cover mb-2 rounded"
               width={800} // Adjust width as needed
-              height={300} // Adjust height as needed
+              height={400} // Adjust height as needed
             />
             <div className="grid grid-cols-2 gap-2 mb-4">
               {quickMessages.map((msg, index) => (

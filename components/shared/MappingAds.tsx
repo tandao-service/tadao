@@ -333,7 +333,18 @@ useEffect(() => {
   }
 }, [directions]);
   const [inputMode, setInputMode] = useState<'area' | 'routeFromSelect' | 'routeFromMyLocation' | 'schools' | 'hospitals' | 'malls' | 'trunsits'>('area');
-
+ // useEffect(() => {
+ //   if (isLoaded) {
+  //    const timeout = setTimeout(() => {
+  //      setInputMode("area");
+ //       handleClear();
+   //     setZoom(18);
+   //   }, 1000); // 5 seconds delay
+  
+   //   return () => clearTimeout(timeout); // Cleanup in case component unmounts
+   // }
+  //}, [isLoaded]);
+  
   return isLoaded ? (
     <div className="w-full border dark:bg-[#2D3236] bg-gray-200 rounded-lg">
        {/* Alert Dialog */}
@@ -353,7 +364,9 @@ useEffect(() => {
       )}
       {/* Action Buttons */}
       <div className="grid grid-cols-7 mb-0 flex gap-1">
-      <button  title="Draw a polygon to measure land area"  onClick={()=> {setInputMode('area');  handleClear(); setZoom(18);}} 
+      <button  title="Draw a polygon to measure land area"  onClick={()=> {setInputMode('area'); handleClear(); setZoom(18);
+        
+      }} 
       className={`p-1 flex gap-1 flex-col lg:flex-raw items-center  text-[10px]  rounded-tl-xl ${inputMode === 'area' ? 'bg-white text-gray-700  dark:bg-[#131B1E] dark:text-white' : 'bg-green-600 text-white'}`}
         >
           <MapOutlinedIcon sx={{ fontSize: 16 }}/> Land Area

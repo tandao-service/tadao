@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import PropertyMap from "./PropertyMap";
+import sanitizeHtml from "sanitize-html";
 interface MessageProps {
   message: {
     uid: string;
@@ -50,14 +51,14 @@ const Message = ({
  handleOpenPlan,
 }: MessageProps) => {
   // Convert Timestamp to Date object
-
-  //console.log(message);
-  const truncateDescription = (title: string, maxLength: number) => {
-    if (title.length > maxLength) {
-      return title.substring(0, maxLength) + "...";
-    }
-    return title;
-  };
+   const truncateDescription = (description: string, charLimit: number) => {
+      const safeMessage = sanitizeHtml(description); 
+      const truncatedMessage =
+      safeMessage.length > charLimit
+        ? `${safeMessage.slice(0, charLimit)}...`
+        : safeMessage;
+      return truncatedMessage;
+    };
   const [isLoading, setIsLoading] = useState(true);
   let formattedCreatedAt = "";
   let queryObject:any=[];
@@ -142,9 +143,9 @@ const Message = ({
               rel="noopener noreferrer"
               className="block  mt-2 text-blue-600 underline"
             >
+             <span dangerouslySetInnerHTML={{ __html:  truncateDescription(message.text ?? "", 65) }} />
             
-              {truncateDescription(message.text ?? "", 65)}
-            </a></>):(<>  {truncateDescription(message.text ?? "", 65)}</>)} </>)}
+            </a></>):(<> <span dangerouslySetInnerHTML={{ __html:  truncateDescription(message.text ?? "", 65) }} /></>)} </>)}
           
             
             </div>
@@ -182,7 +183,8 @@ const Message = ({
               {message.adTitle}
             </a>
             <p className="text-sm text-gray-700">
-             {truncateDescription(message.adDescription ?? "", 80)}
+            <span dangerouslySetInnerHTML={{ __html:  truncateDescription(message.adDescription ?? "", 80) }} />
+           
             </p>
           </div>
         </div>

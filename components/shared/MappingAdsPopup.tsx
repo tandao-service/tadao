@@ -58,26 +58,13 @@ const MappingAdsPopup = ({ id, title, price, imageUrls, propertyarea, onClose}: 
   
   const [center, setCenter] = useState<any>(defaultCenter);
   const [markerPosition, setMarkerPosition] = useState(defaultCenter);
- 
- const [markers, setMarkers] = useState<{ lat: number; lng: number; icon: string; color: string; label: string }[]>([]);
- const [polylines, setPolylines] = useState<
- { path: { lat: number; lng: number }[]; color: string; width: number; label: string }[]
->([]);
-const [shapes, setShapes] = useState<any[]>([]);
- 
- 
-  //const [polygonPath, setPolygonPath] = useState<any[]>([]);
   const [selectedPoints, setSelectedPoints] = useState<{ lat: number; lng: number }[]>([]);
-  //const [area, setArea] = useState<number | null>(null);
   const [distance, setDistance] = useState<string | null>(null);
   const [showAmenities, setShowAmenities] = useState(false);
-  //const [amenityType, setAmenityType] = useState<string | null>(null);
   const [amenities, setAmenities] = useState<any[]>([]);
   const [streetViewVisible, setStreetViewVisible] = useState(false);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
-  const drawingManagerRef = useRef<google.maps.drawing.DrawingManager | null>(null);
-  const polygonsRef = useRef<google.maps.Polygon[]>([]);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const [zoom, setZoom] = useState<number>(18);
   const [errorMessage, setErrorMessage] = useState("");
@@ -89,79 +76,12 @@ const [shapes, setShapes] = useState<any[]>([]);
     libraries: ["places", "geometry", "drawing"],
   });
 
- 
+
   const handleDirectionClick = () => {
     window.open(
       `https://www.google.com/maps/dir/?api=1&destination=${markerPosition.lat},${markerPosition.lng}`,
       "_blank"
     );
-  };
-  const handleRouteFromMyLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-  
-          // Set the user location as the starting point
-          setSelectedPoints([userLocation, markerPosition]);
-  
-          // Call function to get route
-          const directionsService = new google.maps.DirectionsService();
-          const [origin, destination] = selectedPoints;
-         
-          directionsService.route(
-            {
-              origin,
-              destination,
-              travelMode: google.maps.TravelMode.DRIVING,
-            },
-            (result, status) => {
-              if (status === google.maps.DirectionsStatus.OK && result) {
-                setDirections(result);
-                
-                const distanceValue = result.routes?.[0]?.legs?.[0]?.distance?.text;
-                setDistance(distanceValue || null);
-              } else {
-                alert("Unable to find a route.");
-              }
-              
-            }
-          );
-         // calculateRoute(userLocation, markerPosition);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          alert("Unable to retrieve your location. Please enable location services.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
-  const handleWideViewClick = () => {
-    window.open(
-      process.env.NEXT_PUBLIC_DOMAIN_URL+"location?title="+title+"&price="+price+"&propertyarea="+propertyarea.lat+"&lng="+markerPosition.lng,
-      "_blank"
-    );
-  };
-
-  // Handle Distance Calculation
-  const handleDistanceCalculation = () => {
-    if (selectedPoints.length < 2) {
-      alert("Please select point on the map to measure route from to the destination marked point.");
-      return;
-    }
-
-    const [point1, point2] = selectedPoints;
-    const calculatedDistance = window.google.maps.geometry.spherical.computeDistanceBetween(
-      new google.maps.LatLng(point1.lat, point1.lng),
-      new google.maps.LatLng(point2.lat, point2.lng)
-    );
-
-    setDistance(`${(calculatedDistance / 1000).toFixed(2)} km`);
   };
 
   // Fetch Nearby Places
@@ -190,24 +110,13 @@ const [shapes, setShapes] = useState<any[]>([]);
 
   // Clear all markers and polygons
   const handleClear = () => {
-    // Remove all polygons
-  //  polygonsRef.current.forEach((polygon) => {
-   //   polygon.setMap(null);
-   // });
-  //  polygonsRef.current = [];
-
     // Remove all markers
     markersRef.current.forEach((marker) => {
       marker.setMap(null);
     });
     markersRef.current = [];
-// Clear the route (polyline)
-// Clear directions
-setDirections(null); // Assuming you store directions in state
-    // Clear selected points
+    setDirections(null); // Assuming you store directions in state
     setSelectedPoints([]);
-   // setPolygonPath([]);
-  //  setArea(null);
     setDistance(null);
     setShowAmenities(false);
     setAmenities([]);
@@ -244,20 +153,38 @@ setDirections(null); // Assuming you store directions in state
   const [inputMode, setInputMode] = useState<'area' | 'routeFromSelect' | 'routeFromMyLocation' | 'schools' | 'hospitals' | 'malls' | 'trunsits'>('area');
   useEffect(() => {
     if (propertyarea.location?.coordinates) {
-
       const newCenter = {
         lat: propertyarea.location.coordinates[0],
         lng: propertyarea.location.coordinates[1],
       };
       setCenter(newCenter);
       setMarkerPosition(newCenter);
-       
+  
+      // Initialize the selectedPoints with propertyarea coordinates
+      if (propertyarea.polygonCoordinates) {
+        setSelectedPoints(propertyarea.polygonCoordinates);
+      }
+  
+      // Ensure area mode is active on mount
     } else {
       setCenter(defaultCenter);
       setMarkerPosition(defaultCenter);
     }
   }, [propertyarea.location]);
 
+  useEffect(() => {
+    if (isLoaded) {
+      const timeout = setTimeout(() => {
+        setInputMode("area");
+        handleClear();
+        setZoom(18);
+      }, 1000); // 5 seconds delay
+  
+      return () => clearTimeout(timeout); // Cleanup in case component unmounts
+    }
+  }, [isLoaded]);
+  
+  
   return isLoaded ? (
     <div className="w-full p-1 dark:bg-[#2D3236] bg-gray-200 rounded-xl">
        {/* Alert Dialog */}
@@ -269,7 +196,6 @@ setDirections(null); // Assuming you store directions in state
               <AlertDialogDescription>{errorMessage}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-             {/* <AlertDialogCancel onClick={() => setError(false)}>Cancel</AlertDialogCancel>*/} 
               <AlertDialogAction onClick={() => setError(false)}>OK</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -277,7 +203,7 @@ setDirections(null); // Assuming you store directions in state
       )}
       {/* Action Buttons */}
       <div className="grid grid-cols-7 mb-0 flex gap-1">
-      <button  title="Draw a polygon to measure land area"  onClick={()=> {setInputMode('area');  handleClear(); setZoom(18);}} 
+      <button  title="Draw a polygon to measure land area"  onClick={()=> {setInputMode('area'); handleClear(); setZoom(18);}} 
       className={`p-1 flex gap-1 flex-col lg:flex-raw items-center  text-[10px]  rounded-tl-xl ${inputMode === 'area' ? 'bg-white text-gray-700  dark:bg-[#131B1E] dark:text-white' : 'bg-green-600 text-white'}`}
         >
           <MapOutlinedIcon sx={{ fontSize: 16 }}/> Land Area
@@ -322,13 +248,9 @@ setDirections(null); // Assuming you store directions in state
         <AirportShuttleOutlinedIcon sx={{ fontSize: 16 }}/>
           Show Bus Stations
         </button>
-       {/*  <button  title="Clear all markers, routes, and polygons from the map" onClick={handleClear} className="p-1 flex flex-col items-center text-[10px] border border-gray-500 bg-gray-100 text-gray-500 rounded">
-         <ClearOutlinedIcon sx={{ fontSize: 16 }}/> Clear
-        </button>*/}
+      
       </div>
 
-      {/* Display Calculated Area and Distance */}
-     
       {/* Google Map */}
       <div className="bg-white rounded-b-xl dark:bg-[#131B1E] p-2 flex flex-col">
       <GoogleMap
@@ -357,7 +279,7 @@ setDirections(null); // Assuming you store directions in state
 >
  {/* Show marker if propertyarea.shapes is empty */}
  
-        <Marker position={markerPosition} title="Property Location" />
+<Marker position={markerPosition} title="Property Location" />
     
   {/* Render Markers */}
   {propertyarea.markers.map((markerData: any, index: number) => {

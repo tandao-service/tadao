@@ -10,6 +10,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import SellerProfile from "./SellerProfile";
 import SellerProfileReviews from "./SellerProfileReviews";
+import CircularProgress from "@mui/material/CircularProgress";
 interface Revieww {
   id: number;
   name: string;
@@ -52,6 +53,7 @@ const ReviewSection = ({
 
 const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
+   const [isSending, setIsSending] = useState(false); 
   //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -174,6 +176,8 @@ const handleReviewSubmit = async () => {
     }
 
     try {
+      setIsSending(true); // Disable the button and show progress
+
       // Check if a review already exists for the sender and recipient combination
       const reviewQuery = query(
         collection(db, "reviews"),
@@ -217,7 +221,9 @@ const handleReviewSubmit = async () => {
         console.log("Review submitted successfully.");
       }
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error sending review: ", error);
+    } finally {
+      setIsSending(false); // Re-enable the button and hide progress
     }
     setNewReview({ comment: "", rating: 0 });
     setShowForm(false);
@@ -244,12 +250,12 @@ const handleReviewSubmit = async () => {
                   <div className="w-full lg:w-3/4 chat overflow-y-auto">
                     <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
                       {/* Seller Profile Section */}
-                      <div className="mt-5 lg:mt-0 lg:hidden">
+                      <div className="hidden">
               <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
             </div>
                     </div>
           
-                    <ScrollArea className="h-[65vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border  lg:p-2">
+                    <ScrollArea className="h-[90vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border  lg:p-2">
                       
  {/* Reviews List (Scrollable) */}
  <div className="flex-1 overflow-y-auto space-y-2 w-full">
@@ -332,10 +338,15 @@ const handleReviewSubmit = async () => {
                   ))}
             </div>
             <button
+              disabled={isSending}
               className="w-full mt-3 bg-green-600 text-white p-2 rounded-lg flex items-center justify-center gap-2"
               onClick={() => handleReviewSubmit()}
             >
-              Submit <Send size={16} />
+                {isSending && (
+                                  <CircularProgress sx={{ color: "white" }} size={30} />
+                                )}
+                                {isSending ? " Submitting..." : " Submit"}
+              <Send size={16} />
             </button>
           </div>
         </div>

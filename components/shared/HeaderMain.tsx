@@ -20,6 +20,7 @@ import {
 } from "../ui/tooltip";
 import MapSearch from "./MapSearch";
 import PropertyMapSearch from "./PropertyMapSearch";
+import DirectionsWalkOutlinedIcon from '@mui/icons-material/DirectionsWalkOutlined';
 export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPlan, handleOpenSell, handleAdView, handleAdEdit, AdsCountPerRegion,queryObject }: { handleOpenPlan:() => void, handleOpenSell:() => void, handleFilter: (value:any) => void, AdsCountPerRegion:any,queryObject:any , handleAdEdit: (id:string) => void, handleCategory: (value:string) => void,
   handleAdView: (id:string) => void}) {
   const router = useRouter();
@@ -85,29 +86,12 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   <TooltipTrigger asChild>
                   <button
                     onClick={handleOpenPopupMap}
-                    className="flex gap-2 text-gray-700 justify-between items-center justify-center w-full py-3 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                    className="flex gap-2 text-green-600 justify-between items-center justify-center w-full py-4 px-2 border-gray-300 border rounded-sm hover:bg-green-100"
                   >
                    {/*  🗺️ */}
                    <div className="flex gap-3 items-center">
-                    <div className="hidden lg:inline">
-                    <Image
-                                   src={"/assets/icons/map-pointer.png"}
-                                   alt="icon"
-                                   className="rounded-full object-cover"
-                                   width={40}
-                                   height={40}
-                                 />
-                    </div>
-                    <div className="lg:hidden">
-                    <Image
-                                   src={"/assets/icons/map-pointer.png"}
-                                   alt="icon"
-                                   className="rounded-full object-cover"
-                                   width={28}
-                                   height={28}
-                                 />
-                    </div>
-                   
+                    
+                    <DirectionsWalkOutlinedIcon sx={{ fontSize: 20 }}/>
                     <div className="text-xs lg:text-base flex gap-1 items-center">Virtual Site Visit </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
                   </button>
                   </TooltipTrigger>
@@ -126,17 +110,11 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
                   <TooltipTrigger asChild>
                   <button
                     onClick={handleOpenPopupMap}
-                    className="flex gap-2 text-gray-700 items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
+                    className="flex gap-2 text-green-600 items-center justify-center w-full py-4 px-2 border-gray-300 border rounded-sm hover:bg-green-100"
                   >
                    {/*  🗺️ */}
                    
-                    <Image
-                                   src={"/assets/icons/map-pointer.png"}
-                                   alt="icon"
-                                   className="rounded-full object-cover"
-                                   width={40}
-                                   height={40}
-                                 />
+                    <DirectionsWalkOutlinedIcon/>
                     <div className="flex gap-1 items-center">Virtual Property Site Visit <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
                   </button>
                   </TooltipTrigger>
