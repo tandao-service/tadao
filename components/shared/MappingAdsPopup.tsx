@@ -38,7 +38,7 @@ const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLEAPIKEY as string;
 
 const containerStyle = {
   width: "100%",
-  height: "90vh",
+  height: "80dvh",
 };
 
 const defaultCenter = {
