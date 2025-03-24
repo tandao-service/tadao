@@ -346,7 +346,7 @@ const MappingAdsPopup = ({ id, title, price, imageUrls, propertyarea, onClose}: 
         strokeColor: shapeData.strokeColor,
         strokeWeight: shapeData.width,
         fillColor: shapeData.fillColor,
-        fillOpacity: 0.1,
+        fillOpacity: 0,
         map: mapRef.current, // ✅ Fix: Add shape to the map
       });
     } else if (shapeData.type === "rectangle") {
@@ -355,7 +355,7 @@ const MappingAdsPopup = ({ id, title, price, imageUrls, propertyarea, onClose}: 
         strokeColor: shapeData.strokeColor,
         strokeWeight: shapeData.width,
         fillColor: shapeData.fillColor,
-        fillOpacity: 0.1,
+        fillOpacity: 0,
         map: mapRef.current, // ✅ Fix: Add shape to the map
       });
     } else if (shapeData.type === "polygon") {
@@ -364,7 +364,7 @@ const MappingAdsPopup = ({ id, title, price, imageUrls, propertyarea, onClose}: 
         strokeColor: shapeData.strokeColor,
         strokeWeight: shapeData.width,
         fillColor: shapeData.fillColor,
-        fillOpacity: 0.1,
+        fillOpacity: 0,
         map: mapRef.current, // ✅ Fix: Add shape to the map
       });
     }

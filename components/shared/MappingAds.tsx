@@ -516,7 +516,7 @@ title={"Property Location"}
         strokeColor: shapeData.strokeColor,
         strokeWeight: shapeData.width,
         fillColor: shapeData.fillColor,
-        fillOpacity: 0.1,
+        fillOpacity: 0,
         map: mapRef.current, // ✅ Fix: Add shape to the map
       });
     } else if (shapeData.type === "rectangle") {
@@ -525,7 +525,7 @@ title={"Property Location"}
         strokeColor: shapeData.strokeColor,
         strokeWeight: shapeData.width,
         fillColor: shapeData.fillColor,
-        fillOpacity: 0.1,
+        fillOpacity: 0,
         map: mapRef.current, // ✅ Fix: Add shape to the map
       });
     } else if (shapeData.type === "polygon") {
@@ -534,7 +534,7 @@ title={"Property Location"}
         strokeColor: shapeData.strokeColor,
         strokeWeight: shapeData.width,
         fillColor: shapeData.fillColor,
-        fillOpacity: 0.1,
+        fillOpacity: 0,
         map: mapRef.current, // ✅ Fix: Add shape to the map
       });
     }
