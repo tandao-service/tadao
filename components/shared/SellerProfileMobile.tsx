@@ -149,7 +149,7 @@ const SellerProfileMobile = ({
             className="cursor-pointer no-underline m-1"
           >
             <p className="ml-2 text-sm text-gray-700 underline">
-              View Seller Profile
+              Seller Profile
             </p>
           </div>
         </div>

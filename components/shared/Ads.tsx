@@ -838,7 +838,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
                   {ad.data.facilities.map((facility: any) => (
                     <>
-                      <div className="flex flex-col items-center h-10 gap-2 text-[10px] lg:text-xs dark:bg-[#131B1E] bg-white lg:bg-[#ebf2f7] rounded-xl p-1 justify-center border">
+                      <div className="flex flex-col items-center h-10 gap-2 text-[10px] lg:text-xs dark:bg-[#131B1E] bg-[#ebf2f7] rounded-xl p-1 justify-center border">
                         {facility}
                       </div>
                     </>
@@ -855,7 +855,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
                   {ad.data.amenities.map((amenity: any) => (
                     <>
-                      <div className="flex flex-col items-center h-10 gap-2 text-[10px] lg:text-xs dark:bg-[#131B1E] bg-white lg:bg-[#ebf2f7] rounded-xl p-1 justify-center border">
+                      <div className="flex flex-col items-center h-10 gap-2 text-[10px] lg:text-xs dark:bg-[#131B1E] bg-[#ebf2f7] rounded-xl p-1 justify-center border">
                         {amenity}
                       </div>
                     </>
@@ -872,7 +872,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
                   {ad.data.features.map((feature: any) => (
                     <>
-                      <div className="flex flex-col items-center h-10 gap-2 text-[10px] lg:text-xs dark:bg-[#131B1E] bg-white lg:bg-[#ebf2f7] rounded-xl p-1 justify-center border">
+                      <div className="flex flex-col items-center h-10 gap-2 text-[10px] lg:text-xs dark:bg-[#131B1E] bg-[#ebf2f7] rounded-xl p-1 justify-center border">
                         {feature}
                       </div>
                     </>
@@ -1419,7 +1419,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                       {formatKsh(ad.data.price)}
                     </span>
                   </>
-                )}{" "}
+                )}
                 {ad.data.unit && ad.data.contact === "specify" && (
                   <div className="text-xs dark:text-white">{ad.data.unit}</div>
                 )}
