@@ -126,7 +126,19 @@ const MainPage = ({
  const [isOpenSettings, setIsOpenSettings] = useState(false);
  const [isOpenPerfomance, setIsOpenPerfomance] = useState(false);
  const { toast } = useToast()
- 
+ useEffect(() => {
+  const enterFullscreen = async () => {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    }
+  };
+
+  // Delay entering fullscreen by 2 seconds (for demo purposes)
+  setTimeout(() => {
+    enterFullscreen();
+  }, 2000);
+}, []);
+
   const router = useRouter();
   const handleClose = () => {
     setIsOpenAbout(false);
