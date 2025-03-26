@@ -139,12 +139,7 @@ export default function MenuSubmobile({
           </div>
         ))}
       </div>
-      <SubCategoryWindow
-        isOpen={isOpen}
-        onClose={handleClose}
-        category={category}
-        subcategoryList={subcategoryList}
-      />
+      
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );
