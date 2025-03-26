@@ -133,7 +133,7 @@ const FaqComponent =  ({userId,handleOpenPerfomance,
       </h3>
       <p className="text-gray-700">
         Yes, posting a standard product listing is free. However, we offer
-        premium options to boost your listing's visibility for a small fee.
+        premium options to boost your listing&apos;s visibility for a small fee.
       </p>
     </div>
 
