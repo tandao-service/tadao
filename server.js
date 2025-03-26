@@ -78,7 +78,7 @@ const adSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const Ad = mongoose.model('Ad', adSchema);
+const Ad = mongoose.model('DynamicAd', adSchema);
 
 const BusinesshoursSchema = new mongoose.Schema({
   openHour: { type: String, required: true },
@@ -161,7 +161,7 @@ async function checkExpiredSubscriptions() {
 
         await Ad.updateMany(
           { organizer: subscription.buyer },
-          { priority: 1, plan: '65fa7d3fb20de072ea107223' }
+          { priority: 1, plan: '677a7b97d24cd2414b1260b7' }
         );
 
         console.log(`Updated ads for buyer: ${subscription.buyer}`);
