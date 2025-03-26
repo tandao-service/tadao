@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "PocketShop",
   description: "PocketShop | Buy and Sell Online in Kenya",
   icons: {
-    icon: "/logo.png",
+    icon: "/logo_green.png",
   },
 };
 

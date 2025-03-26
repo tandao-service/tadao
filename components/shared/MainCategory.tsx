@@ -408,7 +408,7 @@ CollectionProps) => {
                           handleOpenSafety={handleOpenSafety} 
                           handleOpenShop={handleOpenShop}/>
                          </div>
-                         <div className="relative mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
+                         <div className="relative mt-[70px] lg:mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
     {/* Sidebar */}
     <div
       onClick={(e) => e.stopPropagation()} // Prevent sidebar from closing on itself click

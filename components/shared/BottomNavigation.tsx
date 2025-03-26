@@ -26,13 +26,13 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
   const pathname = usePathname();
  
   const isActive = (path: string) => pathname === path;
-  const shareUrl = "https://landmak.co.ke"; // Replace with the URL you want to share
+  const shareUrl = "https://pocketshop.co.ke"; // Replace with the URL you want to share
 
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Check out LandMak",
+          title: "Check out PocketShop",
           text: "I found this amazing site for property classification!",
           url: shareUrl,
         });
@@ -55,8 +55,8 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
           }}
         >
           <div
-            className={`flex cursor-pointer flex-col items-center hover:text-green-700 ${
-              popup === "home" ? "text-green-600" : "text-gray-600"
+            className={`flex cursor-pointer flex-col items-center hover:text-emerald-700 ${
+              popup === "home" ? "text-emerald-600" : "text-gray-600"
             }`}
           >
             <span>
@@ -68,7 +68,7 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
 
         <div
           onClick={() => {
-            handleCategory('Property');
+            handleCategory('Vehicle');
            // if (
 //pathname !==
 //`/category?category=Vehicle&subcategory=${encodeURIComponent(
@@ -85,8 +85,8 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
           }}
         >
           <div
-            className={`flex flex-col cursor-pointer items-center hover:text-green-700 ${
-              popup === "category" ?  "text-green-600" : "text-gray-600"
+            className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
+              popup === "category" ?  "text-emerald-600" : "text-gray-600"
             }`}
           >
             <span>
@@ -126,7 +126,7 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
             }}
           >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <div className="flex justify-center cursor-pointer items-center w-16 h-16 bg-green-600 text-white rounded-full shadow-lg hover:bg-emerald-700 active:bg-emerald-800 transition duration-200">
+              <div className="flex justify-center cursor-pointer items-center w-16 h-16 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 active:bg-emerald-800 transition duration-200">
                 <AddCircleOutlineOutlinedIcon className="text-3xl" />
               </div>
             </div>
@@ -143,8 +143,8 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
             }}
           >
             <div
-              className={`flex cursor-pointer flex-col items-center hover:text-green-700 ${
-                popup === "chat" ? "text-green-600" : "text-gray-600"
+              className={`flex cursor-pointer flex-col items-center hover:text-emerald-700 ${
+                popup === "chat" ? "text-emerald-600" : "text-gray-600"
               }`}
             >
               <span className="flex">
@@ -166,8 +166,8 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
             }}
           >
             <div
-              className={`flex flex-col cursor-pointer items-center hover:text-green-700 ${
-                popup === "chat" ? "text-green-600" : "text-gray-600"
+              className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
+                popup === "chat" ? "text-emerald-600" : "text-gray-600"
               }`}
             >
               <span className="flex">
@@ -180,8 +180,8 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
         </SignedOut>
 
         <div
-          className={`flex flex-col cursor-pointer items-center hover:text-green-700 ${
-            popup === "share" ? "text-green-600" : "text-gray-600"
+          className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
+            popup === "share" ? "text-emerald-600" : "text-gray-600"
           }`}
           onClick={handleShare}
         >
