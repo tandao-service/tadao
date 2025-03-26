@@ -191,7 +191,7 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                       key={index}
                       onClick={() => handle(message.uid, message.recipientUid)}
                       className={`p-4 flex items-center space-x-4 dark:hover:bg-black rounded-0 hover:bg-gray-100 hover:cursor-pointer ${
-                        message.recipientUid === recipient ? "bg-green-100" : ""
+                        message.recipientUid === recipient ? "bg-emerald-100" : ""
                       }`}
                     >
                       <div className="flex-shrink-0">

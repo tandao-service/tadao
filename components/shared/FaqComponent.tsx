@@ -16,15 +16,23 @@ import { ScrollArea } from "../ui/scroll-area";
 interface Props {
   userId: string;
   handleOpenSell:() => void;
+  handleOpenBook: () => void;
+  handleOpenPlan: () => void;
+  handleOpenChat: () => void;
   onClose:() => void;
   handleOpenAbout:() => void;
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
+  handleOpenPerfomance: () => void;
+handleOpenSettings: () => void;
+handleOpenShop: (shopId:string) => void;
   
 }
 
-const FaqComponent =  ({userId,handleOpenSell,onClose,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}:Props) => {
+const FaqComponent =  ({userId,handleOpenPerfomance,
+  handleOpenSettings,
+  handleOpenShop, handleOpenSell, handleOpenBook,handleOpenChat,handleOpenPlan, onClose,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}:Props) => {
  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
 
     useEffect(() => {
@@ -48,128 +56,130 @@ const FaqComponent =  ({userId,handleOpenSell,onClose,handleOpenAbout,handleOpen
   return (
     <ScrollArea className="h-[100vh] bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
       <Head>
-        <title>Frequently Asked Questions | AutoYard.co.ke</title>
+        <title>Frequently Asked Questions | PocketShop.co.ke</title>
         <meta
           name="description"
-          content="Find answers to common questions about using AutoYard.co.ke, including how to post a vehicle, contact sellers, and more."
+          content="Find answers to common questions about using PocketShop.co.ke, including how to post a product, contact sellers, and more."
         />
         <meta
           name="keywords"
-          content="AutoYard, FAQ, frequently asked questions, vehicle marketplace, car sales, post a vehicle, contact seller"
+          content="PocketShop, FAQ, frequently asked questions, product marketplace, post a product, contact seller"
         />
         <meta
           property="og:title"
-          content="Frequently Asked Questions | AutoYard.co.ke"
+          content="Frequently Asked Questions | PocketShop.co.ke"
         />
         <meta
           property="og:description"
-          content="Get help with common questions about posting vehicles, contacting sellers, and managing your listings on AutoYard.co.ke."
+          content="Get help with common questions about posting products, contacting sellers, and managing your listings on PocketShop.co.ke."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.autoyard.co.ke/faq" />
+        <meta property="og:url" content="https://www.PocketShop.co.ke/faq" />
         <meta
           property="og:image"
-          content="https://www.autoyard.co.ke/assets/images/faq-cover.jpg"
+          content="https://www.PocketShop.co.ke/assets/images/faq-cover.jpg"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="Frequently Asked Questions | AutoYard.co.ke"
+          content="Frequently Asked Questions | PocketShop.co.ke"
         />
         <meta
           name="twitter:description"
-          content="Find answers to your questions about posting vehicles and using AutoYard.co.ke. Learn more about our marketplace."
+          content="Find answers to your questions about posting products and using PocketShop.co.ke. Learn more about our marketplace."
         />
         <meta
           name="twitter:image"
-          content="https://www.autoyard.co.ke/assets/images/faq-cover.jpg"
+          content="https://www.PocketShop.co.ke/assets/images/faq-cover.jpg"
         />
-        <link rel="canonical" href="https://www.autoyard.co.ke/faq" />
-      </Head>
-     {/* <div className="z-10 top-0 fixed w-full">
-                <Navbar userstatus="User" userId={userId} onClose={onClose} handleOpenSell={handleOpenSell} popup={"privacy"} />
-              </div>
- */}
+        <link rel="canonical" href="https://www.PocketShop.co.ke/faq" />
+        </Head>
+   <div className="top-0 z-10 fixed w-full">
+        <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"faq"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+   
+           handleOpenPerfomance={handleOpenPerfomance}
+           handleOpenSettings={handleOpenSettings}
+           handleOpenAbout={handleOpenAbout}
+           handleOpenTerms={handleOpenTerms}
+           handleOpenPrivacy={handleOpenPrivacy}
+           handleOpenSafety={handleOpenSafety} 
+           handleOpenShop={handleOpenShop}/>
+                          </div>
       <div className="max-w-3xl mx-auto flex mt-20 p-1">
         <div className="hidden lg:inline mr-5"></div>
 
         <div className="flex-1">
           <div className="rounded-[20px] bg-white max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
-            <div className="max-w-3xl mx-auto p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                Frequently Asked Questions
-              </h2>
+          <div className="max-w-3xl mx-auto p-6">
+  <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+    Frequently Asked Questions
+  </h2>
 
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-emerald-600 mb-2">
-                    1. How do I post a vehicle for sale on AutoYard.co.ke?
-                  </h3>
-                  <p className="text-gray-700">
-                    To post a vehicle, simply create an account, navigate to the
-                    &quot;Sell &quot; section, and fill out the required
-                    details. Upload photos, set your price, and submit your
-                    listing.
-                  </p>
-                </div>
+  <div className="space-y-8">
+    <div>
+      <h3 className="text-xl font-semibold text-emerald-600 mb-2">
+        1. How can I list my product on PocketShop.co.ke?
+      </h3>
+      <p className="text-gray-700">
+        To list your product, sign up or log into your account, go to the
+        &quot;Sell&quot; section, and complete the required details. Upload
+        clear images, set your price, and submit your listing.
+      </p>
+    </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-emerald-600 mb-2">
-                    2. Is there a fee for posting a vehicle?
-                  </h3>
-                  <p className="text-gray-700">
-                    Posting a basic vehicle listing on AutoYard.co.ke is free.
-                    However, we offer premium listing options for increased
-                    visibility, which come with a small fee.
-                  </p>
-                </div>
+    <div>
+      <h3 className="text-xl font-semibold text-emerald-600 mb-2">
+        2. Is it free to post a product listing?
+      </h3>
+      <p className="text-gray-700">
+        Yes, posting a standard product listing is free. However, we offer
+        premium options to boost your listing's visibility for a small fee.
+      </p>
+    </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-emerald-600 mb-2">
-                    3. How can I contact a seller?
-                  </h3>
-                  <p className="text-gray-700">
-                    You can contact a seller directly via the chat function on
-                    the website, or by using the provided email or phone number
-                    listed in the vehicle details.
-                  </p>
-                </div>
+    <div>
+      <h3 className="text-xl font-semibold text-emerald-600 mb-2">
+        3. How do I contact a seller?
+      </h3>
+      <p className="text-gray-700">
+        You can reach a seller through the chat feature on PocketShop.co.ke or
+        use the provided phone number and email on the listing page.
+      </p>
+    </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-emerald-600 mb-2">
-                    4. What should I do if I suspect a fraudulent listing?
-                  </h3>
-                  <p className="text-gray-700">
-                    If you suspect a fraudulent listing, please report it
-                    immediately using the &quot;Report &quot; button on the
-                    listing page. Our team will review and take appropriate
-                    action.
-                  </p>
-                </div>
+    <div>
+      <h3 className="text-xl font-semibold text-emerald-600 mb-2">
+        4. What should I do if I find a suspicious listing?
+      </h3>
+      <p className="text-gray-700">
+        If you suspect a fraudulent listing, click the &quot;Report&quot;
+        button on the ad page. Our team will review the report and take the
+        necessary action.
+      </p>
+    </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-emerald-600 mb-2">
-                    5. How do I edit or delete my vehicle listing?
-                  </h3>
-                  <p className="text-gray-700">
-                    You can edit or delete your listing by logging into your
-                    account, navigating to &quot;My Listings, &quot; and
-                    selecting the option to edit or delete the desired vehicle
-                    listing.
-                  </p>
-                </div>
+    <div>
+      <h3 className="text-xl font-semibold text-emerald-600 mb-2">
+        5. How can I update or remove my product listing?
+      </h3>
+      <p className="text-gray-700">
+        Log into your account, go to &quot;My Listings,&quot; and select the
+        listing you want to edit or remove.
+      </p>
+    </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-emerald-600 mb-2">
-                    6. Can I get a refund for a premium listing?
-                  </h3>
-                  <p className="text-gray-700">
-                    Refunds for premium listings are subject to our refund
-                    policy. Please review the policy or contact our support team
-                    for assistance.
-                  </p>
-                </div>
-              </div>
+    <div>
+      <h3 className="text-xl font-semibold text-emerald-600 mb-2">
+        6. Can I get a refund for a premium listing?
+      </h3>
+      <p className="text-gray-700">
+        Refunds for premium listings are subject to our refund policy. Please
+        review our policy or contact customer support for assistance.
+      </p>
+    </div>
+  </div>
+
+
             </div>
           </div>
         </div>

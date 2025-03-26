@@ -7,12 +7,11 @@ import Category from "../database/models/category.model"
 import { revalidatePath } from "next/cache"
 import { UTApi } from "uploadthing/server"
 
-
-export const createCategory = async ({ formData, path}: CreateCategoryParams) => {
+export const createCategory = async ({ formData, path }: CreateCategoryParams) => {
   try {
     await connectToDatabase();
-  
-    const newCategory = await Category.create({ ...formData});
+
+    const newCategory = await Category.create({ ...formData });
     revalidatePath(path)
     return JSON.parse(JSON.stringify(newCategory));
   } catch (error) {
@@ -20,21 +19,21 @@ export const createCategory = async ({ formData, path}: CreateCategoryParams) =>
   }
 }
 // UPDATE
-export async function updateCategory({ _id,formData, deleteUrl,
+export async function updateCategory({ _id, formData, deleteUrl,
   oldurl, path }: UpdateCategoryParams) {
   try {
     await connectToDatabase()
     const updatedCat = await Category.findByIdAndUpdate(
       _id,
-      { ...formData},
+      { ...formData },
       { new: true }
     )
-    try{
-    if (!deleteUrl) {
-      const utapi = new UTApi();
-    await utapi.deleteFiles(oldurl);
-  }
-}catch{}
+    try {
+      if (!deleteUrl) {
+        const utapi = new UTApi();
+        await utapi.deleteFiles(oldurl);
+      }
+    } catch { }
     revalidatePath(path)
 
     return JSON.parse(JSON.stringify(updatedCat))
@@ -92,7 +91,7 @@ export const getAllCategories = async () => {
         }
       }
     ]);
-    
+
     //console.log(categories);
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
@@ -135,7 +134,7 @@ export const getselectedCategories = async () => {
         }
       }
     ]);
-    
+
     //console.log(categories);
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
@@ -146,7 +145,7 @@ export const getselectedCategories = async () => {
 
 
 // DELETE
-export async function deleteCategory({ categoryId,categoryImage, path }: DeleteCategoryParams) {
+export async function deleteCategory({ categoryId, categoryImage, path }: DeleteCategoryParams) {
   try {
     await connectToDatabase()
 
@@ -154,14 +153,14 @@ export async function deleteCategory({ categoryId,categoryImage, path }: DeleteC
     // Delete image from uploadthing
     const url = new URL(categoryImage);
     const filename = url.pathname.split('/').pop();
-    try{
-    if (filename) {
+    try {
+      if (filename) {
         const utapi = new UTApi();
-      await utapi.deleteFiles(filename);
+        await utapi.deleteFiles(filename);
+      }
+    } catch {
+
     }
-  }catch{
-    
-  }
     if (deletedAd) revalidatePath(path)
   } catch (error) {
     handleError(error)

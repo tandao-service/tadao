@@ -398,10 +398,21 @@ CollectionProps) => {
       
   return (
     <div className="relative flex w-full h-screen">
+            <div className="top-0 z-10 fixed w-full">
+                          <Navbar userstatus="category" userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                          handleOpenPerfomance={handleOpenPerfomance}
+                          handleOpenSettings={handleOpenSettings}
+                          handleOpenAbout={handleOpenAbout}
+                          handleOpenTerms={handleOpenTerms}
+                          handleOpenPrivacy={handleOpenPrivacy}
+                          handleOpenSafety={handleOpenSafety} 
+                          handleOpenShop={handleOpenShop}/>
+                         </div>
+                         <div className="relative mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
     {/* Sidebar */}
     <div
       onClick={(e) => e.stopPropagation()} // Prevent sidebar from closing on itself click
-      className={`bg-white shadow-lg transition-transform rounded-0 duration-300 ease-in-out fixed md:relative z-10 ${
+      className={`dark:bg-[#131B1E] bg-white shadow-lg transition-transform rounded-0 duration-300 ease-in-out fixed md:relative z-10 ${
         showSidebar
           ? "w-full md:w-1/4 p-1 transform translate-x-0"
           : "-translate-x-full md:w-0 md:translate-x-0"
@@ -446,7 +457,7 @@ CollectionProps) => {
   
     {/* Ads Section */}
     <div
-      className={`flex-1 flex-col bg-gray-200 lg:bg-white transition-all duration-300 h-screen ${
+      className={`flex-1 flex-col dark:bg-[#131B1E] bg-gray-200 transition-all duration-300 h-screen ${
         showSidebar ? "hidden md:block" : "block"
       }`}
     >
@@ -455,7 +466,7 @@ CollectionProps) => {
       <div className="relative h-full flex flex-col">
       <Button
         onClick={handleSidebarToggle}
-        className="hidden lg:inline absolute bottom-5 left-4 z-10 md:block bg-green-600 text-white shadow-lg hover:bg-green-700"
+        className="hidden lg:inline absolute bottom-5 left-4 z-10 md:block bg-emerald-600 text-white shadow-lg hover:bg-emerald-700"
       >
         {showSidebar ? (
           <>
@@ -468,35 +479,10 @@ CollectionProps) => {
         )}
       </Button>
         {/* Header Section */}
-        <div className="mb-1 flex fixed flex-col gap-2 top-0 left-0 w-full bg-white p-0 shadow-md z-10 md:relative md:w-auto md:shadow-none">
+  <div className="mb-1 dark:bg-[#131B1E] flex flex-col gap-2 w-full">
   <div className="p-2 w-full flex flex-col items-center">
     <div className="w-full justify-between flex items-center">
-      <div className="flex items-center">
-        <div
-          className="mr-2 w-5 h-8 flex items-center justify-center rounded-sm tooltip tooltip-bottom hover:cursor-pointer hover:text-green-600"
-          data-tip="Back"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <ArrowBackOutlinedIcon />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Back</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-          <span className="text-xl font-bold">LandMak</span>
-        </div>
-      </div>
-
+     
       <div className="hidden lg:inline dark:text-gray-400 text-emerald-950 text-center sm:text-left p-0">
         {newqueryObject.subcategory ? (
           <div className="mt-0"> {newqueryObject.subcategory} in Kenya</div>
@@ -507,178 +493,30 @@ CollectionProps) => {
         )}
       </div>
 
-      <div className="flex gap-2 items-center">
-        <div className="hidden lg:inline">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                handleOpenBook();
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <BookmarkIcon sx={{ fontSize: 16 }} className="hover:text-green-600" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Bookmark</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                handleOpenChat();
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="relative flex items-center justify-center">
-                      <MessageIcon sx={{ fontSize: 16 }} className="absolute hover:text-green-600" />
-                      <div className="absolute z-10">
-                        <Unreadmessages userId={userId} />
-                      </div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <div
-                      onClick={() => {
-                        handleOpenChat();
-                      }}
-                      className="flex gap-1"
-                    >
-                      Chats
-                      <Unreadmessages userId={userId} />
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                handleOpenPlan();
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DiamondIcon sx={{ fontSize: 16 }} className="hover:text-green-600" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Premium Services</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <div>
-              <SignedIn>
-                <Button
-                  onClick={() => {
-                    handleOpenSell();
-                    // onClose();
-                  }}
-                  variant="default"
-                  className="flex bg-green-600 hover:bg-green-700 items-center gap-2"
-                >
-                  <AddOutlinedIcon sx={{ fontSize: 16 }} /> SELL
-                </Button>
-              </SignedIn>
-            </div>
-
-            <div>
-              <SignedOut>
-                <Button
-                  onClick={() => {
-                    // setIsOpenP(true);
-                    router.push("/sign-in");
-                  }}
-                  variant="default"
-                  className="flex bg-green-600 hover:bg-green-700 items-center gap-2"
-                >
-                  <AddOutlinedIcon sx={{ fontSize: 16 }} /> SELL
-                </Button>
-              </SignedOut>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex gap-2">
-          <SignedIn>
-            <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          </SignedIn>
-
-          <MobileNav
-            userstatus={"User"}
-            userId={userId}
-            popup={"category"}
-            handleOpenSell={handleOpenSell}
-            handleOpenBook={handleOpenBook}
-            handleOpenPlan={handleOpenPlan}
-            handleOpenChat={handleOpenChat}
-            handleOpenShop={handleOpenShop}
-            handleOpenPerfomance={handleOpenPerfomance}
-            handleOpenSettings={handleOpenSettings}
-            handleOpenAbout={handleOpenAbout}
-            handleOpenTerms={handleOpenTerms}
-            handleOpenPrivacy={handleOpenPrivacy}
-            handleOpenSafety={handleOpenSafety}
-            onClose={onClose}
-          />
-        </div>
-      </div>
+      
     </div>
 
-    <div className="w-full lg:hidden">
-      <div className="flex w-full mt-3 gap-1 items-center">
-        {newqueryObject.category === "Property" && (
-          <div className="flex-1">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={handleOpenPopupMapSearch}
-                    className="flex text-xs gap-2 text-gray-700 items-center justify-between w-full py-3 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
-                  >
-                    <div className="flex gap-2 items-center">
-                      <Image
-                        src={"/assets/icons/travel-distance.png"}
-                        alt="icon"
-                        className="rounded-full object-cover"
-                        width={30}
-                        height={30}
-                      />
-                      Search by Distance
-                    </div>
-                    <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Search by Distance</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        )}
+    <div className="w-full flex lg:hidden">
+      <div className="flex grid grid-cols-2 gap-5 w-full items-center">
+      <button
+        onClick={handleOpenPopupLocation}
+        className="flex w-full justify-center text-xs lg:text-base gap-1 items-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
+      >
+        <div className="hidden lg:inline">
+           <LocationOnIcon/>
+           </div>
+           <div className="lg:hidden">
+           <LocationOnIcon sx={{ fontSize: 24 }}/>
+           </div> {region}
+      </button>
 
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-1 w-full items-center">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
                   onClick={togglePopup}
-                  className="flex text-xs py-4 px-3 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
+                  className="flex w-full text-xs py-4 px-3 cursor-pointer dark:bg-[#2D3236] rounded-sm border border-gray-300 dark:border-gray-600 text-gray-300 text-sm hover:bg-gray-700 p-1 justify-center items-center"
                 >
                 
                   <div className="hidden lg:inline">
@@ -702,7 +540,7 @@ CollectionProps) => {
     <div className="flex w-full gap-1 mt-2 justify-center items-center mb-1">
       <button
         onClick={handleOpenPopupLocation}
-        className="flex text-xs lg:text-base gap-1 items-center justify-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
+        className=" hidden lg:inline flex text-xs lg:text-base gap-1 items-center justify-center py-4 px-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2D3236] dark:text-gray-100 rounded-sm hover:bg-gray-200"
       >
         <div className="hidden lg:inline">
            <LocationOnIcon/>
@@ -716,35 +554,7 @@ CollectionProps) => {
         <SearchNow handleFilter={handleFilter} />
       </div>
 
-      {newqueryObject.category === "Property" && (
-        <div className="flex hidden lg:inline">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={handleOpenPopupMapSearch}
-                  className="flex gap-2 text-gray-700 items-center justify-center w-full py-2 px-2 border-gray-300 border rounded-sm hover:bg-gray-200"
-                >
-                  <div className="flex gap-2 items-center">
-                    <Image
-                      src={"/assets/icons/travel-distance.png"}
-                      alt="icon"
-                      className="rounded-full object-cover"
-                      width={40}
-                      height={40}
-                    />
-                    Search by Distance
-                  </div>
-                  <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Search by Distance</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      )}
+      
 
       <div className="flex gap-1 items-center hidden lg:inline">
         <TooltipProvider>
@@ -752,7 +562,7 @@ CollectionProps) => {
             <TooltipTrigger asChild>
               <div
                 onClick={togglePopup}
-                className="flex py-4 px-2 cursor-pointer border-gray-300 border rounded-sm text-gray-700 text-sm hover:bg-gray-200 p-1 justify-between items-center"
+                className="flex py-4 px-2 cursor-pointer dark:bg-[#2D3236] dark:border-gray-600 border rounded-sm text-gray-300 text-sm hover:bg-gray-700 p-1 justify-between items-center"
               >
                 <SortOutlinedIcon />
                 <div className="flex gap-1 items-center">Filter</div>
@@ -765,19 +575,7 @@ CollectionProps) => {
         </TooltipProvider>
       </div>
 
-      {showPopupMapSearch && (
-        <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-          <PropertyMapSearch
-                queryObject={newqueryObject}
-                onClose={handleClosePopupMapSearch}
-                handleOpenPlan={handleOpenPlan}
-                handleAdEdit={handleAdEdit}
-                handleAdView={handleAdView}
-                handleOpenSell={handleOpenSell}
-              />
-           
-        </div>
-      )}
+      
 
       {showPopupLocation && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
@@ -827,13 +625,13 @@ CollectionProps) => {
 </div>
 
         {/* List Ads Section */}
-  <ScrollArea className="h-[100vh] w-full bg-gray-200 rounded-t-md border mt-[210px] lg:mb-0 lg:mt-0">
+  <ScrollArea className="h-[100vh] w-full dark:bg-[#131B1E] bg-gray-200 rounded-t-md border lg:mb-0 lg:mt-0">
   <section className="p-1 mb-20">
     <div className="flex items-center p-1 w-full justify-between">
       <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">
         <div
           className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
-            activeButton === 0 ? "text-[#30AF5B]" : "text-gray-500"
+            activeButton === 0 ? "text-emerald-600" : "text-gray-500"
           }`}
           onClick={() => handleButtonClick(0)}
         >
@@ -844,7 +642,7 @@ CollectionProps) => {
         </div>
         <div
           className={`flex gap-1 items-center text-xs dark:bg-[#2D3236] bg-white rounded-sm p-1 cursor-pointer ${
-            activeButton === 1 ? "text-[#30AF5B]" : "text-gray-500"
+            activeButton === 1 ? "text-emerald-600" : "text-gray-500"
           }`}
           onClick={() => handleButtonClick(1)}
         >
@@ -856,7 +654,7 @@ CollectionProps) => {
       </div>
       <div className="flex gap-1 items-center">
         <div className="rounded-sm dark:bg-[#2D3236] bg-white border py-1 px-2 z-5 flex items-center">
-          <div className="text-[#30AF5B]">
+          <div className="text-emerald-600">
             <SwapVertIcon />
           </div>
           <Select onValueChange={handleSortChange}>
@@ -876,23 +674,23 @@ CollectionProps) => {
 
         <button
           onClick={handleClear}
-          className="py-4 px-2 text-xs bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-300 rounded-sm flex items-center gap-1 hover:cursor-pointer"
+          className="py-4 px-2 text-xs dark:bg-[#2D3236] bg-white text-gray-200 text-sm hover:bg-gray-700 rounded-sm flex items-center gap-1 hover:cursor-pointer"
         >
           <SearchOffOutlinedIcon sx={{ fontSize: 16 }} />Clear
         </button>
       </div>
     </div>
 
-    <div>
+    <div className="mt-2 mb-2 dark:bg-[#2D3236] dark:text-gray-300 rounded-lg p-2">
       {newqueryObject.subcategory === "Cars, Vans & Pickups" && (
-        <div className="mb-1 w-full dark:bg-[#2D3236] dark:text-gray-300 flex flex-col rounded-lg p-0">
+        <div className="w-full dark:bg-[#2D3236] dark:text-gray-300 flex flex-col">
           <div className="grid grid-cols-4 lg:grid-cols-7 justify-between gap-1 m-0">
             <div
               onClick={() => handlePrice(1, "0", "500000")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 1
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               0-500K
@@ -902,8 +700,8 @@ CollectionProps) => {
               onClick={() => handlePrice(2, "500000", "1000000")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 2
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               {"500K-1M"}
@@ -913,8 +711,8 @@ CollectionProps) => {
               onClick={() => handlePrice(3, "1000000", "2000000")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 3
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               {"1M-2M"}
@@ -923,8 +721,8 @@ CollectionProps) => {
               onClick={() => handlePrice(4, "2000000", "3000000")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 4
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               {"2M-3M"}
@@ -933,8 +731,8 @@ CollectionProps) => {
               onClick={() => handlePrice(5, "3000000", "5000000")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 5
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               {"3M-5M"}
@@ -943,8 +741,8 @@ CollectionProps) => {
               onClick={() => handlePrice(6, "5000000", "10000000")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 6
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               {"5M-10M"}
@@ -953,8 +751,8 @@ CollectionProps) => {
               onClick={() => handlePrice(7, "10000000", "9999999999")}
               className={`text-sm rounded-sm p-2 justify-center cursor-pointer ${
                 activerange === 7
-                  ? "bg-green-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-green-100"
+                  ? "bg-emerald-600 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-100"
               }`}
             >
               {"Above 10M"}
@@ -964,7 +762,7 @@ CollectionProps) => {
       )}
 
       {newqueryObject.subcategory && (
-        <div className="w-full dark:bg-[#2D3236] dark:text-gray-300 flex flex-col rounded-lg mb-1">
+        <div className="w-full dark:bg-[#2D3236] dark:text-gray-300 flex flex-col rounded-lg">
           <MenuType
             categoryList={categoryList}
             category={newqueryObject.category}
@@ -1036,7 +834,7 @@ CollectionProps) => {
       </div>
     </div>
   </div>
-  
+  </div>
   );
 };
 

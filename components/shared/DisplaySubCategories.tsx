@@ -225,9 +225,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                             Price Per Service
                           </option>
                           <option value="delivery">Delivery Option</option>
-                          <option value="youtube-link">YouTube or TikTok Video link</option>
-                          <option value="virtualTourLink">3D Virtual Property Tour Link</option>
-                          <option value="propertyarea"> Advanced Property Mapping</option>
+                          <option value="youtube-link">YouTube link</option>
                           <option value="related-autocompletes">
                             Related-autocompletes
                           </option>

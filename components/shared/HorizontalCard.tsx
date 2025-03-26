@@ -264,14 +264,14 @@ const HorizontalCard = ({
               
               </div>
             )}
-            {(ad.data["propertyarea"]) && (
+          {/* {(ad.data["propertyarea"]) && (
               <div className="mb-1 mr-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
                 <LocationOnIcon
                   sx={{ fontSize: 16, cursor: "pointer" }}
                 />
               
               </div>
-            )}
+            )}*/} 
             </div>
         </div>
 
@@ -312,28 +312,28 @@ const HorizontalCard = ({
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-green-500 text-emerald-700">
+                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-emerald-600 text-emerald-600">
                     Contact for price
                   </div>
                 ) : (
                   <>
-                    <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-green-500 text-emerald-700">
+                    <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-600 text-emerald-600">
                       {formatKsh(ad.data.price)}
                     </span>
                   </>
                 )}{" "}
                 {ad.data.unit && ad.data.contact === "specify" && (
-                  <div className="text-xs dark:text-green-500">
+                  <div className="text-xs dark:text-emerald-600">
                     {ad.data.unit}
                   </div>
                 )}{" "}
                 {ad.data.per && (
-                  <div className="text-xs dark:text-green-500">
+                  <div className="text-xs dark:text-emerald-600">
                     {ad.data.per}
                   </div>
                 )}
                 {ad.data.period && (
-                  <div className="text-xs dark:text-green-500">
+                  <div className="text-xs dark:text-emerald-600">
                     {ad.data.period}
                   </div>
                 )}
@@ -363,7 +363,7 @@ const HorizontalCard = ({
                 }}
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
-                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-green-500 text-emerald-700">
+                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-600 text-emerald-600">
                   {formatKsh(ad.data.price)}
                 </span>{" "}
                 {ad.data.per && (

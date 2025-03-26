@@ -13,6 +13,7 @@ interface Subcategory {
   _id: string;
   subcategory: string;
   adCount: number;
+ 
 }
 
 interface Category {
@@ -24,16 +25,23 @@ interface Category {
 type MobileProps = {
   categoryList: Category[];
   subcategoryList: any;
-  handleCategory: (value:string) => void;
-  handleSubCategory: (category:string, subcategory:string) => void;
+  footerRef: any;
+  hoveredCategory:any;
+  handleCategory:(value:string)=> void;
+  handleHoverCategory:(value:string)=> void;
+  handleSubCategory:(category:string, subcategory:string)=> void;
+  
 };
 const CategoryMenu = ({
   categoryList,
   subcategoryList,
-  handleSubCategory,
+  footerRef,
+  hoveredCategory,
   handleCategory,
+  handleSubCategory,
+  handleHoverCategory,
 }: MobileProps) => {
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  //const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
     null
   );
@@ -48,7 +56,64 @@ const CategoryMenu = ({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
- 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const footer = footerRef.current;
+      const windowHeight = window.innerHeight;
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      if (scrollPosition > 200 && scrollPosition + windowHeight < footerTop) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+
+
+
+  const searchParams = useSearchParams();
+
+  const handleCategoryy = (query: string) => {
+    let newUrl = "";
+    if (query) {
+      newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "category",
+        value: query,
+      });
+    } else {
+      newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["category"],
+      });
+    }
+    setIsOpenP(true);
+    router.push("/category/" + newUrl, { scroll: false });
+  };
+  const handleSubCategoryy = (category: string, subcategory: string) => {
+    let newUrl = "";
+    if (category && subcategory) {
+      newUrl = formUrlQuerymultiple({
+        params: "",
+        updates: {
+          category: category.toString(),
+          subcategory: subcategory.toString(),
+        },
+      });
+    } else {
+      newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["subcategory"],
+      });
+    }
+    setIsOpenP(true);
+    router.push("/category/" + newUrl, { scroll: false });
+  };
   return (
     <div className="relative flex">
       <div className="w-64 p-0">
@@ -69,7 +134,7 @@ const CategoryMenu = ({
                   onClick={() => {
                     category.adCount > 0 ? handleCategory(category.name) : null;
                   }}
-                  onMouseEnter={() => setHoveredCategory(category.name)}
+                  onMouseEnter={() => handleHoverCategory(category.name)}
                   className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${
                     hoveredCategory === category.name
                       ? "bg-emerald-100 dark:bg-[#131B1E]"
@@ -136,8 +201,8 @@ const CategoryMenu = ({
               ? "fixed top-[70px] left-[310px]"
               : "absolute top-0 left-64"
           }`}
-          onMouseEnter={() => setHoveredCategory(hoveredCategory)}
-          onMouseLeave={() => setHoveredCategory(null)}
+          onMouseEnter={() => handleHoverCategory(hoveredCategory)}
+          onMouseLeave={() => handleHoverCategory('')}
         >
           {/* <div className="p-1 border-b dark:border-gray-600">
             <h2 className="text-lg font-semibold">Subcategories</h2>
@@ -196,7 +261,7 @@ const CategoryMenu = ({
           </ScrollArea>
         </div>
       )}
-   
+      <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );
 };

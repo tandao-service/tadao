@@ -6,6 +6,7 @@ import { getAllCategories } from "@/lib/actions/category.actions";
 import { getAllSubCategories, removenegotiable } from "@/lib/actions/subcategory.actions";
 import { getAdsCountAllRegion } from "@/lib/actions/dynamicAd.actions";
 import MainPage from "@/components/shared/MainPage";
+import CollectionInfinite from "@/components/shared/CollectionInfinite";
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const { sessionClaims } = auth();
@@ -26,15 +27,13 @@ export default async function Home({ searchParams }: SearchParamProps) {
   const categoryList = await getAllCategories();
   const subcategoryList = await getAllSubCategories();
   const AdsCountPerRegion = await getAdsCountAllRegion();
-  //const resultt = await  removenegotiable();
- //console.log(resultt)
- 
+  
 //const categoryList:any = [];
 //const subcategoryList:any = [];
 //const AdsCountPerRegion:any = [];
   return (
     <main>
-<MainPage emptyTitle="No Ads Found"
+{/*<MainPage emptyTitle="No Ads Found"
             emptyStateSubtext="Come back later"
             collectionType="All_Ads"
             limit={20}
@@ -45,8 +44,8 @@ export default async function Home({ searchParams }: SearchParamProps) {
             queryObject={queryObject}
             categoryList={categoryList}
             subcategoryList={subcategoryList}
-            AdsCountPerRegion={AdsCountPerRegion}/>
-       {/* <CollectionInfinite
+            AdsCountPerRegion={AdsCountPerRegion}/>*/}
+       <CollectionInfinite
             emptyTitle="No Ads Found"
             emptyStateSubtext="Come back later"
             collectionType="All_Ads"
@@ -60,19 +59,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
             subcategoryList={subcategoryList}
             AdsCountPerRegion={AdsCountPerRegion}
           />
- <HomePage 
-emptyTitle="No Ads Found"
-            emptyStateSubtext="Come back later"
-            collectionType="All_Ads"
-            limit={20}
-            user={user}
-            userId={userId}
-            userName={userName}
-            userImage={userImage}
-            queryObject={queryObject}
-            categoryList={categoryList}
-            subcategoryList={subcategoryList}
-            AdsCountPerRegion={AdsCountPerRegion}/>*/} 
+
           <Toaster />
       
    

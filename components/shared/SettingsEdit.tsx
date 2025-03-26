@@ -777,7 +777,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
             <AccordionContent>
               <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
                 <div className="m-1">
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
+                  <div className="flex mt-1 flex-col gap-5 mb-5 md:flex-row">
                     <FormField
                       control={form.control}
                       name="phone"

@@ -861,7 +861,7 @@ const AdForm = ({
                   InputLabelProps={{
                     classes: {
                       root: "text-gray-500 dark:text-gray-400",
-                      focused: "text-green-500 dark:text-green-400",
+                      focused: "text-emerald-500 dark:text-emerald-400",
                     },
                   }}
                   className="w-full"
@@ -871,13 +871,13 @@ const AdForm = ({
                 <TextField
                   required={field.required}
                   id={field.type}
-                  label={"YouTube or TikTok Video link"}
+                  label={"YouTube link"}
                   value={formData[field.type] || ""}
                   onChange={(e) =>
                     handleInputChange(field.type, e.target.value)
                   }
                   variant="outlined"
-                  placeholder={`Enter YouTube or TikTok Video link`}
+                  placeholder={`Enter YouTube link`}
                   InputProps={{
                     classes: {
                       root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
@@ -888,7 +888,7 @@ const AdForm = ({
                   InputLabelProps={{
                     classes: {
                       root: "text-gray-500 dark:text-gray-400",
-                      focused: "text-green-500 dark:text-green-400",
+                      focused: "text-emerald-500 dark:text-emerald-400",
                     },
                   }}
                   className="w-full"
@@ -915,7 +915,7 @@ const AdForm = ({
                   InputLabelProps={{
                     classes: {
                       root: "text-gray-500 dark:text-gray-400",
-                      focused: "text-green-500 dark:text-green-400",
+                      focused: "text-emerald-500 dark:text-emerald-400",
                     },
                   }}
                   className="w-full"
@@ -945,7 +945,7 @@ const AdForm = ({
                     InputLabelProps={{
                       classes: {
                         root: "text-gray-500 dark:text-gray-400",
-                        focused: "text-green-500 dark:text-green-400",
+                        focused: "text-emerald-500 dark:text-emerald-400",
                       },
                     }}
                     className="w-full"
@@ -977,11 +977,11 @@ const AdForm = ({
                           }}
                           className="hidden peer"
                         />
-                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-400 flex items-center justify-center">
                           {(formData["negotiable"]
                             ? formData["negotiable"] === option.toLowerCase()
                             : option.toLowerCase() === "not sure") && (
-                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
                           )}
                         </div>
                         <span
@@ -992,7 +992,7 @@ const AdForm = ({
                                   option.toLowerCase()
                                 : option.toLowerCase() === "not sure"
                             )
-                              ? "text-green-500 font-medium"
+                              ? "text-emerald-500 font-medium"
                               : "text-gray-600 dark:text-gray-400"
                           }
                         >
@@ -1028,7 +1028,7 @@ const AdForm = ({
                       InputLabelProps={{
                         classes: {
                           root: "text-gray-500 dark:text-gray-400",
-                          focused: "text-green-500 dark:text-green-400",
+                          focused: "text-emerald-500 dark:text-emerald-400",
                         },
                       }}
                       className="w-full"
@@ -1077,11 +1077,11 @@ const AdForm = ({
                           }}
                           className="hidden peer"
                         />
-                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-400 flex items-center justify-center">
                           {(formData["negotiable"]
                             ? formData["negotiable"] === option.toLowerCase()
                             : option.toLowerCase() === "not sure") && (
-                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
                           )}
                         </div>
                         <span
@@ -1092,7 +1092,7 @@ const AdForm = ({
                                   option.toLowerCase()
                                 : option.toLowerCase() === "not sure"
                             )
-                              ? "text-green-500 font-medium"
+                              ? "text-emerald-500 font-medium"
                               : "text-gray-600 dark:text-gray-400"
                           }
                         >
@@ -1128,7 +1128,7 @@ const AdForm = ({
                       InputLabelProps={{
                         classes: {
                           root: "text-gray-500 dark:text-gray-400",
-                          focused: "text-green-500 dark:text-green-400",
+                          focused: "text-emerald-500 dark:text-emerald-400",
                         },
                       }}
                       className="w-full"
@@ -1176,11 +1176,11 @@ const AdForm = ({
                           }}
                           className="hidden peer"
                         />
-                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-400 flex items-center justify-center">
                           {(formData["negotiable"]
                             ? formData["negotiable"] === option.toLowerCase()
                             : option.toLowerCase() === "not sure") && (
-                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
                           )}
                         </div>
                         <span
@@ -1191,7 +1191,7 @@ const AdForm = ({
                                   option.toLowerCase()
                                 : option.toLowerCase() === "not sure"
                             )
-                              ? "text-green-500 font-medium"
+                              ? "text-emerald-500 font-medium"
                               : "text-gray-600 dark:text-gray-400"
                           }
                         >
@@ -1227,7 +1227,7 @@ const AdForm = ({
                       InputLabelProps={{
                         classes: {
                           root: "text-gray-500 dark:text-gray-400",
-                          focused: "text-green-500 dark:text-green-400",
+                          focused: "text-emerald-500 dark:text-emerald-400",
                         },
                       }}
                       className="w-full"
@@ -1278,11 +1278,11 @@ const AdForm = ({
                           }}
                           className="hidden peer"
                         />
-                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-400 flex items-center justify-center">
                           {(formData["negotiable"]
                             ? formData["negotiable"] === option.toLowerCase()
                             : option.toLowerCase() === "not sure") && (
-                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
                           )}
                         </div>
                         <span
@@ -1293,7 +1293,7 @@ const AdForm = ({
                                   option.toLowerCase()
                                 : option.toLowerCase() === "not sure"
                             )
-                              ? "text-green-500 font-medium"
+                              ? "text-emerald-500 font-medium"
                               : "text-gray-600 dark:text-gray-400"
                           }
                         >
@@ -1339,7 +1339,7 @@ const AdForm = ({
                     InputLabelProps={{
                       classes: {
                         root: "text-gray-500 dark:text-gray-400",
-                        focused: "text-green-500 dark:text-green-400",
+                        focused: "text-emerald-500 dark:text-emerald-400",
                       },
                     }}
                     className="w-full"
@@ -1437,7 +1437,7 @@ const AdForm = ({
                               sx={{
                                 color: "gray", // Unchecked color
                                 "&.Mui-checked": {
-                                  color: "green", // Checked color
+                                  color: "emerald", // Checked color
                                 },
                               }}
                             />
@@ -1468,11 +1468,12 @@ const AdForm = ({
   <div style={{ width: "100%", height: "300px", borderRadius: "8px", border:"1px", overflow: "hidden" }}>
                 <ReactQuill
   value={formData[field.name] || ""}
+   theme="bubble"
   onChange={(value) => handleInputChange(field.name, value)}
   className="bg-white w-full w-[200px] text-black mb-0"
   modules={modules} // Pass the custom toolbar modules
   placeholder={`Enter ${capitalizeFirstLetter(field.name.replace("-", " "))}*`}
-  style={{ height: "100%", width: "100%", border:"1px", borderRadius: "8px" }}
+  style={{ height: "100%", width: "100%", border: "0px", borderRadius: "8px" }}
 />
 </div>
 )}
@@ -1563,7 +1564,7 @@ const AdForm = ({
                     InputLabelProps={{
                       classes: {
                         root: "text-gray-500 dark:text-gray-400",
-                        focused: "text-green-500 dark:text-green-400",
+                        focused: "text-emerald-500 dark:text-emerald-400",
                       },
                     }}
                     className="w-full"
@@ -1673,7 +1674,7 @@ const AdForm = ({
                           </Link>
                         </div>
 
-                        <div className="absolute top-0 left-0 bg-green-500 text-white text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                        <div className="absolute top-0 left-0 bg-emerald-500 text-white text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
                           Active
                         </div>
                       </div>
@@ -1909,7 +1910,7 @@ const AdForm = ({
           </Button>
           <p className="mt-2 text-xs text-gray-600 dark:text-gray-500 text-center">
             By clicking on Create Ad, you accept the{" "}
-            <span onClick={() => handleOpenTerms()} className="text-green-600 cursor-pointer underline">
+            <span onClick={() => handleOpenTerms()} className="text-emerald-600 cursor-pointer underline">
               Terms of Use
             </span>
           </p>

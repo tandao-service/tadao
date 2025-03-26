@@ -21,27 +21,12 @@ import {
 import MapSearch from "./MapSearch";
 import PropertyMapSearch from "./PropertyMapSearch";
 import DirectionsWalkOutlinedIcon from '@mui/icons-material/DirectionsWalkOutlined';
-export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPlan, handleOpenSell, handleAdView, handleAdEdit, AdsCountPerRegion,queryObject }: { handleOpenPlan:() => void, handleOpenSell:() => void, handleFilter: (value:any) => void, AdsCountPerRegion:any,queryObject:any , handleAdEdit: (id:string) => void, handleCategory: (value:string) => void,
-  handleAdView: (id:string) => void}) {
-  const router = useRouter();
-  const [search, setSearch] = useState<string>();
+export default function HeaderMain({ handleFilter, AdsCountPerRegion }: {  handleFilter: (value:any) => void, AdsCountPerRegion:any}) {
   const [region, setRegion] = useState("All Kenya");
   // Function to handle changes in the search input
-  const handleSearchChange = (event: { target: { value: any } }) => {
-    const { value } = event.target;
-    setSearch(value);
-  };
- const [showPopup, setShowPopup] = useState(false);
- const [showPopupMap, setShowPopupMap] = useState(false);
  
-
- const handleOpenPopupMap = () => {
-   setShowPopupMap(true);
- };
-
- const handleClosePopupMap = () => {
-   setShowPopupMap(false);
- };
+ const [showPopup, setShowPopup] = useState(false);
+ 
   const handleOpenPopup = () => {
     setShowPopup(true);
   };
@@ -55,7 +40,6 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
   return (
     <div
       className="relative flex flex-col w-full"
-     
     >
         <div className="flex gap-1 items-center w-full">
         <div className="flex gap-1 items-center w-full">
@@ -77,68 +61,9 @@ export default function HeaderMain({ handleFilter ,handleCategory, handleOpenPla
         <SearchNow handleFilter={handleFilter} />
         </div>
 
- 
-
-
-                <div className="flex-1 lg:hidden">
-                <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                  <button
-                    onClick={handleOpenPopupMap}
-                    className="flex gap-2 text-green-600 justify-between items-center justify-center w-full py-4 px-2 border-gray-300 border rounded-sm hover:bg-green-100"
-                  >
-                   {/*  🗺️ */}
-                   <div className="flex gap-3 items-center">
-                    
-                    <DirectionsWalkOutlinedIcon sx={{ fontSize: 20 }}/>
-                    <div className="text-xs lg:text-base flex gap-1 items-center">Virtual Site Visit </div></div><ArrowForwardIosIcon sx={{ fontSize: 14 }}/>
-                  </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Explore the property&apos;s location through a virtual interactive tour.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-                  
-                </div>
-
-
-                <div className="flex hidden lg:inline">
-                <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                  <button
-                    onClick={handleOpenPopupMap}
-                    className="flex gap-2 text-green-600 items-center justify-center w-full py-4 px-2 border-gray-300 border rounded-sm hover:bg-green-100"
-                  >
-                   {/*  🗺️ */}
-                   
-                    <DirectionsWalkOutlinedIcon/>
-                    <div className="flex gap-1 items-center">Virtual Property Site Visit <ArrowForwardIosIcon sx={{ fontSize: 14 }}/></div>
-                  </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Explore the property&apos;s location through a virtual interactive tour.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-                  
-                </div>
-
 
         </div>
 
-
-      
-
-
-        {showPopupMap && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
-                      <PropertyMap queryObject={queryObject} handleOpenSell={handleOpenSell} handleOpenPlan={handleOpenPlan} onClose={handleClosePopupMap} handleAdView={handleAdView} handleAdEdit={handleAdEdit} handleCategory={handleCategory}/>
-                    </div>
-                     
-                  )}
       {/* Left Side */}
       {showPopup && (
                      

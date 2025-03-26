@@ -250,7 +250,7 @@ const SidebarSearchmobile = ({
                           InputLabelProps={{
                             classes: {
                               root: "text-gray-500 dark:text-gray-400",
-                              focused: "text-green-500 dark:text-green-400",
+                              focused: "text-emerald-500 dark:text-emerald-400",
                             },
                           }}
                         />
@@ -274,7 +274,7 @@ const SidebarSearchmobile = ({
                           InputLabelProps={{
                             classes: {
                               root: "text-gray-500 dark:text-gray-400",
-                              focused: "text-green-500 dark:text-green-400",
+                              focused: "text-emerald-500 dark:text-emerald-400",
                             },
                           }}
                         />
@@ -417,7 +417,7 @@ const SidebarSearchmobile = ({
         <Button
           onClick={() => applyFilters()}
           size="lg"
-          className="button bg-green-600 hover:bg-green-700 mt-3 w-full"
+          className="button bg-emerald-600 hover:bg-emerald-700 mt-3 w-full"
         >
           <div className="flex gap-1 items-center">
             <SearchOutlinedIcon />
@@ -487,7 +487,7 @@ const SidebarSearchmobile = ({
                           InputLabelProps={{
                             classes: {
                               root: "text-gray-500 dark:text-gray-400",
-                              focused: "text-green-500 dark:text-green-400",
+                              focused: "text-emerald-500 dark:text-emerald-400",
                             },
                           }}
                         />
@@ -511,7 +511,7 @@ const SidebarSearchmobile = ({
                           InputLabelProps={{
                             classes: {
                               root: "text-gray-500 dark:text-gray-400",
-                              focused: "text-green-500 dark:text-green-400",
+                              focused: "text-emerald-500 dark:text-emerald-400",
                             },
                           }}
                         />
@@ -654,7 +654,7 @@ const SidebarSearchmobile = ({
         <Button
           onClick={() => applyFilters()}
           size="lg"
-          className="button bg-green-600 hover:bg-green-700 mt-3 w-full"
+          className="button bg-emerald-600 hover:bg-emerald-700 mt-3 w-full"
         >
           <div className="flex gap-1 items-center">
             <SearchOutlinedIcon />

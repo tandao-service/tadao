@@ -18,7 +18,7 @@ const DescriptionComponent: React.FC<{ description: string }> = ({
 
   return (
     <div>
-      <p className="my-1 text-emerald-950">
+      <p className="my-1 dark:text-gray-300 text-emerald-950">
         <span dangerouslySetInnerHTML={{ __html: truncatedMessage }} />
       </p>
       {safeMessage.length > charLimit && (

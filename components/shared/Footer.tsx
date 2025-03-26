@@ -5,8 +5,16 @@ import { useEffect, useRef, useState } from "react";
 import ProgressPopup from "./ProgressPopup";
 import { usePathname, useRouter } from "next/navigation";
 //import Termspopup from "./termspopup";
-
-const Footer = () => {
+interface footProps {
+  
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleOpenFaq: () => void;
+ 
+}
+const Footer = ({handleOpenFaq, handleOpenAbout,handleOpenTerms,handleOpenPrivacy, handleOpenSafety}:footProps) => {
   const currentYear = new Date().getFullYear();
   const [isOpenP, setIsOpenP] = useState(false);
   const router = useRouter();
@@ -35,24 +43,19 @@ const Footer = () => {
               <li className="transition-colors text-sm hover:text-emerald-600 hover:cursor-pointer">
                 <div
                   onClick={() => {
-                    if (pathname !== "/about/") {
-                      setIsOpenP(true);
-                      router.push("/about/");
-                    }
+                    handleOpenAbout()
+                  
                   }}
                   className="cursor-pointer hover:text-emerald-500 "
                 >
-                  About landmak
+                  About PocketShop
                 </div>
               </li>
 
               <li className="transition-colors text-sm hover:text-emerald-600 hover:cursor-pointer">
                 <div
                   onClick={() => {
-                    if (pathname !== "/terms/") {
-                      setIsOpenP(true);
-                      router.push("/terms/");
-                    }
+                    handleOpenTerms()
                   }}
                   className="cursor-pointer hover:text-emerald-500 "
                 >
@@ -61,12 +64,9 @@ const Footer = () => {
               </li>
               <li className="transition-colors text-sm hover:text-emerald-600 hover:cursor-pointer">
                 <div
-                  onClick={() => {
-                    if (pathname !== "/privacy/") {
-                      setIsOpenP(true);
-                      router.push("/privacy/");
-                    }
-                  }}
+                 onClick={() => {
+                  handleOpenPrivacy()
+                }}
                   className="cursor-pointer hover:text-emerald-500 "
                 >
                   Privacy Policy
@@ -81,19 +81,16 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="transition-colors text-sm hover:text-emerald-600 hover:cursor-pointer">
                 <Link
-                  href="mailto:support@landmak.co.ke"
+                  href="mailto:support@PocketShop.co.ke"
                   className="no-underline hover:text-emerald-500 "
                 >
-                  support@landmak.co.ke
+                  support@PocketShop.co.ke
                 </Link>
               </li>
               <li className="transition-colors text-sm hover:text-emerald-600 hover:cursor-pointer">
                 <div
                   onClick={() => {
-                    if (pathname !== "/safety/") {
-                      setIsOpenP(true);
-                      router.push("/safety/");
-                    }
+                    handleOpenSafety()
                   }}
                   className="cursor-pointer hover:text-emerald-500 "
                 >
@@ -104,10 +101,8 @@ const Footer = () => {
               <li className="transition-colors text-sm hover:text-emerald-600 hover:cursor-pointer">
                 <div
                   onClick={() => {
-                    if (pathname !== "/faq/") {
-                      setIsOpenP(true);
-                      router.push("/faq/");
-                    }
+                    handleOpenFaq()
+                  
                   }}
                   className="cursor-pointer hover:text-emerald-500 "
                 >
@@ -123,7 +118,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <Link
-                  href=" https://play.google.com/store/apps/details?id=ke.landmak.app"
+                  href=" https://play.google.com/store/apps/details?id=ke.PocketShop.app"
                   className="no-underline hover:text-emerald-500 "
                 >
                   <Image
@@ -171,7 +166,7 @@ const Footer = () => {
       <div className="border-t dark:border-gray-700 border-gray-300 p-2 mt-3"></div>
       <div className="flex flex-col items-center justify-center">
         <p className="text-xs dark:text-gray-400 font-bold">
-          {currentYear} LandMak. All Rights reserved.
+          {currentYear} PocketShop. All Rights reserved.
         </p>
         <p className="text-[8px] dark:text-gray-400 lg:text-xs">
           Powered by{" "}

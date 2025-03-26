@@ -146,7 +146,7 @@ const SearchNow = ({
       <div>
         <button
           onClick={handleSearch}
-          className="flex justify-center items-center h-12 w-12 hover:bg-green-700 bg-green-600 text-white rounded-sm"
+          className="flex justify-center items-center h-12 w-12 hover:bg-emerald-700 bg-emerald-600 text-white rounded-sm"
         >
           <SearchOutlinedIcon />
         </button>
@@ -158,7 +158,7 @@ const SearchNow = ({
           {searchHistory.map((item, index) => (
             <div
               key={index}
-              className="flex w-full justify-between items-center p-0 cursor-pointer hover:text-green-600 dark:hover:bg-gray-800"
+              className="flex w-full justify-between items-center p-0 cursor-pointer hover:text-emerald-600 dark:hover:bg-gray-800"
             >
               <span
                 onClick={() => handleClick(item)}

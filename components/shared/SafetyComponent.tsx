@@ -56,38 +56,38 @@ const SafetyComponent =  ({userId, handleOpenPerfomance,
   return (
   <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
    <Head>
-  <title>Safety Tips | LandMak.co.ke</title>
-  <meta
-    name="description"
-    content="Stay safe while buying or selling property on LandMak.co.ke. Follow our safety tips to protect yourself and ensure a secure transaction."
-  />
-  <meta
-    name="keywords"
-    content="LandMak, safety tips, property buying, property selling, secure transactions, online marketplace safety, LandMak safety"
-  />
-  <meta property="og:title" content="Safety Tips | LandMak.co.ke" />
-  <meta
-    property="og:description"
-    content="Follow these important safety tips to protect yourself when buying or selling property on LandMak.co.ke."
-  />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.LandMak.co.ke/safety" />
-  <meta
-    property="og:image"
-    content="https://www.LandMak.co.ke/assets/images/safety-tips-cover.jpg"
-  />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Safety Tips | LandMak.co.ke" />
-  <meta
-    name="twitter:description"
-    content="Learn how to stay safe while buying or selling property on LandMak.co.ke with our safety guidelines."
-  />
-  <meta
-    name="twitter:image"
-    content="https://www.LandMak.co.ke/assets/images/safety-tips-cover.jpg"
-  />
-  <link rel="canonical" href="https://www.LandMak.co.ke/safety" />
-</Head>
+      <title>Safety Tips | PocketShop.co.ke</title>
+      <meta
+        name="description"
+        content="Stay safe while buying or selling on PocketShop.co.ke. Follow our safety tips to protect yourself and ensure a secure transaction."
+      />
+      <meta
+        name="keywords"
+        content="PocketShop, safety tips, buying, selling, secure transactions, online marketplace safety, PocketShop safety"
+      />
+      <meta property="og:title" content="Safety Tips | PocketShop.co.ke" />
+      <meta
+        property="og:description"
+        content="Follow these important safety tips to protect yourself when buying or selling on PocketShop.co.ke."
+      />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://www.PocketShop.co.ke/safety" />
+      <meta
+        property="og:image"
+        content="https://www.PocketShop.co.ke/assets/images/safety-tips-cover.jpg"
+      />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Safety Tips | PocketShop.co.ke" />
+      <meta
+        name="twitter:description"
+        content="Learn how to stay safe while buying or selling on PocketShop.co.ke with our safety guidelines."
+      />
+      <meta
+        name="twitter:image"
+        content="https://www.PocketShop.co.ke/assets/images/safety-tips-cover.jpg"
+      />
+      <link rel="canonical" href="https://www.PocketShop.co.ke/safety" />
+    </Head>
 
    <div className="top-0 z-10 fixed w-full">
                            <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"saftey"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
@@ -104,91 +104,74 @@ const SafetyComponent =  ({userId, handleOpenPerfomance,
 
       <div className="flex-1">
   <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
-        Safety Tips for LandMak.co.ke
-      </h2>
+  <div className="max-w-3xl mx-auto p-6">
+  <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
+    Safety Tips for PocketShop.co.ke
+  </h2>
 
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-xl font-semibold text-orange-600 mb-2">
-            For Sellers:
-          </h3>
-          <ul className="list-disc pl-6 space-y-2 dark:text-gray-300 text-gray-700">
-            <li>
-              Verify Buyer Information: Always confirm the buyer&apos;s identity before sharing personal details or arranging meetings. Request a phone number and verify it.
-            </li>
-            <li>
-              Meet in Public Places: Arrange to meet potential buyers in well-populated, public areas, preferably during daylight hours.
-            </li>
-            <li>
-              Bring a Friend: If possible, bring a friend or family member when meeting buyers. Never go alone, especially to unfamiliar locations.
-            </li>
-            <li>
-              Avoid Sharing Personal Information: Do not disclose sensitive details like your home address or financial information. Communicate through LandMak.co.ke&apos;s secure messaging system.
-            </li>
-            <li>
-              Secure Payment: Be cautious of checks or money orders. Prefer cash or verified electronic transfers. Ensure payment is completed and verified before handing over property documents.
-            </li>
-            <li>
-              Document Everything: Keep records of all communication with the buyer, including emails, messages, and agreements.
-            </li>
-            <li>
-              Trust Your Instincts: If something feels suspicious or too good to be true, trust your gut and reconsider the deal.
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-xl font-semibold text-green-600 mb-2">
-            For Buyers:
-          </h3>
-          <ul className="list-disc pl-6 space-y-2 dark:text-gray-300 text-gray-700">
-            <li>
-              Research the Seller: Check the seller&apos;s profile and reviews if available. Be cautious of sellers with little to no history on LandMak.co.ke.
-            </li>
-            <li>
-              Inspect the Property: Always visit the property in person before making a purchase. Ensure it matches the listing description.
-            </li>
-            <li>
-              Meet in Safe Locations: Arrange to meet the seller in a public place. Avoid secluded areas and always choose a safe location.
-            </li>
-            <li>
-              Avoid Sending Money in Advance: Never send money before seeing the property in person. Scammers often ask for payments upfront and then disappear.
-            </li>
-            <li>
-              Verify Property Documents: Ensure the seller has legitimate ownership documents. Cross-check with relevant authorities to confirm authenticity.
-            </li>
-            <li>
-              Bring a Professional: If possible, bring a property expert or legal advisor to help inspect the documents and property conditions.
-            </li>
-            <li>
-              Use Secure Payment Methods: Prefer secure payment options like escrow services or verified bank transfers. Avoid untraceable cash transactions.
-            </li>
-            <li>
-              Stay Vigilant: Be cautious of unrealistic offers, rushed deals, or unusual payment requests. If something seems off, it probably is.
-            </li>
-          </ul>
-        </div>
-
-          {/* New Section - How Property Mapping Reduces Land Fraud */}
+  <div className="space-y-6">
+    {/* Seller Safety Tips */}
     <div>
-      <h3 className="text-xl font-semibold text-blue-600 mb-2">
-        How Property Mapping Reduces Land Fraud
-      </h3>
+      <h3 className="text-xl font-semibold text-orange-600 mb-2">For Sellers:</h3>
       <ul className="list-disc pl-6 space-y-2 dark:text-gray-300 text-gray-700">
-        <li><strong>Prevents Fake Listings:</strong> Fraudsters cannot fake property location or size since buyers can verify it on the map.</li>
-        <li><strong>Buyers Can Independently Visit the Site:</strong> The exact location is available, allowing buyers to verify details with neighbors.</li>
-        <li><strong>Proof of Ownership & Boundaries:</strong> Clearly drawn boundaries prevent fraudsters from misrepresenting land size or ownership.</li>
-        <li><strong>Comparison with Official Records:</strong> Buyers can cross-check mapped property details with government land records.</li>
-        <li><strong>Detects Overlapping Claims:</strong> If two sellers list the same property, discrepancies in mapping will expose fraud.</li>
-        <li><strong>Publicly Visible Infrastructure:</strong> Buyers can see actual roads, power lines, and water sources instead of relying on verbal claims.</li>
-        <li><strong>Encourages Due Diligence:</strong> Buyers can check with local authorities and community members before purchasing.</li>
-        <li><strong>Reduces Middlemen Scams:</strong> Publicly available property coordinates allow buyers to verify details directly with real owners.</li>
+        <li>
+          <strong>Verify Buyer Identity:</strong> Request and confirm the buyer&apos;s phone number before sharing personal details or arranging a meeting.
+        </li>
+        <li>
+          <strong>Meet in Safe, Public Places:</strong> Choose well-lit, crowded locations for meetings, preferably during daytime.
+        </li>
+        <li>
+          <strong>Bring a Companion:</strong> Avoid meeting buyers alone. Bring a friend or family member for added security.
+        </li>
+        <li>
+          <strong>Protect Your Privacy:</strong> Avoid sharing your home address or financial details. Communicate through PocketShop&apos;s messaging system.
+        </li>
+        <li>
+          <strong>Secure Payments:</strong> Prefer cash or verified digital transfers. Avoid checks or money orders, and confirm payments before handing over the item.
+        </li>
+        <li>
+          <strong>Keep Records:</strong> Save all messages, emails, and agreements related to the transaction for reference.
+        </li>
+        <li>
+          <strong>Trust Your Instincts:</strong> If something seems suspicious or too good to be true, proceed with caution or walk away.
+        </li>
       </ul>
     </div>
-      </div>
+
+    {/* Buyer Safety Tips */}
+    <div>
+      <h3 className="text-xl font-semibold text-green-600 mb-2">For Buyers:</h3>
+      <ul className="list-disc pl-6 space-y-2 dark:text-gray-300 text-gray-700">
+        <li>
+          <strong>Research the Seller:</strong> Check their profile, reviews, and activity history. Be cautious with new or unverified sellers.
+        </li>
+        <li>
+          <strong>Inspect Before You Buy:</strong> Always examine the item in person to ensure it matches the listing description.
+        </li>
+        <li>
+          <strong>Meet in Safe Locations:</strong> Choose public, secure places for meetings. Avoid secluded areas.
+        </li>
+        <li>
+          <strong>Never Pay Upfront:</strong> Avoid sending money before seeing the item. Scammers often request payments in advance and disappear.
+        </li>
+        <li>
+          <strong>Verify Ownership Documents:</strong> Ensure that the seller has legitimate ownership documents for the vehicle or item.
+        </li>
+        <li>
+          <strong>Get a Second Opinion:</strong> If buying a vehicle, bring a trusted mechanic to inspect it for hidden issues.
+        </li>
+        <li>
+          <strong>Use Secure Payment Methods:</strong> Opt for bank transfers or escrow services. Avoid large cash transactions when possible.
+        </li>
+        <li>
+          <strong>Stay Alert for Scams:</strong> Watch out for unusually low prices, rushed deals, or non-traditional payment requests.
+        </li>
+      </ul>
     </div>
+  </div>
+</div>
+
+    
   </div>
 </div>
 

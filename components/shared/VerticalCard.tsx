@@ -164,7 +164,7 @@ const VerticalCard = ({
               onClick={() => {
                handleAdView(ad._id);
               }}
-              className="absolute cursor-pointer w-full h-[400px] rounded-lg inset-0 flex items-center justify-center bg-gray-200"
+              className="absolute cursor-pointer w-full h-[400px] rounded-lg inset-0 flex items-center justify-center dark:bg-[#2D3236] bg-gray-200"
             >
               {/* Spinner or loading animation */}
               <CircularProgress sx={{ color: "white" }} size={30} />
@@ -257,7 +257,7 @@ const VerticalCard = ({
               </div>
             )}
             
-            {(ad.data["propertyarea"]) && (
+        {/*   {(ad.data["propertyarea"]) && (
               <div className="gap-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white flex rounded-sm p-1 shadow-sm transition-all">
                 <LocationOnIcon
                   sx={{ fontSize: 16, cursor: "pointer" }}
@@ -265,7 +265,7 @@ const VerticalCard = ({
                 />
              
               </div>
-            )}
+            )}*/} 
           </div>
           {!isAdCreator && !popup && (
                       <>
@@ -416,7 +416,7 @@ const VerticalCard = ({
             onClick={() => {
               handleAdView(ad._id);
             }}
-            className="flex gap-1 cursor-pointer items-center dark:text-green-500 text-emerald-700 no-underline"
+            className="flex gap-1 cursor-pointer items-center dark:text-emerald-600 text-emerald-600 no-underline"
           >
             {ad.data.contact && ad.data.contact === "contact" ? (
               <div className="text-sm lg:text-base font-bold">Contact for price</div>
@@ -428,13 +428,13 @@ const VerticalCard = ({
               </>
             )}{" "}
             {ad.data.unit && ad.data.contact === "specify" && (
-              <div className="text-xs dark:text-green-500">{ad.data.unit}</div>
+              <div className="text-xs dark:text-emerald-600">{ad.data.unit}</div>
             )}{" "}
             {ad.data.per && (
-              <div className="text-xs dark:text-green-500">{ad.data.per}</div>
+              <div className="text-xs dark:text-emerald-600">{ad.data.per}</div>
             )}
             {ad.data.period && (
-              <div className="text-xs dark:text-green-500">
+              <div className="text-xs dark:text-emerald-600">
                 {ad.data.period}
               </div>
             )}

@@ -289,7 +289,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
     <>
       <div className="text-sm p-0 hidden lg:inline">
         <div className="flex">
-          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-500 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
             <div
               onClick={() => {
                 //setIsOpenP(true);
@@ -302,7 +302,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
               </div>
             </div>
           </div>
-          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-500 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
@@ -318,7 +318,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
               )}
             </div>
           </div>
-          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-500 py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-green-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-400 py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
@@ -344,11 +344,11 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-1 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300"
+          className="mt-1 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl p-2"
           style={
             ad.plan.name !== "Free"
               ? {
-                  borderTop: "0",
+                  borderTop: "8",
                   borderColor: ad.plan.color, // Border color for non-free plans
                 }
               : undefined
@@ -359,7 +359,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 style={{
                   backgroundColor: ad.plan.color,
                 }}
-                className="hidden lg:inline absolute shadow-lg top-0 right-0 text-white text-[10px] py-1 px-3"
+                className="hidden lg:inline rounded-rt-xl absolute shadow-lg top-0 right-0 text-white text-[10px] py-1 px-3"
               >
                 <div
                   onClick={() => {
@@ -374,7 +374,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 </div>
               </div>
             )}
-  <div className="grid grid-cols-3 mb-0 flex gap-1">
+  {/*<div className="grid grid-cols-3 mb-0 flex gap-1">
   <button
     title="Ad Pictures"
     onClick={() => setInputMode("Images")}
@@ -410,36 +410,13 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
     <ThreeDRotationOutlinedIcon sx={{ fontSize: 16 }} />3D Virtual Tour
   </button>
 </div>
+*/}
+
+
 
 <div
-  className={`rounded-0 p-2 flex flex-col ${
-    (inputMode === "Video" && checkPlatform(ad.data["youtube-link"]) === "TikTok") ? " bg-white" : " bg-[#131B1E]"
-  }`}
+  className={`rounded-0 p-2 flex flex-col bg-[#131B1E] rounded-xl`}
   >
-  {/* Video Section */}
-  <div
-    className={`flex items-center justify-center w-full min-h-[400px] ${
-      inputMode === "Video" ? "block" : "hidden"
-    }`}
-  >
-    {ad.data["youtube-link"] ? (
-      <>
-        {checkPlatform(ad.data["youtube-link"]) === "TikTok" ? (
-          <TikTokEmbed videoUrl={ad.data["youtube-link"]} />
-        ) : (
-          <YouTubePlayer videoUrl={ad.data["youtube-link"]} />
-        )}
-      </>
-    ):(<div className="flex flex-col h-full items-center justify-center dark:text-gray-400 text-gray-600"><VideocamOffOutlinedIcon/> No video available for this ad</div>)}
-  </div>
-  <div className={`flex items-center justify-center w-full min-h-[400px] ${inputMode === "Virtual" ? "block" : "hidden"}`}>
-
-  {ad.data["virtualTourLink"] ? (
-      <>
-       <VirtualTour virtualTourLink={ad.data["virtualTourLink"]}/>
-      </>
-    ):(<div className="flex flex-col h-full items-center justify-center dark:text-gray-400 text-gray-600"><ViewInArOutlinedIcon/> No 3D Virtual Property Tour for this Ad</div>)}
-  </div>
   {/* Images Section */}
   <div className={`${inputMode === "Images" ? "block" : "hidden"}`}>
   <div className={`relative`}>
@@ -642,7 +619,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
           )}
 
           {/* Ad details */}
-          <div className="p-3 lg:rounded-b-xl bg-white">
+          <div className="p-3 lg:rounded-b-xl dark:bg-[#2D3236] dark:text-gray-300 bg-white">
             <div className="lg:hidden flex justify-end mb-2 items-center w-full">
               <div className="flex flex-col justify-center">
                 <div className="flex gap-1 items-center justify-center">
@@ -784,6 +761,24 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 <VisibilityIcon sx={{ fontSize: 20 }} /> {ad.views} Views
               </p>
             </div>
+
+      {ad.data["youtube-link"] && (
+      <>
+        {checkPlatform(ad.data["youtube-link"]) === "TikTok" ? (<>
+          {/*<TikTokEmbed videoUrl={ad.data["youtube-link"]} />*/}
+        </>) : (
+          <>
+           <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
+           <p className="mt-5 font-bold dark:text-gray-400 text-emerald-950">
+                  Ad Video
+            </p>
+          <YouTubePlayer videoUrl={ad.data["youtube-link"]} />
+          </>
+        )}
+      </>
+    )}
+      
+
             <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
             <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-4">
               {Object.entries(ad.data as Record<string, any>).map(
@@ -791,7 +786,6 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                   <>
                     {key !== "title" &&
                       key !== "description" &&
-                      key !== "region" &&
                       key !== "area" &&
                       key !== "category" &&
                       key !== "subcategory" &&
@@ -1347,10 +1341,8 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
 
         {/* Right panel */}
         <div 
-         className={`p-1 ${
-          ad.data.propertyarea ?
-          "lg:w-[40%]":"lg:w-[32%]"
-        }`}>
+         className={`p-1 lg:w-[32%]`}>
+           {/* Right panel 
         {ad.data.propertyarea?.location && ad.data.propertyarea?.location.length !== 0 && (
           <>
             <div className="text-l mb-2 rounded-lg">
@@ -1402,7 +1394,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
               </div>
             </div>
             </>
-          )}
+          )}*/}
 
           <div className="hidden lg:inline">
             

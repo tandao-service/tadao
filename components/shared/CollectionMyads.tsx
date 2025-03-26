@@ -127,11 +127,11 @@ const filteredAds = selectedCategory
    <div className="w-full lg:w-[450px] justify-between lg:justify-end flex items-center gap-4 mb-2 p-1 rounded-md">   
       <label className="text-xs lg:text-base">Filter by Category: </label>
       <select
-      className="py-2 border rounded-md w-[250px]"
+      className="bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 lg:w-[250px]"
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
-        <option value="">All</option>
+        <option value="" className="dark:text-gray-400">All</option>
         {categories.map((category) => (
           <option key={category} value={category}>{category}</option>
         ))}

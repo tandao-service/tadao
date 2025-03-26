@@ -79,7 +79,7 @@ export const plans = [
 export const VerificationPackId = "67d035e5df07d0d2f45521ac";
 export const FreePackId = "677a7b97d24cd2414b1260b7";
 export const AdminId = "675c20f3cffc0c90a79fae60";
-export const mode = "light";
+export const mode = "dark";
 export const headerLinks = [
   {
     label: 'Home',
