@@ -3,9 +3,8 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.actions";
 import { Toaster } from "@/components/ui/toaster";
 import { getAllCategories } from "@/lib/actions/category.actions";
-import { getAllSubCategories, removenegotiable } from "@/lib/actions/subcategory.actions";
+import { getAllSubCategories } from "@/lib/actions/subcategory.actions";
 import { getAdsCountAllRegion } from "@/lib/actions/dynamicAd.actions";
-import MainPage from "@/components/shared/MainPage";
 import CollectionInfinite from "@/components/shared/CollectionInfinite";
 
 export default async function Home({ searchParams }: SearchParamProps) {
