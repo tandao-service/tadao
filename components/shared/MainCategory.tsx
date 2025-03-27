@@ -119,6 +119,7 @@ type CollectionProps = {
   handleOpenSettings: () => void;
   handleOpenShop: (shopId:string) => void;
   handleCategory: (value:string) => void;
+  handleOpenSearchTab: (value:string) => void;
 }
 const MainCategory = ({
   userId,
@@ -144,6 +145,7 @@ const MainCategory = ({
   handleOpenSettings,
   handleOpenShop,
   handleCategory,
+  handleOpenSearchTab,
 
 }: // user,
 
@@ -408,7 +410,7 @@ CollectionProps) => {
                           handleOpenSafety={handleOpenSafety} 
                           handleOpenShop={handleOpenShop}/>
                          </div>
-                         <div className="relative mt-[80px] lg:mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
+                         <div className="relative mt-[85px] lg:mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
     {/* Sidebar */}
     <div
       onClick={(e) => e.stopPropagation()} // Prevent sidebar from closing on itself click
@@ -425,7 +427,7 @@ CollectionProps) => {
       {showSidebar && (
         <div className="flex flex-col space-y-4 h-full">
            <div className="w-full p-0 mt-4">
-                    <CategoryFilterSearch  handleFilter={handleResetFilter}/>
+                    <CategoryFilterSearch  categoryList={categoryList} handleFilter={handleResetFilter}/>
             </div>
           
           {/* Categories Section */}
@@ -625,8 +627,8 @@ CollectionProps) => {
 </div>
 
         {/* List Ads Section */}
-  <ScrollArea className="h-[100vh] w-full dark:bg-[#131B1E] bg-gray-200 rounded-t-md border lg:mb-0 lg:mt-0">
-  <section className="p-1 mb-[130px]">
+  <ScrollArea className="h-[100vh] w-full dark:bg-[#131B1E] bg-gray-200 rounded-t-md lg:mb-0 lg:mt-0">
+  <section className="p-1 mb-[150px]">
     <div className="flex items-center p-1 w-full justify-between">
       <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">
         <div
@@ -827,7 +829,7 @@ CollectionProps) => {
            onClose={onClose} 
           handleOpenSell={handleOpenSell}
           handleOpenChat={handleOpenChat}
-          handleCategory={handleCategory} 
+          handleOpenSearchTab={handleOpenSearchTab} 
                                />
           </div>
         </footer>

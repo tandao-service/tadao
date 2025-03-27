@@ -68,7 +68,7 @@ const CategoryIdFilterSearch = ({ catList }: CatgProps) => {
             <SelectItem
               value={category._id}
               key={category._id}
-              className="flex w-full select-item p-regular-14 dark:hover:bg-[#131B1E]"
+              className="flex w-full cursor-pointer select-item p-regular-14 dark:hover:bg-[#131B1E]"
             >
               <div className="flex w-[300px] gap-1 justify-between items-center">
                 <div className="flex gap-1 items-center">

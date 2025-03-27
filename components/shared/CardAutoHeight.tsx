@@ -122,7 +122,7 @@ const CardAutoHeight = ({
               onClick={() => {
                handleAdView(ad._id);
               }}
-              className="absolute cursor-pointer w-full h-[400px] rounded-lg inset-0 flex items-center justify-center dark:bg-[#2D3236] bg-gray-200"
+              className="absolute cursor-pointer w-full h-[300px] rounded-lg inset-0 flex items-center justify-center dark:bg-[#2D3236] bg-gray-200"
             >
               {/* Spinner or loading animation */}
               <CircularProgress sx={{ color: "white" }} size={30} />

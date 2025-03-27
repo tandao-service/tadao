@@ -17,44 +17,17 @@ import TextField from "@mui/material/TextField";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
-const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any, handleFilter: (value :any) => void }) => {
+const CategoryFilterSearchMain = ({ onSelectCategory,categoryList }: { categoryList:any, onSelectCategory: (value :any) => void }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [category, setCategory] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
+
     setCategories(categoryList as ICategory[]);
-//const getCategories = async () => {
-    //  const categoryList = await getAllCategories();
-
-    //  categoryList && setCategories(categoryList as ICategory[]);
-   // };
-   // getCategories();
+  
   }, []);
-
-  const onSelectCategory = (category: string) => {
-   // let newUrl = "";
-    setCategory(category);
-    handleFilter({
-      category: category.toString(),
-       subcategory: "",
-    });
-    //if (category && category !== "All") {
-    //  newUrl = formUrlQuery({
-     //   params: "",
-     //   key: "category",
-     //   value: category,
-    //  });
-    //} else {
-     // newUrl = removeKeysFromQuery({
-     //   params: searchParams.toString(),
-     //   keysToRemove: ["category"],
-    //  });
-    //}
-   // onLoading();
-   // router.push(newUrl, { scroll: false });
-  };
 
   return (
     <>
@@ -76,7 +49,7 @@ const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any,
               key={category._id}
               className="flex w-full cursor-pointer p-regular-14 dark:hover:bg-[#131B1E]"
             >
-              <div className="flex w-[280px] justify-between items-center">
+              <div className="flex w-[280px] items-center">
                 <div className="flex gap-1 items-center">
                   <Image
                     className="h-4 w-4 object-cover"
@@ -94,12 +67,7 @@ const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any,
                     </div>
                   </div>
                 </div>
-                <div>
-                  <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
-                </div>
-                {/*  <div className="text-xs text-emerald-600">
-                  | {category.adCount} ads
-                </div> */}
+              
               </div>
             </SelectItem>
           ))}
@@ -109,4 +77,4 @@ const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any,
   );
 };
 
-export default CategoryFilterSearch;
+export default CategoryFilterSearchMain;

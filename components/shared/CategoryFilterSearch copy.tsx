@@ -25,11 +25,12 @@ const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any,
 
   useEffect(() => {
     setCategories(categoryList as ICategory[]);
-//const getCategories = async () => {
-    //  const categoryList = await getAllCategories();
+    //const getCategories = async () => {
+    // const categoryList = await getAllCategories();
 
     //  categoryList && setCategories(categoryList as ICategory[]);
    // };
+
    // getCategories();
   }, []);
 

@@ -12,21 +12,33 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import ProgressPopup from "./ProgressPopup";
 import { useState } from "react";
 import { DivideSquare } from "lucide-react";
+import SearchTabWindow from "./SearchTabWindow";
 type navprop = {
   userId: string;
   popup: string;
   onClose: () => void;
   handleOpenSell: () => void;
   handleOpenChat: () => void;
-  handleCategory: (value:string) => void;
+  handleOpenSearchTab: (value:string) => void;
 
 };
-const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handleOpenChat, onClose }: navprop) => {
+const BottomNavigation = ({ userId, popup, handleOpenSearchTab, handleOpenSell, handleOpenChat, onClose }: navprop) => {
   const router = useRouter();
   const pathname = usePathname();
  
   const isActive = (path: string) => pathname === path;
   const shareUrl = "https://pocketshop.co.ke"; // Replace with the URL you want to share
+
+
+ const [isOpenP, setIsOpenP] = useState(false);
+  const handleOpenP = () => {
+    setIsOpenP(true);
+  };
+
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
+  
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -68,7 +80,7 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
 
         <div
           onClick={() => {
-            handleCategory('Vehicle');
+           handleOpenSearchTab('Vehicle');
            // if (
 //pathname !==
 //`/category?category=Vehicle&subcategory=${encodeURIComponent(
@@ -191,7 +203,7 @@ const BottomNavigation = ({ userId, popup, handleCategory, handleOpenSell, handl
           <span className="text-xs">Share</span>
         </div>
       </div>
-     
+    
     </nav>
   );
 };
