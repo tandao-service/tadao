@@ -60,9 +60,9 @@ export function FileuploaderBusiness({
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: "image/*" ? generateClientDropzoneAccept(["image/*"]) : undefined,
-  });
+      onDrop,
+      accept: generateClientDropzoneAccept(["image/*"]),
+    });
 
   return (
     <div

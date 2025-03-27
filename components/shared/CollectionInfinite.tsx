@@ -744,6 +744,7 @@ const handleCloseAdView = () => {
                  handleOpenSell={handleOpenSell}
                  handleCategory={handleCategory}
                  handleOpenChat={handleOpenChat}
+                 handleOpenSearchTab={handleOpenSearchTab}
                  userId={userId}
                />
           </div>
