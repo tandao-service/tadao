@@ -44,7 +44,7 @@ if (!isOpen) return null;
   return (
 <div className="fixed inset-0 z-40 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">  
 <div className="relative flex w-full">
-      <div className="w-full absolute">
+      <div className="w-full absolute p-1">
       <div className="flex justify-between items-center border-b pb-2">
       <h1>Categories</h1>
         <div className="flex items-center">
@@ -56,7 +56,7 @@ if (!isOpen) return null;
         <div
           className={`flex flex-col items-center transition-all duration-300`}
         >
-          <div className="w-full dark:bg-[#2D3236] rounded-xl bg-white p-1 shadow-lg">
+          <div className="w-full dark:bg-[#2D3236] rounded-xl bg-white">
           
             <ScrollArea className="h-[80vh] w-full p-2">
               
@@ -80,7 +80,7 @@ if (!isOpen) return null;
                     }
                   }}
                  // onMouseEnter={() => handleHoverCategory(category.name)}
-                  className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${
+                  className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-2 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${
                     hoveredCategory === category.name
                       ? "bg-emerald-100 dark:bg-[#131B1E]"
                       : "dark:bg-[#2D3236] bg-white"
@@ -98,10 +98,10 @@ if (!isOpen) return null;
                         />
                       </div>
                     </span>
-                    <span className="flex-1 text-sm hover:no-underline my-auto">
+                    <span className="flex-1 text-base hover:no-underline my-auto">
                       <div className="flex flex-col">
                         <h2
-                          className={`text-xs ${
+                          className={`text-base ${
                             category.adCount > 0
                               ? ""
                               : "text-gray-500 dark:text-gray-500"
@@ -110,7 +110,7 @@ if (!isOpen) return null;
                           {category.name}
                         </h2>
                         <p
-                          className={`text-xs text-gray-500 dark:text-gray-500`}
+                          className={`text-sm text-gray-500 dark:text-gray-500`}
                         >
                           {category.adCount} ads
                         </p>
@@ -147,7 +147,7 @@ if (!isOpen) return null;
           </Button>
         </div>
         </div>
-        <div className="w-full dark:bg-[#2D3236] rounded-xl bg-white p-1 shadow-lg">
+        <div className="w-full dark:bg-[#2D3236] rounded-xl bg-white">
          
           <ScrollArea className="h-[80vh] w-full p-2">
             {subcategoryList
@@ -155,7 +155,7 @@ if (!isOpen) return null;
               .map((sub: any, index: number) => (
                 <div
                   key={index}
-                  className="relative dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:hover:dark:bg-[#131B1E] hover:bg-emerald-100 border-b dark:border-gray-600"
+                  className="relative p-2 dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer border-b dark:hover:dark:bg-[#131B1E] hover:bg-emerald-100 border-b dark:border-gray-600"
                   onClick={() => {
                     if (sub.adCount > 0) {
                       handleSubCategory(hoveredCategory, sub.subcategory)
@@ -184,10 +184,10 @@ if (!isOpen) return null;
                         />
                       </div>
                     </span>
-                    <span className="flex-1 text-sm hover:no-underline my-auto">
-                      <div className="flex flex-col">
+                    <span className="flex-1 hover:no-underline my-auto">
+                      <div className="flex text-base flex-col">
                         <h2
-                          className={`text-xs ${
+                          className={`text-base ${
                             sub.adCount > 0
                               ? ""
                               : "text-gray-500 dark:text-gray-500"
@@ -195,7 +195,7 @@ if (!isOpen) return null;
                         >
                           {sub.subcategory}
                         </h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-500">
                           {sub.adCount} ads
                         </p>
                       </div>
