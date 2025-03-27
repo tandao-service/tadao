@@ -408,7 +408,7 @@ CollectionProps) => {
                           handleOpenSafety={handleOpenSafety} 
                           handleOpenShop={handleOpenShop}/>
                          </div>
-                         <div className="relative mt-[70px] lg:mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
+                         <div className="relative mt-[80px] lg:mt-[60px] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] flex w-full">
     {/* Sidebar */}
     <div
       onClick={(e) => e.stopPropagation()} // Prevent sidebar from closing on itself click
@@ -626,7 +626,7 @@ CollectionProps) => {
 
         {/* List Ads Section */}
   <ScrollArea className="h-[100vh] w-full dark:bg-[#131B1E] bg-gray-200 rounded-t-md border lg:mb-0 lg:mt-0">
-  <section className="p-1 mb-20">
+  <section className="p-1 mb-[130px]">
     <div className="flex items-center p-1 w-full justify-between">
       <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">
         <div

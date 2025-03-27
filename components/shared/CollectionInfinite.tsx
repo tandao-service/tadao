@@ -744,7 +744,7 @@ const handleCloseAdView = () => {
           {data.length > 0 ? (
             <div className="flex w-full flex-col items-center gap-10 p-0">
               {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4"> */}
-              <div className="w-full">
+              <div className="w-full mb-20">
                 <Masonry
                   breakpointCols={breakpointColumns}
                   className="flex gap-4"
@@ -811,7 +811,7 @@ const handleCloseAdView = () => {
         <div>
           {isInitialLoading ? (
            
-           <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
            {Array.from({ length: 12 }).map((_, index) => (
              <div key={index} className="bg-gray-200 dark:bg-[#2D3236] p-4 rounded-lg shadow-md">
                <Skeleton variant="rectangular" width="100%" height={140} />

@@ -146,7 +146,7 @@ const SearchNow = ({
       <div>
         <button
           onClick={handleSearch}
-          className="flex justify-center items-center h-12 w-12 hover:bg-emerald-700 bg-emerald-600 text-white rounded-sm"
+          className="flex justify-center items-center h-12 w-12 hover:bg-emerald-800 bg-emerald-900 text-white rounded-sm"
         >
           <SearchOutlinedIcon />
         </button>

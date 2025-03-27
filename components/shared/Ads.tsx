@@ -344,11 +344,11 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-1 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl p-2"
+          className="mt-1 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl lg:p-1"
           style={
             ad.plan.name !== "Free"
               ? {
-                  borderTop: "8",
+                  borderTop: "8px",
                   borderColor: ad.plan.color, // Border color for non-free plans
                 }
               : undefined
@@ -359,7 +359,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 style={{
                   backgroundColor: ad.plan.color,
                 }}
-                className="hidden lg:inline rounded-rt-xl absolute shadow-lg top-0 right-0 text-white text-[10px] py-1 px-3"
+                className="hidden lg:inline rounded-tr-xl absolute shadow-lg top-0 right-0 text-white text-[10px] py-1 px-3"
               >
                 <div
                   onClick={() => {
@@ -415,7 +415,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
 
 
 <div
-  className={`rounded-0 p-2 flex flex-col bg-[#131B1E] rounded-xl`}
+  className={`rounded-0 lg:p-2 flex flex-col bg-[#131B1E] lg:rounded-xl`}
   >
   {/* Images Section */}
   <div className={`${inputMode === "Images" ? "block" : "hidden"}`}>
