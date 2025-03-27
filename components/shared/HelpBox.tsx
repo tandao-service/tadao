@@ -133,7 +133,7 @@ const HelpBox = ({
         </AccordionTrigger>
         <AccordionContent>
           <p>
-            To list a product, create an account, go to the <strong>"Post Ad"</strong> section, 
+            To list a product, create an account, go to the <strong>&quot;Post Ad&quot;</strong> section, 
             select the appropriate category, upload images, enter pricing details, and provide a 
             description. Once submitted, your listing will be reviewed for approval.
           </p>
