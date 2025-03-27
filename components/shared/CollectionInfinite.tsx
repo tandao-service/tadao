@@ -912,7 +912,8 @@ const handleCloseAdView = () => {
       handleOpenSettings={handleOpenSettings}
       handleCategory={handleCategory} 
       handleAdEdit={handleAdEdit} 
-      handleAdView={handleAdView}/>
+      handleAdView={handleAdView}
+      handleOpenSearchTab={handleOpenSearchTab}/>
       
       <PopupReviews isOpen={isOpenReview} onClose={handleCloseReview} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} recipientUid={recipientUid} handleOpenSettings={handleOpenSettings} handleOpenChatId={handleOpenChatId} handleOpenReview={handleOpenReview}
       handleOpenPerfomance={handleOpenPerfomance}
