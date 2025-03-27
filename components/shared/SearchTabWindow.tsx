@@ -31,7 +31,7 @@ const SearchTabWindow: React.FC<ChatWindowProps> = ({
   handleSubCategory,
   onClose,
 }) => {
-  if (!isOpen) return null;
+  
   const [query, setQuery] = useState("");
   //const totalAconst [query, setQuery] = useState("");
 const [categoryselect, setcategoryselect] = useState(category);
@@ -54,7 +54,7 @@ const selectedCategory = subcategoryList.find(
 const totalAdCount = filteredSubcategories.reduce((sum, item) => sum + item.adCount, 0);
 
 const categoryImageUrl = selectedCategory ? selectedCategory.category.imageUrl[0] : "";
-
+if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-40 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
       <div className="flex justify-end items-center border-b pb-2">
