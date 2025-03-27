@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { ScrollArea } from "../ui/scroll-area";
+import { useToast } from "../ui/use-toast";
 import {
   formUrlQuery,
   formUrlQuerymultiple,
@@ -35,6 +36,7 @@ const CategoryMenuMain = ({
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
     null
   );
+  const { toast } = useToast()
   const router = useRouter();
   const listRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
@@ -97,7 +99,19 @@ const CategoryMenuMain = ({
                 <div
                   key={index}
                   onClick={() => {
-                    category.adCount > 0 ? handleCategory(category.name) : null;
+                    if (category.adCount > 0) {
+                      handleCategory(category.name);
+                    } else {
+                      toast({
+                        title: "0 Ads",
+                        description: (
+                          <>
+                            No ads in <strong>{category.name}</strong> category
+                          </>
+                        ),
+                        //action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+                      });
+                    }
                   }}
                   onMouseEnter={() => setHoveredCategory(category.name)}
                   className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${
@@ -174,9 +188,19 @@ const CategoryMenuMain = ({
                   key={index}
                   className="relative dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:hover:dark:bg-[#131B1E] hover:bg-emerald-100 border-b dark:border-gray-600"
                   onClick={() => {
-                    sub.adCount > 0
-                      ? handleSubCategory(hoveredCategory, sub.subcategory)
-                      : null;
+                    if (sub.adCount > 0) {
+                      handleSubCategory(hoveredCategory, sub.subcategory);
+                    } else {
+                      toast({
+                        title: "0 Ads",
+                        description: (
+                          <>
+                            No ads in <strong>{sub.subcategory}</strong> subcategory
+                          </>
+                        ),
+                        //action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+                      });
+                    }
                   }}
                 >
                   <div className="flex gap-1 items-center mb-1 w-full">

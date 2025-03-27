@@ -967,12 +967,14 @@ const handleCloseAdView = () => {
       handleOpenSettings={handleOpenSettings} 
      />
       <SearchTabWindow 
-      isOpen={isOpenSearchTab} 
-      handleSubCategory={handleSubCategory} 
-      onClose={handleCloseSearchTab} 
-      categoryList={categoryList}
-      subcategoryList={subcategoryList} 
-      category={CategorySelect}/>
+                isOpen={isOpenSearchTab}
+                handleSubCategory={handleSubCategory}
+                onClose={handleCloseSearchTab}
+                categoryList={categoryList}
+                subcategoryList={subcategoryList}
+                hoveredCategory={hoveredCategory} 
+                handleCategory={handleCategory} 
+                handleHoverCategory={handleHoverCategory}/>
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
         </div>
       </div>
