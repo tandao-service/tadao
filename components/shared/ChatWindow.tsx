@@ -194,8 +194,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                  
                 </div>
                 <div className="gap-2 justify-center flex w-full items-center">
-                  <a href="tel:+254721843974" className="font-semibold text-2xl lg:text-3xl text-white">
-                  +254 721 843 974
+                  <a href="tel:+254792702417" className="font-semibold text-2xl lg:text-3xl text-white">
+                  +254 792 702 417
                   </a>
                 </div>
               </div>
@@ -327,8 +327,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                  
                 </div>
                 <div className="gap-2 justify-center flex w-full items-center">
-                  <a href="tel:+254721843974" className="font-semibold text-2xl lg:text-3xl text-white">
-                  +254 721 843 974
+                  <a href="tel:+254792702417" className="font-semibold text-2xl lg:text-3xl text-white">
+                  +254 792 702 417
                   </a>
                 </div>
               </div>
