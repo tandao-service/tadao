@@ -1402,7 +1402,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
             <div className="dark:bg-[#2D3236] dark:text-gray-300 bg-white p-5 border rounded-lg overflow-hidden flex flex-col items-center">
               <div className="flex gap-1 items-center no-underline">
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <p className="flex text-2xl font-bold  dark;text-emerald-500 text-emerald-950">
+                  <p className="flex text-2xl font-bold dark:text-emerald-500 text-emerald-950">
                     Contact for price
                   </p>
                 ) : (
