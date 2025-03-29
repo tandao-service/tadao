@@ -292,7 +292,7 @@ const CardAutoHeight = ({
             onClick={() => {
               handleAdView(ad._id);
             }}
-            className="flex gap-1 cursor-pointer items-center dark:text-emerald-600 text-emerald-600 no-underline"
+            className="flex gap-1 cursor-pointer items-center dark:text-emerald-500 text-emerald-500 no-underline"
           >
             {ad.data.contact && ad.data.contact === "contact" ? (
               <div className="font-bold">Contact for price</div>
@@ -304,13 +304,13 @@ const CardAutoHeight = ({
               </>
             )}{" "}
             {ad.data.unit && ad.data.contact === "specify" && (
-              <div className="text-xs dark:text-emerald-600">{ad.data.unit}</div>
+              <div className="text-xs dark:text-emerald-500">{ad.data.unit}</div>
             )}{" "}
             {ad.data.per && (
-              <div className="text-xs dark:text-emerald-600">{ad.data.per}</div>
+              <div className="text-xs dark:text-emerald-500">{ad.data.per}</div>
             )}
             {ad.data.period && (
-              <div className="text-xs dark:text-emerald-600">
+              <div className="text-xs dark:text-emerald-500">
                 {ad.data.period}
               </div>
             )}

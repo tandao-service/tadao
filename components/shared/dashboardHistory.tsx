@@ -77,13 +77,13 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
       <div className="max-w-8xl mx-auto flex mt-[60px] mb-0 p-1">
     <div className="fixed w-full h-screen">
       <div className="p-1">
-        <div className="p-1 max-w-3xl mx-auto mb-2">
+        <div className="p-1 max-w-3xl dark:bg-[#2D3236] rounded-lg mx-auto mb-2">
           <div className="p-0 w-full items-center">
             <div className="flex flex-col items-center w-full">
               <div className="gap-1 h-[450px] mt-2 items-center w-full">
                 <div className="">
                   <div className="flex flex-col items-center">
-                    <div className="flex flex-col border shadow-lg rounded-lg dark:bg-[#2D3236] bg-gray-100 p-2 mb-2 w-full">
+                    <div className="flex flex-col rounded-lg dark:bg-[#2D3236] bg-gray-100 p-2 mb-2 w-full">
                       <p className="font-bold text-[25px] text-center ">
                         History
                       </p>

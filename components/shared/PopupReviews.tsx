@@ -60,11 +60,11 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (isOpen && userId) {
+    if (isOpen && recipientUid) {
       setLoading(true);
       const fetchData = async () => {
         try {
-         const user = await getUserById(userId);
+         const user = await getUserById(recipientUid);
          setuser(user);
         
         } catch (error) {
@@ -76,7 +76,7 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
 
       fetchData();
     }
-  }, [isOpen, userId]);
+  }, [isOpen, recipientUid]);
 
   if (!isOpen) return null;
      
@@ -95,7 +95,7 @@ const PopupReviews = ({ isOpen, userId,userName,userImage,recipientUid, onClose,
                    handleOpenSafety={handleOpenSafety} 
                    handleOpenShop={handleOpenShop}/>
                  </div>
-                  <div className="flex justify-center items-center h-full text-lg font-bold">
+                  <div className="flex justify-center items-center h-full text-lg dark:text-gray-400">
                   <div className="flex gap-2 items-center">  <CircularProgress sx={{ color: "gray" }} size={30} /> <div className="hidden lg:inline">Loading...</div></div>
                  </div>
                  </div>

@@ -68,7 +68,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab, handleOpenSell, 
         >
           <div
             className={`flex cursor-pointer flex-col items-center hover:text-emerald-700 ${
-              popup === "home" ? "text-emerald-600" : "text-gray-600"
+              popup === "home" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
             }`}
           >
             <span>
@@ -98,7 +98,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab, handleOpenSell, 
         >
           <div
             className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-              popup === "category" ?  "text-emerald-600" : "text-gray-600"
+              popup === "category" ?  "text-emerald-600" : "dark:text-gray-400 text-gray-600"
             }`}
           >
             <span>
@@ -156,7 +156,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab, handleOpenSell, 
           >
             <div
               className={`flex cursor-pointer flex-col items-center hover:text-emerald-700 ${
-                popup === "chat" ? "text-emerald-600" : "text-gray-600"
+                popup === "chat" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
               }`}
             >
               <span className="flex">
@@ -179,7 +179,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab, handleOpenSell, 
           >
             <div
               className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-                popup === "chat" ? "text-emerald-600" : "text-gray-600"
+                popup === "chat" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
               }`}
             >
               <span className="flex">
@@ -193,7 +193,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab, handleOpenSell, 
 
         <div
           className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-            popup === "share" ? "text-emerald-600" : "text-gray-600"
+            popup === "share" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
           }`}
           onClick={handleShare}
         >

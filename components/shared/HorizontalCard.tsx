@@ -312,28 +312,28 @@ const HorizontalCard = ({
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-emerald-600 text-emerald-600">
+                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-emerald-500 text-emerald-500">
                     Contact for price
                   </div>
                 ) : (
                   <>
-                    <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-600 text-emerald-600">
+                    <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-500 text-emerald-500">
                       {formatKsh(ad.data.price)}
                     </span>
                   </>
                 )}{" "}
                 {ad.data.unit && ad.data.contact === "specify" && (
-                  <div className="text-xs dark:text-emerald-600">
+                  <div className="text-xs dark:text-emerald-500">
                     {ad.data.unit}
                   </div>
                 )}{" "}
                 {ad.data.per && (
-                  <div className="text-xs dark:text-emerald-600">
+                  <div className="text-xs dark:text-emerald-500">
                     {ad.data.per}
                   </div>
                 )}
                 {ad.data.period && (
-                  <div className="text-xs dark:text-emerald-600">
+                  <div className="text-xs dark:text-emerald-500">
                     {ad.data.period}
                   </div>
                 )}
@@ -363,7 +363,7 @@ const HorizontalCard = ({
                 }}
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
-                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-600 text-emerald-600">
+                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-500 text-emerald-500">
                   {formatKsh(ad.data.price)}
                 </span>{" "}
                 {ad.data.per && (

@@ -115,7 +115,7 @@ const PopupPerfomance = ({ isOpen, userId,userName,userImage, handlePay, handleO
                    handleOpenSafety={handleOpenSafety} 
                    handleOpenShop={handleOpenShop}/>
                  </div>
-                  <div className="flex justify-center items-center h-full text-lg font-bold">
+                  <div className="flex justify-center items-center h-full text-lg dark:text-gray-400">
                   <div className="flex gap-2 items-center">  <CircularProgress sx={{ color: "gray" }} size={30} /> <div className="hidden lg:inline">Loading...</div></div>
                  </div>
                  </div>

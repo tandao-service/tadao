@@ -92,6 +92,9 @@ const PopupSell = ({ isOpen, type, userId, userName, handleOpenSettings,
             setDaysRemaining(remainingDays);
             if ((remainingDays > 0 && remainingAds > 0) || (remainingAds > 0 && planPackage === "Free")) {
               setAdStatus("Active");
+              alert("Active");
+            }else{
+              alert("Pending");
             }
           }
         } catch (error) {
@@ -122,7 +125,7 @@ const PopupSell = ({ isOpen, type, userId, userName, handleOpenSettings,
                          handleOpenSafety={handleOpenSafety} 
                          handleOpenShop={handleOpenShop}/>
                        </div>
-                        <div className="flex justify-center items-center h-full text-lg font-bold">
+                        <div className="flex justify-center items-center h-full text-lg dark:text-gray-400">
                         <div className="flex gap-2 items-center">  <CircularProgress sx={{ color: "gray" }} size={30} /> <div className="hidden lg:inline">Loading...</div></div>
                        </div>
                           <footer>
