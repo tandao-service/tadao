@@ -66,7 +66,7 @@ const Reviews = ({
   //console.log(message);
   return (
     <div className="w-full">
-      <div className="chatbox w-full">
+      <div className="chatbox w-full dark:bg-[#222528] rounded-sm p-1">
         <div className={`flex items-start mb-2 justify-start`}>
           <Image
             src={message.avatar}
