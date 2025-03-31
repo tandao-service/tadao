@@ -190,8 +190,8 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                     <li
                       key={index}
                       onClick={() => handle(message.uid, message.recipientUid)}
-                      className={`p-4 flex items-center space-x-4 dark:hover:bg-black rounded-0 hover:bg-gray-100 hover:cursor-pointer ${
-                        message.recipientUid === recipient ? "bg-emerald-100" : ""
+                      className={`p-4 flex items-center space-x-4 dark:bg-[#222528] dark:hover:bg-black rounded-0 hover:bg-gray-100 hover:cursor-pointer ${
+                        message.recipientUid === recipient ? "dark:bg-black bg-emerald-100" : ""
                       }`}
                     >
                       <div className="flex-shrink-0">
@@ -208,11 +208,12 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                           {message.name}
                         </p>
                         <p className="flex gap-1 text-sm dark:text-gray-300 text-gray-500 truncate">
-                          {truncateTitle(message.text, 18)}
+                         
                           <UnreadmessagesPeruser
                             uid={message.uid}
                             recipientUid={userId}
                           />
+                           {truncateTitle(message.text, 18)}
                         </p>
                       </div>
                       <div className="whitespace-nowrap text-[10px] lg:text-sm dark:text-gray-300 text-gray-500">

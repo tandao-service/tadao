@@ -24,6 +24,7 @@ const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any,
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    console.log(categoryList);
     setCategories(categoryList as ICategory[]);
 //const getCategories = async () => {
     //  const categoryList = await getAllCategories();

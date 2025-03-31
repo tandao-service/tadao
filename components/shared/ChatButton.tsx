@@ -139,7 +139,7 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
   return (
     <>
       <Button  onClick={() => setIsOpen(true)}
-                 variant="outline" className="flex w-full text-emerald-600 items-center gap-2">
+                 variant="outline" className="flex w-full items-center gap-2">
             <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
             <div className="hidden lg:inline"> Enquire</div>
            </Button>

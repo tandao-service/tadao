@@ -83,13 +83,9 @@ const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenRev
     window.location.href = `tel:${user.phone}`;
   };
   // console.log(user);
-  const handleDirectionClick = () => {
-    // Perform navigation or other actions when direction button is clicked
-    // Example: Open a new tab with Google Maps directions
-    window.open(
-      `https://www.google.com/maps/dir/?api=1&destination=${user.latitude},${user.longitude}`,
-      "_blank"
-    );
+  const handlewhatsappClick = () => {
+     
+    window.location.href = `https://wa.me/${user.whatsapp}/`;
   };
 
   let formattedCreatedAt = "";
@@ -186,6 +182,80 @@ const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenRev
         <RatingsCard recipientUid={user._id} handleOpenReview={handleOpenReview} />
       </div>
       </div>
+       <div className="flex flex-col gap-1 items-center w-full">
+                        <SignedIn>
+                        <Button onClick={handleShowPhoneClick} variant="default" className="w-full">
+                        <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
+                       </Button>
+                          
+                        </SignedIn>
+                       
+                        <SignedOut>
+                        <Button onClick={() => {
+                             // handleOpenP();
+                              router.push(`/sign-in`);
+                            }} variant="default" className="w-full">
+                        <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
+                       </Button>
+                         
+                        </SignedOut>
+                        {userId !== loggedId && (<>
+                        <SignedIn>
+                        <Button onClick={() => {
+                                 
+                                   handleOpenChatId(userId);
+                                   
+                                  }}
+                             variant="default" className="w-full">
+                        <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+                        <div>Message</div>
+                       </Button>
+                        </SignedIn>
+                        <SignedOut>
+                        <Button onClick={() => {
+                             // handleOpenP();
+                              router.push(`/sign-in`);
+                            }}
+                             variant="default" className="w-full">
+                        <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+                        <div>Message</div>
+                       </Button>
+            
+                         
+                        </SignedOut>
+                        </>)}
+                        {user.whatsapp && (
+                          <div className="w-full">
+                            <SignedIn>
+                          
+                            <Button 
+                            onClick={handlewhatsappClick}
+                             variant="default" className="w-full">
+                        <WhatsAppIcon sx={{ fontSize: 18 }} />
+            
+                       <div>WhatsApp</div>
+                       </Button>
+                               
+                           
+            
+                              
+                            </SignedIn>
+                            <SignedOut>
+                            <Button  onClick={() => {
+                                 // handleOpenP();
+                                  router.push(`/sign-in`);
+                                }}
+                             variant="default" className="w-full">
+                       <WhatsAppIcon sx={{ fontSize: 18 }} />
+            
+            <div >WhatsApp</div>
+                       </Button>
+            
+                             
+                            </SignedOut>
+                          </div>
+                        )}
+                      </div>
      </div>
      
   

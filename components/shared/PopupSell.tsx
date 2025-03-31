@@ -142,7 +142,7 @@ const PopupSell = ({
             <div className="flex justify-center items-center h-full text-lg dark:text-gray-400">
               <CircularProgress sx={{ color: "gray" }} size={30} /> <span className="hidden lg:inline">Loading...</span>
             </div>
-            <BottomNavigation userId={userId} popup="sell" onClose={onClose} handleOpenSell={handleOpenSell} handleOpenChat={handleOpenChat} handleOpenSearchTab={handleOpenSearchTab} />
+            
           </div>
         ) : (
           <DashboardSellMain userId={userId} type={type} daysRemaining={daysRemaining} packname={planPackage} planId={planId} userName={userName} packagesList={packagesList} listed={remainingAds} expirationDate={expirationDate} priority={priority} adstatus={adStatus} categories={categories} onClose={onClose} handleOpenSell={handleOpenSell} handlePay={handlePay} popup="sell" handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleCategory={handleCategory} handleOpenChat={handleOpenChat} handleOpenPlan={handleOpenPlan} handleOpenShop={handleOpenShop} handleOpenPerfomance={handleOpenPerfomance} handleOpenSettings={handleOpenSettings} />

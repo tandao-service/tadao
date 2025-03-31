@@ -1233,11 +1233,11 @@ const AdForm = ({
                       className="w-full"
                     />
 
-                    <Button
+                    <button
                       onClick={handleOpenPopupBulk}
-                      variant="default">
+                      className="py-3 w-[200px] px-1 rounded-sm bg-emerald-600 text-white hover:bg-emerald-700">
                       <AddOutlinedIcon /> Add Bulk Price
-                    </Button>
+                    </button>
 
                     {showPopupBulk && (
                       
@@ -1468,9 +1468,9 @@ const AdForm = ({
   <div style={{ width: "100%", height: "300px", borderRadius: "8px", border:"1px", overflow: "hidden" }}>
                 <ReactQuill
   value={formData[field.name] || ""}
-   theme="bubble"
+   theme="snow"
   onChange={(value) => handleInputChange(field.name, value)}
-  className="bg-white w-full w-[200px] text-black mb-0"
+  
   modules={modules} // Pass the custom toolbar modules
   placeholder={`Enter ${capitalizeFirstLetter(field.name.replace("-", " "))}*`}
   style={{ height: "100%", width: "100%", border: "0px", borderRadius: "8px" }}
@@ -1574,11 +1574,12 @@ const AdForm = ({
 
               {field.type === "delivery" && (
                 <div className="flex flex-col w-full gap-1">
-                  <Button
-                    onClick={handleOpenPopup}
-                    variant="default">
-                    <AddOutlinedIcon /> Add Delivery Option
-                  </Button>
+                   <button
+                      onClick={handleOpenPopup}
+                      className="py-3 w-full px-1 rounded-sm bg-emerald-600 text-white hover:bg-emerald-700">
+                      <AddOutlinedIcon /> Add Delivery Option
+                    </button>
+                 
 
                   {showPopup && (
                     
@@ -1596,12 +1597,12 @@ const AdForm = ({
               
                     {field.type === "propertyarea" && (
                 <div className="flex flex-col w-full gap-1">
-                  <Button
-                    onClick={handleOpenPopupArea}
-                    variant="default"
-                  >
-                    🗺️ Advanced Property Mapping
-                  </Button>
+                    <button
+                      onClick={handleOpenPopupArea}
+                      className="py-3 w-full px-1 rounded-sm bg-emerald-600 text-white hover:bg-emerald-700">
+                       🗺️ Advanced Property Mapping
+                    </button>
+                 
 
                   {showPopupArea && (
                     <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
@@ -1895,19 +1896,17 @@ const AdForm = ({
               </div>*/}
             </>
           )}
-
-          <Button
-            onClick={handleSubmit}
-            size="lg"
-            disabled={loading}
-            className="button col-span-2 mt-3 w-full"
-          >
-            <div className="flex gap-1 items-center">
+ <button
+  disabled={loading}
+                      onClick={handleSubmit}
+                      className="py-3 w-full px-1 mt-2 items-center justify-center rounded-sm bg-emerald-600 text-white hover:bg-emerald-700">
+                       <div className="flex w-full justify-center gap-1 items-center">
               {loading && <CircularProgressWithLabel value={uploadProgress} />}
 
               {loading ? "Submitting..." : `${type} Ad `}
             </div>
-          </Button>
+            </button>
+         
           <p className="mt-2 text-xs text-gray-600 dark:text-gray-500 text-center">
             By clicking on Create Ad, you accept the{" "}
             <span onClick={() => handleOpenTerms()} className="text-emerald-600 cursor-pointer underline">
