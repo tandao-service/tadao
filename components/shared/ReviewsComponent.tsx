@@ -191,9 +191,7 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
             <div className="lg:flex-1 h-screen p-1 w-full">
               <div className="flex w-full p-2 justify-between bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
               <div className="flex flex-col">
-                <span className="logo font-bold text-base lg:text-lg dark:text-gray-400 text-emerald-950">
-                  {displayName}
-                </span>
+               
                 <div className="text-xs lg:text-base flex gap-1 items-center">
                 <Ratingsmobile recipientUid={recipientUid} handleOpenReview={handleOpenReview} />
                 </div>

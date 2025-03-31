@@ -120,7 +120,7 @@ const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenRev
      
      <div className="flex flex-col dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
       <div className="flex gap-4 dark:bg-[#2D3236] dark:text-gray-100 bg-white  items-center p-1 w-full rounded-lg">
-        <div className="flex flex-col w-full items-center w-full border-r">
+        <div className="flex flex-col w-full items-center w-full">
           <div className="w-24 h-24 rounded-full bg-white relative">
             <Zoom>
               <Image
@@ -178,9 +178,7 @@ const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenRev
           </div>
           
         </div>
-        <div className="flex mb-2 flex-col mt-4 items-center dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg w-full p-1">
-        <RatingsCard recipientUid={user._id} handleOpenReview={handleOpenReview} />
-      </div>
+       
       </div>
        <div className="flex flex-col gap-1 items-center w-full">
                         <SignedIn>
