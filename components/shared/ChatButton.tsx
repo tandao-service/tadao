@@ -81,34 +81,14 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
         imageUrl: ad.data.imageUrls[0],
         adTitle: ad.data.title,
         adDescription: ad.data.description,
-        adUrl:process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id,
+        adUrl:process.env.NEXT_PUBLIC_DOMAIN_URL+"?Ad="+ad._id,
         read: "1",
       });
 
-      const adTitle = ad.data.title;
-      const adUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id;
-      const phoneNumber = ad.data.phone;
-      const recipientEmail = ad?.organizer?.email;
+
       const callbackUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"chat"
       sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
-      // Send notification SMS and email 
-
-     // if (sendsms && daysRemaining > 0) {
-     //   await sendSMS(phoneNumber, message, adTitle, adUrl);
-    //  }
-
-      // if (sendemail && daysRemaining > 0) {
-      // alert(recipientEmail);
-     // await sendEmail(
-     //   recipientEmail,
-      //  message,
-       // adTitle,
-      //  adUrl,
-       // userName,
-       // userImage
-     // );
-      //  }
-
+   
       const inquiries = (Number(ad.inquiries ?? "0") + 1).toString();
       const _id = ad._id;
       await updateinquiries({
@@ -127,7 +107,6 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
   };
   const quickMessages = [
     "Is this still available?",
-    "Share this property coordinate?",
     "What is the last price?",
     "Can we negotiate?",
     "Where can I view this?",
