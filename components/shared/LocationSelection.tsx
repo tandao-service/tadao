@@ -94,7 +94,7 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
           </div>
 
           {selectedLocation && (
-            <div className="absolute h-[90vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
+            <div className="absolute h-[90vh] bg-gray-800 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50  dark:text-gray-100 rounded-lg w-full max-w-full p-0">
               <div className="flex justify-start items-center mb-1">
                 <button onClick={() => { setSearchArea(""); setSelectedLocation(""); }} className="flex gap-1 justify-center items-center bg-white text-black dark:bg-black text-sm px-2 py-1 dark:text-gray-200 dark:hover:text-green-600 hover:text-green-600 rounded-lg">
                   <ArrowBackIosNewOutlinedIcon sx={{ fontSize: 14 }} /> Back

@@ -37,6 +37,7 @@ interface AdsProps {
     userImage: string;
     ad: any;
     id: string;
+    user:any;
     onClose: () => void;
     handleOpenAbout: () => void;
     handleOpenTerms: () => void;
@@ -46,12 +47,12 @@ interface AdsProps {
     handleOpenPlan: () => void;
   handleOpenChat: () => void;
   handleOpenBook: () => void;
-    handleAdView: (id:string) => void;
-   handleAdEdit: (id:string) => void;
+    handleAdView: (ad:any) => void;
+   handleAdEdit: (ad:any) => void;
     handlePay: (id:string) => void;
     handleSubCategory:(category: string, subcategory: string) => void;
-    handleOpenReview: (value:string) => void;
-    handleOpenShop: (value:string) => void;
+    handleOpenReview: (value:any) => void;
+    handleOpenShop: (value:any) => void;
     handleOpenChatId: (value:string) => void;
     handleOpenSettings: () => void;
     handleOpenPerfomance: () => void;
@@ -63,6 +64,7 @@ const AdsComponent = ({
     userImage,
     ad,
     id,
+    user,
     onClose,
     handleOpenSell,
     handleOpenBook,
@@ -106,7 +108,7 @@ const AdsComponent = ({
     <ScrollArea className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
    
       <div className="top-0 z-10 fixed w-full">
-                    <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                    <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                     handleOpenPerfomance={handleOpenPerfomance}
                     handleOpenSettings={handleOpenSettings}
                     handleOpenAbout={handleOpenAbout}

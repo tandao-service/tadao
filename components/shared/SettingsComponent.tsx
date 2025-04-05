@@ -27,7 +27,7 @@ type setingsProp = {
 handleOpenPrivacy: () => void;
 handleOpenSafety: () => void;
 handleOpenSettings: () => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handlePay: (id:string) => void;
   handleCategory: (value:string) => void;
   handleOpenPerfomance: () => void;
@@ -67,7 +67,7 @@ const SettingsComponent = ({userId,user,onClose,
       <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        
       <div className="top-0 z-10 fixed w-full">
-                              <Navbar userstatus={user.status} userId={userId} onClose={onClose} popup={"settings"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                              <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"settings"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                               handleOpenPerfomance={handleOpenPerfomance}
                               handleOpenSettings={handleOpenSettings}
                               handleOpenAbout={handleOpenAbout}

@@ -7,6 +7,10 @@ import Image from "next/image";
 import { getAdByUser } from "@/lib/actions/dynamicAd.actions";
 import Masonry from "react-masonry-css";
 import ProgressPopup from "./ProgressPopup";
+import Skeleton from "@mui/material/Skeleton";
+import { Icon } from "@iconify/react";
+import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
+ // Correct import
 type CollectionProps = {
   userId: string;
   sortby: string;
@@ -20,8 +24,8 @@ type CollectionProps = {
   isAdCreator: boolean;
   isVertical: boolean;
   loadPopup: boolean;
-  handleAdEdit: (id:string) => void;
-  handleAdView: (id:string) => void;
+   handleAdView: (ad:any) => void;
+    handleAdEdit: (ad:any) => void;
   handleOpenPlan: () => void;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
 };
@@ -46,6 +50,7 @@ const CollectionMyads = ({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+   const [isInitialLoading, setIsInitialLoading] = useState(true);
  // const [isOpenP, setIsOpenP] = useState(false);
   // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
@@ -79,7 +84,7 @@ const CollectionMyads = ({
     } finally {
       setLoading(false);
       //setIsOpenP(false);
-      //closeLoading();
+      setIsInitialLoading(false);
     }
   };
 
@@ -226,7 +231,7 @@ const filteredAds = selectedCategory
       ) : (
         loading === false && (
           <>
-            <div className="flex-center wrapper min-h-[100px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+            <div className="flex-center wrapper lg:min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
               <h3 className="font-bold text-[16px] lg:text-[25px]">
                 {emptyTitle}
               </h3>
@@ -235,19 +240,15 @@ const filteredAds = selectedCategory
           </>
         )
       )}
-      {loading && (
-        <div>
-          <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-            <Image
-              src="/assets/icons/loading2.gif"
-              alt="loading"
-              width={40}
-              height={40}
-              unoptimized
-            />
-          </div>
-        </div>
-      )}
+     {loading && (
+           <div>
+            
+               <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+               <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+               </div>
+             
+           </div>
+         )}
       
     </div>
   );

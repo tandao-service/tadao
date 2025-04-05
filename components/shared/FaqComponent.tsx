@@ -15,6 +15,7 @@ import { mode } from "@/constants";
 import { ScrollArea } from "../ui/scroll-area";
 interface Props {
   userId: string;
+  user:any;
   handleOpenSell:() => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
@@ -26,11 +27,11 @@ interface Props {
   handleOpenSafety: () => void;
   handleOpenPerfomance: () => void;
 handleOpenSettings: () => void;
-handleOpenShop: (shopId:string) => void;
+handleOpenShop: (shopId:any) => void;
   
 }
 
-const FaqComponent =  ({userId,handleOpenPerfomance,
+const FaqComponent =  ({userId, user,handleOpenPerfomance,
   handleOpenSettings,
   handleOpenShop, handleOpenSell, handleOpenBook,handleOpenChat,handleOpenPlan, onClose,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}:Props) => {
  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
@@ -95,7 +96,7 @@ const FaqComponent =  ({userId,handleOpenPerfomance,
         <link rel="canonical" href="https://www.PocketShop.co.ke/faq" />
         </Head>
    <div className="top-0 z-10 fixed w-full">
-        <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"faq"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+        <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"faq"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
    
            handleOpenPerfomance={handleOpenPerfomance}
            handleOpenSettings={handleOpenSettings}

@@ -22,21 +22,19 @@ import Sidebarmain from "@/components/shared/Sidebarmain";
 import { mode } from "@/constants";
 import SellerProfileReviews from "./SellerProfileReviews";
 import { IUser } from "@/lib/database/models/user.model";
-//import SidebarmainReviews from "./SidebarmainReviews";
+import SidebarmainReviews from "./SidebarmainReviews";
 import StarIcon from "@mui/icons-material/Star";
 import { Star, Send, X, CheckCircle, Phone, Mail, Circle } from "lucide-react";
 import { addDoc, collection, getDocs, limit, onSnapshot, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Ratingsmobile from "./ratingsmobile";
 import CircularProgress from "@mui/material/CircularProgress";
-import SidebarmainReviews from "./SidebarmainReviews";
 interface AdsProps {
  displayName: string;
   uid: string;
   photoURL:string;
-  recipientUid: string;
-  recipient: IUser;
-
+  user: any;
+  recipient: any;
   onClose: () => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
@@ -51,12 +49,12 @@ interface AdsProps {
   handleOpenReview: (value:string) => void;
  // handleCategory: (value:string) => void;
  // handleOpenSearchTab: (value:string) => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handleOpenPerfomance: () => void;
   handlePay: (id:string) => void;
 }
 
-const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onClose, handlePay, handleOpenShop,
+const ReviewsComponent =  ({displayName,uid,photoURL,user, recipient, onClose, handlePay, handleOpenShop,
   handleOpenPerfomance,handleOpenSettings,handleOpenReview,handleOpenChat,handleOpenChatId, handleOpenBook, handleOpenSell, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}:AdsProps) => {
  const [showForm, setShowForm] = useState(false);
   const [isSending, setIsSending] = useState(false); 
@@ -95,7 +93,7 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
         const reviewQuery = query(
           collection(db, "reviews"),
           where("uid", "==", uid), // Assuming senderUid is the UID of the current user
-          where("recipientUid", "==", recipientUid)
+          where("recipientUid", "==", recipient._id)
         ); // Assuming recipientUid is the UID of the recipient
   
         const reviewSnapshot = await getDocs(reviewQuery);
@@ -107,8 +105,8 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
             name: displayName,
             avatar: photoURL,
             createdAt: serverTimestamp(),
-            uid,
-            recipientUid,
+            uid:uid,
+            recipientUid:recipient._id,
             starClicked,
           });
         } else {
@@ -118,8 +116,8 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
             name: displayName,
             avatar: photoURL,
             createdAt: serverTimestamp(),
-            uid,
-            recipientUid,
+            uid:uid,
+            recipientUid:recipient._id,
             starClicked,
           });
   
@@ -157,7 +155,7 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
      <div className="h-[100vh] bg-white lg:bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        
       <div className="z-10 top-0 fixed w-full">
-                 <Navbar userstatus={recipient.status} userId={uid} onClose={onClose} 
+                 <Navbar user={user} userstatus={user.status} userId={uid} onClose={onClose} 
                  handleOpenSell={handleOpenSell} 
                  handleOpenPlan={handleOpenPlan} 
                  popup={"reviews"} 
@@ -177,7 +175,7 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
             <SellerProfileReviews
               user={recipient}
               loggedId={uid}
-              userId={recipientUid}
+              userId={recipient._id}
               handleOpenReview={handleOpenReview} 
               handleOpenChatId={handleOpenChatId} 
               handleOpenSettings={handleOpenSettings} 
@@ -193,13 +191,13 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
               <div className="flex flex-col">
                
                 <div className="text-xs lg:text-base flex gap-1 items-center">
-                <Ratingsmobile recipientUid={recipientUid} handleOpenReview={handleOpenReview} />
+                <Ratingsmobile recipientUid={recipient._id} user={recipient} handleOpenReview={handleOpenReview} />
                 </div>
                 </div>
 
  {/* Leave a Review Button (Fixed) */}
       <button
-        className="text-sm lg:text-base bg-green-600 text-white p-1 lg:px-5 lg:py-2 rounded-full shadow-lg"
+        className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
         onClick={() => setShowForm(true)}
       >
         Leave a Review
@@ -255,7 +253,7 @@ const ReviewsComponent =  ({displayName,uid,photoURL,recipientUid,recipient,onCl
               </div>
               <ScrollArea className="h-[75vh] p-1 bg-white rounded-b-lg dark:bg-[#2D3236]">
     
-              <SidebarmainReviews recipientUid={recipientUid} uid={uid}/>
+              <SidebarmainReviews recipientUid={recipient._id} uid={uid}/>
              </ScrollArea>
               <Toaster />
             </div>

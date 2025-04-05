@@ -16,6 +16,7 @@ type payProps = {
   userId: string;
   recipientUid:string;
   trans: any;
+  user:any;
   onClose: () => void;
   handleOpenSell: () => void;
   handleOpenBook: () => void;
@@ -25,13 +26,13 @@ type payProps = {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handleOpenChatId: (value:string) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
   
 };
-const DashboardPay = ({ userId, trans, recipientUid, handleOpenPerfomance, handleOpenSettings,
+const DashboardPay = ({ userId, trans,user, recipientUid, handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, onClose, handleOpenSell,handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: payProps) => {
   const { toast } = useToast();
   const router = useRouter();
@@ -193,7 +194,7 @@ const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   return (
     <div className="min-h-screen dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-gray-200">
      <div className="top-0 z-10 fixed w-full">
-                        <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                        <Navbar user={user}  userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                          handleOpenPerfomance={handleOpenPerfomance}
                          handleOpenSettings={handleOpenSettings}
                          handleOpenAbout={handleOpenAbout}
@@ -205,7 +206,7 @@ const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
     <div className="max-w-6xl mx-auto flex mt-[60px] mb-0 p-1">
   <div className="fixed w-full h-screen">
       <div className="p-1">
-        <div className="p-1 max-w-3xl dark:bg-[#2D3236] bg-white mx-auto mb-2 border rounded-lg">
+        <div className="p-1 max-w-3xl bg-white mx-auto mb-2 border rounded-lg">
           <div className="p-0 w-full items-center">
             <div className="flex flex-col items-center rounded-t-lg w-full p-1">
               <div className="gap-1 h-[450px] mt-2 items-center w-full rounded-lg">

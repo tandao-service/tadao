@@ -13,7 +13,9 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useToast } from "@/components/ui/use-toast";
 import { removeImageUrl } from "@/lib/actions/dynamicAd.actions";
-
+import { Icon } from "@iconify/react";
+import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
+ // Correct import
 type FileUploaderProps = {
   onFieldChange: (urls: string[]) => void;
   imageUrls: string[];
@@ -115,6 +117,8 @@ export function FileUploader({
 }: FileUploaderProps) {
   const { toast } = useToast();
   const [showAlert, setShowAlert] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [showmessage, setmessage] = useState("");
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -168,7 +172,7 @@ export function FileUploader({
             return await applyWatermark(
               file,
               userName.toUpperCase(),
-              "Posted on PocketShop"
+              "Posted on mapa"
             );
           } catch (error) {
             console.error("Watermark failed, proceeding without:", error);
@@ -232,32 +236,48 @@ export function FileUploader({
             <div {...getRootProps()}>
               <AddBoxIcon className="my-auto hover:cursor-pointer" />
             </div>
-            <div className="grid grid-cols-3 lg:grid-cols-5 w-full p-2 dark:bg-[#2D3236] bg-gray-200 rounded-sm">
-              {imageUrls.map((url, index) => (
-                <div
-                  key={index}
-                  className="relative justify-center items-center mb-1 rounded-sm shadow-sm p-1 bg-white mr-1 flex-shrink-0"
-                >
-                  <Zoom>
-                    <img
-                      src={url}
-                      alt={`image-${index}`}
-                      className="w-full h-[100px] object-cover object-center rounded-sm"
-                    />
-                  </Zoom>
-                  <div
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-0 right-0 rounded-xl bg-white p-1 shadow-sm"
-                  >
-                    <img
-                      src="/assets/icons/delete.svg"
-                      alt="edit"
-                      width={20}
-                      height={20}
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="grid grid-cols-3 lg:grid-cols-5 w-full p-2 rounded-sm">
+          
+{imageUrls.map((url, index) => {
+ 
+  return (
+    <div
+      key={index}
+      className="relative justify-center items-center mb-1 rounded-sm dark:bg-[#2D3236] bg-gray-200 shadow-sm p-1 mr-1 flex-shrink-0"
+    >
+      {/* Show spinner only when loading */}
+      {isLoading && (
+        <div className="absolute inset-0 flex justify-center items-center dark:bg-[#131B1E] bg-gray-100">
+          <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+        </div>
+      )}
+
+      <Zoom>
+        <img
+          src={url}
+          alt={`image-${index}`}
+          className={`w-full h-[100px] object-cover object-center rounded-sm transition-opacity duration-300 ${
+            isLoading ? "opacity-0" : "opacity-100"
+          }`}
+          onLoad={() => setIsLoading(false)} // Hide spinner when loaded
+          onError={(e) => {
+            e.currentTarget.src = "/assets/icons/error.svg"; // Fallback image
+            setIsLoading(false); // Hide spinner on error
+          }}
+        />
+      </Zoom>
+
+      <div
+        onClick={() => handleRemoveImage(index)}
+        className="absolute top-0 right-0 rounded-xl bg-white p-1 shadow-sm"
+      >
+        <img src="/assets/icons/delete.svg" alt="delete" width={20} height={20} />
+      </div>
+    </div>
+  );
+})}
+
+
             </div>
           </div>
         ) : (

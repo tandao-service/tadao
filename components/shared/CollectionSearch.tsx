@@ -14,6 +14,10 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useRouter } from "next/navigation";
+//import Skeleton from "@mui/material/Skeleton";
+import { Icon } from "@iconify/react";
+import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
+ // Correct import
 type CollectionProps = {
   userId: string;
   emptyTitle: string;
@@ -22,9 +26,9 @@ type CollectionProps = {
   activeButton: number;
   queryObject: any;
   loadPopup: boolean;
-  handleAdEdit: (id:string) => void;
+  handleAdEdit: (ad:any) => void;
   handleOpenSell: () => void;
-  handleAdView: (id:string) => void;
+  handleAdView: (ad:any) => void;
   handleOpenPlan: () => void;
 };
 
@@ -46,6 +50,7 @@ const CollectionSearch = ({
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [newpage, setnewpage] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -94,8 +99,7 @@ const CollectionSearch = ({
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);
-     // setIsOpenP(false);
-      //closeLoading();
+     setIsInitialLoading(false);
     }
   };
 
@@ -223,7 +227,7 @@ const CollectionSearch = ({
       ) : (
         loading === false && (
           <>
-            <div className="flex items-center min-h-[100px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
+            <div className="flex items-center lg:min-h-[100px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
               <h3 className="font-bold text-[16px] lg:text-[25px]">
                 {emptyTitle}
               </h3>
@@ -251,19 +255,15 @@ const CollectionSearch = ({
           </>
         )
       )}
-      {loading && (
-        <div>
-          <div className="w-full mt-10 h-full min-h-[100px] flex flex-col items-center justify-center">
-            <Image
-              src="/assets/icons/loading2.gif"
-              alt="loading"
-              width={40}
-              height={40}
-              unoptimized
-            />
-          </div>
-        </div>
-      )}
+       {loading && (
+             <div>
+              
+                 <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+                 <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                 </div>
+               
+             </div>
+           )}
     {/*  <ProgressPopup isOpen={loadPopup} onClose={handleCloseP} /> */} 
     </>
   );

@@ -64,6 +64,7 @@ const UserButton = dynamic(
 type NavProps = {
   userstatus: string;
   userId: string;
+  user:any;
   AdsCountPerRegion:any;
   onClose: () => void;
   handleOpenBook: () => void;
@@ -80,7 +81,7 @@ type NavProps = {
   handleFilter: (value: any) => void;
   popup:string;
 };
-export default function Navbarhome({ userstatus, userId,AdsCountPerRegion, onClose, popup,handleFilter, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
+export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, onClose, popup,handleFilter, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
   handleOpenShop,
   handleOpenPerfomance,
   handleOpenSettings, 
@@ -218,7 +219,7 @@ export default function Navbarhome({ userstatus, userId,AdsCountPerRegion, onClo
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>
-          <MobileNav userstatus={userstatus} userId={userId}
+          <MobileNav user={user} userstatus={userstatus} userId={userId}
       popup={popup}
       handleOpenSell={handleOpenSell}
       handleOpenBook={handleOpenBook}

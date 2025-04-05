@@ -37,11 +37,12 @@ interface WindowProps {
   handleOpenSafety: () => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   userId: string;
+  user:any;
 }
 
-const PopupPrivacy = ({ isOpen, userId, onClose, handleOpenPerfomance,
+const PopupPrivacy = ({ isOpen,user, userId, onClose, handleOpenPerfomance,
   handleOpenSettings,
   handleOpenShop, handleOpenSell, handleOpenBook,handleOpenChat,handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
  
@@ -49,9 +50,9 @@ const PopupPrivacy = ({ isOpen, userId, onClose, handleOpenPerfomance,
      
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-1 w-full h-[100vh] flex flex-col">
+      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
        
-      <PrivacyComponent userId={userId} onClose={onClose} 
+      <PrivacyComponent user={user} userId={userId} onClose={onClose} 
       handleOpenAbout={handleOpenAbout} 
       handleOpenTerms={handleOpenTerms}
       handleOpenPrivacy={handleOpenPrivacy}

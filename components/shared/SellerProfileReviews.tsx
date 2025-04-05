@@ -35,9 +35,6 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { CreateUserParams } from "@/types";
-import Ratings from "./ratings";
-import Streetmap from "./Streetmap";
-import Link from "next/link";
 import StreetmapOfice from "./StreetmapOffice";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
@@ -64,7 +61,7 @@ type CollectionProps = {
   userId: string;
   loggedId: string;
   user: any;
-  handleOpenReview: (value:string) => void;
+  handleOpenReview: (value:any) => void;
   handleOpenChatId: (value:string) => void;
   handleOpenSettings: () => void;
   handlePay: (id:string) => void;

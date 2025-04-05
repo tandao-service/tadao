@@ -26,14 +26,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { updatebookmarked } from "@/lib/actions/ad.actions";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Icon } from "@iconify/react";
+import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
+ // Correct import
 import ProgressPopup from "./ProgressPopup";
 type CardProps = {
   ad: any;
   hasOrderLink?: boolean;
   hidePrice?: boolean;
   userId: string;
-  handleAdEdit: (id:string) => void;
-  handleAdView: (id:string) => void;
+  handleAdEdit: (ad:any) => void;
+  handleAdView: (ad:any) => void;
   handleOpenPlan: () => void;
 };
 
@@ -118,20 +121,18 @@ const CardAutoHeight = ({
 
         <div className="relative w-full">
           {isLoadingsmall && (
-            <div
-              onClick={() => {
-               handleAdView(ad._id);
-              }}
-              className="absolute cursor-pointer w-full h-[300px] rounded-lg inset-0 flex items-center justify-center dark:bg-[#2D3236] bg-gray-200"
-            >
-              {/* Spinner or loading animation */}
-              <CircularProgress sx={{ color: "white" }} size={30} />
+          
+            <div onClick={() => {
+              handleAdView(ad);
+             }} className="absolute inset-0 flex justify-center items-center dark:bg-[#2D3236] bg-gray-200">
+            <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
             </div>
+
           )}
 
           <Image
             onClick={() => {
-              handleAdView(ad._id);
+              handleAdView(ad);
             }}
             src={`${ad.data.imageUrls[0]}`}
             alt={`${ad.data.title}`}
@@ -175,7 +176,7 @@ const CardAutoHeight = ({
             <div className="absolute right-2 top-10 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
               <div
                 onClick={() => {
-                  handleAdEdit(ad._id);
+                  handleAdEdit(ad);
                 }}
                 className="cursor-pointer"
               >
@@ -277,7 +278,7 @@ const CardAutoHeight = ({
         <div className="p-2 lg:p-4">
           <div
             onClick={() => {
-             handleAdView(ad._id);
+             handleAdView(ad);
             }}
             className="font-semibold text-sm cursor-pointer lg:text-base"
           >
@@ -290,7 +291,7 @@ const CardAutoHeight = ({
 
           <div
             onClick={() => {
-              handleAdView(ad._id);
+              handleAdView(ad);
             }}
             className="flex gap-1 cursor-pointer items-center dark:text-emerald-500 text-emerald-500 no-underline"
           >

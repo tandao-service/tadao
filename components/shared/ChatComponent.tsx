@@ -38,10 +38,10 @@ interface AdsProps {
   handleOpenSafety: () => void;
   handleOpenSettings: () => void;
   handleOpenChatId: (value:string) => void;
-  handleOpenReview: (value:string) => void;
+  handleOpenReview: (value:any) => void;
   handleCategory: (value:string) => void;
   handleOpenSearchTab: (value:string) => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handleOpenPerfomance: () => void;
   handlePay: (id:string) => void;
 }
@@ -74,7 +74,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
      <div className="h-[100vh] bg-white lg:bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        
       <div className="z-10 top-0 fixed w-full">
-                 <Navbar userstatus={user.status} userId={senderId} onClose={onClose} 
+                 <Navbar user={user} userstatus={user.status} userId={senderId} onClose={onClose} 
                  handleOpenSell={handleOpenSell} 
                  handleOpenPlan={handleOpenPlan} 
                  popup={"chat"} 

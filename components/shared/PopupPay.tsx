@@ -36,7 +36,7 @@ interface WindowProps {
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
 
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handleOpenChatId: (value:string) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
@@ -44,9 +44,10 @@ interface WindowProps {
   userId: string;
   userName: string;
   txtId: string;
+  user:any;
 }
 
-const PopupPay = ({ isOpen, userId, userName, txtId,  handleOpenPerfomance, handleOpenSettings,
+const PopupPay = ({ isOpen, userId, userName, txtId, user,  handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, handleOpenChatId, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety, }: WindowProps) => {
   const [trans, settrans] = useState<any>(null);
  const [loading, setLoading] = useState<boolean>(true);
@@ -74,12 +75,12 @@ const PopupPay = ({ isOpen, userId, userName, txtId,  handleOpenPerfomance, hand
      
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-1 w-full h-[100vh] flex flex-col">
+      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
        
        {loading ? (
-                   <div className="h-screen w-full dark:bg-[#131B1E] dark:text-gray-300 bg-gray-200"> 
+                   <div className="h-screen w-full bg-gray-200"> 
                    <div className="top-0 z-10 fixed w-full">
-                    <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                    <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                     handleOpenPerfomance={handleOpenPerfomance}
                     handleOpenSettings={handleOpenSettings}
                     handleOpenAbout={handleOpenAbout}
@@ -88,13 +89,13 @@ const PopupPay = ({ isOpen, userId, userName, txtId,  handleOpenPerfomance, hand
                     handleOpenSafety={handleOpenSafety} 
                     handleOpenShop={handleOpenShop}/>
                     </div>
-                    <div className="flex justify-center items-center h-full text-lg dark:text-gray-400">
+                    <div className="flex justify-center items-center h-full text-lg font-bold">
                     <div className="flex gap-2 items-center">  <CircularProgress sx={{ color: "gray" }} size={30} /> <div className="hidden lg:inline">Loading...</div></div>
                    </div>
                    </div>
                   
                  ) : (
-         <DashboardPay userId={userId} trans={trans} recipientUid={userId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
+         <DashboardPay user={user} userId={userId} trans={trans} recipientUid={userId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
             handleOpenTerms={handleOpenTerms}
             handleOpenPrivacy={handleOpenPrivacy}
             handleOpenSafety={handleOpenSafety}

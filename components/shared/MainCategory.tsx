@@ -90,6 +90,10 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import FloatingChatIcon from "./FloatingChatIcon";
 import ChatWindow from "./ChatWindow";
 import PropertyMapSearch from "./PropertyMapSearch";
+import { getAdsCount, getAdsCountPerRegion, getAdsCountPerVerifiedFalse, getAdsCountPerVerifiedTrue } from "@/lib/actions/dynamicAd.actions";
+import { useMediaQuery } from "react-responsive"; // Detect mobile screens
+import FilterSkeleton from "./FilterSkeleton";
+import LocationListSkeleton from "./LocationListSkeleton";
 type CollectionProps = {
   loading: boolean;
   userId: string;
@@ -100,11 +104,12 @@ type CollectionProps = {
   limit: number;
   emptyTitle: string;
   emptyStateSubtext: string;
-  AdsCountPerRegion: any;
-  AdsCountPerVerifiedTrue: any;
-  AdsCountPerVerifiedFalse: any;
+  user:any;
+  //AdsCountPerRegion: any;
+ // AdsCountPerVerifiedTrue: any;
+ // AdsCountPerVerifiedFalse: any;
   queryObject: any;
-  adsCount: any;
+ // adsCount: any;
   onClose:()=> void;
   handleOpenSell: () => void;
   handleOpenBook: () => void;
@@ -130,11 +135,12 @@ const MainCategory = ({
   subcategoryList,
   emptyTitle,
   emptyStateSubtext,
-  AdsCountPerRegion,
-  AdsCountPerVerifiedTrue,
-  AdsCountPerVerifiedFalse,
+  user,
+  //AdsCountPerRegion,
+  //AdsCountPerVerifiedTrue,
+  //AdsCountPerVerifiedFalse,
   queryObject,
-  adsCount,
+  //adsCount,
   onClose,
   handleOpenSell,
   handleOpenBook,
@@ -156,6 +162,84 @@ CollectionProps) => {
  const [showSidebar, setShowSidebar] = useState(true);
 
  const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
+ const [adsCount, setAdsCount] = useState<any>([]);
+   const [AdsCountPerRegion, setAdsCountPerRegion] = useState<any>([]);
+   const [AdsCountPerVerifiedTrue, setAdsCountPerVerifiedTrue] = useState<any>([]);
+   const [AdsCountPerVerifiedFalse, setAdsCountPerVerifiedFalse] = useState<any>([]);
+   const [loadingCount, setLoadingCount] = useState<boolean>(true);
+ const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect mobile screens
+   
+ useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoadingCount(true);
+    
+        const { category, subcategory } = queryObject;
+
+        if (subcategory) {
+          const getFieldsByCategoryAndSubcategory = (
+            categoryName: string,
+            subcategory: string,
+            data: any
+          ) => {
+            return data
+              .filter(
+                (item: any) =>
+                  item.category.name === categoryName &&
+                  item.subcategory === subcategory
+              )
+              .map((item: any) => item.fields);
+          };
+
+          let adsCount: any = [];
+          const dataString = getFieldsByCategoryAndSubcategory(
+            category,
+            subcategory,
+            subcategoryList
+          );
+          const newfields = dataString[0]
+            .filter((item: any) =>
+              [
+                "autocomplete",
+                "radio",
+                "multi-select",
+                "select",
+                "related-autocompletes",
+                "year",
+                "checkbox",
+              ].includes(item.type)
+            )
+            .map((item: any) => item.name);
+
+          let fields = newfields.flatMap((field: any) =>
+            field === "make-model" ? ["make", "model"] : field
+          );
+
+          adsCount = await getAdsCount(category, subcategory, fields);
+      
+          setAdsCount(adsCount);
+        }
+
+        const [region, verifiedTrue, verifiedFalse] = await Promise.all([
+          getAdsCountPerRegion(category, subcategory),
+          getAdsCountPerVerifiedTrue(category, subcategory),
+          getAdsCountPerVerifiedFalse(category, subcategory),
+        ]);
+
+        setAdsCountPerRegion(region);
+        setAdsCountPerVerifiedTrue(verifiedTrue);
+        setAdsCountPerVerifiedFalse(verifiedFalse);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoadingCount(false); // Mark loading as complete
+      }
+    };
+
+  
+      fetchData();
+    
+  }, [newqueryObject.category, newqueryObject.subcategory]);
    useEffect(() => {
      const handleResize = () => {
        if (window.innerWidth < 768) {
@@ -403,7 +487,7 @@ CollectionProps) => {
   return (
     <div className="relative flex w-full h-screen">
             <div className="top-0 z-10 fixed w-full">
-                          <Navbar userstatus="category" userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                          <Navbar user={user} userstatus={user} userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                           handleOpenPerfomance={handleOpenPerfomance}
                           handleOpenSettings={handleOpenSettings}
                           handleOpenAbout={handleOpenAbout}
@@ -434,15 +518,10 @@ CollectionProps) => {
           
           {/* Categories Section */}
            <ScrollArea className="h-[100vh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">
-                      <SidebarSearchMain
+           <SidebarSearchMain
                           categoryList={subcategoryList}
                           category={newqueryObject.category}
                           subcategory={newqueryObject.subcategory}
-                          AdsCountPerRegion={AdsCountPerRegion}
-                          AdsCountPerVerifiedTrue={AdsCountPerVerifiedTrue}
-                          AdsCountPerVerifiedFalse={AdsCountPerVerifiedFalse}
-                          adsCount={adsCount}
-                          onLoading={onLoading}
                           handleFilter={handleResetFilter}
                          
                         />
@@ -584,18 +663,49 @@ CollectionProps) => {
       {showPopupLocation && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
           <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-0 w-full lg:max-w-3xl rounded-md shadow-md relative">
+          
+          {loadingCount ? (<>{isMobile ? (<>
+                          <div className="fixed inset-0 z-50 bg-gray-200 dark:bg-[#222528] dark:text-gray-100 p-1 flex flex-col">
+                                            <div className="flex justify-between items-center border-b pb-2">
+                                            <div className="font-bold text-lg  dark:text-gray-300 text-emerald-950 text-center sm:text-left p-2">
+                                                  Location Filter
+                                                   </div>
+                                              <Button variant="outline" onClick={handleClosePopupLocation}>
+                                              <CloseOutlinedIcon />
+                                              </Button>
+                                  </div>
+                          <LocationListSkeleton/>
+                          </div></>):(<>
+                          
+                            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
+                      <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-0 w-full  lg:max-w-3xl rounded-md shadow-md relative">
+                    <div className="flex justify-between items-center border-b pb-2">
+                                            <div className="font-bold text-lg  dark:text-gray-300 text-emerald-950 text-center sm:text-left p-2">
+                                                   Location Filter
+                                                   </div>
+                                              <Button variant="outline" onClick={handleClosePopupLocation}>
+                                              <CloseOutlinedIcon />
+                                              </Button>
+                                  </div>
+                          <LocationListSkeleton/>
+                          </div></div>
+                          
+                          </>)}
+                         
+                                    </>):(<>
             <LocationSelection
               onSelected={handleRegion}
               AdsCountPerRegion={AdsCountPerRegion}
               onClose={handleClosePopupLocation}
               handleFilter={handleFilter}
             />
+            </>)}
           </div>
         </div>
       )}
-        {showPopup && (
+              {showPopup && (<>
                         
-      
+                     
                             <SidebarSearchmobile
                               categoryList={subcategoryList}
                               category={newqueryObject.category}
@@ -622,8 +732,7 @@ CollectionProps) => {
                               HandletogglePopup={togglePopup}
                             />
                          
-                      )}
-                        
+                         </> )}
     </div>
   </div>
 </div>

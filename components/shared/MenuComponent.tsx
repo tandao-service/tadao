@@ -28,9 +28,7 @@
               className="hidden"
               onChange={(e) => setImg(e.target.files?.[0] || null)}
             />
-            <MenubarItem onClick={handleOpenPopupGps} className="flex items-center gap-2">
-              <LocationOn /> Share Location
-            </MenubarItem>
+           
           </MenubarContent>
         </MenubarMenu>
       </Menubar>

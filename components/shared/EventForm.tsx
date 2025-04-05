@@ -21,9 +21,6 @@ import SubCategorySelect from "./SubCategorySelect";
 import { Multiselect } from "./Multiselect";
 import AutoComplete from "./AutoComplete";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 import {
   FormControl,
@@ -36,7 +33,7 @@ import {
   Select,
 } from "@mui/material";
 import CountyConstituencySelector from "./CountyConstituencySelector";
-import { REGIONS_WITH_AREA, REGIONS_WITH_CONSTITUENCIES } from "@/constants";
+import { FreePackId, REGIONS_WITH_AREA, REGIONS_WITH_CONSTITUENCIES } from "@/constants";
 import MakeModelAutocomplete from "./MakeModelAutocomplete";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,9 +51,23 @@ import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlin
 import LatLngPicker from "./LatLngPicker";
 import LandSubdivision from "./LandSubdivision";
 import GoogleMapping from "./GoogleMapping";
-
-//import GoogleMapsPolygonEditor from "./GoogleMapsPolygonEditor";
-
+import { getData } from "@/lib/actions/transactions.actions";
+import { getAllPackages } from "@/lib/actions/packages.actions";
+import { Icon } from "@iconify/react";
+import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
+ // Correct import
+import Barsscale from "@iconify-icons/svg-spinners/bars-scale"; // Correct import
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full min-h-[300px] h-full flex flex-col items-center justify-center">
+                                       <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                                      
+                          </div>
+  ),
+});
 interface Field {
   name: string;
   type:
@@ -153,38 +164,38 @@ type Package = {
 };
 type AdFormProps = {
   userId: string;
-  planId: string;
+ // planId: string;
   type: string;
   ad?: any;
   adId?: string;
   categories:any;
   userName: string;
-  daysRemaining: number;
-  packname: string;
-  packagesList: any;
-  listed: number;
-  priority: number;
-  expirationDate: Date;
-  adstatus: string;
-  handleAdView?:(id:string) => void;
+  //daysRemaining: number;
+ // packname: string;
+ // packagesList: any;
+  //listed: number;
+  //priority: number;
+  //expirationDate: Date;
+ // adstatus: string;
+  handleAdView?:(ad:any) => void;
   handlePay?:(id:string) => void;
   handleOpenTerms:() => void;
 };
 
 const AdForm = ({
   userId,
-  planId,
+//  planId,
   type,
   ad,
   adId,
   userName,
-  daysRemaining,
-  packname,
-  packagesList,
-  listed,
-  priority,
-  expirationDate,
-  adstatus,
+  //daysRemaining,
+  //packname,
+  //packagesList,
+ // listed,
+  //priority,
+ // expirationDate,
+ // adstatus,
   categories,
   handleAdView,
   handlePay,
@@ -280,59 +291,113 @@ const AdForm = ({
   const handleSaveArea = () => {
     setShowPopupArea(false); // Close the popup after saving
   };
+ 
   const [selectedCategoryCommand, setSelectedCategoryCommand] = useState<
     string[]
   >([]);
-  const [activePackage, setActivePackage] = useState<Package | null>(
-    packagesList.length > 0
-      ? listed > 0 && packname === "Free"
-        ? packagesList[0]
-        : packagesList[1]
-      : null
-  );
+ 
   const [activeButton, setActiveButton] = useState(0);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
   const [priceInput, setPriceInput] = useState("");
   const [periodInput, setPeriodInput] = useState("");
-  const [PlanId, setplanId] = useState(planId);
-  const [Plan, setplan] = useState(packname);
-  const [Adstatus_, setadstatus] = useState(adstatus);
-  const [Priority_, setpriority] = useState(priority);
-  const [ExpirationDate_, setexpirationDate] = useState(expirationDate);
-  useEffect(() => {
-    const getCategory = async () => {
-      try {
-     
-        const uniqueCategories = categories.reduce((acc: any[], current: any) => {
-          if (
-            !acc.find((item) => item.category.name === current.category.name)
-          ) {
-            acc.push(current);
+   const [subscription, setSubscription] = useState<any>(null);
+    const [packagesList, setPackagesList] = useState<Package[]>([]);
+    const [daysRemaining, setDaysRemaining] = useState(0);
+    const [remainingAds, setRemainingAds] = useState(0);
+    const [listed, setListed] = useState(0);
+    const [Plan, setplan] = useState("Free");
+    const [PlanId, setplanId] = useState(FreePackId);
+    const [Priority_, setpriority] = useState(0);
+    const [Adstatus_, setadstatus] = useState("Pending");
+    const [color, setColor] = useState("#000000");
+    const [loadingSub, setLoadingSub] = useState<boolean>(true);
+    const [ExpirationDate_, setexpirationDate] = useState(new Date());
+    const [activePackage, setActivePackage] = useState<Package | null>(null);
+
+    useEffect(() => {
+      const getCategory = async () => {
+        try {
+       
+          const uniqueCategories = categories.reduce((acc: any[], current: any) => {
+            if (
+              !acc.find((item) => item.category.name === current.category.name)
+            ) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+  
+          setSelectedCategoryCommand(uniqueCategories);
+  
+          if (type === "Update") {
+            const selectedData: any = categories.find(
+              (category: any) =>
+                category.category.name === selectedCategory &&
+                category.subcategory === selectedSubCategory
+            );
+            // Update fields if a match is found
+            setFields(selectedData ? selectedData.fields : []);
+            setFormData(ad.data);
+          
           }
-          return acc;
-        }, []);
-
-        setSelectedCategoryCommand(uniqueCategories);
-
-        if (type === "Update") {
-          const selectedData: any = categories.find(
-            (category: any) =>
-              category.category.name === selectedCategory &&
-              category.subcategory === selectedSubCategory
-          );
-          // Update fields if a match is found
-          setFields(selectedData ? selectedData.fields : []);
-          setFormData(ad.data);
-        
+          setShowLoad(false)
+        } catch (error) {
+          setShowLoad(false)
+          console.error("Failed to fetch categories", error);
         }
-        setShowLoad(false)
-      } catch (error) {
-        setShowLoad(false)
-        console.error("Failed to fetch categories", error);
-      }
-    };
-    getCategory();
-  }, []);
+      };
+      getCategory();
+    }, []);
+
+  useEffect(() => {
+    if(type === "Create"){
+        const fetchData = async () => {
+          try {
+            setLoadingSub(true);
+           
+            const subscriptionData = await getData(userId);
+            const packages = await getAllPackages();
+            setPackagesList(packages);
+         
+            if (subscriptionData) {
+              setSubscription(subscriptionData);
+              const listedAds = subscriptionData.ads || 0;
+              setListed(listedAds);
+              if (subscriptionData.currentpack && !Array.isArray(subscriptionData.currentpack)) { 
+              setRemainingAds(subscriptionData.currentpack.list - listedAds);
+              setpriority(subscriptionData.currentpack.priority);
+              setColor(subscriptionData.currentpack.color);
+              setplan(subscriptionData.currentpack.name);
+              setplanId(subscriptionData.transaction?.planId || FreePackId);
+              const createdAtDate = new Date(subscriptionData.transaction?.createdAt || new Date());
+              const periodDays = parseInt(subscriptionData.transaction?.period) || 0;
+              const expiryDate = new Date(createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000);
+              setexpirationDate(expiryDate);
+              const currentDate = new Date();
+              const remainingDays = Math.ceil((expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+              setDaysRemaining(remainingDays);
+              setadstatus((remainingDays > 0 && (subscriptionData.currentpack.list - listedAds) > 0) || ((subscriptionData.currentpack.list - listedAds) > 0 && subscriptionData.currentpack.name === "Free") ? "Active" : "Pending");
+              setActivePackage(
+              packages.length > 0
+                ? listedAds > 0 && subscriptionData.currentpack.name === "Free"
+                  ? packages[0]
+                  : packages[1]
+                : null
+            );
+            } else {
+              console.warn("No current package found for the user.");
+            }
+            }
+          } catch (error) {
+            console.error("Failed to fetch data", error);
+          } finally {
+         
+            setLoadingSub(false);
+          }
+        };
+        fetchData();
+    }
+    }, []);
   const validateForm = async () => {
     //console.log("start: ");
     const validationSchema = createValidationSchema(fields);
@@ -510,7 +575,7 @@ const AdForm = ({
             handlePay(newAd._id);
           } else {
             if (handleAdView) {
-              handleAdView(newAd._id);
+              handleAdView(newAd);
             }
           
           }
@@ -547,7 +612,7 @@ const AdForm = ({
           className: "bg-[#30AF5B] text-white",
         });
         if (updatedAd && handleAdView) {
-          handleAdView(updatedAd._id);
+          handleAdView(updatedAd);
         //  router.push(`/ads/${updatedAd._id}`);
         }
         // console.log("Data submitted successfully:", finalData);
@@ -1235,7 +1300,7 @@ const AdForm = ({
 
                     <button
                       onClick={handleOpenPopupBulk}
-                      className="py-3 w-[200px] px-1 rounded-sm bg-emerald-600 text-white hover:bg-emerald-700">
+                      className="py-3 text-sm lg:text-base w-[200px] px-1 rounded-sm bg-emerald-600 text-white hover:bg-emerald-700">
                       <AddOutlinedIcon /> Add Bulk Price
                     </button>
 
@@ -1628,17 +1693,24 @@ const AdForm = ({
           {type === "Create" && selectedSubCategory && (
             <>
               <div className="rounded-lg mt-4 p-0">
-                <PromoSelection
-                  packagesList={packagesList}
-                  packname={packname}
-                  planId={planId}
-                  expirationDate={expirationDate}
-                  listed={listed}
-                  adstatus={adstatus}
-                  priority={priority}
-                  daysRemaining={daysRemaining}
-                  onChange={handlePackageOnChange}
-                />
+              {loadingSub ? (<><div className="w-full min-h-[100px] h-full flex flex-col items-center justify-center">
+                                          <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                                          
+                          </div></>):(<>
+            
+            
+            <PromoSelection
+                packagesList={packagesList}
+                packname={Plan}
+                planId={PlanId}
+                expirationDate={ExpirationDate_}
+                listed={listed}
+                adstatus={Adstatus_}
+                priority={Priority_}
+                daysRemaining={daysRemaining}
+                onChange={handlePackageOnChange}
+              />
+              </>)}
               </div>
               {/* 
               <div className="rounded-lg mt-4 shadow-lg border">

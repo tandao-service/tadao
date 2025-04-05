@@ -18,6 +18,7 @@ import Skeleton from "@mui/material/Skeleton";
 import { ScrollArea } from "../ui/scroll-area";
 import { format, isToday, isYesterday } from "date-fns";
 import ProgressPopup from "./ProgressPopup";
+import ChatListSkeleton from "./ChatListSkeleton";
 type sidebarProps = {
   userId: string;
   handleOpenChatId:(value:string) => void;
@@ -48,7 +49,7 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-
+  const [recipient, setrecipient] = useState('');
   useEffect(() => {
     const getLastMessagesInConversations = async () => {
       try {
@@ -82,7 +83,7 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
     getLastMessagesInConversations().then((lastMessages) => {
       setMessages(lastMessages);
     });
-  }, [userId]);
+  }, [userId, recipient]);
 
   const truncateTitle = (title: string, maxLength: number) => {
     return title.length > maxLength
@@ -90,21 +91,22 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
       : title;
   };
   
-  const [recipient, setrecipient] = useState('');
+ 
   
   const handle = (uid: string, recipientUid: string) => {
   //  setIsOpenP(true);
     updateRead(recipientUid, uid);
    // router.push("/chat/" + uid);
-   handleOpenChatId(recipientUid);
-   setrecipient(recipientUid);
+   handleOpenChatId(uid);
+   setrecipient(uid);
   };
 
   return (
     <div>
       {loading ? (
         <div className="flex flex-col justify-center w-full">
-          <div className="flex gap-2 justify-center mb-1">
+          <ChatListSkeleton/>
+         {/*  <div className="flex gap-2 justify-center mb-1">
             <Skeleton
               variant="rectangular"
               animation="wave"
@@ -159,7 +161,7 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
               //  height={50}
               className="rounded-sm w-full h-10 dark:bg-[#2D3236]"
             />
-          </div>
+          </div>*/}
         </div>
       ) : messages.length > 0 ? (
         <>
@@ -190,8 +192,8 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                     <li
                       key={index}
                       onClick={() => handle(message.uid, message.recipientUid)}
-                      className={`p-4 flex items-center space-x-4 dark:bg-[#222528] dark:hover:bg-black rounded-0 hover:bg-gray-100 hover:cursor-pointer ${
-                        message.recipientUid === recipient ? "dark:bg-black bg-emerald-100" : ""
+                      className={`p-4 flex items-center space-x-4 dark:hover:bg-black rounded-0 hover:bg-gray-100 hover:cursor-pointer ${
+                        message.recipientUid === recipient ? "bg-green-100" : ""
                       }`}
                     >
                       <div className="flex-shrink-0">
@@ -208,12 +210,12 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                           {message.name}
                         </p>
                         <p className="flex gap-1 text-sm dark:text-gray-300 text-gray-500 truncate">
-                         
+                          
                           <UnreadmessagesPeruser
                             uid={message.uid}
                             recipientUid={userId}
                           />
-                           {truncateTitle(message.text, 18)}
+                          {truncateTitle(message.text, 18)}
                         </p>
                       </div>
                       <div className="whitespace-nowrap text-[10px] lg:text-sm dark:text-gray-300 text-gray-500">

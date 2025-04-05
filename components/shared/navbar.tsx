@@ -48,7 +48,7 @@ type NavProps = {
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
   handleOpenSell: () => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
   handleOpenAbout: () => void;
@@ -56,9 +56,10 @@ type NavProps = {
   handleOpenPrivacy: () => void; 
   handleOpenSafety: () => void;
   popup:string;
+  user:any;
 };
 
-export default function Navbar({ userstatus, userId, onClose, popup, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
+export default function Navbar({ userstatus, user, userId, onClose, popup, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
   handleOpenShop,
   handleOpenPerfomance,
   handleOpenSettings, 
@@ -216,7 +217,7 @@ export default function Navbar({ userstatus, userId, onClose, popup, handleOpenS
           <UserButton afterSignOutUrl="/" />
         </div>
       </SignedIn>
-      <MobileNav userstatus={userstatus} userId={userId}
+      <MobileNav user={user} userstatus={userstatus} userId={userId}
       popup={popup}
       handleOpenSell={handleOpenSell}
       handleOpenBook={handleOpenBook}

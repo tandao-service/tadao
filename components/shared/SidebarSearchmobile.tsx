@@ -438,11 +438,11 @@ const SidebarSearchmobile = ({
         </div>
       </ScrollArea></div>
                     ):(
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-90 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-80 z-50">
                       <div className="h-[90vh] dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-gray-200 p-0 w-full  lg:max-w-3xl rounded-md shadow-md relative">
                         
                          <div className="flex w-full items-center justify-between">
-                           <div className="font-bold text-lg  dark:text-gray-300 text-emerald-950 text-center sm:text-left p-2">
+                           <div className="font-bold text-lg dark:text-gray-300 text-emerald-950 text-center sm:text-left p-2">
                             Filter
                            </div>
    

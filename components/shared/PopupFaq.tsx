@@ -35,12 +35,13 @@ interface WindowProps {
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
   userId: string;
+  user:any;
   handleOpenPerfomance: () => void;
 handleOpenSettings: () => void;
-handleOpenShop: (shopId:string) => void;
+handleOpenShop: (shopId:any) => void;
 }
 
-const PopupFaq = ({ isOpen, userId, onClose, handleOpenPerfomance,
+const PopupFaq = ({ isOpen, userId, user, onClose, handleOpenPerfomance,
   handleOpenSettings,
   handleOpenShop, handleOpenBook,handleOpenChat,handleOpenPlan, handleOpenSell,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
  
@@ -50,7 +51,7 @@ const PopupFaq = ({ isOpen, userId, onClose, handleOpenPerfomance,
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-gray-200 p-1 w-full h-[100vh] flex flex-col">
        
-      <FaqComponent userId={userId} onClose={onClose} 
+      <FaqComponent user={user} userId={userId} onClose={onClose} 
       handleOpenAbout={handleOpenAbout} 
       handleOpenTerms={handleOpenTerms}
       handleOpenPrivacy={handleOpenPrivacy}

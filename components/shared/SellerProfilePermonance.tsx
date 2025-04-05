@@ -61,9 +61,9 @@ type chatProps = {
   userId: string;
   userName: string;
   userImage: string;
-  user: IUser;
-  handleOpenShop:(shopId:string) => void;
-  handleOpenReview:(id:string) => void;
+  user: any;
+  handleOpenShop:(shopId:any) => void;
+  handleOpenReview:(value:any) => void;
   handlePay: (id:string) => void;
 };
 const SellerProfilePermonance = ({
@@ -90,9 +90,7 @@ const SellerProfilePermonance = ({
       <div className="flex flex-col lg:flex-row gap-1 items-center p-1 w-full">
         <div
           onClick={() => {
-           // handleOpenP();
-            handleOpenShop(userId);
-           // router.push(`/shop/${userId}`);
+            handleOpenShop(user);
           }}
           className="cursor-pointer no-underline font-bold m-1"
         >
@@ -111,9 +109,7 @@ const SellerProfilePermonance = ({
         <div className="flex flex-col">
           <div
             onClick={() => {
-              //handleOpenP();
-              //router.push(`/shop/${userId}`);
-              handleOpenShop(userId);
+              handleOpenShop(user);
             }}
             className="cursor-pointer no-underline font-boldm-1"
           >
@@ -121,7 +117,7 @@ const SellerProfilePermonance = ({
           </div>
 
           <Verification user={user} userId={userId} isAdCreator={true} handlePayNow={handlePay}/>
-          <Ratingsmobile recipientUid={userId} handleOpenReview={handleOpenReview} />
+          <Ratingsmobile user={user} recipientUid={userId} handleOpenReview={handleOpenReview} />
         </div>
       </div>
    

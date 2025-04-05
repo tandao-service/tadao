@@ -8,6 +8,7 @@ type payProps = {
   userId: string;
   recipientUid:string;
   alltrans: any;
+  user:any;
   onClose: () => void;
   handleOpenSell: () => void;
   handleOpenBook: () => void;
@@ -17,12 +18,12 @@ type payProps = {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId:any) => void;
   handleOpenChatId: (value:string) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
 };
-const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance, handleOpenSettings,
+const DashboardHistory = ({ userId, alltrans,user,recipientUid ,handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, onClose, handleOpenSell,handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}: payProps) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
     
@@ -47,7 +48,7 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
     return (
       <div className="dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-white">
       <div className="fixed z-10 top-0 w-full">
-         <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+         <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                                 handleOpenPerfomance={handleOpenPerfomance}
                                 handleOpenSettings={handleOpenSettings}
                                 handleOpenAbout={handleOpenAbout}
@@ -65,7 +66,7 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
   return (
     <div className="min-h-screen dark:bg-[#131B1E] h-screen  text-black dark:text-[#F1F3F3] bg-white">
       <div className="fixed z-0 top-0 w-full">
-         <Navbar userstatus="User" userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+         <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                                 handleOpenPerfomance={handleOpenPerfomance}
                                 handleOpenSettings={handleOpenSettings}
                                 handleOpenAbout={handleOpenAbout}
@@ -77,13 +78,13 @@ const DashboardHistory = ({ userId, alltrans,recipientUid ,handleOpenPerfomance,
       <div className="max-w-8xl mx-auto flex mt-[60px] mb-0 p-1">
     <div className="fixed w-full h-screen">
       <div className="p-1">
-        <div className="p-1 max-w-3xl dark:bg-[#2D3236] rounded-lg mx-auto mb-2">
+        <div className="p-1 max-w-3xl mx-auto mb-2">
           <div className="p-0 w-full items-center">
             <div className="flex flex-col items-center w-full">
               <div className="gap-1 h-[450px] mt-2 items-center w-full">
                 <div className="">
                   <div className="flex flex-col items-center">
-                    <div className="flex flex-col rounded-lg dark:bg-[#2D3236] bg-gray-100 p-2 mb-2 w-full">
+                    <div className="flex flex-col border shadow-lg rounded-lg dark:bg-[#2D3236] bg-gray-100 p-2 mb-2 w-full">
                       <p className="font-bold text-[25px] text-center ">
                         History
                       </p>

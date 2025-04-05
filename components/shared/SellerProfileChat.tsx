@@ -35,7 +35,6 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { CreateUserParams } from "@/types";
-import Ratings from "./ratings";
 import Streetmap from "./Streetmap";
 import Link from "next/link";
 import StreetmapOfice from "./StreetmapOffice";
@@ -64,7 +63,7 @@ type CollectionProps = {
   userId: string;
   loggedId: string;
   user: any;
-  handleOpenReview: (value:string) => void;
+  handleOpenReview: (value:any) => void;
   handleOpenChatId: (value:string) => void;
   handleOpenSettings: () => void;
   handlePay: (id:string) => void;
@@ -186,7 +185,7 @@ const handlewhatsappClick = () => {
           
         </div>
         <div className="flex mb-2 flex-col mt-4 items-center dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg w-full p-1">
-        <RatingsCard recipientUid={user._id} handleOpenReview={handleOpenReview} />
+        <RatingsCard user={user} recipientUid={user._id} handleOpenReview={handleOpenReview} />
       </div>
       </div>
     
