@@ -346,27 +346,25 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-1 lg:mt-2 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl lg:p-1"
-          style={
-            ad.plan.name !== "Free"
-              ? {
-                  borderTop: "8px",
-                  borderColor: ad.plan.color, // Border color for non-free plans
-                }
-              : undefined
-          }
+          className="mt-1 lg:mt-2 border-t-50 border-emerald-700 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl lg:p-1"
+          //style={
+          //  ad.plan.name !== "Free"
+          //    ? {
+           //       borderTop: "8px",
+           //       borderColor: ad.plan.color, // Border color for non-free plans
+            //    }
+             // : undefined
+          //}
         >
 {ad.plan.name !== "Free" && (
               <div
                 style={{
                   backgroundColor: ad.plan.color,
                 }}
-                className="hidden lg:inline rounded-tr-xl absolute shadow-lg top-0 right-0 text-white text-[10px] py-1 px-3"
+                className="hidden lg:inline rounded-tr-xl absolute shadow-lg z-10 top-0 right-0 text-white text-[10px] py-1 px-3"
               >
                 <div
                   onClick={() => {
-                   // setIsOpenP(true);
-                   // router.push("/plan");
                     handleOpenPlan()
                   }}
                 >
@@ -376,6 +374,7 @@ export default function Ads({ ad, userId, userImage, userName, onClose,handlePay
                 </div>
               </div>
             )}
+            
   {/*<div className="grid grid-cols-3 mb-0 flex gap-1">
   <button
     title="Ad Pictures"

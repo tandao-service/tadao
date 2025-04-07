@@ -19,6 +19,8 @@ import { ScrollArea } from "../ui/scroll-area";
 import { format, isToday, isYesterday } from "date-fns";
 import ProgressPopup from "./ProgressPopup";
 import ChatListSkeleton from "./ChatListSkeleton";
+import UseUserStatus from "./UseUserStatus";
+//import UseUserStatus from "./UseUserStatus";
 type sidebarProps = {
   userId: string;
   handleOpenChatId:(value:string) => void;
@@ -188,6 +190,7 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                       );
                     }
                   } catch {}
+                //  const status = UseUserStatus(message.uid);
                   return (
                     <li
                       key={index}
@@ -210,7 +213,7 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                           {message.name}
                         </p>
                         <p className="flex gap-1 text-sm dark:text-gray-300 text-gray-500 truncate">
-                          
+                       
                           <UnreadmessagesPeruser
                             uid={message.uid}
                             recipientUid={userId}
@@ -218,9 +221,13 @@ const Sidebarmain = ({ userId, handleOpenChatId }: sidebarProps) => {
                           {truncateTitle(message.text, 18)}
                         </p>
                       </div>
-                      <div className="whitespace-nowrap text-[10px] lg:text-sm dark:text-gray-300 text-gray-500">
+                      <div className="items-end flex flex-col whitespace-nowrap text-[10px] lg:text-sm dark:text-gray-300 text-gray-500">
                         {formattedCreatedAt}
+                        <div><UseUserStatus userId={message.uid}/></div>
                       </div>
+                     
+                    
+
                     </li>
                   );
                 })}

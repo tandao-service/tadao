@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 //const MONGODB_URI = process.env.NEXT_PUBLIC_MONGODB_URI; // Get MongoDB URI from environment variable
-const MONGODB_URI = "mongodb+srv://paulirungu:y1kn6fepJfcpWTxU@cluster0.dp6gf.mongodb.net/?retryWrites=true&w=majority";
+const MONGODB_URI = "mongodb+srv://pocketshopp:dMRPmgo6gMSe8PUv@cluster0.5aceb.mongodb.net/?retryWrites=true&w=majority";
 let cached = global.mongoose || { conn: null, promise: null };
 export const connectToDatabase = async () => {
   if (cached.conn) return cached.conn;

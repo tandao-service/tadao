@@ -19,6 +19,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { format, isToday, isYesterday } from "date-fns";
 import ProgressPopup from "./ProgressPopup";
 import ChatListSkeleton from "./ChatListSkeleton";
+import UseUserStatus from "./UseUserStatus";
 type sidebarProps = {
   userId: string;
   recipientUid:string;
@@ -132,6 +133,7 @@ const Sidebar = ({ userId ,recipientUid, handleOpenChatId}: sidebarProps) => {
                       );
                     }
                   } catch {}
+                  //  const status = UseUserStatus(message.uid);
                   return (
                     <li
                       key={index}
@@ -161,10 +163,13 @@ const Sidebar = ({ userId ,recipientUid, handleOpenChatId}: sidebarProps) => {
                           />
                             {truncateTitle(message.text, 18)}
                         </p>
+                        
                       </div>
-                      <div className="whitespace-nowrap text-[10px] dark:text-gray-500 text-gray-500">
+                      <div className="items-end flex flex-col whitespace-nowrap text-[10px] dark:text-gray-500 text-gray-500">
                         {formattedCreatedAt}
+                        <div><UseUserStatus userId={message.uid}/></div>
                       </div>
+                      
                     </li>
                   );
                 })}

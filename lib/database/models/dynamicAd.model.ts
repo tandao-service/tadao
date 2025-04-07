@@ -5,7 +5,8 @@ export interface IdynamicAd extends Document {
  organizer: {
      verified: Verified[];
      whatsapp: any;
-     photo: string | undefined; _id: string, firstName: string, lastName: string 
+     photo: string | undefined; _id: string, firstName: string, lastName: string
+     token:string;
  }
    plan: {
      

@@ -153,6 +153,7 @@ const CollectionInfinite = ({
       const params = new URLSearchParams(window.location.search);
       const id = params.get("Ad");
       const Profile = params.get("Profile");
+      const action = params.get("action");
   
       if (id) {
         const ad = await getAdById(id);
@@ -169,6 +170,11 @@ const CollectionInfinite = ({
         setIsOpenShop(true);
       } else {
         setIsOpenShop(false);
+      }
+      if (action) {
+        setIsOpenChat(true);
+      } else {
+        setIsOpenChat(false);
       }
     };
   
@@ -194,7 +200,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -210,7 +217,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -226,7 +234,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -244,7 +253,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -262,7 +272,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -279,7 +290,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -294,7 +306,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([]);
     }
@@ -309,7 +322,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -325,7 +339,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -339,7 +354,8 @@ const CollectionInfinite = ({
       const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -358,7 +374,8 @@ const CollectionInfinite = ({
           const params = new URLSearchParams(window.location.search);
       const Profile = params.get("Profile");
       const Ad = params.get("Ad");
-      if(Profile || Ad){
+      const action = params.get("action");
+      if(Profile || Ad || action){
         router.push("/", { scroll: false });
         setNewqueryObject([])
       }
@@ -370,7 +387,8 @@ const CollectionInfinite = ({
         const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -385,7 +403,8 @@ const CollectionInfinite = ({
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -407,7 +426,8 @@ const handlePay = (id:string) => {
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -418,7 +438,8 @@ const handleCloseAdEdit = () => {
   const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -449,7 +470,8 @@ const handleCloseAdView = () => {
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
     }
     setNewqueryObject([])
@@ -465,7 +487,8 @@ const handleCloseAdView = () => {
     const params = new URLSearchParams(window.location.search);
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
-    if(Profile || Ad){
+    const action = params.get("action");
+    if(Profile || Ad || action){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -598,6 +621,8 @@ const handleCloseAdView = () => {
   const handleCloseP = () => {
     setIsOpenP(false);
   };
+
+
 
   const footerRef = useRef<HTMLDivElement | null>(null);
  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
@@ -767,7 +792,7 @@ const handleCloseAdView = () => {
           </div>
           <div>
           <h2 className="font-bold p-2 text-[30px]">Trending Ads</h2>
-         
+        
                 </div>
           {data.length > 0 ? (
             <div className="flex w-full flex-col items-center gap-10 p-0">

@@ -38,7 +38,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
 
   const [messages, setMessages] = useState<{ senderName: string; message: string }[]>([]);
  
-  const { sendMessage } = SendChat(); // Get the sendMessage function
+  const { NotifyUser } = SendChat(); // Get the sendMessage function
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -86,12 +86,13 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
         read: "1",
       });
 
-     // const adTitle = ad.data.title;
-      //const adUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"ads/"+ad._id;
-      //const phoneNumber = ad.data.phone;
-      const recipientEmail = ad?.organizer?.email;
-      const callbackUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"chat"
-      sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
+    
+      if(ad.organizer.token){
+    
+        const inquiryMessage = message;
+        NotifyUser(ad, userId, userName, inquiryMessage)
+      }
+    
       // Send notification SMS and email 
 
      // if (sendsms && daysRemaining > 0) {

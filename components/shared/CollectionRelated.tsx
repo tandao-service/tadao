@@ -189,12 +189,11 @@ const CollectionRelated = ({
 
        {loading && (
              <div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                 <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+                
+                 <div className="w-full mt-10 lg:mt-0 lg:min-h-[200px] h-full flex flex-col items-center justify-center">
                                 <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
                                 </div>
-              </div>
-               
+             
              
              </div>
            )}

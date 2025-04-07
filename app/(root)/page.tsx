@@ -26,24 +26,13 @@ export default async function Home({ searchParams }: SearchParamProps) {
   const categoryList = await getAllCategories();
   const subcategoryList = await getAllSubCategories();
   const AdsCountPerRegion = await getAdsCountAllRegion();
-  
+  //console.log("userId: "+ userId);
 //const categoryList:any = [];
 //const subcategoryList:any = [];
 //const AdsCountPerRegion:any = [];
   return (
     <main>
-{/*<MainPage emptyTitle="No Ads Found"
-            emptyStateSubtext="Come back later"
-            collectionType="All_Ads"
-            limit={20}
-            user={user}
-            userId={userId}
-            userName={userName}
-            userImage={userImage}
-            queryObject={queryObject}
-            categoryList={categoryList}
-            subcategoryList={subcategoryList}
-            AdsCountPerRegion={AdsCountPerRegion}/>*/}
+
        <CollectionInfinite
             emptyTitle="No Ads Found"
             emptyStateSubtext="Come back later"
