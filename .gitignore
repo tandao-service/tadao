@@ -16,9 +16,6 @@
 # production
 /build
 
-# Firebase service account key
-/secure/pocketshop-f7bde-firebase-adminsdk-fbsvc-64052f8cab.json
-
 # misc
 .DS_Store
 *.pem
