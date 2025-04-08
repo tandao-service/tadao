@@ -37,8 +37,8 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
 
   const [messages, setMessages] = useState<{ senderName: string; message: string }[]>([]);
  
-  const { sendMessage } = SendChat(); // Get the sendMessage function
-
+  const { NotifyUser } = SendChat(); // Get the sendMessage function
+  
   useEffect(() => {
     const checkSubscription = async () => {
       try {
@@ -87,8 +87,13 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
 
 
       const callbackUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"chat"
-      sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
-   
+    //  sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
+    if(ad.organizer.token){
+       
+           const inquiryMessage = message;
+           NotifyUser(ad, userId, userName, inquiryMessage)
+         }
+       
       const inquiries = (Number(ad.inquiries ?? "0") + 1).toString();
       const _id = ad._id;
       await updateinquiries({
