@@ -115,6 +115,7 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
         
         <div className="hidden lg:inline">
           <div className="flex items-center gap-2">
+          <SignedIn>
             <div
               className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
@@ -133,7 +134,29 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
                 </Tooltip>
               </TooltipProvider>
             </div>
-
+            </SignedIn>
+            <SignedOut>
+            <div
+              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
+              data-tip="Messages"
+              onClick={() => {
+                setIsOpenP(true);
+                 router.push("/sign-in");
+               }} 
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <BookmarkIcon sx={{ fontSize: 16 }} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Bookmark</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            </SignedOut>
+            <SignedIn>
             <div
               className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
@@ -165,7 +188,30 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
                 </Tooltip>
               </TooltipProvider>
             </div>
+            </SignedIn>
+            <SignedOut>
+            <div
+              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
+              data-tip="Messages"
+              onClick={() => {
+                setIsOpenP(true);
+                 router.push("/sign-in");
+               }} 
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                  <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Message</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            </SignedOut>
 
+           
             <div
               className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
@@ -184,6 +230,8 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
                 </Tooltip>
               </TooltipProvider>
             </div>
+           
+            
             <div>
               <SignedIn>
                 <button
