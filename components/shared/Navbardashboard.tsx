@@ -79,7 +79,7 @@ export default function Navbardashboard({
   };
   return (
     <div className="w-full bg-gray-200">
-      <div className="fixed bg-white border-b z-10 flex p-3 w-full">
+      <div className="fixed bg-[#064E3B] border-b z-10 flex p-3 w-full">
         <div className="flex-1">
           <div className="flex items-center">
           

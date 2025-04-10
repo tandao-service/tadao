@@ -30,7 +30,7 @@ export async function sendEmail(
      <div style="text-align: center; margin-bottom: 30px;">
   <span style="display: inline-flex; align-items: center; gap: 8px;">
     <img src="https://pocketshop.co.ke/logo_green.png" alt="pocketshop Logo" style="height: 30px; gap:5px; width: auto;" />
-    <span style="font-size: 20px; font-weight: bold; color: #064E3B;">PocketShop</span>
+    <span style="font-size: 18px; font-weight: bold; color: #064E3B;">PocketShop</span>
   </span>
 </div>
     
