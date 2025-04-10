@@ -615,7 +615,8 @@ const AdForm = ({
           className: "bg-[#30AF5B] text-white",
         });
         if (updatedAd && handleAdView) {
-          handleAdView(updatedAd);
+         handleAdView(updatedAd);
+        // console.log(updatedAd)
         //  router.push(`/ads/${updatedAd._id}`);
         }
         // console.log("Data submitted successfully:", finalData);
