@@ -25,6 +25,10 @@ export interface IUser extends Document {
   verified: Verified[];
   imageUrl?: string;
   token?: string;
+  notifications?: {
+    email: boolean;
+    fcm: boolean;
+  };
 }
 
 export interface Businesshours {
@@ -77,6 +81,10 @@ const UserSchema = new Schema({
   isOnline: { type: Boolean, default: false },
   lastActive: { type: Date, default: null },
   token: { type: String },
+  notifications: {
+    email: { type: Boolean, default: true },
+    fcm: { type: Boolean, default: true },
+  },
 });
 delete mongoose.models.User;
 const User = models.User || model('User', UserSchema);

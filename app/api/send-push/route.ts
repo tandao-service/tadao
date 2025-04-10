@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         webpush: {
             notification: {
                 icon: notification.icon || "https://pocketshop.co.ke/logo_green.png",
-                click_action: notification.click_action || "https://pocketshop.co.ke/?rdct=chat",
+                click_action: notification.click_action || "https://pocketshop.co.ke/?action=chat",
             },
         },
         data: data || {},

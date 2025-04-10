@@ -24,7 +24,7 @@ const UseUserStatus = ({userId}: SettingsProp) => {
 
   return (
     <div className="text-xs">
-     {status === "online" ? "🟢 Online" : "🔴 Offline"}
+    {status === "online" ? "🟢" : "⚪"}
     </div>
   );
 };

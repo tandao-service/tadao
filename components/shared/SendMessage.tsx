@@ -105,10 +105,13 @@ const SendMessage = ({
 
       if (recipientStatus === "offline") {
         const user = await getUserById(recipientUid);
-        if (user.token) {
+    
+        if(user.token && user.notifications.fcm){
           const token = user.token;
           sendNotify(token, `You've got a new message from ${displayName}!`);
         }
+      
+
       }
 
       setValue("");
@@ -174,6 +177,12 @@ const SendMessage = ({
           <textarea
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault(); // prevent newline
+                handleSendMessage(); // trigger message send
+              }
+            }}
             onInput={(e) => {
               e.currentTarget.style.height = "auto";
               e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
@@ -196,6 +205,12 @@ const SendMessage = ({
           <textarea
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault(); // prevent newline
+                handleSendMessage(); // trigger message send
+              }
+            }}
             onInput={(e) => {
               e.currentTarget.style.height = "auto";
               e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;

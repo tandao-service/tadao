@@ -142,15 +142,18 @@ const Sidebar = ({ userId ,recipientUid, handleOpenChatId}: sidebarProps) => {
                         message.uid === recipient ? "dark:bg-[#131B1E] bg-green-200" : "bg-white dark:bg-[#2D3236]"
                       }`}
                     >
-                      <div className="flex-shrink-0">
-                        <Image
-                          className="h-10 w-10 rounded-full"
-                          src={message.avatar}
-                          alt={message.name}
-                          height={200}
-                          width={200}
-                        />
-                      </div>
+                      <div className="relative flex-shrink-0">
+  <Image
+    className="h-10 w-10 rounded-full"
+    src={message.avatar}
+    alt={message.name}
+    height={200}
+    width={200}
+  />
+  <div className="absolute bottom-0 right-0">
+    <UseUserStatus userId={message.uid} />
+  </div>
+</div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium dark:text-gray-400 text-gray-900 truncate">
                           {message.name}
@@ -167,7 +170,7 @@ const Sidebar = ({ userId ,recipientUid, handleOpenChatId}: sidebarProps) => {
                       </div>
                       <div className="items-end flex flex-col whitespace-nowrap text-[10px] dark:text-gray-500 text-gray-500">
                         {formattedCreatedAt}
-                        <div><UseUserStatus userId={message.uid}/></div>
+                      
                       </div>
                       
                     </li>

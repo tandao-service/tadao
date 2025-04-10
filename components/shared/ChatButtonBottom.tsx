@@ -40,31 +40,31 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
  
   const { NotifyUser } = SendChat(); // Get the sendMessage function
 
-  useEffect(() => {
-    const checkSubscription = async () => {
-      try {
-        subscription = await getData(ad.organizer._id);
+  //useEffect(() => {
+   // const checkSubscription = async () => {
+    //  try {
+    //    subscription = await getData(ad.organizer._id);
 
-        setsendsms(subscription.currentpack.features[5].checked);
-        setsendemail(subscription.currentpack.features[6].checked);
-        setplanpackage(subscription.currentpack.name);
-        const createdAtDate = new Date(subscription.transaction.createdAt);
-        const periodDays = parseInt(subscription.transaction.period);
-        const expirationDate = new Date(
-          createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000
-        );
-        const currentDate = new Date();
-        const daysRemaining_ = Math.ceil(
-          (expirationDate.getTime() - currentDate.getTime()) /
-            (1000 * 60 * 60 * 24)
-        );
-        setdaysRemaining(daysRemaining_);
-      } catch (error) {
-        console.error("Error checking subscription: ", error);
-      }
-    };
-    checkSubscription();
-  }, [ad.organizer._id]);
+    //    setsendsms(subscription.currentpack.features[5].checked);
+    //    setsendemail(subscription.currentpack.features[6].checked);
+    //    setplanpackage(subscription.currentpack.name);
+    //    const createdAtDate = new Date(subscription.transaction.createdAt);
+    //    const periodDays = parseInt(subscription.transaction.period);
+     //   const expirationDate = new Date(
+     //     createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000
+     //   );
+     //   const currentDate = new Date();
+     //   const daysRemaining_ = Math.ceil(
+     //     (expirationDate.getTime() - currentDate.getTime()) /
+     //       (1000 * 60 * 60 * 24)
+     //   );
+     //   setdaysRemaining(daysRemaining_);
+     // } catch (error) {
+     //   console.error("Error checking subscription: ", error);
+     // }
+   // };
+   // checkSubscription();
+  //}, [ad.organizer._id]);
 
   const handleSendMessage = async () => {
     if (message.trim() === "") return;
@@ -87,30 +87,27 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
       });
 
     
-      if(ad.organizer.token){
-    
+      if(ad.organizer.token && ad.organizer.notifications.fcm){
+           
         const inquiryMessage = message;
         NotifyUser(ad, userId, userName, inquiryMessage)
       }
+      if(ad.organizer.notifications.email){
+       
+        const adTitle = ad.data.title;
+        const adUrl = `https://pocketshop.co.ke/?Ad=${ad._id}`;
+        const recipientEmail = ad?.organizer?.email;
+        await sendEmail(
+          recipientEmail,
+          message,
+          adTitle,
+          adUrl,
+          userName,
+          userImage
+        );
+      }
     
-      // Send notification SMS and email 
-
-     // if (sendsms && daysRemaining > 0) {
-     //   await sendSMS(phoneNumber, message, adTitle, adUrl);
-    //  }
-
-      // if (sendemail && daysRemaining > 0) {
-      // alert(recipientEmail);
-     // await sendEmail(
-     //   recipientEmail,
-      //  message,
-       // adTitle,
-      //  adUrl,
-       // userName,
-       // userImage
-     // );
-      //  }
-
+      
       const inquiries = (Number(ad.inquiries ?? "0") + 1).toString();
       const _id = ad._id;
       await updateinquiries({
@@ -129,7 +126,6 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
   };
   const quickMessages = [
     "Is this still available?",
-    "Share this property coordinate?",
     "What is the last price?",
     "Can we negotiate?",
     "Where can I view this?",
@@ -201,6 +197,12 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
             </div>
             <textarea
               value={message}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(); // prevent newline
+                  handleSendMessage(); // trigger message send
+                }
+              }}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Write your inquiry here..."
               className="w-full h-[100px] text-sm dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
