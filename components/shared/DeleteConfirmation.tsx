@@ -49,7 +49,7 @@ export const DeleteConfirmation = ({ adId, imageUrls }: deleteProps) => {
       <AlertDialogContent className="bg-white">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure you want to delete?</AlertDialogTitle>
-          <AlertDialogDescription className="p-regular-16 text-grey-600">
+          <AlertDialogDescription className="p-regular-16 dark:text-gray-600 text-gray-600">
             This will permanently delete this Ad
           </AlertDialogDescription>
         </AlertDialogHeader>

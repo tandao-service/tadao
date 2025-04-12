@@ -669,6 +669,7 @@ const handleCloseAdView = () => {
             content="PocketShop, buy Online, sell Online, cars, motorbikes, buses, machinery, Kenya"
           />
           <meta name="author" content="PocketShop" />
+          <link rel="manifest" href="/manifest.json" />
           <link rel="canonical" href="https://PocketShop.co.ke" />
         </Head>
 
