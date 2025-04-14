@@ -102,7 +102,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
           </div>
         </div>
 
-        <div className="flex-1 h-screen">
+        <div className="flex-1 h-screen dark:bg-[#2D3236] lg:dark:bg-[#131B1E]">
         
           <div className="rounded-lg mb-20 h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
             <div className="lg:flex-1 h-screen p-1">

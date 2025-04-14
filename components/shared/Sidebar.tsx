@@ -110,7 +110,7 @@ const Sidebar = ({ userId ,recipientUid, handleOpenChatId}: sidebarProps) => {
         </div>
       ) : messages.length > 0 ? (
         <>
-          <div className="w-full dark:bg-[#2D3236] bg-white rounded-lg">
+          <div className="w-full rounded-lg">
             <ScrollArea className="h-full w-full p-2">
               <ul className="divide-y divide-gray-200 dark:divide-gray-600">
                 {messages.map((message, index) => {

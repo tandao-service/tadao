@@ -66,13 +66,13 @@ const LocationSelection = ({ onClose, onSelected, handleFilter, AdsCountPerRegio
                   </Button>
                 </div>
                 <div className="relative w-full">
-          <div className="absolute h-[95vh] bg-gray-200 dark:bg-[#2D3236] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
+          <div className="absolute h-[95vh] bg-gray-200 dark:bg-[#222528] dark:text-gray-100 rounded-lg w-full max-w-full p-0">
            
             <div className="flex w-full items-center mb-0">
                 <input
                   type="text"
                   placeholder="Find state, city or district..."
-                  className="dark:bg-[#222528] dark:text-gray-300 w-full px-3 py-2 border dark:border-gray-600 rounded-t-md"
+                  className="dark:bg-[#2D3236] dark:text-gray-300 w-full px-3 py-2 border dark:border-gray-600 rounded-t-md"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />

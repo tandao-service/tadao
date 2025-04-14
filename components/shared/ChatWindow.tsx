@@ -116,9 +116,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         )}
         {activeTab === 1 && (
           <>
-            <div className="rounded-t-sm w-full h-full bg-white flex flex-col p-1 mt-0">
-           
-                <ChatBoxSupport
+            <div className="rounded-t-sm w-full h-[calc(100vh-100px)] bg-white flex flex-col p-0 mt-0">
+           <div className="flex-1 w-full">
+            <ChatBoxSupport
                   displayName={senderName}
                   uid={senderId}
                   recipientUid={recipientUid}
@@ -136,16 +136,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                handleCategory={handleCategory}
                handleOpenSell={handleOpenSell}
               handleOpenPlan={handleOpenPlan}
-                />
-
-                <SendMessageSupport
+                /></div>
+           <div className="flex h-[60px] w-full">
+            <SendMessageSupport
                   displayName={senderName}
                   uid={senderId}
                   recipientUid={recipientUid}
                   client={true}
                   photoURL={senderImage}
-                />
-          
+                /></div>
+            
             </div>
           </>
         )}
@@ -239,7 +239,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
    {/* Content */}
    <div className="flex-1 w-full overflow-y-auto">
      {activeTab === 0 && (
-       <div className="bg-gradient-to-b from-emerald-700 to-emerald-700 h-[400px] flex flex-col items-center justify-center p-3">
+       <div className="bg-gradient-to-b from-emerald-700 to-emerald-700 h-[400px] flex flex-col items-center justify-center p-0">
          <div className="w-24 h-24">
            <Image
              className="w-full h-full object-cover rounded-full"
@@ -256,7 +256,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
      )}
  
      {activeTab === 1 && (
-       <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-emerald-700 to-emerald-700 flex flex-col p-2">
+       <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-emerald-700 to-emerald-700 flex flex-col p-1">
+        <div className="flex-1 w-full">
          <ChatBoxSupport
                   displayName={senderName}
                   uid={senderId}
@@ -276,18 +277,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                handleOpenSell={handleOpenSell}
               handleOpenPlan={handleOpenPlan}
                 />
+                </div>
+                  <div className="flex h-[60px] w-full">
          <SendMessageSupport
            displayName={senderName}
            uid={senderId}
            recipientUid={recipientUid}
            client={true}
            photoURL={senderImage}
-         />
+         /></div>
        </div>
      )}
  
      {activeTab === 2 && (
-       <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-emerald-700 to-emerald-700 flex flex-col p-2">
+       <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-emerald-700 to-emerald-700 flex flex-col p-1">
          <HelpBox
                   displayName={senderName}
                   uid={senderId}

@@ -13,7 +13,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { UpdateUserParams } from "@/types";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 import {
   Accordion,
   AccordionContent,
@@ -119,8 +119,9 @@ const HelpBox = ({
   };
 
   return (
-    <div className="">
-  <ScrollArea className="h-[80vh] lg:h-[380px] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-md border p-4">
+       <ScrollArea.Root className="h-full overflow-hidden">
+       <ScrollArea.Viewport  className="h-[calc(100vh-100px)] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white border p-4">
+     
   <div className="justify-start">
     <h2 className="font-bold">Frequently Asked Questions</h2>
 
@@ -214,9 +215,11 @@ const HelpBox = ({
       </AccordionItem>
     </Accordion>
   </div>
-</ScrollArea>
+ </ScrollArea.Viewport>
+         <ScrollArea.Scrollbar orientation="vertical" />
+      <ScrollArea.Corner />
+    </ScrollArea.Root>
 
-</div>
 
   );
 };

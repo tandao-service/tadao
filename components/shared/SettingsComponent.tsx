@@ -82,7 +82,7 @@ const SettingsComponent = ({userId,user,onClose, handleOpenSearchTab,
         <div className="hidden lg:inline mr-5"></div>
 
         <div className="flex-1">
-          <div className="w-full lg:max-w-6xl lg:mx-auto lg:mb-3 dark:bg-[#2D3236] p-1 mb-20 justify-center">
+          <div className="w-full lg:max-w-6xl lg:mx-auto lg:mb-3 p-1 mb-20 justify-center">
             <section className="w-full mb-2">
               <div className="w-full flex flex-col lg:flex-row lg:justify-between">
                 <div className="flex text-lg mb-1 gap-1 font-bold">
@@ -103,7 +103,7 @@ const SettingsComponent = ({userId,user,onClose, handleOpenSearchTab,
              userId={userId}
              defaultValues={{ email: true, fcm: true }}
              />
-<div className="p-1 lg:p-4 mt-2 dark:bg-[#131B1E] rounded-sm shadow-sm w-full space-y-3">
+<div className="p-1 lg:p-4 mt-2 dark:bg-[#2D3236] rounded-sm shadow-sm w-full space-y-3">
       <h2 className="text-lg font-semibold text-gray-400">Profile Information</h2>
             <SettingsEdit user={user} type="Update" userId={userId} />
             <Toaster />
