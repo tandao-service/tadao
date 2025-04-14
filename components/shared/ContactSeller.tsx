@@ -61,6 +61,7 @@ const [loading, setLoading] = useState<boolean>(true);
  
   useEffect(() => {
     if (isOpen) {
+     
       const fetchData = async () => {
         try {
           setLoading(true);
@@ -84,38 +85,42 @@ const [loading, setLoading] = useState<boolean>(true);
      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="dark:bg-[#2D3236] dark:text-gray-300 bg-white rounded-lg p-4 lg:p-6 w-full max-w-4xl h-[90vh] flex flex-col">
             {/* Header */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-end items-center mb-4">
              
-              <div className="flex gap-2 items-center">
-               <div className="w-10 h-10 rounded-full bg-white">
-                          <Zoom>
-                            <Image
-                              className="w-full h-w-full rounded-full object-cover"
-                              src={user.photo ?? "/avator.png"}
-                              alt="Avator"
-                              width={200}
-                              height={200}
-                            />
-                          </Zoom>
-                        </div>
-                        <div className="flex flex-col">
-              <h3 className="text-lg font-semibold">Seller</h3>
-              <h3 className="text-lg">{user.firstName} {user.lastName}</h3>
-              </div>
-              </div>
-              <button
-                onClick={onClose}
-                className="flex justify-center items-center h-12 w-12 dark:text-white text-black hover:bg-black hover:text-white rounded-full"
-              >
-                <CloseOutlinedIcon />
-              </button>
-            </div>
-
+            <button
+               onClick={onClose}
+               className="flex justify-center items-center h-12 w-12 dark:text-white text-black hover:bg-black hover:text-white rounded-full"
+             >
+               <CloseOutlinedIcon />
+             </button>
+             </div>
             {loading ? (<>
                 <div className="w-full mt-10 lg:mt-0 lg:min-h-[200px] h-full flex flex-col items-center justify-center">
                                 <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
                                 </div>
             </>):(<>
+              <div className="flex justify-between items-center mb-4">
+             
+             <div className="flex gap-2 items-center">
+              <div className="w-10 h-10 rounded-full bg-white">
+                         <Zoom>
+                           <Image
+                             className="w-full h-w-full rounded-full object-cover"
+                             src={user.photo ?? "/avator.png"}
+                             alt="Avator"
+                             width={200}
+                             height={200}
+                           />
+                         </Zoom>
+                       </div>
+                       <div className="flex flex-col">
+             <h3 className="text-lg font-semibold">Seller</h3>
+             <h3 className="text-lg">{user.firstName} {user.lastName}</h3>
+             </div>
+             </div>
+           
+           </div>
+
     <div className="w-full rounded-xl h-[70vh] shadow-lg p-4 dark:bg-[#131B1E] dark:text-gray-300 bg-white">
       <div className="flex grid grid-cols-3 gap-1 mb-4">
         {["call", "chat", "email"].map((t) => (
