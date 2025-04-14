@@ -935,13 +935,13 @@ CollectionProps) => {
         <footer>
           <div className="lg:hidden">
            <BottomNavigation 
-           userId={userId} 
-           popup={"category"}
-           onClose={onClose} 
-          handleOpenSell={handleOpenSell}
-          handleOpenChat={handleOpenChat}
-          handleOpenSearchTab={handleOpenSearchTab} 
-                               />
+                  userId={userId}
+                  popup={"category"}
+                  onClose={onClose}
+                  handleOpenSell={handleOpenSell}
+                  handleOpenChat={handleOpenChat}
+                  handleOpenSearchTab={handleOpenSearchTab} 
+                  handleOpenSettings={handleOpenSettings}                               />
           </div>
         </footer>
       </div>
