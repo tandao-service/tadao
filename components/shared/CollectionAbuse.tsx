@@ -23,6 +23,7 @@ type CollectionProps = {
   totalPages: number;
   urlParamName?: string;
   userId: string;
+  handleOpenChatId:(value:string) => void;
 };
 
 const CollectionAbuse = ({
@@ -33,6 +34,7 @@ const CollectionAbuse = ({
   totalPages,
   urlParamName,
   userId,
+  handleOpenChatId,
 }: CollectionProps) => {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const pathname = usePathname();
@@ -162,6 +164,7 @@ const CollectionAbuse = ({
           isOpen={isOpenMethods}
           onClose={handleCloseMethods}
           ad={selectedDelivery}
+          handleOpenChatId={handleOpenChatId}
         />
       )}
     </div>

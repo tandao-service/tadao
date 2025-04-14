@@ -172,7 +172,7 @@ const ReviewsComponent =  ({displayName,uid,photoURL,user, recipient, onClose, h
                   handleOpenPrivacy={handleOpenPrivacy}
                   handleOpenSafety={handleOpenSafety}/>
                </div>
-      <div className="w-full max-w-6xl mx-auto h-full flex mt-[73px] lg:mt-[60px] mb-0 p-1">
+      <div className="w-full max-w-6xl mx-auto h-full flex mt-[60px] p-1">
         <div className="hidden lg:inline mr-5">
           <div className="w-full rounded-lg p-1">
             <SellerProfileReviews

@@ -32,9 +32,10 @@ handleOpenSettings: () => void;
   handlePay: (id:string) => void;
   handleCategory: (value:string) => void;
   handleOpenPerfomance: () => void;
+  handleOpenSearchTab: (value:string) => void;
 };
 
-const SettingsComponent = ({userId,user,onClose,
+const SettingsComponent = ({userId,user,onClose, handleOpenSearchTab,
   handleOpenShop,
   handleOpenPerfomance, 
   handleOpenSettings,
@@ -82,7 +83,7 @@ const SettingsComponent = ({userId,user,onClose,
 
         <div className="flex-1">
           <div className="w-full lg:max-w-6xl lg:mx-auto lg:mb-3 dark:bg-[#2D3236] p-1 mb-20 justify-center">
-            <section className="w-full p-0">
+            <section className="w-full mb-2">
               <div className="w-full flex flex-col lg:flex-row lg:justify-between">
                 <div className="flex text-lg mb-1 gap-1 font-bold">
                   <SettingsOutlinedIcon />
@@ -102,7 +103,7 @@ const SettingsComponent = ({userId,user,onClose,
              userId={userId}
              defaultValues={{ email: true, fcm: true }}
              />
-<div className="p-1 lg:p-4 mt-2 border rounded-xl shadow-sm w-full space-y-3">
+<div className="p-1 lg:p-4 mt-2 dark:bg-[#131B1E] rounded-sm shadow-sm w-full space-y-3">
       <h2 className="text-lg font-semibold text-gray-400">Profile Information</h2>
             <SettingsEdit user={user} type="Update" userId={userId} />
             <Toaster />
@@ -118,7 +119,15 @@ const SettingsComponent = ({userId,user,onClose,
                    handleOpenPrivacy={handleOpenPrivacy}
                    handleOpenSafety={handleOpenSafety}/> 
         </div>
-      
+        <div className="lg:hidden mt-[65px]">
+          <BottomNavigation userId={userId} 
+          popup={"settings"}
+          onClose={onClose}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenSell={handleOpenSell}
+          handleOpenChat={handleOpenChat}
+          handleOpenSearchTab={handleOpenSearchTab} />
+        </div>
       </footer>
     </ScrollArea>
   );

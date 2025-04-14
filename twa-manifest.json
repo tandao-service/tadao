@@ -1,0 +1,54 @@
+{
+  "packageId": "ke.co.pocketshop.twa",
+  "host": "pocketshop.co.ke",
+  "name": "PocketShop Kenya",
+  "launcherName": "PocketShop",
+  "display": "standalone",
+  "themeColor": "#064D3B",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#064D3B",
+  "enableNotifications": true,
+  "startUrl": "/?source=pwa",
+  "iconUrl": "https://pocketshop.co.ke/assets/icons/icon-512x512.png",
+  "maskableIconUrl": "https://pocketshop.co.ke/assets/icons/icon-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "splashScreen": {
+    "backgroundColor": "#064D3B",
+    "image": "https://pocketshop.co.ke/assets/icons/icon-512x512.png",
+    "scale": "CENTER_INSIDE",
+    "fadeOutDuration": 300,
+    "duration": 3000
+  },
+  "signingKey": {
+    "path": "E:\\apps\\PocketShop\\android.keystore",
+    "alias": "key0"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://pocketshop.co.ke/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://pocketshop.co.ke/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1"
+}

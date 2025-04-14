@@ -22,7 +22,7 @@ export async function sendEmail(
 
 
   const mailOptions = {
-    from: '"PocketShop" <no-reply@pocketshop.co.ke>',
+    from: '"PocketShop" <support@pocketshop.co.ke>',
     to: recipientEmail,
     subject: `New Inquiry on Your Ad: ${adTitle}`,
     html: `

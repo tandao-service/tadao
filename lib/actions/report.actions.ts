@@ -12,7 +12,7 @@ import DynamicAd from "../database/models/dynamicAd.model"
 
 const populateAd = (query: any) => {
   return query
-    .populate({ path: 'userId', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified' })
+    .populate({ path: 'userId', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token' })
     .populate({
       path: 'adId',
       model: DynamicAd,
@@ -47,7 +47,7 @@ export async function getReportedById(_id: string) {
   try {
     await connectToDatabase()
 
-    const response = await Reported.findById(_id)
+    const response = await populateAd(Reported.findById(_id));
 
     if (!response) throw new Error('Reported not found')
 
@@ -64,6 +64,7 @@ export async function getallReported(limit = 16, page = 1) {
     const response = await populateAd(Reported.find(conditions)
       .skip(skipAmount)
       .limit(limit));
+    console.log(response);
     const AdCount = await Reported.countDocuments(conditions)
 
     return { data: JSON.parse(JSON.stringify(response)), totalPages: Math.ceil(AdCount / limit) }

@@ -983,7 +983,8 @@ const handleCloseAdView = () => {
       handleCategory={handleCategory}
       handlePay={handlePay}
       handleOpenShop={handleOpenShop}
-      user={user}/>
+      user={user}
+      handleOpenSearchTab={handleOpenSearchTab}/>
      
       <PopupPay txtId={txtId} isOpen={isOpenPay} onClose={handleClosePay} userId={userId} userName={userName} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
       handleOpenPerfomance={handleOpenPerfomance}
@@ -1058,6 +1059,7 @@ const handleCloseAdView = () => {
                      onClose={handleClose} 
                      handleOpenSell={handleOpenSell}
                      handleOpenChat={handleOpenChat}
+                     handleOpenSettings={handleOpenSettings} 
                      handleOpenSearchTab={handleOpenSearchTab} 
                     />
         </div>

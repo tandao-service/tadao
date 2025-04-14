@@ -5,7 +5,7 @@ import { getGraphSales } from "@/lib/actions/transactions.actions";
 const SalesLineGraph: React.FC = () => {
   const [timeFrame, setTimeFrame] = useState<string>("day");
   const [chartData, setChartData] = useState<any>([]);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {

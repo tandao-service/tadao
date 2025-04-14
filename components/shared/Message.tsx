@@ -105,8 +105,8 @@ const Message = ({
           <div
             className={`message-content max-w-xs rounded-lg p-3 ${
               message.uid === uid
-                ? "bg-green-100 text-left"
-                : "bg-blue-100 text-left"
+                ? "bg-green-100 dark:bg-black dark:text-gray-300 text-left"
+                : "bg-blue-100 dark:bg-emerald-800 dark:text-gray-300 text-left"
             }`}
           >
             <h4 className="font-semibold">{message.name}</h4>
@@ -141,7 +141,7 @@ const Message = ({
               href={message.text}
               target="_blank"
               rel="noopener noreferrer"
-              className="block  mt-2 text-blue-600 underline"
+              className="block mt-2 text-green-600 underline"
             >
              <span dangerouslySetInnerHTML={{ __html:  truncateDescription(message.text ?? "", 65) }} />
             
@@ -149,7 +149,7 @@ const Message = ({
           
             
             </div>
-            <small className="text-gray-500">{formattedCreatedAt}</small>
+            <small className="text-gray-400">{formattedCreatedAt}</small>
             {message.imageUrl && (
               <div className="relative">
                 {isLoading && (
@@ -178,11 +178,11 @@ const Message = ({
               href={message.adUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block mt-2 text-blue-600 underline"
+              className="block mt-2 text-emerald-500 underline"
             >
               {message.adTitle}
             </a>
-            <p className="text-sm text-gray-700">
+            <p className="text-sm dark:text-gray-400 text-gray-700">
             <span dangerouslySetInnerHTML={{ __html:  truncateDescription(message.adDescription ?? "", 80) }} />
            
             </p>

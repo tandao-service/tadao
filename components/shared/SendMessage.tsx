@@ -53,7 +53,7 @@ const SendMessage = ({
   const [image, setImg] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
-  const { sendNotify } = SendChat();
+  const { sendNotify  }= SendChat();
   const { toast } = useToast();
   const [showPopupGps, setShowPopupGps] = useState(false);
 
