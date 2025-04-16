@@ -21,7 +21,7 @@ import {
 import MapSearch from "./MapSearch";
 import PropertyMapSearch from "./PropertyMapSearch";
 import DirectionsWalkOutlinedIcon from '@mui/icons-material/DirectionsWalkOutlined';
-export default function HeaderMain({ handleFilter, AdsCountPerRegion }: {  handleFilter: (value:any) => void, AdsCountPerRegion:any}) {
+export default function HeaderMain({ handleFilter,handleOpenSearchByTitle, AdsCountPerRegion }: { handleOpenSearchByTitle: () => void, handleFilter: (value:any) => void, AdsCountPerRegion:any}) {
   const [region, setRegion] = useState("All Kenya");
   // Function to handle changes in the search input
  
@@ -58,7 +58,7 @@ export default function HeaderMain({ handleFilter, AdsCountPerRegion }: {  handl
         </button>
         </div>
         <div className="flex-1 hidden lg:inline">
-        <SearchNow handleFilter={handleFilter} />
+        <SearchNow handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle}/>
         </div>
 
 
@@ -77,7 +77,7 @@ export default function HeaderMain({ handleFilter, AdsCountPerRegion }: {  handl
                     )}
                     </div>
                      <div className="flex-1 mt-2 lg:hidden">
-        <SearchNow handleFilter={handleFilter} />
+        <SearchNow handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle} />
         </div>
 
     </div>
