@@ -52,6 +52,7 @@ import SearchTabWindow from "./SearchTabWindow";
 import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
 import { getUserById } from "@/lib/actions/user.actions";
+import SearchByTitle from "./SearchByTitle";
  // Correct import
 type CollectionProps = {
   limit: number;
@@ -123,6 +124,7 @@ const CollectionInfinite = ({
   const [adId, setadId] = useState<any>([]);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [CategorySelect, setCategorySelect] = useState('');
+  const [isOpenSearchByTitle, setIsOpenSearchByTitle] = useState(false);
  const handleHoverCategory = (value:string) => {
  setHoveredCategory(value);
  }
@@ -144,9 +146,10 @@ const CollectionInfinite = ({
      setIsOpenPerfomance(false);
      setIsOpenSell(false);
      setIsOpenAdView(false);
+     //setIsOpenSearchByTitle(false);
      setIsOpenAdEdit(false);
      setIsOpenPay(false);
-     setIsOpenCategory(false);
+    // setIsOpenCategory(false);
    };
    useEffect(() => {
     const fetchData = async () => {
@@ -193,6 +196,12 @@ const CollectionInfinite = ({
   };
   const handleClosePopup = () => {
     setShowPopup(false);
+  };
+  const handleCloseSearchByTitle = () => {
+    setIsOpenSearchByTitle(false);
+  };
+  const handleOpenSearchByTitle = () => {
+    setIsOpenSearchByTitle(true);
   };
   // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
@@ -695,6 +704,7 @@ const handleCloseAdView = () => {
                   handleOpenSafety={handleOpenSafety} 
                   handleOpenShop={handleOpenShop}
                   handleFilter={handleFilter}
+                  handleOpenSearchByTitle={handleOpenSearchByTitle}
           />
         ) : (
           <Navbarhome 
@@ -714,6 +724,7 @@ const handleCloseAdView = () => {
                   handleOpenPrivacy={handleOpenPrivacy}
                   handleOpenSafety={handleOpenSafety}
                   handleOpenShop={handleOpenShop}
+                  handleOpenSearchByTitle={handleOpenSearchByTitle}
                   handleFilter={handleFilter} user={undefined} />
         )}
       </div>
@@ -739,6 +750,7 @@ const handleCloseAdView = () => {
                   handleOpenSafety={handleOpenSafety} 
                   handleOpenShop={handleOpenShop}
                   handleFilter={handleFilter}
+                  handleOpenSearchByTitle={handleOpenSearchByTitle}
             />
           ) : (
             <Navbarhome 
@@ -759,6 +771,7 @@ const handleCloseAdView = () => {
                   handleOpenPrivacy={handleOpenPrivacy}
                   handleOpenSafety={handleOpenSafety} 
                   handleOpenShop={handleOpenShop}
+                  handleOpenSearchByTitle={handleOpenSearchByTitle}
                   handleFilter={handleFilter}/>
           )}
         </div>
@@ -890,6 +903,7 @@ const handleCloseAdView = () => {
               handleAdEdit={handleAdEdit}
               handleCategory={handleCategory}
               handleOpenSearchTab={handleOpenSearchTab} 
+              handleOpenSearchByTitle={handleOpenSearchByTitle}
               categoryList={categoryList}
               subcategoryList={subcategoryList}
               user={user}/>
@@ -1037,6 +1051,15 @@ const handleCloseAdView = () => {
                 hoveredCategory={hoveredCategory} 
                 handleCategory={handleCategory} 
                 handleHoverCategory={handleHoverCategory}/>
+                   <SearchByTitle 
+        isOpen={isOpenSearchByTitle}
+        userId={userId}
+        handleOpenSearchByTitle={handleOpenSearchByTitle}
+        onClose={handleCloseSearchByTitle}
+        handleAdEdit={handleAdEdit}
+        handleAdView={handleAdView}
+        handleOpenPlan={handleOpenPlan}
+        queryObject={queryObject} />
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
         </div>
       </div>

@@ -79,6 +79,7 @@ type NavProps = {
   handleOpenPrivacy: () => void; 
   handleOpenSafety: () => void;
   handleFilter: (value: any) => void;
+  handleOpenSearchByTitle: () => void;
   popup:string;
 };
 export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, onClose, popup,handleFilter, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
@@ -89,6 +90,7 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
   handleOpenTerms,
   handleOpenPrivacy,
   handleOpenSafety,
+  handleOpenSearchByTitle,
 }: NavProps) {
   // const [unreadCount, setUnreadCount] = useState<number>(0);
   const router = useRouter();
@@ -284,7 +286,7 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
         </div>
       </div>
       <div>
-      <Header handleFilter={handleFilter} AdsCountPerRegion={AdsCountPerRegion}
+      <Header handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle} AdsCountPerRegion={AdsCountPerRegion}
        
          />
         <AppPopup />

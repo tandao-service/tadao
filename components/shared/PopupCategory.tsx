@@ -31,6 +31,7 @@ interface WindowProps {
   handleCategory: (value:string) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
+  handleOpenSearchByTitle: () => void;
   handleOpenSearchTab: (value:string) => void;
   userId: string;
   userName: string;
@@ -60,6 +61,7 @@ const PopupCategory = ({
   handleOpenSettings,
   handleCategory,
   handleOpenSearchTab,
+  handleOpenSearchByTitle,
   handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety,handleOpenPlan,handleOpenChat,
 }: WindowProps) => {
  
@@ -67,7 +69,7 @@ const PopupCategory = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-white z-20">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-0 p-0 w-full h-[100vh] flex flex-col">
        
           <MainCategory
@@ -98,6 +100,7 @@ const PopupCategory = ({
             handleCategory={handleCategory}
             handleAdEdit={handleAdEdit}
             handleOpenSearchTab={handleOpenSearchTab}
+            handleOpenSearchByTitle={handleOpenSearchByTitle}
           />
         
         <Toaster />

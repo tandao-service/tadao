@@ -149,7 +149,7 @@ const ChatBox = ({
 
   return (
   
-      <ScrollArea className="h-[calc(100vh-120px)] lg:h-[calc(100vh-130px)] dark:bg-[#222528] w-full rounded-t-md p-2">
+      <ScrollArea className="h-[calc(100vh-130px)] dark:bg-[#222528] w-full rounded-t-md p-2">
         {messages.map((message: any) => (
           <div key={message.id}>
             <Message

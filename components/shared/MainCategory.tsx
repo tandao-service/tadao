@@ -123,6 +123,7 @@ type CollectionProps = {
   handleOpenSafety: () => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
+  handleOpenSearchByTitle: () => void;
   handleOpenShop: (shopId:string) => void;
   handleCategory: (value:string) => void;
   handleOpenSearchTab: (value:string) => void;
@@ -154,6 +155,7 @@ const MainCategory = ({
   handleOpenShop,
   handleCategory,
   handleOpenSearchTab,
+  handleOpenSearchByTitle,
 
 }: // user,
 
@@ -634,7 +636,7 @@ CollectionProps) => {
       </button>
 
       <div className="flex-1">
-        <SearchNow handleFilter={handleFilter} />
+        <SearchNow handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle}/>
       </div>
 
       

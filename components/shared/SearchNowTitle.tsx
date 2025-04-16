@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,27 +8,20 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-const SearchNow = ({
+const SearchNowTitle = ({
   placeholder = "Search keywords...",
   handleFilter,
-  handleOpenSearchByTitle,
+  onClose,
 }: {
   placeholder?: string;
   handleFilter: (value:any) => void;
-  handleOpenSearchByTitle:()=> void;
+  onClose:() => void;
+ 
 }) => {
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    // Load search history from local storage
-    const history = JSON.parse(localStorage.getItem("searchHistory") || "[]");
-    setSearchHistory(history);
-  }, []);
-
+ 
   const handleSearch = () => {
     if (!query) return;
 
@@ -41,28 +34,12 @@ const SearchNow = ({
     setSearchHistory(updatedHistory);
     localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
     handleFilter({query:query});
-    //if (searchParams.get("query") !== query) {
-   //   onLoading();
-    //  router.push(
-      //  formUrlQuery({
-      //    params: searchParams.toString(),
-      //    key: "query",
-       //   value: query,
-      //  }),
-      //  { scroll: false }
-      //);
-   // }
+   
   };
 
   const handleClear = () => {
     setQuery("");
     handleFilter({query:''});
-   // const newUrl = removeKeysFromQuery({
-    //  params: searchParams.toString(),
-    //  keysToRemove: ["query"],
-    //});
-    // onLoading();
-   // router.push(newUrl, { scroll: false });
   };
 
   const removeHistoryItem = (item: string) => {
@@ -71,56 +48,35 @@ const SearchNow = ({
     localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
   };
   const handleClick = (qry: string) => {
-    //let newUrl = "";
-   // if (qry && qry !== searchParams.get("query")) {
-      //newUrl = formUrlQuery({
-      //  params: searchParams.toString(),
-       // key: "query",
-     //   value: qry,
-      //});
       
       if (qry){
         setQuery(qry);
         handleFilter({query:qry});
       }
      
-     // onLoading();
-     // router.push(newUrl, { scroll: false });
-    //}
   };
+  const inputRef = useRef<HTMLInputElement>(null); // ← ADD THIS
 
+  // Focus the input on mount
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      //let newUrl = "";
-
-      if (query) {
+    inputRef.current?.focus(); // ← ADD THIS
+    const history = JSON.parse(localStorage.getItem("searchHistory") || "[]");
+    setSearchHistory(history);
+  }, []);
+  
+  //(() => {
+   // const delayDebounceFn = setTimeout(() => {
      
-        handleFilter({query:query});
-      //  newUrl = formUrlQuery({
-       //   params: searchParams.toString(),
-       //   key: "query",
-       //   value: query,
-       // });
-      } 
-      //else {
-       // newUrl = removeKeysFromQuery({
-       //   params: searchParams.toString(),
-        //  keysToRemove: ["query"],
-       // });
-     // }
+    //  if (query) {
+    //    handleFilter({query:query});
+//} 
+  //  }, 300);
 
-      //router.push(newUrl, { scroll: false });
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [query]);
+   // return () => clearTimeout(delayDebounceFn);
+  ///}, [query]);
   return (
-    <div>
+    <div className="relative border border-gray-300 dark:border-gray-600 flex justify-between items-center dark:bg-[#2D3236] bg-white p-1 rounded-sm w-full">
       
-      <div className="hidden lg:inline">
-     
-      <div className="relative border border-gray-300 dark:border-gray-600 flex justify-between items-center dark:bg-[#2D3236] bg-white p-1 rounded-sm w-full">
-    
       <div className="flex items-center w-full">
         {focus && (
           <div className="text-gray-400">
@@ -129,13 +85,13 @@ const SearchNow = ({
         )}
         <Input
           type="text"
+          ref={inputRef} // ← ADD THIS
           value={query}
           placeholder={placeholder}
           onChange={(e) => {
             setQuery(e.target.value);
             if (e.target.value === "") {
               handleFilter({query:''});
-              // Add your logic here
             }
           }}
           onFocus={() => setFocus(true)}
@@ -146,21 +102,29 @@ const SearchNow = ({
       <div>
         {query && (
           <button onClick={handleClear} className="p-2">
-            <CloseOutlinedIcon />
+            <DeleteOutlineIcon fontSize="small" />
           </button>
         )}
       </div>
-      <div>
+      <div className="flex gap-1">
         <button
           onClick={handleSearch}
           className="flex justify-center items-center h-12 w-12 hover:bg-emerald-700 bg-emerald-600 text-white rounded-sm"
         >
           <SearchOutlinedIcon />
         </button>
+          <button
+                                onClick={onClose}
+                                className="flex justify-center border items-center h-12 w-12 hover:bg-gray-200 bg-gray-100 text-black rounded-sm"
+                              >
+                                <CloseOutlinedIcon />
+                  </button>
       </div>
-     
-        {/* Search Suggestions Dropdown */}
-        {focus && searchHistory.length > 0 && (
+
+      
+
+      {/* Search Suggestions Dropdown */}
+      {focus && searchHistory.length > 0 && (
         <div className="absolute top-full left-0 w-full bg-white dark:bg-[#131B1E] border border-gray-300 dark:border-gray-700 shadow-md rounded-md mt-1 z-10">
           {searchHistory.map((item, index) => (
             <div
@@ -184,8 +148,9 @@ const SearchNow = ({
               </button>
             </div>
           ))}
+          <div className="flex gap-2 justify-between">
           <button
-            className="w-full text-sm text-gray-500 p-2 hover:bg-gray-200 dark:hover:bg-gray-800"
+            className="w-full text-sm text-gray-500 p-2 bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
             onClick={() => {
               setSearchHistory([]);
               localStorage.removeItem("searchHistory");
@@ -193,48 +158,19 @@ const SearchNow = ({
           >
             Clear All History
           </button>
+          <button
+            className="w-full text-sm text-gray-500 p-2 bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+            onClick={() => {
+              setFocus(false);
+            }}
+          >
+           Close
+          </button>
+          </div>
         </div>
       )}
-</div>
-</div>
-
-<div className="lg:hidden">
-<div className="relative border border-gray-300 dark:border-gray-600 flex justify-between items-center dark:bg-[#2D3236] bg-white p-1 rounded-sm w-full">
-    
-      <div className="flex items-center w-full">
-        {focus && (
-          <div className="text-gray-400">
-            <SearchOutlinedIcon />
-          </div>
-        )}
-        <Input
-          type="text"
-          onClick={handleOpenSearchByTitle} 
-          placeholder={placeholder}
-          className="w-full dark:bg-[#2D3236] dark:text-gray-300 cursor-pointer flex-grow rounded-sm p-regular-16 border-0 bg-red outline-offset-0 placeholder:text-grey-500 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-        />
-      </div>
-
-      <div>
-        {query && (
-          <button onClick={handleOpenSearchByTitle} className="p-2">
-            <CloseOutlinedIcon />
-          </button>
-        )}
-      </div>
-      <div>
-        <button
-          onClick={handleOpenSearchByTitle}
-          className="flex justify-center items-center h-12 w-12 hover:bg-emerald-700 bg-emerald-600 text-white rounded-sm"
-        >
-          <SearchOutlinedIcon />
-        </button>
-      </div>
-      </div>
-      </div>
-    
     </div>
   );
 };
 
-export default SearchNow;
+export default SearchNowTitle;

@@ -30,54 +30,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { mode } from "@/constants";
-const Sidebar = dynamic(() => import("@/components/shared/Sidebar"), {
-  ssr: false,
-  loading: () => (
-    <div>
-      <div className="w-full lg:w-[300px] h-full flex flex-col items-center justify-center">
-        <Image
-          src="/assets/icons/loading2.gif"
-          alt="loading"
-          width={40}
-          height={40}
-          unoptimized
-        />
-      </div>
-    </div>
-  ),
-});
-const SendMessage = dynamic(() => import("@/components/shared/SendMessage"), {
-  ssr: false,
-  loading: () => (
-    <div>
-      <div className="w-full h-[50px] flex rounded-lg flex-col items-center justify-center">
-        <Image
-          src="/assets/icons/loading2.gif"
-          alt="loading"
-          width={40}
-          height={40}
-          unoptimized
-        />
-      </div>
-    </div>
-  ),
-});
-const ChatBox = dynamic(() => import("@/components/shared/ChatBox"), {
-  ssr: false,
-  loading: () => (
-    <div>
-      <div className="w-full h-[300px] mb-2 rounded-lg flex flex-col items-center justify-center">
-        <Image
-          src="/assets/icons/loading2.gif"
-          alt="loading"
-          width={40}
-          height={40}
-          unoptimized
-        />
-      </div>
-    </div>
-  ),
-});
+import Sidebar from "@/components/shared/Sidebar";
+import SendMessage from "@/components/shared/SendMessage";
+import ChatBox from "@/components/shared/ChatBox";
+
 type payProps = {
   senderName: string;
   senderImage: string;

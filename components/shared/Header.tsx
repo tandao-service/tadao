@@ -7,7 +7,7 @@ import Searchmain from "./Searchmain";
 import SearchNow from "./SearchNow";
 import LocationSelection from "./LocationSelection";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-export default function Header({ handleFilter, AdsCountPerRegion }: {  handleFilter: (value:any) => void, AdsCountPerRegion:any}) {
+export default function Header({ handleFilter,handleOpenSearchByTitle, AdsCountPerRegion }: {  handleOpenSearchByTitle: () => void, handleFilter: (value:any) => void, AdsCountPerRegion:any}) {
   const router = useRouter();
   const [search, setSearch] = useState<string>();
   const [region, setRegion] = useState("All Kenya");
@@ -48,7 +48,7 @@ export default function Header({ handleFilter, AdsCountPerRegion }: {  handleFil
         </button>
         </div>
         <div className="flex-1">
-         <SearchNow handleFilter={handleFilter} />
+         <SearchNow handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle}/>
         </div>
         </div>
       </div>
