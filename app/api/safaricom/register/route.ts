@@ -1,7 +1,10 @@
-// /pages/api/safaricom/register.ts or /app/api/safaricom/register/route.ts (adjust for App Router)
-export async function handler(req: any, res: any) {
-  const consumerKey = 'ghghghghghghghgh';
-  const consumerSecret = 'gghh';
+// app/api/safaricom/register/route.ts
+
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(req: NextRequest) {
+  const consumerKey = '64367tr67tttgdd';
+  const consumerSecret = 'trr655geyey6';
   const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
 
   try {
@@ -17,7 +20,7 @@ export async function handler(req: any, res: any) {
     const tokenData = await accessTokenRes.json();
     const accessToken = tokenData.access_token;
 
-    // Step 2: Register URL
+    // Step 2: Register URLs
     const registerRes = await fetch('https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl', {
       method: 'POST',
       headers: {
@@ -26,19 +29,16 @@ export async function handler(req: any, res: any) {
       },
       body: JSON.stringify({
         ShortCode: '12345',
-        ResponseType: 'Confirmed',
+        ResponseType: 'Completed',
         ConfirmationURL: 'https://pocketshop.co.ke/api/safaricom/confirmation',
         ValidationURL: 'https://pocketshop.co.ke/api/safaricom/validation',
       }),
     });
 
     const registerData = await registerRes.json();
-    res.status(200).json(registerData);
+    return NextResponse.json(registerData);
   } catch (error: any) {
     console.error('Safaricom Register Error:', error);
-    res.status(500).json({ error: 'Failed to register URLs' });
+    return NextResponse.json({ error: 'Failed to register URLs' }, { status: 500 });
   }
 }
-
-// If you're using App Router, export like this instead:
-export { handler as GET, handler as POST };
