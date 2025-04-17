@@ -1,6 +1,12 @@
 "use server";
 import { handleError } from '../utils';
 import Transaction from '../database/models/transaction.model';
+import mongoose from 'mongoose';
+// Ad from '../database/models/ad.model';
+import { ObjectId } from 'mongodb';
+import { revalidatePath } from 'next/cache';
+import { FreePackId } from '@/constants';
+import DynamicAd from '../database/models/dynamicAd.model';
 
 import { connectToDatabase } from '../database';
 import { CreateTransactionParams, DeleteBookmarkParams, TransactionStatusParams } from '@/types';
@@ -8,6 +14,7 @@ import axios from 'axios';
 import { NextResponse } from 'next/server';
 import Packages from '../database/models/packages.model';
 import User from '../database/models/user.model';
+import { updateVerification } from './user.actions';
 export async function transactionStatus(transaction: TransactionStatusParams) {
 
   const apiUrl = "https://cybqa.pesapal.com/pesapalv3/api/Auth/RequestToken";
@@ -97,15 +104,9 @@ export async function transactionStatus(transaction: TransactionStatusParams) {
 const populateAd = (query: any) => {
   return query
     .populate({ path: 'planId', model: Packages, select: '_id name list features price' })
-    .populate({ path: 'buyer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified fcmToken' })
+    .populate({ path: 'buyer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token' })
 }
 // GET ONE Ad BY ID
-import mongoose from 'mongoose';
-// Ad from '../database/models/ad.model';
-import { ObjectId } from 'mongodb';
-import { revalidatePath } from 'next/cache';
-import { FreePackId } from '@/constants';
-import DynamicAd from '../database/models/dynamicAd.model';
 
 export async function getData(userId: string) {
   try {
@@ -366,5 +367,36 @@ export async function getStatusTrans() {
   } catch (error) {
     console.error("Error fetching order statuses with worth and profit:", error);
     throw new Error("Unable to fetch order statuses with worth and profit");
+  }
+}
+
+export async function updateTransaction(orderTrackingId: string) {
+  try {
+    await connectToDatabase();
+
+    const updatedTransaction = await Transaction.findOneAndUpdate(
+      { orderTrackingId },
+      { status: "Active" },
+      { new: true }
+    );
+
+    if (!updatedTransaction) {
+      throw new Error("Transaction not found or update failed");
+    }
+
+    if (updatedTransaction.plan === "Verification") {
+      await updateVerification(updatedTransaction.buyer);
+    }
+
+    await DynamicAd.findByIdAndUpdate(
+      { _id: orderTrackingId },
+      { adstatus: "Active" },
+      { new: true }
+    );
+
+    return JSON.parse(JSON.stringify(updatedTransaction));
+  } catch (error) {
+    handleError(error);
+    throw error;
   }
 }
