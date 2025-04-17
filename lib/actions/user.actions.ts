@@ -44,7 +44,7 @@ export async function getUserById(userId: string) {
     // Fetch verification fee
     const verifyData = await Verifies.findOne() // adjust if you have a different criteria
     const fee = verifyData?.fee || 500
-    console.log(fee);
+    // console.log(JSON.parse(JSON.stringify({ ...user.toObject(), fee })));
     return JSON.parse(JSON.stringify({ ...user.toObject(), fee }))
 
 

@@ -68,13 +68,14 @@ import { Button } from "../ui/button";
 type chatProps = {
   userId: string;
   ad: any;
+  fee:string;
   userImage: string;
   userName: string;
   handleOpenReview: (value:any) => void;
   handleOpenShop: (value:any) => void;
   handlePay: (id:string) => void;
 };
-const SellerProfileCard = ({ ad, userId, userImage, userName,handlePay, handleOpenReview,handleOpenShop, }: chatProps) => {
+const SellerProfileCard = ({ ad, fee, userId, userImage, userName,handlePay, handleOpenReview,handleOpenShop, }: chatProps) => {
   const pathname = usePathname();
 
   const isAdCreator = userId === ad.organizer._id;
@@ -201,6 +202,7 @@ const SellerProfileCard = ({ ad, userId, userImage, userName,handlePay, handleOp
           <div className="m-1">
             <Verification
               user={ad.organizer}
+              fee={fee}
               userId={userId}
               isAdCreator={isAdCreator}
               handlePayNow={handlePay}

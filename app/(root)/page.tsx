@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
   const categoryList = await getAllCategories();
   const subcategoryList = await getAllSubCategories();
   const AdsCountPerRegion = await getAdsCountAllRegion();
-  //console.log("userId: "+ userId);
+  
 //const categoryList:any = [];
 //const subcategoryList:any = [];
 //const AdsCountPerRegion:any = [];

@@ -210,6 +210,20 @@ export type UpdateAdParams = {
   path: string
 }
 
+//==========Payment
+export type CreatePaymentParams = {
+  payment: {
+    orderTrackingId: string,
+    name: string,
+    transactionId: string,
+    amount: number,
+    status: string,
+    balance: string,
+    date: Date,
+  }
+}
+
+
 //==========Reported
 export type CreateReportedParams = {
   report: {

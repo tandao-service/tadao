@@ -29,6 +29,7 @@ export interface IUser extends Document {
     email: boolean;
     fcm: boolean;
   };
+  fee?: string;
 }
 
 export interface Businesshours {

@@ -111,25 +111,54 @@ const DashboardPay = ({ userId, trans,user, recipientUid, handleOpenPerfomance, 
     }
     try {
       setisSubmitting(true);
-      const response = await requeststkpush(
-        trans[0].orderTrackingId,
-        removeLeadingPlus(countryCode) + removeLeadingZero(payphone),
-        Number(deposit)
+     // const response = await requeststkpush(
+      //  trans[0].orderTrackingId,
+      //  removeLeadingPlus(countryCode) + removeLeadingZero(payphone),
+     //   Number(deposit)
+   //   );
+  
+  //  setLoading(true);
+    try {
+      const res = await fetch('/api/safaricom/stkpush', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accountReference: trans[0].orderTrackingId,
+          Amount: Number(deposit),
+          Account: removeLeadingPlus(countryCode) + removeLeadingZero(payphone), // Replace with actual number
+        }),
+      });
+      setstkresponse(
+        "STK PUSH sent to your phone, Check Mpesa prompt, Enter your pin to complete deposit"
       );
+      const data = await res.json();
+     //setResponse(JSON.stringify(data, null, 2));
+     setdeposit("");
+     setpayphone("");
+    setisSubmitting(false);
+    } catch (err: any) {
+     // setResponse(`Error: ${err.message}`);
+      errorsetstkresponse(`Error: ${err.message}`);
+    } finally {
+      setisSubmitting(false);
+    }
+  
 
-      if (response === "success") {
+     // if (response === "success") {
         // console.log("RESPONSE    " + response);
-        setstkresponse(
-          "STK PUSH sent to your phone, Check Mpesa prompt, Enter your pin to complete deposit"
-        );
-        setdeposit("");
-        setpayphone("");
-        setisSubmitting(false);
+      //  setstkresponse(
+       //   "STK PUSH sent to your phone, Check Mpesa prompt, Enter your pin to complete deposit"
+     //   );
+     //setdeposit("");
+       // setpayphone("");
+       // setisSubmitting(false);
         //  window.location.reload();
-      } else {
-        setisSubmitting(false);
-        errorsetstkresponse("Error sending mpesa stk push");
-      }
+    //  } else {
+     //   setisSubmitting(false);
+    //    errorsetstkresponse("Error sending mpesa stk push");
+    //  }
     } catch (error) {
       console.error("Error adding document: ", error);
     }

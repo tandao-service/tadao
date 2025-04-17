@@ -116,7 +116,7 @@ const SellerProfilePermonance = ({
             <p className="ml-2 font-bold">{userName}</p>
           </div>
 
-          <Verification user={user} userId={userId} isAdCreator={true} handlePayNow={handlePay}/>
+          <Verification user={user} fee={user.fee} userId={userId} isAdCreator={true} handlePayNow={handlePay}/>
           <Ratingsmobile user={user} recipientUid={userId} handleOpenReview={handleOpenReview} />
         </div>
       </div>

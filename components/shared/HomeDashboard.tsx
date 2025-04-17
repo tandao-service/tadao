@@ -221,6 +221,12 @@ const HomeDashboard = ({
    setIsOpenChatId(true);
    
     };
+    const registerSafaricom = async () => {
+      const res = await fetch('/api/safaricom/register', { method: 'POST' });
+      const data = await res.json();
+      console.log(data);
+    };
+    
     const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   
       useEffect(() => {
@@ -287,6 +293,7 @@ const HomeDashboard = ({
         const handleOpenSearchTab=() => {
        
         };
+        
   return (
     <div className="min-h-screen dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-white">
     <div className="fixed z-10 top-0 w-full">
@@ -643,6 +650,12 @@ const HomeDashboard = ({
                       className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
                     >
                       Search
+                    </button>
+                    <button
+                      onClick={registerSafaricom}
+                      className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
+                    >
+                      Register url Safaricom
                     </button>
                   </div>
                 </div>

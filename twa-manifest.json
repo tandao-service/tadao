@@ -16,13 +16,6 @@
   "iconUrl": "https://pocketshop.co.ke/assets/icons/icon-512x512.png",
   "maskableIconUrl": "https://pocketshop.co.ke/assets/icons/icon-512x512.png",
   "splashScreenFadeOutDuration": 300,
-  "splashScreen": {
-    "backgroundColor": "#064D3B",
-    "image": "https://pocketshop.co.ke/assets/icons/icon-512x512.png",
-    "scale": "CENTER_INSIDE",
-    "fadeOutDuration": 300,
-    "duration": 3000
-  },
   "signingKey": {
     "path": "E:\\apps\\PocketShop\\android.keystore",
     "alias": "key0"

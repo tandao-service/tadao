@@ -82,8 +82,6 @@ const PopupAdView = ({ isOpen, type,user, userId, userName, userImage, ad, handl
 
   if (!isOpen) return null;
      
-
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
          <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white w-full h-[100vh] flex flex-col">

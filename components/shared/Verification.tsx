@@ -15,6 +15,7 @@ import { VerificationPackId } from "@/constants";
 interface SettingsProp {
   user: any;
   userId: string;
+  fee:string;
   isAdCreator: boolean;
   handlePayNow: (id:string) => void;
 }
@@ -22,6 +23,7 @@ interface SettingsProp {
 const Verification: React.FC<SettingsProp> = ({
   user,
   userId,
+  fee,
   isAdCreator,
   handlePayNow}:
   SettingsProp) => {
@@ -36,8 +38,10 @@ const Verification: React.FC<SettingsProp> = ({
     periodInput: string,
     priceInput: string
   ) => {
+   // console.log("pay")
+    //console.log("priceInput: "+priceInput+ "packIdInput: "+packIdInput+ "packNameInput: "+packNameInput)
     const customerId = uuidv4();
-
+   // console.log(customerId);
     const trans = {
       orderTrackingId: customerId,
       amount: Number(priceInput),
@@ -50,6 +54,8 @@ const Verification: React.FC<SettingsProp> = ({
       createdAt: new Date(),
     };
     const response = await createTransaction(trans);
+    //console.log(response);
+   // console.log("now pay");
     if (response.status === "Pending") {
      // router.push(`/pay/${response.orderTrackingId}`);
      handlePayNow(response.orderTrackingId)
@@ -106,7 +112,7 @@ const Verification: React.FC<SettingsProp> = ({
         </p>
         <div className="flex items-center pt-2">
           <button
-            onClick={() => handlePay(VerificationPackId, "Verification", "0", user.fee)}
+            onClick={() => handlePay(VerificationPackId, "Verification", "0", fee)}
             className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
           >
             <CheckCircleIcon sx={{ marginRight: "5px" }} />
