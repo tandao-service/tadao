@@ -60,6 +60,7 @@ import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct i
 import Barsscale from "@iconify-icons/svg-spinners/bars-scale"; // Correct import
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { updateUserPhone } from "@/lib/actions/user.actions";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
   loading: () => (
@@ -165,7 +166,7 @@ type Package = {
 };
 type AdFormProps = {
   userId: string;
- // planId: string;
+ user: any;
   type: string;
   ad?: any;
   adId?: string;
@@ -185,7 +186,7 @@ type AdFormProps = {
 
 const AdForm = ({
   userId,
-//  planId,
+  user,
   type,
   ad,
   adId,
@@ -478,6 +479,17 @@ const AdForm = ({
       ...formData,
       [field]: value,
     });
+    if(user.phone && type === "Create"){
+      const cleanNumber = user.phone.startsWith('+') ? user.phone.slice(1) : user.phone;
+      const countryCode = cleanNumber.slice(0, 3);
+      const localNumber = cleanNumber.slice(3);
+      setCountryCode('+'+countryCode)
+      setPhoneNumber(localNumber)
+      setFormData({
+        ...formData,
+        phone: user.phone,
+      });
+    }
   };
 
   const handleInputAutoCompleteChange = (field: string, value: any) => {
@@ -579,6 +591,9 @@ if(!isValidKenyanPhoneNumber(phone)){
           periodPack: periodInput,
           path: "/create",
         });
+        if(!user.phone){
+          await updateUserPhone(userId,phone);
+          }
         setFormData(defaults);
         setFiles([]);
         setSelectedYear("");

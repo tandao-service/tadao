@@ -149,6 +149,7 @@ const CollectionInfinite = ({
      //setIsOpenSearchByTitle(false);
      setIsOpenAdEdit(false);
      setIsOpenPay(false);
+     setIsOpenSearchTab(false);
     // setIsOpenCategory(false);
    };
    useEffect(() => {
@@ -188,6 +189,7 @@ const CollectionInfinite = ({
   };
   const handleOpenSearchTab = (value:string) => {
     handleClose();
+    setIsOpenCategory(false);
     setCategorySelect(value);
     setIsOpenSearchTab(true);
   };
@@ -653,6 +655,48 @@ const handleCloseAdView = () => {
 
   if (isDarkMode === null) return null; // Avoid flickering before state is set
 
+
+
+  const SCROLL_THRESHOLD = 150; // pixels
+  let scrollTimeout: NodeJS.Timeout;
+  
+  const [showBottomNav, setShowBottomNav] = useState(true);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const lastScrollTop = useRef(0);
+  
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+  
+    const handleScroll = () => {
+      const currentScrollTop = viewport.scrollTop;
+      const scrollDiff = currentScrollTop - lastScrollTop.current;
+  
+      clearTimeout(scrollTimeout);
+  
+      // Ignore small scrolls
+      if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
+  
+      if (scrollDiff > 0) {
+        // Scrolling down
+        setShowBottomNav(false);
+      } else {
+        // Scrolling up
+        setShowBottomNav(true);
+      }
+  
+      lastScrollTop.current = currentScrollTop;
+  
+      // Optional: show nav again if user stops scrolling
+      scrollTimeout = setTimeout(() => {
+        setShowBottomNav(true);
+      }, 200);
+    };
+  
+    viewport.addEventListener("scroll", handleScroll);
+    return () => viewport.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
      <div className="bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] min-h-screen">
@@ -791,8 +835,9 @@ const handleCloseAdView = () => {
         </div>
 
         {/* Right Content (Scrolls Normally) */}
-        <div onMouseEnter={() => handleHoverCategory('')} className="flex-1">
-          <div className="mt-[180px] lg:hidden">
+           
+        <div ref={viewportRef} onMouseEnter={() => handleHoverCategory('')} className="flex-1">
+          <div className="mt-[170px] lg:hidden">
            <MenuSubmobileMain
                  categoryList={categoryList}
                  subcategoryList={subcategoryList}
@@ -810,10 +855,12 @@ const handleCloseAdView = () => {
         
                 </div>
           {data.length > 0 ? (
+          
             <div className="flex w-full flex-col items-center gap-10 p-0">
               {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4"> */}
               <div className="w-full mb-20">
                 <Masonry
+                 
                   breakpointCols={breakpointColumns}
                   className="flex gap-4"
                   columnClassName="bg-clip-padding"
@@ -1077,7 +1124,11 @@ const handleCloseAdView = () => {
       handleOpenFaq={handleOpenFaq}
     />
         </div>
-        <div className="lg:hidden">
+         <div
+        className={`lg:hidden fixed bottom-0 left-0 right-0 transition-transform duration-300 ${
+          showBottomNav ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
         <BottomNavigation userId={userId} 
                      popup={"home"}
                      onClose={handleClose} 

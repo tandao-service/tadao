@@ -33,13 +33,13 @@ const SearchNowTitle = ({
     updatedHistory = updatedHistory.slice(0, 5); // Keep only the latest 5 searches
     setSearchHistory(updatedHistory);
     localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
-    handleFilter({query:query});
+   // handleFilter({query:query});
    
   };
 
   const handleClear = () => {
     setQuery("");
-    handleFilter({query:''});
+   // handleFilter({query:''});
   };
 
   const removeHistoryItem = (item: string) => {
@@ -51,7 +51,7 @@ const SearchNowTitle = ({
       
       if (qry){
         setQuery(qry);
-        handleFilter({query:qry});
+       // handleFilter({query:qry});
       }
      
   };
@@ -64,16 +64,19 @@ const SearchNowTitle = ({
     setSearchHistory(history);
   }, []);
   
-  //(() => {
-   // const delayDebounceFn = setTimeout(() => {
-     
-    //  if (query) {
-    //    handleFilter({query:query});
-//} 
-  //  }, 300);
+  const [lastSentQuery, setLastSentQuery] = useState("");
 
-   // return () => clearTimeout(delayDebounceFn);
-  ///}, [query]);
+useEffect(() => {
+  const delayDebounceFn = setTimeout(() => {
+    if (query && query !== lastSentQuery) {
+      handleFilter({ query });
+      setLastSentQuery(query);
+    }
+  }, 2000);
+
+  return () => clearTimeout(delayDebounceFn);
+}, [query]);
+
   return (
     <div className="relative border border-gray-300 dark:border-gray-600 flex justify-between items-center dark:bg-[#2D3236] bg-white p-1 rounded-sm w-full">
       
@@ -100,11 +103,11 @@ const SearchNowTitle = ({
         />
       </div>
       <div>
-        {query && (
+      {/* {query && (
           <button onClick={handleClear} className="p-2">
             <DeleteOutlineIcon fontSize="small" />
           </button>
-        )}
+        )} */} 
       </div>
       <div className="flex gap-1">
         <button

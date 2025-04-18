@@ -54,7 +54,24 @@ export async function getUserById(userId: string) {
     handleError(error)
   }
 }
+export async function updateUserPhone(_id: string, phone: string) {
+  try {
+    await connectToDatabase();
 
+    // Find the category by its ID and update the name field only
+    const updatephone = await User.findByIdAndUpdate(
+      _id,
+      { phone }, // Update only the name field
+      { new: true }
+    );
+
+    return JSON.parse(JSON.stringify(updatephone));
+  } catch (error) {
+    handleError(error);
+    // Handle error appropriately (e.g., throw or return error response)
+    throw error;
+  }
+}
 export async function updateUser(clerkId: string, user: UpdateUserParams) {
   try {
     await connectToDatabase()
