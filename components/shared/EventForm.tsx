@@ -315,7 +315,8 @@ const AdForm = ({
     const [loadingSub, setLoadingSub] = useState<boolean>(true);
     const [ExpirationDate_, setexpirationDate] = useState(new Date());
     const [activePackage, setActivePackage] = useState<Package | null>(null);
-
+    const [countryCode, setCountryCode] = useState("+254"); // Default country code
+    const [phoneNumber, setPhoneNumber] = useState("");
     useEffect(() => {
       const getCategory = async () => {
         try {
@@ -341,6 +342,15 @@ const AdForm = ({
             setFields(selectedData ? selectedData.fields : []);
             setFormData(ad.data);
           
+            const cleanNumber = ad.data.phone.startsWith('+') ? ad.data.phone.slice(1) : ad.data.phone;
+            const countryCode = cleanNumber.slice(0, 3);
+            const localNumber = cleanNumber.slice(3);
+            setCountryCode('+'+countryCode)
+            setPhoneNumber(localNumber)
+            setFormData({
+              ...formData,
+              phone: ad.data.phone,
+            });
           }
           setShowLoad(false)
         } catch (error) {
@@ -723,9 +733,7 @@ if(!isValidKenyanPhoneNumber(phone)){
   for (let year = currentYear; year >= 1960; year--) {
     years.push(year.toString());
   }
-  const [countryCode, setCountryCode] = useState("+254"); // Default country code
-  const [phoneNumber, setPhoneNumber] = useState("");
-
+ 
   const formatPhoneNumber = (input: any) => {
     // Remove all non-digit characters
     const cleaned = input.replace(/\D/g, "");
