@@ -341,6 +341,7 @@ useEffect(() => {
               />
           
           </div>
+          <div className="flex flex-col">
           <span className="font-semibold text-lg">{user.firstName} {user.lastName}</span>
       <div className="flex">
                         <Verification
@@ -350,6 +351,7 @@ useEffect(() => {
                           isAdCreator={isAdCreator}
                           handlePayNow={handlePay}
                         />
+                           </div>
                       </div>
         </div>
         <Settings onClick={()=> handleOpenProfile()} className="h-5 w-5 cursor-pointer hover:text-green-600" />
@@ -375,8 +377,9 @@ useEffect(() => {
     {loadingSub ? (<><Icon icon={Barsscale} className="w-6 h-6 text-gray-500" /></>):(<>
     
       <div className="flex items-center space-x-2">
-      <div><Gem /></div>
-      <div className="text-sm items-center flex gap-1"><div className="h-3 w-3 rounded-full bg-green-600"></div>Active: {planPackage} Plan</div>
+      <div className="hidden lg:inline"><Gem /></div>
+      <div className="text-sm items-center flex gap-1">
+        <div className="h-3 w-3 rounded-full bg-green-600"></div><div className="hidden lg:inline">Active:</div> {planPackage} Plan</div>
    
     </div>
    {planPackage !=='Free' && (<><div className="text-xs text-gray-400">{daysRemaining} Days Left</div></>)} 

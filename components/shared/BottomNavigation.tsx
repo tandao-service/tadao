@@ -83,6 +83,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
         <SignedIn>
           <div
             onClick={() => {
+             
               handleOpenSell();
             }}
           >
@@ -102,7 +103,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
         <SignedOut>
           <div
             onClick={() => {
-          
+              setIsOpenP(true);
                 router.push("/sign-in");
             }}
           >
@@ -151,7 +152,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
           <div
             onClick={() => {
              // if (pathname !== "/sign-in") {
-              //  setIsOpenP(true);
+              setIsOpenP(true);
                 router.push("/sign-in");
             //  }
             }}
@@ -194,6 +195,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
             popup === "settings" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
           }`}
           onClick={() => {
+            setIsOpenP(true);
             router.push("/sign-in");
         }}
         >
@@ -203,7 +205,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
           <span className="text-xs">Profile</span>
         </div>
         </SignedOut>
-
+        <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
       </div>
     
     </nav>

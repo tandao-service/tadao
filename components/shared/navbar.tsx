@@ -252,7 +252,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
 <SignedOut>
 <button
                   onClick={() => {
-                   //setIsOpenP(true);
+                   setIsOpenP(true);
                     router.push("/sign-in");
                   }} 
                   className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-full`}
