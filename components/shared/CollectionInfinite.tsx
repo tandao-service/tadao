@@ -11,6 +11,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { getAllAd } from "@/lib/actions/ad.actions";
 import { getAdById, getAlldynamicAd } from "@/lib/actions/dynamicAd.actions";
 import CardAutoHeight from "./CardAutoHeight";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 //import Card from './Card'
 //import Pagination from './Pagination'
 import Masonry from "react-masonry-css";
@@ -53,6 +54,7 @@ import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
 import { getUserById } from "@/lib/actions/user.actions";
 import SearchByTitle from "./SearchByTitle";
+import PopupAccount from "./PopupAccount";
  // Correct import
 type CollectionProps = {
   limit: number;
@@ -119,12 +121,51 @@ const CollectionInfinite = ({
   const [isOpenReview, setIsOpenReview] = useState(false);
   const [isOpenShop, setIsOpenShop] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const [isOpenProfile, setIsOpenProfile] = useState(false);
   const [isOpenPerfomance, setIsOpenPerfomance] = useState(false);
   const [isOpenSearchTab, setIsOpenSearchTab] = useState(false);
   const [adId, setadId] = useState<any>([]);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [CategorySelect, setCategorySelect] = useState('');
   const [isOpenSearchByTitle, setIsOpenSearchByTitle] = useState(false);
+ 
+  const [showBottomNav, setShowBottomNav] = useState(true);
+
+  const scrollRefB = useRef<HTMLDivElement>(null);
+  const lastScrollTop = useRef(0);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const SCROLL_THRESHOLD = 150; // pixels
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        const el = scrollRefB.current;
+        if (el) {
+         
+        const handleScroll = () => {
+        const currentScrollTop = el.scrollTop;
+        const scrollDiff = currentScrollTop - lastScrollTop.current;
+    
+        // Ignore small scrolls
+        if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
+    
+        if (scrollDiff > 0) {
+          // Scrolling down
+          setShowBottomNav(false);
+        } else {
+          // Scrolling up
+          setShowBottomNav(true);
+        }
+    
+        lastScrollTop.current = currentScrollTop;
+      };
+          el.addEventListener('scroll', handleScroll);
+        }
+      }, 0);
+      return () => clearTimeout(timer);
+    }, []);
+
+    
+  
+  
  const handleHoverCategory = (value:string) => {
  setHoveredCategory(value);
  }
@@ -151,6 +192,7 @@ const CollectionInfinite = ({
      setIsOpenPay(false);
      setIsOpenSearchTab(false);
     // setIsOpenCategory(false);
+    setIsOpenProfile(false);
    };
    useEffect(() => {
     const fetchData = async () => {
@@ -390,7 +432,7 @@ const CollectionInfinite = ({
         router.push("/", { scroll: false });
         setNewqueryObject([])
       }
-    
+         
           setIsOpenFaq(false);
         };
 
@@ -444,6 +486,17 @@ const handlePay = (id:string) => {
     }
    
     setIsOpenPay(false);
+  };
+  const handleOpenProfile = () => {
+    
+    handleClose();
+    setIsOpenProfile(true);
+    
+  
+  };
+  const handleCloseProfile = () => {
+      handleClose();
+      setIsOpenProfile(false);
   };
 const handleCloseAdEdit = () => {
   const params = new URLSearchParams(window.location.search);
@@ -657,45 +710,7 @@ const handleCloseAdView = () => {
 
 
 
-  const SCROLL_THRESHOLD = 150; // pixels
-  let scrollTimeout: NodeJS.Timeout;
   
-  const [showBottomNav, setShowBottomNav] = useState(true);
-  const viewportRef = useRef<HTMLDivElement | null>(null);
-  const lastScrollTop = useRef(0);
-  
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport) return;
-  
-    const handleScroll = () => {
-      const currentScrollTop = viewport.scrollTop;
-      const scrollDiff = currentScrollTop - lastScrollTop.current;
-  
-      clearTimeout(scrollTimeout);
-  
-      // Ignore small scrolls
-      if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
-  
-      if (scrollDiff > 0) {
-        // Scrolling down
-        setShowBottomNav(false);
-      } else {
-        // Scrolling up
-        setShowBottomNav(true);
-      }
-  
-      lastScrollTop.current = currentScrollTop;
-  
-      // Optional: show nav again if user stops scrolling
-      scrollTimeout = setTimeout(() => {
-        setShowBottomNav(true);
-      }, 200);
-    };
-  
-    viewport.addEventListener("scroll", handleScroll);
-    return () => viewport.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <>
@@ -835,8 +850,10 @@ const handleCloseAdView = () => {
         </div>
 
         {/* Right Content (Scrolls Normally) */}
-           
-        <div ref={viewportRef} onMouseEnter={() => handleHoverCategory('')} className="flex-1">
+        <ScrollArea.Root className="flex-1 overflow-hidden">
+      <ScrollArea.Viewport onMouseEnter={() => handleHoverCategory('')} ref={scrollRefB}  className="h-full overflow-y-auto">
+     
+       {/* <div ref={viewportRef} onMouseEnter={() => handleHoverCategory('')} className="flex-1"> */}
           <div className="mt-[170px] lg:hidden">
            <MenuSubmobileMain
                  categoryList={categoryList}
@@ -1039,7 +1056,7 @@ const handleCloseAdView = () => {
       user={user}/>
 
 
-      <PopupSettings isOpen={isOpenSettings} onClose={handleCloseSettings} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+<PopupSettings isOpen={isOpenProfile} onClose={handleCloseProfile} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenSettings={handleOpenSettings}
       handleCategory={handleCategory}
@@ -1047,6 +1064,22 @@ const handleCloseAdView = () => {
       handleOpenShop={handleOpenShop}
       user={user}
       handleOpenSearchTab={handleOpenSearchTab}/>
+
+     <PopupAccount isOpen={isOpenSettings} onClose={handleCloseSettings} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+      handleOpenPerfomance={handleOpenPerfomance}
+      handleOpenSettings={handleOpenSettings}
+      handleCategory={handleCategory}
+      handlePay={handlePay}
+      handleOpenShop={handleOpenShop}
+      user={user}
+      handleOpenSearchTab={handleOpenSearchTab}
+      handleOpenProfile={handleOpenProfile}
+      handleOpenFaq={handleOpenFaq}
+      userImage={userImage}
+      userName={userName}
+      handleAdEdit={handleAdEdit}
+      handleAdView={handleAdView}
+      handleOpenReview={handleOpenReview}/>
      
       <PopupPay txtId={txtId} isOpen={isOpenPay} onClose={handleClosePay} userId={userId} userName={userName} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
       handleOpenPerfomance={handleOpenPerfomance}
@@ -1083,7 +1116,7 @@ const handleCloseAdView = () => {
       user={user}
      />
 
-<PopupFaq isOpen={isOpenFaq} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleCloseSafety} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+<PopupFaq isOpen={isOpenFaq} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleCloseFaq} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
        handleOpenShop={handleOpenShop}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenSettings={handleOpenSettings} 
@@ -1108,7 +1141,11 @@ const handleCloseAdView = () => {
         handleOpenPlan={handleOpenPlan}
         queryObject={queryObject} />
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
-        </div>
+      </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical" />
+      <ScrollArea.Corner />
+    </ScrollArea.Root>
+
       </div>
        </div>
       <footer

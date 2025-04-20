@@ -21,6 +21,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import HomeIcon from "@mui/icons-material/Home";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import ProgressPopup from "./ProgressPopup";
 type NavItemsProps = {
@@ -212,15 +213,16 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                         </span>
                         </div>
                         )}
-                        {link.label === "Settings" && (  <div
+                        {link.label === "Profile" && (  <div
                          onClick={()=>  {handleOpenSettings(); handleclicklink();}}
                         className={`${
                           isActive &&
                           "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
                         } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
                       >
+                      
                           <span>
-                            <SettingsIcon className="w-10 p-1 " />
+                            <PersonOutlineOutlinedIcon className="w-10 p-1 " />
                           </span>
                           <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
                           {link.label}
@@ -309,9 +311,9 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                             <DiamondIcon className="w-10 p-1 " />
                           </span>
                         )}
-                        {link.label === "Settings" && (
+                        {link.label === "Profile" && (
                           <span>
-                            <SettingsIcon className="w-10 p-1 " />
+                            <PersonOutlineOutlinedIcon className="w-10 p-1 " />
                           </span>
                         )}
 

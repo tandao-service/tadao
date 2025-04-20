@@ -110,9 +110,9 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
         <div className="hidden lg:inline mr-5"></div>
 
         <div className="flex-1">
-          <div className="rounded-[20px] bg-white max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
+          <div className="rounded-[20px] dark:bg-[#2D3236] bg-white max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
           <div className="max-w-3xl mx-auto p-6">
-  <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+  <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-400 mb-6">
     Frequently Asked Questions
   </h2>
 
@@ -121,7 +121,7 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
       <h3 className="text-xl font-semibold text-emerald-600 mb-2">
         1. How can I list my product on PocketShop.co.ke?
       </h3>
-      <p className="text-gray-700">
+      <p className="text-gray-700 dark:text-gray-300">
         To list your product, sign up or log into your account, go to the
         &quot;Sell&quot; section, and complete the required details. Upload
         clear images, set your price, and submit your listing.
@@ -132,7 +132,7 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
       <h3 className="text-xl font-semibold text-emerald-600 mb-2">
         2. Is it free to post a product listing?
       </h3>
-      <p className="text-gray-700">
+      <p className="text-gray-700 dark:text-gray-300">
         Yes, posting a standard product listing is free. However, we offer
         premium options to boost your listing&apos;s visibility for a small fee.
       </p>
@@ -142,7 +142,7 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
       <h3 className="text-xl font-semibold text-emerald-600 mb-2">
         3. How do I contact a seller?
       </h3>
-      <p className="text-gray-700">
+      <p className="text-gray-700 dark:text-gray-300">
         You can reach a seller through the chat feature on PocketShop.co.ke or
         use the provided phone number and email on the listing page.
       </p>
@@ -152,7 +152,7 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
       <h3 className="text-xl font-semibold text-emerald-600 mb-2">
         4. What should I do if I find a suspicious listing?
       </h3>
-      <p className="text-gray-700">
+      <p className="text-gray-700 dark:text-gray-300">
         If you suspect a fraudulent listing, click the &quot;Report&quot;
         button on the ad page. Our team will review the report and take the
         necessary action.
@@ -163,7 +163,7 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
       <h3 className="text-xl font-semibold text-emerald-600 mb-2">
         5. How can I update or remove my product listing?
       </h3>
-      <p className="text-gray-700">
+      <p className="text-gray-700 dark:text-gray-300">
         Log into your account, go to &quot;My Listings,&quot; and select the
         listing you want to edit or remove.
       </p>
@@ -173,7 +173,7 @@ const FaqComponent =  ({userId, user,handleOpenPerfomance,
       <h3 className="text-xl font-semibold text-emerald-600 mb-2">
         6. Can I get a refund for a premium listing?
       </h3>
-      <p className="text-gray-700">
+      <p className="text-gray-700 dark:text-gray-300">
         Refunds for premium listings are subject to our refund policy. Please
         review our policy or contact customer support for assistance.
       </p>
