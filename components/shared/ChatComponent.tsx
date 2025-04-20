@@ -22,6 +22,7 @@ import Sidebarmain from "@/components/shared/Sidebarmain";
 import { mode } from "@/constants";
 import SellerProfileReviews from "./SellerProfileReviews";
 import SellerProfileChat from "./SellerProfileChat";
+import ProgressPopup from "./ProgressPopup";
 interface AdsProps {
   senderId: string;
   senderName: string;
@@ -48,7 +49,15 @@ interface AdsProps {
 
 const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay,handleOpenSearchTab, handleOpenShop,
   handleOpenPerfomance, handleCategory,handleOpenSettings,handleOpenReview,handleOpenChat,handleOpenChatId, handleOpenBook, handleOpenSell, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}:AdsProps) => {
- 
+ const [isOpenP, setIsOpenP] = useState(false);
+  const handleOpenP = () => {
+    setIsOpenP(true);
+  };
+
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
+
   const recipientUid = senderId;
   // console.log(senderId);
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
@@ -120,6 +129,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
               <Sidebarmain userId={senderId} handleOpenChatId={handleOpenChatId}/>
               </ScrollArea>
               <Toaster />
+                 <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
             </div>
           </div>
         </div>
@@ -140,6 +150,7 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
           onClose={onClose} 
           handleOpenSell={handleOpenSell}
           handleOpenChat={handleOpenChat}
+          handleOpenP={handleOpenP}
           handleOpenSettings={handleOpenSettings}
           handleOpenSearchTab={handleOpenSearchTab} />
         </div>

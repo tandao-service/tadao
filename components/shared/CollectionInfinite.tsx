@@ -970,7 +970,8 @@ const handleCloseAdView = () => {
               handleOpenSearchByTitle={handleOpenSearchByTitle}
               categoryList={categoryList}
               subcategoryList={subcategoryList}
-              user={user}/>
+              user={user}
+              />
 
       <PopupShop isOpen={isOpenShop} handleOpenReview={handleOpenReview} onClose={handleCloseShop} userId={userId} shopAcc={shopId} userName={userName} userImage={userImage} queryObject={newqueryObject} handleOpenSell={handleOpenSell} handleAdView={handleAdView} handleAdEdit={handleAdEdit} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} 
       handleOpenShop={handleOpenShop}
@@ -1079,7 +1080,8 @@ const handleCloseAdView = () => {
       userName={userName}
       handleAdEdit={handleAdEdit}
       handleAdView={handleAdView}
-      handleOpenReview={handleOpenReview}/>
+      handleOpenReview={handleOpenReview}
+     />
      
       <PopupPay txtId={txtId} isOpen={isOpenPay} onClose={handleClosePay} userId={userId} userName={userName} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
       handleOpenPerfomance={handleOpenPerfomance}
@@ -1172,7 +1174,8 @@ const handleCloseAdView = () => {
                      handleOpenSell={handleOpenSell}
                      handleOpenChat={handleOpenChat}
                      handleOpenSettings={handleOpenSettings} 
-                     handleOpenSearchTab={handleOpenSearchTab} 
+                     handleOpenSearchTab={handleOpenSearchTab}
+                     handleOpenP={handleOpenP}
                     />
         </div>
       </footer>

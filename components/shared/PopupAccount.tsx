@@ -88,6 +88,7 @@ const PopupAccount = ({ isOpen, userId,userName,userImage, user, handleAdEdit, h
         userImage={userImage}
         handleAdEdit={handleAdEdit} 
         handleAdView={handleAdView}
+       
         />
         <Toaster />
       </div>

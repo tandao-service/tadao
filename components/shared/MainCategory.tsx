@@ -94,6 +94,7 @@ import { getAdsCount, getAdsCountPerRegion, getAdsCountPerVerifiedFalse, getAdsC
 import { useMediaQuery } from "react-responsive"; // Detect mobile screens
 import FilterSkeleton from "./FilterSkeleton";
 import LocationListSkeleton from "./LocationListSkeleton";
+import ProgressPopup from "./ProgressPopup";
 type CollectionProps = {
   loading: boolean;
   userId: string;
@@ -902,6 +903,7 @@ CollectionProps) => {
       handleAdView={handleAdView}
       handleOpenPlan={handleOpenPlan}
     />
+       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
   </section>
 
   {userId && (
@@ -943,7 +945,8 @@ CollectionProps) => {
                   handleOpenSell={handleOpenSell}
                   handleOpenChat={handleOpenChat}
                   handleOpenSearchTab={handleOpenSearchTab} 
-                  handleOpenSettings={handleOpenSettings}                               />
+                  handleOpenSettings={handleOpenSettings} 
+                  handleOpenP={handleOpenP}/>
           </div>
         </footer>
       </div>

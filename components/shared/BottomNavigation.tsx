@@ -22,23 +22,17 @@ type navprop = {
   handleOpenChat: () => void;
   handleOpenSettings : () => void;
   handleOpenSearchTab: (value:string) => void;
+  handleOpenP:()=>void;
 
 };
-const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSettings, handleOpenSell, handleOpenChat, onClose }: navprop) => {
+const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,handleOpenSettings, handleOpenSell, handleOpenChat, onClose }: navprop) => {
   const router = useRouter();
   const pathname = usePathname();
  
   const isActive = (path: string) => pathname === path;
  
 
- const [isOpenP, setIsOpenP] = useState(false);
-  const handleOpenP = () => {
-    setIsOpenP(true);
-  };
-
-  const handleCloseP = () => {
-    setIsOpenP(false);
-  };
+ 
   
  
   return (
@@ -103,7 +97,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
         <SignedOut>
           <div
             onClick={() => {
-              setIsOpenP(true);
+              handleOpenP();
                 router.push("/sign-in");
             }}
           >
@@ -152,7 +146,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
           <div
             onClick={() => {
              // if (pathname !== "/sign-in") {
-              setIsOpenP(true);
+              handleOpenP();
                 router.push("/sign-in");
             //  }
             }}
@@ -195,7 +189,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
             popup === "settings" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
           }`}
           onClick={() => {
-            setIsOpenP(true);
+            handleOpenP();
             router.push("/sign-in");
         }}
         >
@@ -205,7 +199,7 @@ const BottomNavigation = ({ userId, popup, handleOpenSearchTab,handleOpenSetting
           <span className="text-xs">Profile</span>
         </div>
         </SignedOut>
-        <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
+      
       </div>
     
     </nav>

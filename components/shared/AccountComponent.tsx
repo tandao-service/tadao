@@ -22,6 +22,7 @@ import { IdynamicAd } from "@/lib/database/models/dynamicAd.model";
 import { collection, getDocs, onSnapshot, query, Timestamp, where } from "@firebase/firestore";
 import { db } from "@/lib/firebase";
 import ChatWindow from "./ChatWindow";
+import ProgressPopup from "./ProgressPopup";
 interface Review {
   text: string;
   name: string;
@@ -56,6 +57,7 @@ handleOpenProfile: () => void;
   userImage:string;
   handleAdEdit: (value:any) => void;
   handleAdView: (value:any) => void;
+ 
 };
 
 const AccountComponent = ({userId, user, userName,
@@ -92,7 +94,14 @@ const AccountComponent = ({userId, user, userName,
       const toggleChat = () => {
         setChatOpen(!isChatOpen);
       };
+  const [isOpenP, setIsOpenP] = useState(false);
+    const handleOpenP = () => {
+      setIsOpenP(true);
+    };
   
+    const handleCloseP = () => {
+      setIsOpenP(false);
+    };
   useEffect(() => {
    
       const fetchData = async () => {
@@ -342,7 +351,7 @@ useEffect(() => {
           
           </div>
           <div className="flex flex-col">
-          <span className="font-semibold text-lg">{user.firstName} {user.lastName}</span>
+          <span className="ml-2 font-semibold text-lg">{user.firstName} {user.lastName}</span>
       <div className="flex">
                         <Verification
                           user={user}
@@ -379,13 +388,13 @@ useEffect(() => {
       <div className="flex items-center space-x-2">
       <div className="hidden lg:inline"><Gem /></div>
       <div className="text-sm items-center flex gap-1">
-        <div className="h-3 w-3 rounded-full bg-green-600"></div><div className="hidden lg:inline">Active:</div> {planPackage} Plan</div>
+        <div className="h-3 w-3 rounded-full bg-green-600"></div>Active: {planPackage} Plan</div>
    
     </div>
    {planPackage !=='Free' && (<><div className="text-xs text-gray-400">{daysRemaining} Days Left</div></>)} 
    <div className="text-xs text-gray-400">{remainingAds} Ads remaining</div>
    
-   <span  onClick={()=> handleOpenPlan()} className="absolute underline hover:bg-green-700 top-1 right-1 text-xs bg-green-600 text-white px-1.5 py-0.5 rounded-sm"> Upgrade</span>
+   <span  onClick={()=> handleOpenPlan()} className="absolute underline hover:bg-green-700 bottom-1 right-1 text-xs bg-green-600 text-white px-1.5 py-0.5 rounded-sm"> Upgrade</span>
   
    </>)}
    
@@ -395,6 +404,8 @@ useEffect(() => {
             
             
             </div>
+
+             <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
             <Toaster />
           </div>
         </div>
@@ -429,7 +440,8 @@ useEffect(() => {
           handleOpenSettings={handleOpenSettings}
           handleOpenSell={handleOpenSell}
           handleOpenChat={handleOpenChat}
-          handleOpenSearchTab={handleOpenSearchTab} />
+          handleOpenSearchTab={handleOpenSearchTab} 
+          handleOpenP={handleOpenP}/>
         </div>
       </footer>
     </ScrollArea>
