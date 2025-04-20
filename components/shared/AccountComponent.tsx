@@ -381,12 +381,13 @@ useEffect(() => {
                   {/*  <Card icon={<Users />} label="Followers" />*/}
                    <Card icon={<HelpCircle />} label="FAQ"  handleClick={handleOpenFaq}/>
                   {/*  <Card icon={<HelpCircle />} label="Game centre" />*/}
-                  
+                  </div>
+                  <div className="grid grid-cols-1  pl-4 pr-4">
     <div  className="cursor-pointer bg-gray-100 dark:bg-[#131B1E] p-3 rounded-xl flex flex-col justify-between h-20 relative">
     {loadingSub ? (<><Icon icon={Barsscale} className="w-6 h-6 text-gray-500" /></>):(<>
     
       <div className="flex items-center space-x-2">
-      <div className="hidden lg:inline"><Gem /></div>
+      <div><Gem /></div>
       <div className="text-sm items-center flex gap-1">
         <div className="h-3 w-3 rounded-full bg-green-600"></div>Active: {planPackage} Plan</div>
    
@@ -394,16 +395,16 @@ useEffect(() => {
    {planPackage !=='Free' && (<><div className="text-xs text-gray-400">{daysRemaining} Days Left</div></>)} 
    <div className="text-xs text-gray-400">{remainingAds} Ads remaining</div>
    
-   <span  onClick={()=> handleOpenPlan()} className="absolute underline hover:bg-green-700 bottom-1 right-1 text-xs bg-green-600 text-white px-1.5 py-0.5 rounded-sm"> Upgrade</span>
+   <span  onClick={()=> handleOpenPlan()} className="absolute underline hover:bg-green-700 top-1 right-1 text-xs bg-green-600 text-white px-1.5 py-0.5 rounded-sm"> Upgrade</span>
   
    </>)}
    
   </div>
-  
+  </div>
   </div>
             
             
-            </div>
+          
 
              <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
             <Toaster />
