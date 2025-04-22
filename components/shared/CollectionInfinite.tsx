@@ -142,7 +142,7 @@ const CollectionInfinite = ({
       const currentScrollY = window.scrollY;
       const direction = currentScrollY > lastScrollY ? "down" : "up";
 
-      if (direction !== scrollDir && Math.abs(currentScrollY - lastScrollY) > 20) {
+      if (direction !== scrollDir && Math.abs(currentScrollY - lastScrollY) > 10) {
        // setScrollDir(direction);
         if(direction === "up"){
           setShowBottomNav(true)
