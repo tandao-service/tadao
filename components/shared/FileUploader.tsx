@@ -172,7 +172,7 @@ export function FileUploader({
             return await applyWatermark(
               file,
               userName.toUpperCase(),
-              "Posted on mapa"
+              "Posted on PocketShop"
             );
           } catch (error) {
             console.error("Watermark failed, proceeding without:", error);

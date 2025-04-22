@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { ICategory } from "@/lib/database/models/category.model";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
@@ -243,6 +243,43 @@ CollectionProps) => {
       fetchData();
     
   }, [newqueryObject.category, newqueryObject.subcategory]);
+
+
+  const [showBottomNav, setShowBottomNav] = useState(true);
+
+  const scrollRefB = useRef<HTMLDivElement>(null);
+const lastScrollTop = useRef(0);
+const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+const SCROLL_THRESHOLD = 150; // pixels
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const el = scrollRefB.current;
+      if (el) {
+       
+      const handleScroll = () => {
+      const currentScrollTop = el.scrollTop;
+      const scrollDiff = currentScrollTop - lastScrollTop.current;
+  
+      // Ignore small scrolls
+      if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
+  
+      if (scrollDiff > 0) {
+        // Scrolling down
+        setShowBottomNav(false);
+      } else {
+        // Scrolling up
+        setShowBottomNav(true);
+      }
+  
+      lastScrollTop.current = currentScrollTop;
+    };
+        el.addEventListener('scroll', handleScroll);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  
    useEffect(() => {
      const handleResize = () => {
        if (window.innerWidth < 768) {
@@ -519,8 +556,11 @@ CollectionProps) => {
                     <CategoryFilterSearch  categoryList={categoryList} handleFilter={handleResetFilter}/>
             </div>
           
-          {/* Categories Section */}
-           <ScrollArea className="h-[100vh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">
+          {/* Categories Section 
+           <ScrollArea className="h-[100vh] text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">*/}
+           <ScrollArea.Root className="flex-1 overflow-hidden">
+        <ScrollArea.Viewport  className="h-full overflow-y-auto text-sm lg:text-base w-full dark:bg-[#2D3236] bg-white rounded-0 border p-3">
+      
            <SidebarSearchMain
                           categoryList={subcategoryList}
                           category={newqueryObject.category}
@@ -528,7 +568,10 @@ CollectionProps) => {
                           handleFilter={handleResetFilter}
                          
                         />
-                        </ScrollArea>
+                        </ScrollArea.Viewport>
+    <ScrollArea.Scrollbar orientation="vertical" />
+      <ScrollArea.Corner />
+    </ScrollArea.Root>
         </div>
       )}
     </div>
@@ -741,7 +784,10 @@ CollectionProps) => {
 </div>
 
         {/* List Ads Section */}
-  <ScrollArea className="h-[100vh] w-full dark:bg-[#131B1E] bg-gray-200 rounded-t-md lg:mb-0 lg:mt-0">
+        <ScrollArea.Root className="flex-1 overflow-hidden">
+      <ScrollArea.Viewport ref={scrollRefB} className="h-full overflow-y-auto rounded-t-md dark:bg-[#131B1E] bg-gray-200 border">
+     
+  {/* <ScrollArea className="h-[100vh] w-full dark:bg-[#131B1E] bg-gray-200 rounded-t-md lg:mb-0 lg:mt-0">*/}
   <section className="p-1 mb-[150px]">
     <div className="flex items-center p-1 w-full justify-between">
       <div className="flex items-center gap-1 flex-wrap justify-start items-center mb-0">
@@ -934,10 +980,17 @@ CollectionProps) => {
       handleOpenSafety={handleOpenSafety}
     />
   </div>
-</ScrollArea>
+  </ScrollArea.Viewport>
+    <ScrollArea.Scrollbar orientation="vertical" />
+      <ScrollArea.Corner />
+    </ScrollArea.Root>
 
         <footer>
-          <div className="lg:hidden">
+        <div
+                 className={`lg:hidden fixed bottom-0 left-0 right-0 transition-transform duration-300 ${
+                   showBottomNav ? "translate-y-0" : "translate-y-full"
+                 }`}
+               >
            <BottomNavigation 
                   userId={userId}
                   popup={"category"}

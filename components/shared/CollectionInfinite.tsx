@@ -132,36 +132,67 @@ const CollectionInfinite = ({
   const [showBottomNav, setShowBottomNav] = useState(true);
 
   const scrollRefB = useRef<HTMLDivElement>(null);
-  const lastScrollTop = useRef(0);
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
-  const SCROLL_THRESHOLD = 150; // pixels
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        const el = scrollRefB.current;
-        if (el) {
-         
-        const handleScroll = () => {
-        const currentScrollTop = el.scrollTop;
-        const scrollDiff = currentScrollTop - lastScrollTop.current;
+
+  const [scrollDir, setScrollDir] = useState<"up" | "down" | null>(null);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const updateScrollDir = () => {
+      const currentScrollY = window.scrollY;
+      const direction = currentScrollY > lastScrollY ? "down" : "up";
+
+      if (direction !== scrollDir && Math.abs(currentScrollY - lastScrollY) > 20) {
+       // setScrollDir(direction);
+        if(direction === "up"){
+          setShowBottomNav(true)
+        }else{setShowBottomNav(false)}
+      }
+
+      lastScrollY = currentScrollY > 0 ? currentScrollY : 0;
+    };
+
+    window.addEventListener("scroll", updateScrollDir);
+
+    return () => {
+      window.removeEventListener("scroll", updateScrollDir);
+    };
+  }, [scrollDir]);
+  
+
+
+ // const lastScrollTop = useRef(0);
+ // const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+ // const SCROLL_THRESHOLD = 150; // pixels
+   // useEffect(() => {
+      //const timer = setTimeout(() => {
+       // const el = scrollRefB.current;
+       // alert("enter")
+       // if (el) {
+       //  alert("load")
+       // const handleScroll = () => {
+       //   alert("x")
+      //  const currentScrollTop = el.scrollTop;
+      //  const scrollDiff = currentScrollTop - lastScrollTop.current;
     
         // Ignore small scrolls
-        if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
+       // if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
     
-        if (scrollDiff > 0) {
+      //  if (scrollDiff > 0) {
           // Scrolling down
-          setShowBottomNav(false);
-        } else {
+      //    setShowBottomNav(false);
+    //    } else {
           // Scrolling up
-          setShowBottomNav(true);
-        }
+      //    setShowBottomNav(true);
+   //     }
     
-        lastScrollTop.current = currentScrollTop;
-      };
-          el.addEventListener('scroll', handleScroll);
-        }
-      }, 0);
-      return () => clearTimeout(timer);
-    }, []);
+    //    lastScrollTop.current = currentScrollTop;
+  //    };
+    //  window.addEventListener('scroll', handleScroll);
+   //     }
+  //    }, 0);
+  //    return () => clearTimeout(timer);
+  //  }, []);
 
     
   
@@ -869,7 +900,7 @@ const handleCloseAdView = () => {
           </div>
           <div>
           <h2 className="font-bold p-2 text-[30px]">Trending Ads</h2>
-        
+          
                 </div>
           {data.length > 0 ? (
           
