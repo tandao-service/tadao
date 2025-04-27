@@ -674,10 +674,9 @@ if(!isValidKenyanPhoneNumber(phone)){
         });
         if (updatedAd && handleAdView) {
          handleAdView(updatedAd);
-        // console.log(updatedAd)
-        //  router.push(`/ads/${updatedAd._id}`);
+       
         }
-        // console.log("Data submitted successfully:", finalData);
+       
       }
     } catch (error) {
       console.error("Validation or submission failed", error);

@@ -140,10 +140,14 @@ export const adminLinks = [
   {
     label: 'Packages',
     route: '/packages',
-
   }, {
     label: 'Transactions',
     route: '/Transactions',
+
+  }
+  , {
+    label: 'Payments',
+    route: '/payments',
 
   }, {
     label: 'User Management',
@@ -157,6 +161,11 @@ export const adminLinks = [
   , {
     label: 'Abuse',
     route: '/abused',
+
+  }
+  , {
+    label: 'Verification',
+    route: '/verification',
 
   }
 ]

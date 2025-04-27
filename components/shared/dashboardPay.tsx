@@ -11,6 +11,7 @@ import Navbar from "./navbar";
 import { mode } from "@/constants";
 import { Button } from "../ui/button";
 import Footersub from "./Footersub";
+import { checkPaymentStatus } from "@/lib/actions/payment.actions";
 
 type payProps = {
   userId: string;
@@ -104,25 +105,21 @@ const DashboardPay = ({ userId, trans,user, recipientUid, handleOpenPerfomance, 
   }
   const handleTopup = async (e: any) => {
     e.preventDefault();
-
+  
     if (payphone.trim() === "") {
       seterrormpesaphone("Enter M-Pesa Phone Number");
       return;
     }
+  
     try {
       setisSubmitting(true);
-     // const response = await requeststkpush(
-      //  trans[0].orderTrackingId,
-      //  removeLeadingPlus(countryCode) + removeLeadingZero(payphone),
-     //   Number(deposit)
-   //   );
-  
-  //  setLoading(true);
-    try {
-      const res = await fetch('/api/safaricom/stkpush', {
-        method: 'POST',
+      setstkresponse('');
+      errorsetstkresponse('');
+      
+      const res = await fetch("/api/safaricom/stkpush", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           accountReference: trans[0].orderTrackingId,
@@ -130,69 +127,78 @@ const DashboardPay = ({ userId, trans,user, recipientUid, handleOpenPerfomance, 
           Account: removeLeadingPlus(countryCode) + removeLeadingZero(payphone), // Replace with actual number
         }),
       });
-      setstkresponse(
-        "STK PUSH sent to your phone, Check Mpesa prompt, Enter your pin to complete deposit"
-      );
+  
       const data = await res.json();
-     //setResponse(JSON.stringify(data, null, 2));
-     setdeposit("");
-     setpayphone("");
-    setisSubmitting(false);
+      
+      if (res.ok) {
+        // On success, inform the user that STK Push was sent
+        setstkresponse("STK PUSH sent to your phone. Check MPesa prompt and enter your PIN to complete the payment.");
+  
+        // Polling to check payment status
+        let attempts = 0;
+        const maxAttempts = 10; // Set max attempts to avoid infinite polling
+        const intervalId = setInterval(async () => {
+          const paymentStatus: any = await checkPaymentStatus(trans[0].orderTrackingId);
+  
+          if (paymentStatus?.success === true) {
+            clearInterval(intervalId); // Stop polling
+            setstkresponse("Payment successfully completed!");
+            setdeposit("");
+            setpayphone("");
+            setpay("Active");
+            setisSubmitting(false);
+            toast({
+              title: "Order successful!",
+              description: "Your subscription is successful",
+              duration: 5000,
+              className: "bg-[#30AF5B] text-white",
+            });
+            return;
+          }
+           //else {
+           // clearInterval(intervalId); // Stop polling
+           // errorsetstkresponse("Payment Failed.");
+           // setstkresponse("");
+          //  setdeposit("");
+          //  setpayphone("");
+          //  setisSubmitting(false);
+         //   return;
+         // }
+  
+          // Check if max attempts have been reached
+          if (++attempts >= maxAttempts) {
+            clearInterval(intervalId); // Stop polling
+            errorsetstkresponse("Payment confirmation timed out. Please try again.");
+            setstkresponse("");
+            setisSubmitting(false);
+            return;
+          }
+        }, 5000); // Check every 5 seconds
+      } else {
+        // Handle error if response from Safaricom is not successful
+        errorsetstkresponse(`Error initiating payment: ${data.errorMessage}`);
+        setisSubmitting(false);
+      }
+  
+      setdeposit("");
+      setpayphone("");
     } catch (err: any) {
-     // setResponse(`Error: ${err.message}`);
+      setstkresponse('');
       errorsetstkresponse(`Error: ${err.message}`);
-    } finally {
       setisSubmitting(false);
     }
-  
-
-     // if (response === "success") {
-        // console.log("RESPONSE    " + response);
-      //  setstkresponse(
-       //   "STK PUSH sent to your phone, Check Mpesa prompt, Enter your pin to complete deposit"
-     //   );
-     //setdeposit("");
-       // setpayphone("");
-       // setisSubmitting(false);
-        //  window.location.reload();
-    //  } else {
-     //   setisSubmitting(false);
-    //    errorsetstkresponse("Error sending mpesa stk push");
-    //  }
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
   };
-
-  const orderTrackingId = trans[0].orderTrackingId; // Replace with your actual tracking ID
-
-  const requestpaymentcheck = async (orderTrackingId: string) => {
-    // Your function logic here
-    const checkresponse = await Requestcheckpayment(orderTrackingId);
-    // alert(checkresponse);
-    if (checkresponse === "success") {
-      setpay("Active");
-      toast({
-        title: "Order successful!",
-        description: "Your subscription is successful",
-        duration: 5000,
-        className: "bg-[#30AF5B] text-white",
-      });
-      // router.push(`/shop/${userId}`);
-    }
-    //console.log(`Requesting stk push for ${orderTrackingId}`);
-  };
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      requestpaymentcheck(orderTrackingId);
-      //  setpay(trans[0].status);
-      // alert("check");
-    }, 5000); // 1000 ms = 1 second
-
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, [orderTrackingId, adsData]); // Dependency array to watch the orderTrackingId
+  if(user.phone){
+    const cleanNumber = user.phone.startsWith('+') ? user.phone.slice(1) : user.phone;
+    const countryCode = cleanNumber.slice(0, 3);
+    const localNumber = cleanNumber.slice(3);
+    setCountryCode(countryCode)
+    setpayphone(formatPhoneNumber(localNumber))
+   
+  }
+}, []);
+  
 const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   
       useEffect(() => {
@@ -407,32 +413,7 @@ const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
                         </>
                       )}
                     </div>
-                    {/*<div className="flex flex-col rounded-lg bg-gray-100 w-full p-2 mb-2">
-                          <div className="text-lg p-1 text-gray-900">
-                            2. Deposit Via Paybill No
-                          </div>
-                          <div className="text-sm p-1 font-bold text-gray-900">
-                            <ul className="w-full text-sm">
-                              <li className="flex gap-2">
-                                <div className="text-xl text-gray-600">
-                                  Paybill:
-                                </div>{" "}
-                                <div className="font-bold text-xl text-green-600">
-                                  {paybill}
-                                </div>
-                              </li>
-                              <li className="flex gap-2">
-                                <div className="text-xl text-gray-600">
-                                  Account:
-                                </div>{" "}
-                                <div className="font-bold text-xl text-green-600">
-                                  {userID}
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        */}
+                   
                   </div>
                 </div>
               </div>

@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       amount: body.TransAmount,
       org_balance: body.OrgAccountBalance?.split('.')[0],
     };
-    console.log(db_arr)
+
     const paymentresponse = await createPayment({
       payment: {
         orderTrackingId: db_arr.account,
@@ -42,9 +42,8 @@ export async function POST(req: NextRequest) {
         date: new Date(),
       }
     });
-    console.log(paymentresponse)
     const response = await updateTransaction(db_arr.account);
-    console.log("response: " + response)
+
     return NextResponse.json({ status: response });
   } catch (error: any) {
     console.error("Confirmation API error:", error);

@@ -22,7 +22,7 @@ const populateAd = (query: any) => {
 };
 
 
-export const createPayment = async ({ payment}: CreatePaymentParams) => {
+export const createPayment = async ({ payment }: CreatePaymentParams) => {
   try {
     await connectToDatabase();
     //  const conditions = { adId: bookmark.adId };
@@ -42,6 +42,29 @@ export const createPayment = async ({ payment}: CreatePaymentParams) => {
   }
 }
 
+export const checkPaymentStatus = async (orderTrackingId: string) => {
+  try {
+    // Ensure you are connected to the database
+    await connectToDatabase();
+
+    // Use findOne to find the payment by orderTrackingId
+    const checkResponse = await Payment.findOne({ orderTrackingId });
+
+    // If payment was not found, return a meaningful response
+    if (!checkResponse) {
+      return { success: false, message: "Payment not found for the given Order Tracking ID" };
+    }
+
+    // Return the payment status or full payment details
+    return { success: true, payment: checkResponse };
+
+  } catch (error) {
+    // Proper error handling, logging and returning a response
+    console.error('Error checking payment status:', error);
+    return handleError(error); // Ensure this function sends a meaningful response
+  }
+};
+
 // GET ONE Ad BY ID
 export async function getPaymentById(_id: string) {
   try {
@@ -56,7 +79,44 @@ export async function getPaymentById(_id: string) {
     handleError(error)
   }
 }
-export async function getallPayment(limit = 16, page = 1) {
+export async function getallPayments(transationId: string, start: string, end: string, limit: number, page: number) {
+  try {
+    await connectToDatabase();
+
+    const startDate = start ? new Date(start) : null;
+    const endDate = end ? new Date(end) : null;
+
+    // Build conditions dynamically
+    const conditions: any = {};
+    if (transationId) {
+      conditions.orderTrackingId = { $regex: transationId, $options: 'i' };
+    }
+    if (startDate || endDate) {
+      conditions.createdAt = {};
+      if (startDate) {
+        conditions.createdAt.$gte = startDate; // Greater than or equal to startDate
+      }
+      if (endDate) {
+        conditions.createdAt.$lte = endDate; // Less than or equal to endDate
+      }
+    }
+
+    const skipAmount = (Number(page) - 1) * limit;
+
+    // Fetch filtered orders with pagination
+    const trans = await Payment.find(conditions)
+        .skip(skipAmount)
+        .limit(limit);
+
+    // Get the count of documents that match the conditions
+    const AdCount = await Payment.countDocuments(conditions);
+    return { data: JSON.parse(JSON.stringify(trans)), totalPages: Math.ceil(AdCount / limit) }
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export async function getallPayment(limit:16, page:1) {
   try {
     await connectToDatabase();
     const conditions = {}
@@ -64,7 +124,7 @@ export async function getallPayment(limit = 16, page = 1) {
     const response = await Payment.find(conditions)
       .skip(skipAmount)
       .limit(limit);
-    
+
     const AdCount = await Payment.countDocuments(conditions)
 
     return { data: JSON.parse(JSON.stringify(response)), totalPages: Math.ceil(AdCount / limit) }
@@ -77,7 +137,7 @@ export async function getallPayment(limit = 16, page = 1) {
 
 
 // Function to delete a bookmark
-export const deletePayment = async (_id:string) => {
+export const deletePayment = async (_id: string) => {
   try {
     await connectToDatabase();
     const deletedPayment = await Payment.findByIdAndDelete(_id);

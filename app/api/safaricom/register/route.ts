@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Step 2: Register URLs
-    const registerRes = await axios.post('https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl', {
+    const registerRes = await axios.post('https://api.safaricom.co.ke/mpesa/c2b/v2/registerurl', {
       ShortCode: businessShortCode,
       ResponseType: 'Completed',
       ConfirmationURL: 'https://pocketshop.co.ke/api/safaricom/confirmation',
@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
     });
-
     console.log('Register Response:', registerRes.data);
     return NextResponse.json(registerRes.data);
 

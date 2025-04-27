@@ -8,6 +8,7 @@ import {
   getselectedCategories,
 } from "@/lib/actions/category.actions";
 import { getTotalProducts } from "@/lib/actions/dynamicAd.actions";
+import { getallPayments } from "@/lib/actions/payment.actions";
 import { getallReported } from "@/lib/actions/report.actions";
 import {
   getallcategories,
@@ -18,6 +19,7 @@ import {
   getStatusTrans,
 } from "@/lib/actions/transactions.actions";
 import { getAllUsers } from "@/lib/actions/user.actions";
+import { getVerifyfee } from "@/lib/actions/verifies.actions";
 import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 
@@ -34,7 +36,15 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const limit = Number(searchParams?.limit) || 50;
   const users = await getAllUsers(limit, page);
   const reported = await getallReported(limit, page);
+  const fee = await getVerifyfee();
   const transactions = await getallTransactions(
+    transactionId,
+    start,
+    end,
+    limit,
+    page
+  );
+  const payments = await getallPayments(
     transactionId,
     start,
     end,
@@ -46,7 +56,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const categories = await getAllCategories();
   const subcategories = await getselectedsubcategories(category);
   const catList = await getselectedCategories();
-//console.log(reported);
+
   return (
    
         <HomeDashboard
@@ -63,6 +73,8 @@ const Home = async ({ searchParams }: SearchParamProps) => {
           subcategories={subcategories}
           catList={catList}
           reported={reported}
+          payments={payments}
+          vfee={fee}
         />
       
   );

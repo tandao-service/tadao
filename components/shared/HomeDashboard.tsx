@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AdminNavItemsMobile from "@/components/shared/AdminNavItemsMobile";
 import PieChart from "@/components/shared/PieChart";
-import { adminLinks, mode } from "@/constants";
+import { adminLinks, mode, VerificationPackId } from "@/constants";
 import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
 import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
 import ChecklistOutlinedIcon from "@mui/icons-material/ChecklistOutlined";
@@ -23,6 +23,7 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { getallTrans } from "@/lib/actions/transactions.actions";
 import TotalRevenue from "./TotalRevenue";
 import PropertyReferrals from "./PropertyReferrals";
+import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import Chat from "./Chat";
 import CreateCategoryForm from "./CreateCategoryForm";
 import DisplayCategories from "./DisplayCategories";
@@ -35,6 +36,7 @@ import CollectionUsers from "./CollectionUsers";
 import BroadcastMessage from "./BroadcastMessage";
 import CollectionTransactions from "./CollectionTransactions";
 import AssistantPhotoOutlinedIcon from '@mui/icons-material/AssistantPhotoOutlined';
+
 import {
   formUrlQuery,
   formUrlQuerymultiple,
@@ -52,7 +54,10 @@ import { Toaster } from "../ui/toaster";
 import CollectionAbuse from "./CollectionAbuse";
 import Navbardashboard from "./Navbardashboard";
 import PopupChatId from "./PopupChatId";
-
+import { updateVerifies, updateVerifiesFee } from "@/lib/actions/verifies.actions";
+import { useToast } from "../ui/use-toast";
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
+import CollectionPayments from "./CollectionPayments";
 type homeProps = {
   userId: string;
   userName: string;
@@ -61,7 +66,9 @@ type homeProps = {
   limit: number;
   page: number;
   transactions: any;
+  payments: any;
   adSum: any;
+  vfee:any;
   transactionSum: any;
   categories: any;
   subcategories: any;
@@ -75,6 +82,7 @@ const HomeDashboard = ({
   users,
   limit,
   page,
+  payments,
   transactions,
   transactionSum,
   adSum,
@@ -82,6 +90,7 @@ const HomeDashboard = ({
   subcategories,
   catList,
   reported,
+  vfee,
 }: homeProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -92,6 +101,7 @@ const HomeDashboard = ({
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [fee, setFee] = useState("500");
 
   const [recipient, setrecipient] = useState<any>([]);
     const [recipientUid, setrecipientUid] = useState('');
@@ -110,7 +120,7 @@ const HomeDashboard = ({
     const [isOpenSettings, setIsOpenSettings] = useState(false);
     const [isOpenPerfomance, setIsOpenPerfomance] = useState(false);
     const [isOpenSearchTab, setIsOpenSearchTab] = useState(false);
-
+    const { toast } = useToast();
   const handle = async (title: string) => {
     setActiveTab(title);
     if (title === "Categories") {
@@ -129,6 +139,8 @@ const HomeDashboard = ({
     }
   };
   useEffect(() => {
+    setFee(vfee.fee);
+
     const transactions = async () => {
       const allt = await getallTrans();
       setalltrans(allt);
@@ -145,6 +157,16 @@ const HomeDashboard = ({
 
   const handleClosePackage = () => {
     setIsOpenPackage(false);
+  };
+  const handleFee = async () => {
+  const res = await updateVerifiesFee(fee,VerificationPackId);
+  console.log(res);
+  toast({
+    title: "Updated!",
+    description: "Verification fee updated",
+    duration: 5000,
+    className: "bg-[#30AF5B] text-white",
+  });
   };
 
   const [isOpenCategory, setIsOpenCategory] = useState(false);
@@ -340,6 +362,11 @@ const HomeDashboard = ({
                           <ChecklistOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
+                       {link.label === "Payments" && (
+                          <span>
+                            <MonetizationOnOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
                       {link.label === "User Management" && (
                         <span>
                           <GroupsOutlinedIcon className="w-10 p-1" />
@@ -353,6 +380,11 @@ const HomeDashboard = ({
                       {link.label === "Abuse" && (
                         <span>
                           <AssistantPhotoOutlinedIcon className="w-10 p-1" />
+                        </span>
+                      )}
+                       {link.label === "Verification" && (
+                        <span>
+                          <GppGoodOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                     </span>
@@ -410,6 +442,11 @@ const HomeDashboard = ({
                             <ChecklistOutlinedIcon className="w-10 p-1" />
                           </span>
                         )}
+                         {link.label === "Payments" && (
+                          <span>
+                            <MonetizationOnOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
                         {link.label === "User Management" && (
                           <span>
                             <GroupsOutlinedIcon className="w-10 p-1" />
@@ -423,6 +460,11 @@ const HomeDashboard = ({
                          {link.label === "Abuse" && (
                         <span>
                           <AssistantPhotoOutlinedIcon className="w-10 p-1" />
+                        </span>
+                      )}
+                        {link.label === "Verification" && (
+                        <span>
+                          <GppGoodOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
                       </span>
@@ -593,6 +635,7 @@ const HomeDashboard = ({
             </div>
           </>
         )}
+        
         {activeTab === "Communication" && (
           <>
             <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
@@ -651,12 +694,13 @@ const HomeDashboard = ({
                     >
                       Search
                     </button>
-                    <button
+                {/*    <button
                       onClick={registerSafaricom}
                       className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
                     >
                       Register url Safaricom
                     </button>
+                    */} 
                   </div>
                 </div>
 
@@ -708,6 +752,143 @@ const HomeDashboard = ({
                 />
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
+            </div>
+          </>
+        )}
+          {activeTab === "Payments" && (
+          <>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">Payments</h1>
+              <div className="flex flex-col lg:flex-row gap-3">
+                <div className="flex flex-col lg:flex-row items-center gap-4 mb-4">
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="text-xs font-semibold mb-1"
+                      htmlFor="startDate"
+                    >
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      value={startDate || ""}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="dark:bg-[#2D3236] bg-white text-xs border p-2 w-full rounded"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="text-xs font-semibold mb-1"
+                      htmlFor="endDate"
+                    >
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      value={endDate || ""}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="dark:bg-[#2D3236] bg-white text-xs border w-full p-2 rounded"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="text-xs text-white font-semibold mb-1"
+                      htmlFor="endDate"
+                    ></label>
+                    <button
+                      onClick={handleSearchDates}
+                      className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
+                    >
+                      Search
+                    </button>
+                {/*    <button
+                      onClick={registerSafaricom}
+                      className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
+                    >
+                      Register url Safaricom
+                    </button>
+                    */} 
+                  </div>
+                </div>
+
+                {/* Search Form */}
+
+                <div className="flex flex-col lg:flex-row gap-1">
+                  <div className="flex flex-col">
+                    <label
+                      className="text-xs font-semibold mb-1"
+                      htmlFor="endDate"
+                    >
+                      TransactionId
+                    </label>
+                    <div className="flex gap-1 flex-col lg:flex-row">
+                      <input
+                        type="text"
+                        placeholder="Search by Order ID"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="dark:bg-[#2D3236] bg-white text-xs border p-2 flex rounded-md"
+                      />
+                      <button
+                        type="submit"
+                        onClick={handleSearch}
+                        className="text-xs hover:dark:bg-emerald-800 dark:bg-emerald-700 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+                      >
+                        Search
+                      </button>
+                      <button
+                        onClick={handleClear}
+                        className="text-xs hover:dark:bg-emerald-800 dark:bg-emerald-700 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Date Filter Section */}
+
+              <ScrollArea className="w-[340px] lg:w-full">
+                <CollectionPayments
+                  data={payments.data}
+                  emptyTitle={`No Payment Found`}
+                  emptyStateSubtext="Come back later"
+                  limit={limit}
+                  page={page}
+                  totalPages={payments.totalPages}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          </>
+        )}
+          {activeTab === "Verification" && (
+          <>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">
+               Verification fee
+              </h1>
+              <div className="flex flex-col lg:flex-row gap-3">
+              <div className="flex gap-1 flex-col lg:flex-row">
+                      <input
+                        type="text"
+                        placeholder="Fee"
+                        value={fee}
+                        onChange={(e) => setFee(e.target.value)}
+                        className="dark:bg-[#2D3236] bg-white text-xs border p-2 flex rounded-md"
+                      />
+                      <button
+                        type="submit"
+                        onClick={handleFee}
+                        className="text-xs hover:dark:bg-emerald-800 dark:bg-emerald-700 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+                      >
+                        Update
+                      </button>
+                      
+                    </div>
+              </div>
+            
             </div>
           </>
         )}

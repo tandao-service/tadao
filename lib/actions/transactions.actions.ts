@@ -225,6 +225,8 @@ export async function getallTrans() {
     handleError(error);
   }
 }
+
+
 export async function createTransaction(transaction: CreateTransactionParams) {
   try {
     await connectToDatabase();
@@ -386,14 +388,14 @@ export async function updateTransaction(orderTrackingId: string) {
 
     if (updatedTransaction.plan === "Verification") {
       await updateVerification(updatedTransaction.buyer);
+    } else {
+
+      await DynamicAd.findByIdAndUpdate(
+        { _id: orderTrackingId },
+        { adstatus: "Active" },
+        { new: true }
+      );
     }
-
-    await DynamicAd.findByIdAndUpdate(
-      { _id: orderTrackingId },
-      { adstatus: "Active" },
-      { new: true }
-    );
-
     return JSON.parse(JSON.stringify(updatedTransaction));
   } catch (error) {
     handleError(error);
