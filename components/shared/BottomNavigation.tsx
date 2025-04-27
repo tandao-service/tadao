@@ -158,9 +158,6 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
   <div className="absolute inset-0 flex items-center justify-center">
     <CommentOutlinedIcon />
   </div>
-  <div className="absolute top-0 right-0">
-    <Unreadmessages userId={userId} />
-  </div>
 </span>
 
               <span className="text-xs">Chat</span>

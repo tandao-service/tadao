@@ -485,10 +485,7 @@ const AdForm = ({
     setFormData(defaults);
     setFormErrors({});
     setFiles([]);
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+   
     if(user.phone && type === "Create"){
       const cleanNumber = user.phone.startsWith('+') ? user.phone.slice(1) : user.phone;
       const countryCode = cleanNumber.slice(0, 3);
@@ -496,10 +493,16 @@ const AdForm = ({
       setCountryCode('+'+countryCode)
       setPhoneNumber(localNumber)
       setFormData({
-        ...formData,
+        ...formData, [field]: value,
         phone: user.phone,
       });
+    }else{
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
     }
+   
   };
 
   const handleInputAutoCompleteChange = (field: string, value: any) => {
@@ -1757,13 +1760,7 @@ if(!isValidKenyanPhoneNumber(phone)){
             
                          
                          
-                {/* -{Plan}
-                -{PlanId}
-                -{ExpirationDate_.toDateString()}
-                -{remainingAds}
-                -{Adstatus_}
-                -{Priority_}
-                -{daysRemaining}
+                {/* 
            <PromoSelection
                 packagesList={packagesList}
                 packname={Plan}

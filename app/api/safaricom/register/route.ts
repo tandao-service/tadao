@@ -3,8 +3,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
-  const consumerKey = '64367tr67tttgdd';
-  const consumerSecret = 'trr655geyey6';
+  const consumerKey = process.env.MPESA_CONSUMER_KEY || '';
+const consumerSecret = process.env.MPESA_CONSUMER_SECRET || '';
+const businessShortCode = process.env.MPESA_SHORTCODE || '';
   const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
 
   try {
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ShortCode: '12345',
+        ShortCode: businessShortCode,
         ResponseType: 'Completed',
         ConfirmationURL: 'https://pocketshop.co.ke/api/safaricom/confirmation',
         ValidationURL: 'https://pocketshop.co.ke/api/safaricom/validation',
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     });
 
     const registerData = await registerRes.json();
+    console.log(registerData)
     return NextResponse.json(registerData);
   } catch (error: any) {
     console.error('Safaricom Register Error:', error);
