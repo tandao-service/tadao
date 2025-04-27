@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
 
     const db_arr = {
       internal_transaction_id: body.TransID,
-      name: `${body.FirstName} ${body.MiddleName} ${body.LastName}`,
+      // name: `${body.FirstName} ${body.MiddleName} ${body.LastName}`,
+      name: `${body.FirstName}`,
       receipt: body.TransID,
       time: body.TransTime,
       account: body.BillRefNumber,
