@@ -500,7 +500,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
             
             {ad.organizer.verified &&
               ad.organizer.verified[0].accountverified === true && (
-                <div className="hidden lg:inline absolute bg-emerald-100 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg">
+                <div className="hidden lg:inline absolute bg-emerald-100 text-black top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
                   <div className="flex gap-1 cursor-pointer">
                     <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                     Verified
