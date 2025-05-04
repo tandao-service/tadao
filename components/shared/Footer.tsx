@@ -118,7 +118,7 @@ const Footer = ({handleOpenFaq, handleOpenAbout,handleOpenTerms,handleOpenPrivac
             <ul className="space-y-4">
               <li>
                 <Link
-                  href=" https://play.google.com/store/apps/details?id=ke.PocketShop.app"
+                  href=" https://play.google.com/store/apps/details?id=ke.co.pocketshop.twa"
                   className="no-underline hover:text-emerald-500 "
                 >
                   <Image
