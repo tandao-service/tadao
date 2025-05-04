@@ -193,7 +193,7 @@ const PrivacyComponent =  ({userId,user, handleOpenPerfomance,
               </ul>
 
   <p className="mt-4">
-    For any questions about this Privacy Policy, please contact us at <strong>support@PocketShop.co.ke</strong>.
+    For any questions about this Privacy Policy, please contact us at <strong><a href="mailto:support@PocketShop.co.ke" className="text-emerald-600 hover:underline">support@PocketShop.co.ke</a></strong>.
   </p>
 
 
