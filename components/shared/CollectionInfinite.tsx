@@ -231,7 +231,7 @@ const CollectionInfinite = ({
       const id = params.get("Ad");
       const Profile = params.get("Profile");
       const action = params.get("action");
-  
+      const privacypolicy = params.get("privacypolicy");
       if (id) {
         const ad = await getAdById(id);
         setadId(ad);
@@ -252,6 +252,11 @@ const CollectionInfinite = ({
         setIsOpenChat(true);
       } else {
         setIsOpenChat(false);
+      }
+      if (privacypolicy) {
+        setIsOpenPrivacy(true);
+      } else {
+        setIsOpenPrivacy(false);
       }
     };
   
@@ -285,7 +290,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -302,7 +308,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -319,7 +326,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -338,7 +346,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -357,7 +366,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -375,7 +385,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -391,7 +402,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([]);
     }
@@ -407,7 +419,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -424,7 +437,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -439,7 +453,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -459,7 +474,8 @@ const CollectionInfinite = ({
       const Profile = params.get("Profile");
       const Ad = params.get("Ad");
       const action = params.get("action");
-      if(Profile || Ad || action){
+      const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
         router.push("/", { scroll: false });
         setNewqueryObject([])
       }
@@ -472,7 +488,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -488,7 +505,8 @@ const CollectionInfinite = ({
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -511,7 +529,8 @@ const handlePay = (id:string) => {
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -534,7 +553,8 @@ const handleCloseAdEdit = () => {
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
@@ -566,7 +586,8 @@ const handleCloseAdView = () => {
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
     }
     setNewqueryObject([])
@@ -583,7 +604,8 @@ const handleCloseAdView = () => {
     const Profile = params.get("Profile");
     const Ad = params.get("Ad");
     const action = params.get("action");
-    if(Profile || Ad || action){
+    const privacypolicy = params.get("privacypolicy");
+    if(Profile || Ad || action || privacypolicy){
       router.push("/", { scroll: false });
       setNewqueryObject([])
     }
