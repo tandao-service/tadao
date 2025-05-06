@@ -14,7 +14,9 @@ import "react-medium-image-zoom/dist/styles.css";
 import { useToast } from "@/components/ui/use-toast";
 import { removeImageUrl } from "@/lib/actions/dynamicAd.actions";
 import { Icon } from "@iconify/react";
-import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
+import imageCompression from "browser-image-compression";
+import threeDotsScale from "@iconify-icons/svg-spinners/3-dots-scale"; // Correct import
+import CircularProgress from "@mui/material/CircularProgress";
  // Correct import
 type FileUploaderProps = {
   onFieldChange: (urls: string[]) => void;
@@ -22,6 +24,21 @@ type FileUploaderProps = {
   userName: string;
   adId: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
+};
+const compressImage = async (file: File): Promise<File> => {
+  const options = {
+    maxSizeMB: 2, // Target size in MB
+    maxWidthOrHeight: 1280,
+    useWebWorker: true,
+  };
+
+  try {
+    const compressedFile = await imageCompression(file, options);
+    return compressedFile;
+  } catch (error) {
+    console.error("Image compression error:", error);
+    return file;
+  }
 };
 
 const applyWatermark = (
@@ -118,11 +135,13 @@ export function FileUploader({
   const { toast } = useToast();
   const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [processingStatus, setProcessingStatus] = useState(false);
   const [showmessage, setmessage] = useState("");
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      const filteredFiles = acceptedFiles.filter((file) => {
+      try{
+      const filteredFiles = acceptedFiles.filter(async (file) => {
+        setProcessingStatus(true);
         const isScreenshot =
           /screenshot/i.test(file.name) || /Screen\s?Shot/i.test(file.name);
         if (isScreenshot) {
@@ -136,6 +155,7 @@ export function FileUploader({
             description: showmessage,
             duration: 5000,
           });
+         
           return false;
         }
 
@@ -148,23 +168,36 @@ export function FileUploader({
             description: showmessage,
             duration: 5000,
           });
+          
           return false;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          setmessage(
-            `${file.name} exceeds the 5MB limit and will not be uploaded.`
-          );
-          toast({
-            variant: "destructive",
-            title: "Failed!",
-            description: showmessage,
-            duration: 5000,
-          });
-          return false;
+          try {
+            const compressed = await compressImage(file);
+            if (compressed.size > 5 * 1024 * 1024) {
+              setmessage(
+                `${file.name} is still too large after compression. Skipped.`
+              );
+              toast({
+                variant: "destructive",
+                title: "Failed!",
+                description: showmessage,
+                duration: 5000,
+              });
+             
+              return false;
+            }
+            file = compressed; // Replace original file with compressed one
+          } catch (err) {
+            console.error("Compression failed", err);
+        
+            return false;
+          }
         }
         return true;
       });
+
 
       const processedFiles: File[] = await Promise.all(
         filteredFiles.map(async (file) => {
@@ -184,6 +217,12 @@ export function FileUploader({
       setFiles((prevFiles: File[]) => [...prevFiles, ...processedFiles]);
       const urls = processedFiles.map((file: File) => convertFileToUrl(file));
       onFieldChange([...imageUrls, ...urls]);
+    } catch (err) {
+      console.error("Processing failed", err);
+     
+    } finally {
+      setProcessingStatus(false);
+    }
     },
     [imageUrls, setFiles, onFieldChange]
   );
@@ -217,7 +256,7 @@ export function FileUploader({
   };
 
   return (
-    <div className="w-full flex-center dark:text-gray-200 flex cursor-pointer p-1 flex-col">
+    <div className="w-full flex-center dark:text-[#e4ebeb] flex cursor-pointer p-1 flex-col">
       <input {...getInputProps()} className="cursor-pointer" />
       <div className="text-left text-sm w-full">
         <div className="font-semibold">Add Photo</div>
@@ -230,7 +269,11 @@ export function FileUploader({
             First picture - is the title picture.
           </small>
         </div>
-
+        {processingStatus && (
+        <div className="flex gap-2 text-gray-500 justify-center items-center">
+          <CircularProgress sx={{ color: "gray" }} size={30}/> processing images...
+        </div>
+      )}
         {imageUrls.length > 0 ? (
           <div className="flex w-full m-1 ">
             <div {...getRootProps()}>
@@ -243,12 +286,12 @@ export function FileUploader({
   return (
     <div
       key={index}
-      className="relative justify-center items-center mb-1 rounded-sm dark:bg-[#2D3236] bg-gray-200 shadow-sm p-1 mr-1 flex-shrink-0"
+      className="relative justify-center items-center mb-1 rounded-sm bg-[#e4ebeb] shadow-sm p-1 mr-1 flex-shrink-0"
     >
       {/* Show spinner only when loading */}
       {isLoading && (
-        <div className="absolute inset-0 flex justify-center items-center dark:bg-[#131B1E] bg-gray-100">
-          <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+        <div className="absolute inset-0 flex justify-center items-center bg-gray-100">
+          <Icon icon={threeDotsScale} className="w-6 h-6 text-gray-500" />
         </div>
       )}
 

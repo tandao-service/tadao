@@ -430,7 +430,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               <CarouselContent>
                 {ad.data.imageUrls.map((image: string, index: number) => (
                   <CarouselItem key={index}>
-                    <div className="relative h-[400px] lg:h-[500px] w-full">
+                    <div className="relative w-full">
                       {isLoading && (
                        
                          <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
@@ -438,15 +438,16 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                                     </div>
                       )}
                       <Zoom>
-                        <Image
+                      <Image
                           src={image}
                           alt={`Image ${index + 1}`}
-                          layout="fill" // Ensures the image scales to the parent container
-                          className={`object-contain cursor-pointer ${
+                          width={800} // Adjust the width as needed
+                          height={500} // Adjust the height as needed
+                          className={`bg-[#000000] h-[400px] object-cover cursor-pointer ${
                             isLoading ? "opacity-0" : "opacity-100"
                           } transition-opacity duration-300`}
                           onLoadingComplete={() => setIsLoading(false)}
-                          placeholder="empty" // Optional placeholder before loading
+                          placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
                         />
                       </Zoom>
                     </div>
