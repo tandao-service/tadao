@@ -28,10 +28,10 @@ export async function sendEmail(
     html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
      <div style="text-align: center; margin-bottom: 30px;">
-  <span style="display: inline-flex; align-items: center; gap: 8px;">
-    <img src="https://pocketshop.co.ke/logo_green.png" alt="pocketshop Logo" style="height: 30px; gap:5px; width: auto;" />
-    <span style="font-size: 16px; font-weight: bold; color: #064E3B;">PocketShop</span>
-  </span>
+  <span style="display: inline-flex; align-items: center; gap: 6px;">
+  <img src="https://pocketshop.co.ke/logo_green.png" alt="PocketShop Logo" style="height: 24px; width: auto; display: block;" />
+  <span style="font-size: 14px; font-weight: bold; color: #064E3B;">PocketShop</span>
+</span>
 </div>
     
     <h2 style="color: #064E3B;">You've Received a New Inquiry</h2>

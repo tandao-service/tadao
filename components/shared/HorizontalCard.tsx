@@ -194,7 +194,7 @@ const HorizontalCard = ({
           )}
           {ad.organizer.verified &&
             ad.organizer?.verified[0]?.accountverified === true && (
-              <div className="absolute bg-emerald-100 top-0 right-0 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-1 rounded-bl-lg">
+              <div className="absolute bg-emerald-100 dark:text-black top-0 right-0 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-1 rounded-bl-lg">
                 <div className="flex gap-1 cursor-pointer">
                   <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                   Verified

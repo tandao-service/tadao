@@ -84,7 +84,7 @@ const DeliveryOptions = ({
   };
 
   const onSubmit = (data: any) => {
-   // console.log(data.delivery); // Debug merged data
+    console.log(data.delivery); // Debug merged data
     onChange(name, data.delivery); // Pass it to the parent
     onSave();
   };
