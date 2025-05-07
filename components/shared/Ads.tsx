@@ -545,7 +545,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                             alt={`Image ${index + 1}`}
                             width={244} // Adjust width to match the `w-36` Tailwind class
                             height={196} // Adjust height to match the `h-24` Tailwind class
-                            className={`h-[100px] w-[100px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 ${
+                            className={`h-[100px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 ${
                               isLoadingsmall ? "opacity-0" : "opacity-100"
                             } transition-opacity duration-300`}
                             onLoadingComplete={() => setIsLoadingsmall(false)}
