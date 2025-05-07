@@ -177,7 +177,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                   <h2 className="font-semibold">
                     Editing {category.subcategory}
                     {"("}
-                    {category.category.name}
+                    {category.category.name}-{category._id}
                     {")"}
                   </h2>
                   <div className="mb-4">

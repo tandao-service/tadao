@@ -58,7 +58,7 @@ if (!isOpen) return null;
         >
           <div className="w-full dark:bg-[#2D3236] rounded-xl bg-white">
           
-            <ScrollArea className="h-[80vh] w-full p-2">
+            <ScrollArea className="h-[90vh] w-full p-2">
               
               {categoryList.map((category: any, index: number) => (
                 <div
@@ -149,7 +149,7 @@ if (!isOpen) return null;
         </div>
         <div className="w-full dark:bg-[#2D3236] rounded-xl bg-white">
          
-          <ScrollArea className="h-[80vh] w-full p-2">
+          <ScrollArea className="h-[90vh] w-full p-2">
             {subcategoryList
               .filter((cat: any) => cat.category.name === hoveredCategory)
               .map((sub: any, index: number) => (

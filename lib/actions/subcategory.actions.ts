@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache"
 import { UTApi } from "uploadthing/server"
 import Subcategory from "../database/models/subcategory.model"
 import Category from "../database/models/category.model"
+import mongoose from "mongoose"
 
 const populateAd = (query: any) => {
   return query
@@ -193,7 +194,98 @@ export const removenegotiable = async () => {
   }
 }
 
-// UPDATE
+// Original subcategory ID to clone from
+const originalSubcategoryId = '679f4cde745d352ebdef4939';
+
+// New subcategories with new names and category IDs 
+
+const newSubcategories = [
+  { name: 'Accounting & Finance Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Advertising & Marketing Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Arts & Entertainment Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Childcare & Babysitting Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Clerical & Administrative Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Computing & IT Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Construction & Skilled Trade Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Consulting & Strategy Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Customer Services Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Driver Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Engineering & Architecture Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Farming & Veterinary Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Gardening & Landscaping Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Health & Beauty Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Healthcare & Nursing Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Hotel Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Housekeeping & Cleaning Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Human Resources Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Internship Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Legal Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Logistics & Transportation Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Management Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Manual Labour Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Manufacturing Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Mining Industry Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Office Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Part-Time & Weekend Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Quality Control & Assurance Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Research & Survey Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Restaurant & Bar Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Retail Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Sales & Telemarketing Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Security Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Sports Club Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Teaching Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Technology Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Travel & Tourism Jobs', categoryId: '678757f1d3faec08fe672915' },
+  { name: 'Other Jobs', categoryId: '678757f1d3faec08fe672915' }
+];
+
+
+export async function duplicateSubcategories() {
+  try {
+    await connectToDatabase();
+
+    const original = await Subcategory.findById(originalSubcategoryId).lean();
+    if (!original) throw new Error('Original subcategory not found');
+
+    for (const { name, categoryId } of newSubcategories) {
+
+      const categoryObjectId = new mongoose.Types.ObjectId(categoryId);
+
+      const exists = await Subcategory.findOne({
+        subcategory: name,
+        category: categoryObjectId,
+      });
+
+      if (exists) {
+        console.log(`⚠️ Skipped (already exists): ${name}`);
+        continue;
+      }
+      const cloned = {
+        ...original,
+        _id: new mongoose.Types.ObjectId(),
+        subcategory: name,
+        category: new mongoose.Types.ObjectId(categoryId),
+      };
+
+      if ('__v' in cloned) delete (cloned as any).__v;
+
+      await Subcategory.create(cloned);
+      console.log(`✅ Created: ${name}`);
+
+
+    }
+
+    console.log('✅ All subcategories duplicated successfully!');
+  } catch (error) {
+    console.error('❌ Duplication error:', error);
+  } finally {
+    // Optionally disconnect if this runs standalone
+    // await mongoose.disconnect();
+  }
+}
+
+
 
 
 

@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.actions";
 import { Toaster } from "@/components/ui/toaster";
 import { getAllCategories } from "@/lib/actions/category.actions";
-import { getAllSubCategories } from "@/lib/actions/subcategory.actions";
+import { duplicateSubcategories, getAllSubCategories } from "@/lib/actions/subcategory.actions";
 import { getAdsCountAllRegion } from "@/lib/actions/dynamicAd.actions";
 import CollectionInfinite from "@/components/shared/CollectionInfinite";
 
@@ -26,7 +26,8 @@ export default async function Home({ searchParams }: SearchParamProps) {
   const categoryList = await getAllCategories();
   const subcategoryList = await getAllSubCategories();
   const AdsCountPerRegion = await getAdsCountAllRegion();
-  
+  //const duplicate = await duplicateSubcategories();
+ // console.log(duplicate);
 //const categoryList:any = [];
 //const subcategoryList:any = [];
 //const AdsCountPerRegion:any = [];

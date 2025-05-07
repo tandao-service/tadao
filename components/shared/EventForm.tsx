@@ -568,15 +568,26 @@ const AdForm = ({
     try {
       if (type === "Create") {
         const isValid = await validateForm();
-        if (!isValid) return;
+        if (!isValid){ 
+          toast({
+            variant: "destructive",
+            title:  "Missing fields",
+            description: "Ensure all required fields are completed.",
+            duration: 5000,
+          });
+          
+          return;
+        }
         const phone= countryCode + removeLeadingZero(phoneNumber);
 if(!isValidKenyanPhoneNumber(phone)){
+
   toast({
+    variant: "destructive",
     title: "Invalid Phone",
     description: "Invalid Phone Number.",
     duration: 5000,
-    className: "bg-[#999999] text-white",
   });
+
   return
 }
       
