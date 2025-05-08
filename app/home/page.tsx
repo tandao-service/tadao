@@ -18,7 +18,7 @@ import {
   getallTransactions,
   getStatusTrans,
 } from "@/lib/actions/transactions.actions";
-import { getAllUsers } from "@/lib/actions/user.actions";
+import { getAllContacts, getAllUsers } from "@/lib/actions/user.actions";
 import { getVerifyfee } from "@/lib/actions/verifies.actions";
 import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
@@ -35,6 +35,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const page = Number(searchParams?.page) || 1;
   const limit = Number(searchParams?.limit) || 50;
   const users = await getAllUsers(limit, page);
+  const contacts = await getAllContacts();
   const reported = await getallReported(limit, page);
   const fee = await getVerifyfee();
   const transactions = await getallTransactions(
@@ -56,7 +57,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const categories = await getAllCategories();
   const subcategories = await getselectedsubcategories(category);
   const catList = await getselectedCategories();
-
+  //console.log(contacts);
   return (
    
         <HomeDashboard
@@ -75,6 +76,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
           reported={reported}
           payments={payments}
           vfee={fee}
+          contacts={contacts}
         />
       
   );

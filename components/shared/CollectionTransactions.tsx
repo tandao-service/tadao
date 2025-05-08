@@ -18,6 +18,8 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { deleteTransaction } from "@/lib/actions/transactions.actions";
+import ContactUser from "./ContactUser";
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 //import { DispatchConfirmation } from "./DispatchConfirmation";
 type CollectionProps = {
   data: any[];
@@ -27,6 +29,7 @@ type CollectionProps = {
   page: number | string;
   totalPages: number;
   urlParamName?: string;
+  handleOpenChatId:(value:any)=> void;
 };
 
 const CollectionTransactions = ({
@@ -36,11 +39,18 @@ const CollectionTransactions = ({
   page,
   totalPages,
   urlParamName,
+  handleOpenChatId,
 }: CollectionProps) => {
   // const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const pathname = usePathname();
   const { toast } = useToast();
-
+  const [selectUser, setSelectAUser] = useState<any>([]);
+  const [isOpenContact, setIsOpenContact] = useState(false);
+    const handleOpenContact = (user:any) => {
+      setSelectAUser(user);
+      setIsOpenContact(true)
+    };
+    const handleCloseContact = () => setIsOpenContact(false);
   const handleDelete = async (_id: string) => {
     await deleteTransaction({ _id, path: pathname });
     toast({
@@ -105,6 +115,7 @@ const CollectionTransactions = ({
                 <th className="border p-2">Amount KES</th>
                 <th className="border p-2">Created At</th>
                 <th className="border p-2">Action</th>
+                <th className="border p-2">Contact</th>
               </tr>
             </thead>
             <tbody>
@@ -152,18 +163,26 @@ const CollectionTransactions = ({
                         <button
                           onClick={() => handleDelete(trans._id)}
                           disabled={trans.status === "Successful"}
-                          className={`mt-1 bg-gray-100 p-1 rounded-lg cursor-pointer hover:bg-gray-200`}
+                          className={`mt-1 bg-gray-100 dark:text-gray-600 p-1 rounded-lg cursor-pointer hover:bg-gray-200`}
                         >
                           <DeleteOutlineOutlinedIcon />
                         </button>
                       </>
                     )}
                   </td>
+                  <td className="border p-2">
+                  <button
+                  onClick={() => handleOpenContact(trans.buyer)}
+                  className="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900"
+                >
+                 <QuestionAnswerOutlinedIcon/>
+                </button>
+                </td>
                 </tr>
               ))}
             </tbody>
           </table>
-
+          <ContactUser isOpen={isOpenContact} user={selectUser} handleOpenChatId={handleOpenChatId} onClose={handleCloseContact}/>
           {totalPages > 1 && (
             <Pagination
               urlParamName={urlParamName}

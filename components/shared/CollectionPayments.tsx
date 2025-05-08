@@ -56,7 +56,7 @@ const CollectionPayments = ({
     <div className="dark:bg-[#2D3236]">
       <div className="flex flex-row gap-2 items-end border-t p-2">
         {/* Total for all orders */}
-        <div className="flex gap-2 items-center p-1 text-xs rounded-sm">
+        <div className="flex gap-2 items-center p-1 rounded-sm">
           <div>Total</div>
           <div className="font-bold">
             KES{" "}

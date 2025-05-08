@@ -717,13 +717,16 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                                         </div>
                                       </div>
                                       <div className="flex gap-1">
-                                        <div className="text-gray-500">
-                                          Price / Piece:
-                                        </div>
-                                        <div className="font-bold">
-                                          Ksh {item.pricePerPiece.toFixed(2)}
-                                        </div>
-                                      </div>
+  <div>Price:</div>
+  <div className="font-bold">
+    Ksh {item.pricePerPiece.toFixed(2)}{" "}
+    {item.unit === "piece"
+      ? "/piece"
+      : item.unit === "sqm"
+      ? "/sqm"
+      : "/sqft"}
+  </div>
+</div>
                                     </div>
                                   </li>
                                 )
