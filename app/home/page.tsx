@@ -15,10 +15,11 @@ import {
   getselectedsubcategories,
 } from "@/lib/actions/subcategory.actions";
 import {
+  checkExpiredLatestSubscriptionsPerUser,
   getallTransactions,
   getStatusTrans,
 } from "@/lib/actions/transactions.actions";
-import { getAllContacts, getAllUsers } from "@/lib/actions/user.actions";
+import { getAllContacts, getAllUsers, getToAdvertiser, getUserAgragate } from "@/lib/actions/user.actions";
 import { getVerifyfee } from "@/lib/actions/verifies.actions";
 import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
@@ -34,7 +35,8 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const category = (searchParams?.category as string) || "";
   const page = Number(searchParams?.page) || 1;
   const limit = Number(searchParams?.limit) || 50;
-  const users = await getAllUsers(limit, page);
+  //const users = await getAllUsers(limit, page);
+  const users = await getUserAgragate(limit, page);
   const contacts = await getAllContacts();
   const reported = await getallReported(limit, page);
   const fee = await getVerifyfee();
@@ -57,7 +59,9 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const categories = await getAllCategories();
   const subcategories = await getselectedsubcategories(category);
   const catList = await getselectedCategories();
-  //console.log(contacts);
+  const subscriptionsExpirely = await checkExpiredLatestSubscriptionsPerUser();
+  const topadvertiser = await getToAdvertiser();
+ // console.log(topadvertiser);
   return (
    
         <HomeDashboard
@@ -77,6 +81,8 @@ const Home = async ({ searchParams }: SearchParamProps) => {
           payments={payments}
           vfee={fee}
           contacts={contacts}
+          subscriptionsExpirely={subscriptionsExpirely}
+          topadvertiser={topadvertiser}
         />
       
   );

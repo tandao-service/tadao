@@ -96,34 +96,27 @@ function BroadcastMessage({
       ...base,
       color: '#f3f4f6',
     }),
+    input: (base: any) => ({
+    ...base,
+    color: '#f3f4f6',
+  }),
   };
   
   const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
   return (
     <div className="p-1 lg:p-4 rounded shadow">
     <div className="mb-4">
-      <label className="block text-xs mb-2 font-medium">Send To:</label>
+      <label className="block text-xs mb-2 dark:text-gray-300 font-medium">Send To:</label>
       <Select
     styles={isDark ? darkModeStyles : customStyles}
-    className="text-xs"
+    className="text-xs dark:text-gray-300"
     classNamePrefix="react-select"
   options={[{ value: "all", label: "All Users" }, ...options]}
   onChange={(selectedOption) => setRecipientId(selectedOption?.value || "")}
   placeholder="Select a user..."
   isSearchable
 />
-    {/*  <select
-        value={recipientId}
-        onChange={(e) => setRecipientId(e.target.value)}
-        className="text-xs w-full p-2 border rounded dark:text-gray-100 dark:bg-[#2D3236] bg-white"
-      >
-        <option value="all">All Users</option>
-        {contacts.data.map((user:any) => (
-          <option key={user._id} value={user._id}>
-            {user.firstName} {user.lastName} {user.phone} ({user.email})
-          </option>
-        ))}
-      </select> */}
+   
     </div>
 
     <div className="mb-4">

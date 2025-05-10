@@ -13,6 +13,7 @@ import Verify from '../database/models/verifies.model'
 import Verifies from '../database/models/verifies.model'
 
 
+
 export async function createUser(user: CreateUserParams) {
   try {
     await connectToDatabase()
@@ -228,12 +229,216 @@ export async function getAllUsers(limit: number, page: number) {
       .limit(limit);
     // Get the count of documents that match the conditions
     const AdCount = await User.countDocuments();
-    //console.log({ data: JSON.parse(JSON.stringify(user)), totalPages: Math.ceil(AdCount / limit) })
+
     return { data: JSON.parse(JSON.stringify(user)), totalPages: Math.ceil(AdCount / limit) }
   } catch (error) {
     handleError(error)
   }
 }
+export async function getUserAgragate(limit: number, page: number) {
+  try {
+    await connectToDatabase();
+
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const usersWithAdStats = await User.aggregate([
+      {
+        $lookup: {
+          from: 'dynamicads',
+          localField: '_id',
+          foreignField: 'organizer',
+          as: 'ads'
+        }
+      },
+      {
+        $lookup: {
+          from: 'transactions',
+          localField: '_id',
+          foreignField: 'buyer',
+          as: 'transactions'
+        }
+      },
+      {
+        $addFields: {
+          adsCount: { $size: '$ads' },
+          activeCount: {
+            $size: {
+              $filter: {
+                input: '$ads',
+                as: 'ad',
+                cond: { $eq: ['$$ad.adstatus', 'Active'] }
+              }
+            }
+          },
+          pendingCount: {
+            $size: {
+              $filter: {
+                input: '$ads',
+                as: 'ad',
+                cond: { $eq: ['$$ad.adstatus', 'Pending'] }
+              }
+            }
+          },
+          inactiveCount: {
+            $size: {
+              $filter: {
+                input: '$ads',
+                as: 'ad',
+                cond: { $eq: ['$$ad.adstatus', 'Inactive'] }
+              }
+            }
+          },
+          totalPaid: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: '$transactions',
+                    as: 'txn',
+                    cond: { $eq: ['$$txn.status', 'Active'] }
+                  }
+                },
+                as: 'activeTxn',
+                in: { $toDouble: '$$activeTxn.amount' }
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          email: 1,
+          firstName: 1,
+          lastName: 1,
+          photo: 1,
+          status: 1,
+          verified: 1,
+          businessname: 1,
+          adsCount: 1,
+          activeCount: 1,
+          pendingCount: 1,
+          inactiveCount: 1,
+          totalPaid: 1
+        }
+      },
+      { $sort: { adsCount: -1 } },  // Sort by adsCount descending
+      { $skip: skipAmount },
+      { $limit: limit }
+    ]);
+
+    const totalUsers = await User.countDocuments();
+
+    return {
+      data: JSON.parse(JSON.stringify(usersWithAdStats)),
+      totalPages: Math.ceil(totalUsers / limit)
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function getToAdvertiser() {
+  try {
+    await connectToDatabase();
+
+    const usersWithAdStats = await User.aggregate([
+      {
+        $lookup: {
+          from: 'dynamicads',
+          localField: '_id',
+          foreignField: 'organizer',
+          as: 'ads'
+        }
+      },
+      {
+        $lookup: {
+          from: 'transactions',
+          localField: '_id',
+          foreignField: 'buyer',
+          as: 'transactions'
+        }
+      },
+      {
+        $addFields: {
+          adsCount: { $size: '$ads' },
+          activeCount: {
+            $size: {
+              $filter: {
+                input: '$ads',
+                as: 'ad',
+                cond: { $eq: ['$$ad.adstatus', 'Active'] }
+              }
+            }
+          },
+          pendingCount: {
+            $size: {
+              $filter: {
+                input: '$ads',
+                as: 'ad',
+                cond: { $eq: ['$$ad.adstatus', 'Pending'] }
+              }
+            }
+          },
+          inactiveCount: {
+            $size: {
+              $filter: {
+                input: '$ads',
+                as: 'ad',
+                cond: { $eq: ['$$ad.adstatus', 'Inactive'] }
+              }
+            }
+          },
+          totalPaid: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: '$transactions',
+                    as: 'txn',
+                    cond: { $eq: ['$$txn.status', 'Active'] }
+                  }
+                },
+                as: 'activeTxn',
+                in: { $toDouble: '$$activeTxn.amount' }
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          email: 1,
+          firstName: 1,
+          lastName: 1,
+          photo: 1,
+          status: 1,
+          verified: 1,
+          businessname: 1,
+          adsCount: 1,
+          activeCount: 1,
+          pendingCount: 1,
+          inactiveCount: 1,
+          totalPaid: 1
+        }
+      },
+      { $sort: { adsCount: -1 } }  // Sort by adsCount descending
+      //{ $skip: skipAmount },
+      //{ $limit: limit }
+    ]);
+
+    const totalUsers = await User.countDocuments();
+
+    return {
+      data: JSON.parse(JSON.stringify(usersWithAdStats))
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+
+
 export async function getAllContacts() {
   try {
     await connectToDatabase()
@@ -243,7 +448,7 @@ export async function getAllContacts() {
     // Get the count of documents that match the conditions
     const AdCount = await User.countDocuments();
     //console.log({ data: JSON.parse(JSON.stringify(user)), totalPages: Math.ceil(AdCount / limit) })
-    return { data: JSON.parse(JSON.stringify(user))}
+    return { data: JSON.parse(JSON.stringify(user)) }
   } catch (error) {
     handleError(error)
   }

@@ -89,7 +89,7 @@ export async function getallPayments(transationId: string, start: string, end: s
     // Build conditions dynamically
     const conditions: any = {};
     if (transationId) {
-      conditions.orderTrackingId = { $regex: transationId, $options: 'i' };
+      conditions.transactionId = { $regex: transationId, $options: 'i' };
     }
     if (startDate || endDate) {
       conditions.createdAt = {};
@@ -105,8 +105,8 @@ export async function getallPayments(transationId: string, start: string, end: s
 
     // Fetch filtered orders with pagination
     const trans = await Payment.find(conditions)
-        .skip(skipAmount)
-        .limit(limit);
+      .skip(skipAmount)
+      .limit(limit);
 
     // Get the count of documents that match the conditions
     const AdCount = await Payment.countDocuments(conditions);
@@ -116,7 +116,7 @@ export async function getallPayments(transationId: string, start: string, end: s
   }
 }
 
-export async function getallPayment(limit:16, page:1) {
+export async function getallPayment(limit: 16, page: 1) {
   try {
     await connectToDatabase();
     const conditions = {}

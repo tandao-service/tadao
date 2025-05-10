@@ -87,7 +87,7 @@ export const BulkPriceManager = ({
     <select
       value={value}
       onChange={onChange}
-      className="px-4 w-full py-2 border border-gray-800 rounded-md dark:bg-[#2D3236] dark:text-gray-100"
+      className="px-4 w-full py-2 border border-gray-800 rounded-md dark:bg-[#131B1E] dark:text-gray-100"
     >
       {quantityOptions.map((opt) => (
         <option key={opt} value={opt}>

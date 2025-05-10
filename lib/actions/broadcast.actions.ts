@@ -60,7 +60,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
         try {
           const response = await transporter.sendMail(mailOptions);
 
-          return { message: `${type === 'email' ? 'Emails' : 'Notifications'} sent successfully to all recipients.` };
+          return { message: `${type === 'email' ? 'Emails' : 'Notifications'} sent successfully to recipient.` };
         } catch (error) {
           console.error('Error sending email:', error);
           return "Failed";
@@ -68,7 +68,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
 
       } else {
         try {
-          const res = await fetch("/api/send-push", {
+          const res = await fetch(process.env.NEXT_PUBLIC_DOMAIN_URL + "/api/send-push", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -85,8 +85,8 @@ export async function broadcastMessage(type: string, message: string, recipient?
           });
 
           const data = await res.json();
-
-          return { message: `${type === 'email' ? 'Emails' : 'Notifications'} sent successfully to all recipients.` };
+          console.log('sent notification:' + data);
+          return { message: `${type === 'email' ? 'Emails' : 'Notifications'} sent successfully to recipient.` };
         } catch (error) {
           console.error('Error sending notification:', error);
           return "Failed";
@@ -98,7 +98,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
       // Fetch users' emails or phone numbers
       const userContacts = await User.find({}, type === 'email' ? 'email' : 'token')
         .then((users) => users.map((u) => (type === 'email' ? u.email : u.token)).filter(Boolean));
-      console.log(userContacts)
+      // console.log(userContacts)
 
       const subscribers: any = [];
       const recipients = Array.from(new Set([...userContacts, ...subscribers]));

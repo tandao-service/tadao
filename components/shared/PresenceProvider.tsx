@@ -9,7 +9,7 @@ const PresenceProvider = ({ userId }: { userId: string }) => {
  
   useEffect(() => {
     if (!userId) return;
-  console.log(userId)
+ 
     const uid = userId;
     const db = getDatabase(app);
     const userStatusRef = ref(db, `/status/${uid}`);

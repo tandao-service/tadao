@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     await transporter.sendMail({
-      from: `"PoketShop" <support@poketshop.co.ke>`,
+      from: `"PoketShop" <support@pocketshop.co.ke>`,
       to,
       subject,
       html: body,

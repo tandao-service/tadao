@@ -108,18 +108,19 @@ const CardAutoHeight = ({
     <>
       <div
         className={`mb-2 w-full rounded-lg lg:min-w-[200px] border shadow-sm bg-white dark:bg-[#2D3236]`}
-        style={
+       
+      >
+        {/* Image section with dynamic height */}
+
+        <div className="relative rounded-t-lg w-full"
+         style={
           ad.plan.name !== "Free"
             ? {
                 border: "2px solid",
                 borderColor: ad.plan.color, // Border color for non-free plans
               }
             : undefined
-        }
-      >
-        {/* Image section with dynamic height */}
-
-        <div className="relative w-full">
+        }>
           {isLoadingsmall && (
           
             <div onClick={() => {
@@ -216,15 +217,7 @@ const CardAutoHeight = ({
               </div>
             )}
             
-        {/*    {(ad.data["propertyarea"]) && (
-              <div className="gap-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white flex rounded-sm p-1 shadow-sm transition-all">
-                <LocationOnIcon
-                  sx={{ fontSize: 16, cursor: "pointer" }}
-                 
-                />
-             
-              </div>
-            )}*/} 
+      
           </div>
           <div className="w-full flex justify-end absolute bottom-[-19px] left-1/2 transform -translate-x-1/2 p-1 rounded-full">
             <SignedIn>

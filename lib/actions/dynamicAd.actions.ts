@@ -282,7 +282,7 @@ export async function getListingsNearLocation({ limit = 20, queryObject
         organizer: { $in: unverifiedUserIds },
       };
     }
-    console.log(conditions)
+    //console.log(conditions)
     if (lat !== "0" && lng !== "0") {
 
       const ads = await DynamicAd.aggregate([
@@ -897,7 +897,7 @@ export const getAdsCountPerVerifiedTrue = async (category: string, subcategory: 
       }
     ]);
 
-    console.log(AdsCountPerVerified);
+    // console.log(AdsCountPerVerified);
 
     return JSON.parse(JSON.stringify(AdsCountPerVerified));
   } catch (error) {
@@ -954,7 +954,7 @@ export const getAdsCountPerVerifiedFalse = async (category: string, subcategory:
       }
     ]);
 
-    console.log(AdsCountPerVerified);
+    // console.log(AdsCountPerVerified);
 
     return JSON.parse(JSON.stringify(AdsCountPerVerified));
   } catch (error) {

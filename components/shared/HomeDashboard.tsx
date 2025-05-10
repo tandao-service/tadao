@@ -58,6 +58,8 @@ import { updateVerifies, updateVerifiesFee } from "@/lib/actions/verifies.action
 import { useToast } from "../ui/use-toast";
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import CollectionPayments from "./CollectionPayments";
+import TopAdvertiser from "./TopAdvertiser";
+import AdvertiserSubscriptions from "./AdvertiserSubscriptions";
 type homeProps = {
   userId: string;
   userName: string;
@@ -75,6 +77,8 @@ type homeProps = {
   catList: any;
   reported:any;
   contacts:any;
+  subscriptionsExpirely:any;
+  topadvertiser:any;
 };
 const HomeDashboard = ({
   userId,
@@ -93,6 +97,8 @@ const HomeDashboard = ({
   reported,
   vfee,
   contacts,
+  subscriptionsExpirely,
+  topadvertiser,
 }: homeProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -505,7 +511,35 @@ const HomeDashboard = ({
                     </>
                   ))}
                 </Box>
+               
                 <Stack
+                  mt="25px"
+                  width="100%"
+                  direction={{ xs: "column", lg: "row" }}
+                  gap={4}
+                >
+                  <Box flex={1}>
+                    <AdvertiserSubscriptions handleOpenChatId={handleOpenChatId} subscriptionsExpirely={subscriptionsExpirely}/>
+                  </Box>
+                 
+
+                  
+                </Stack>
+
+                 <Stack
+                  mt="25px"
+                  width="100%"
+                  direction={{ xs: "column", lg: "row" }}
+                  gap={4}
+                >
+                 
+                  <Box flex={1}>
+                    <TopAdvertiser handleOpenChatId={handleOpenChatId} topadvertiser={topadvertiser} />
+                  </Box>
+
+                  
+                </Stack>
+                 <Stack
                   mt="25px"
                   width="100%"
                   direction={{ xs: "column", lg: "row" }}
@@ -518,6 +552,8 @@ const HomeDashboard = ({
                   <Box flex={1}>
                     <TrendingAds />
                   </Box>
+
+                  
                 </Stack>
               </Box>
             </div>
@@ -624,14 +660,14 @@ const HomeDashboard = ({
 
               <ScrollArea className="w-[340px] lg:w-full">
                 <CollectionUsers
-                  data={users.data}
-                  emptyTitle={`No User Found`}
-                  emptyStateSubtext="Come back later"
-                  limit={limit}
-                  page={page}
-                  userId={userId}
-                  totalPages={users.totalPages}
-                />
+                      data={users.data}
+                      emptyTitle={`No User Found`}
+                      emptyStateSubtext="Come back later"
+                      limit={limit}
+                      page={page}
+                      userId={userId}
+                      totalPages={users.totalPages} 
+                      handleOpenChatId={handleOpenChatId}                />
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </div>

@@ -6,6 +6,7 @@ import { getAllCategories } from "@/lib/actions/category.actions";
 import { duplicateSubcategories, getAllSubCategories } from "@/lib/actions/subcategory.actions";
 import { getAdsCountAllRegion } from "@/lib/actions/dynamicAd.actions";
 import CollectionInfinite from "@/components/shared/CollectionInfinite";
+import { checkExpiredLatestSubscriptionsPerUser } from "@/lib/actions/transactions.actions";
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const { sessionClaims } = auth();
@@ -26,8 +27,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
   const categoryList = await getAllCategories();
   const subcategoryList = await getAllSubCategories();
   const AdsCountPerRegion = await getAdsCountAllRegion();
-  //const duplicate = await duplicateSubcategories();
- // console.log(duplicate);
+ 
 //const categoryList:any = [];
 //const subcategoryList:any = [];
 //const AdsCountPerRegion:any = [];
