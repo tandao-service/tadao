@@ -1233,14 +1233,15 @@ const handleCloseAdView = () => {
                 handleCategory={handleCategory} 
                 handleHoverCategory={handleHoverCategory}/>
                    <SearchByTitle 
-        isOpen={isOpenSearchByTitle}
-        userId={userId}
-        handleOpenSearchByTitle={handleOpenSearchByTitle}
-        onClose={handleCloseSearchByTitle}
-        handleAdEdit={handleAdEdit}
-        handleAdView={handleAdView}
-        handleOpenPlan={handleOpenPlan}
-        queryObject={queryObject} />
+                  isOpen={isOpenSearchByTitle}
+                  userId={userId}
+                  handleOpenSearchByTitle={handleOpenSearchByTitle}
+                  onClose={handleCloseSearchByTitle}
+                  handleAdEdit={handleAdEdit}
+                  handleAdView={handleAdView}
+                  handleOpenPlan={handleOpenPlan}
+                  queryObject={queryObject} 
+                  handleOpenChatId={handleOpenChatId} />
          <DrawerDemo 
           handleOpenSell={handleOpenSell}
           handlePayNow={handlePay}
