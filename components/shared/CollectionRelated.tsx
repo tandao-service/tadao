@@ -34,6 +34,7 @@ type CollectionProps = {
   handleAdView: (ad:any) => void;
   handleAdEdit: (ad:any) => void;
   handleOpenPlan: () => void;
+  handleOpenChatId: (id:any) => void;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
 };
 
@@ -54,6 +55,7 @@ const CollectionRelated = ({
   handleAdView,
   handleAdEdit,
   handleOpenPlan,
+  handleOpenChatId,
 }: CollectionProps) => {
   const [isChatOpen, setChatOpen] = useState(false);
   const toggleChat = () => {
@@ -154,6 +156,7 @@ const CollectionRelated = ({
                                            handleAdEdit={handleAdEdit}
                                            handleAdView={handleAdView}
                                            handleOpenPlan={handleOpenPlan}
+                                           handleOpenChatId={handleOpenChatId}
                                          />
                 </div>
               );
@@ -168,6 +171,7 @@ const CollectionRelated = ({
                                             handleAdEdit={handleAdEdit}
                                             handleAdView={handleAdView}
                                             handleOpenPlan={handleOpenPlan}
+                                              handleOpenChatId={handleOpenChatId}
                                           />
                 </div>
               );

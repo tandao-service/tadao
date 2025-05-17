@@ -148,6 +148,7 @@ const AdsComponent = ({
             handleAdView={handleAdView}
             handleAdEdit={handleAdEdit}
             handleOpenPlan={handleOpenPlan}
+            handleOpenChatId={handleOpenChatId}
           />
           <Toaster />
         </div>

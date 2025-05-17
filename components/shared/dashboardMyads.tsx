@@ -442,6 +442,7 @@ CollectionProps) => {
                   handleAdView={handleAdView}
                   handleAdEdit={handleAdEdit}
                   handleOpenPlan={handleOpenPlan}
+                   handleOpenChatId={handleOpenChatId}
                 />
               </section>
             </div>

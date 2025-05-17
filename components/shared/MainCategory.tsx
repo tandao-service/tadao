@@ -128,6 +128,7 @@ type CollectionProps = {
   handleOpenShop: (shopId:string) => void;
   handleCategory: (value:string) => void;
   handleOpenSearchTab: (value:string) => void;
+   handleOpenChatId: (value:any) => void;
 }
 const MainCategory = ({
   userId,
@@ -142,7 +143,7 @@ const MainCategory = ({
   //AdsCountPerVerifiedTrue,
   //AdsCountPerVerifiedFalse,
   queryObject,
-  //adsCount,
+  handleOpenChatId,
   onClose,
   handleOpenSell,
   handleOpenBook,
@@ -948,6 +949,7 @@ const SCROLL_THRESHOLD = 150; // pixels
       handleOpenSell={handleOpenSell}
       handleAdView={handleAdView}
       handleOpenPlan={handleOpenPlan}
+      handleOpenChatId={handleOpenChatId}
     />
        <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
   </section>

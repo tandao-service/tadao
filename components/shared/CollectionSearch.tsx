@@ -29,6 +29,7 @@ type CollectionProps = {
   handleAdEdit: (ad:any) => void;
   handleOpenSell: () => void;
   handleAdView: (ad:any) => void;
+  handleOpenChatId: (id:any) => void;
   handleOpenPlan: () => void;
 };
 
@@ -44,6 +45,7 @@ const CollectionSearch = ({
   handleAdEdit,
   handleAdView,
   handleOpenPlan,
+    handleOpenChatId,
 }: CollectionProps) => {
   const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
@@ -157,6 +159,7 @@ const CollectionSearch = ({
                           handleAdEdit={handleAdEdit}    
                           handleAdView={handleAdView}
                           handleOpenPlan={handleOpenPlan}
+                            handleOpenChatId={handleOpenChatId}
                         />
                       </div>
                     );
@@ -171,6 +174,7 @@ const CollectionSearch = ({
                           handleAdEdit={handleAdEdit}    
                           handleAdView={handleAdView}
                           handleOpenPlan={handleOpenPlan}
+                            handleOpenChatId={handleOpenChatId}
                         />
                       </div>
                     );
@@ -200,6 +204,7 @@ const CollectionSearch = ({
                             handleAdEdit={handleAdEdit}    
                             handleAdView={handleAdView}
                             handleOpenPlan={handleOpenPlan}
+                              handleOpenChatId={handleOpenChatId}
                           />
                         </div>
                       );
@@ -213,7 +218,9 @@ const CollectionSearch = ({
                             isAdCreator={isAdCreator}
                             handleAdView={handleAdView} 
                             handleAdEdit={handleAdEdit}
-                            handleOpenPlan={handleOpenPlan}                         />
+                            handleOpenPlan={handleOpenPlan} 
+                              handleOpenChatId={handleOpenChatId}
+                                                    />
                         </div>
                       );
                     }

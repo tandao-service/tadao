@@ -26,6 +26,7 @@ type CollectionProps = {
   loadPopup: boolean;
    handleAdView: (ad:any) => void;
     handleAdEdit: (ad:any) => void;
+    handleOpenChatId: (id:any) => void;
   handleOpenPlan: () => void;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
 };
@@ -45,6 +46,7 @@ const CollectionMyads = ({
   handleAdEdit,
   handleAdView,
   handleOpenPlan,
+  handleOpenChatId,
 }: CollectionProps) => {
   const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
@@ -167,6 +169,7 @@ const filteredAds = selectedCategory
                       handleAdView={handleAdView} 
                       handleAdEdit={handleAdEdit}
                       handleOpenPlan={handleOpenPlan}
+                      handleOpenChatId={handleOpenChatId}
                     />
                   </div>
                 );
@@ -181,6 +184,7 @@ const filteredAds = selectedCategory
                       handleAdView={handleAdView} 
                       handleAdEdit={handleAdEdit}
                       handleOpenPlan={handleOpenPlan}
+                      handleOpenChatId={handleOpenChatId}
                     />
                   </div>
                 );
@@ -206,6 +210,7 @@ const filteredAds = selectedCategory
                         handleAdView={handleAdView} 
                       handleAdEdit={handleAdEdit}
                       handleOpenPlan={handleOpenPlan}
+                      handleOpenChatId={handleOpenChatId}
                       />
                     </div>
                   );
@@ -220,6 +225,7 @@ const filteredAds = selectedCategory
                         handleAdView={handleAdView} 
                       handleAdEdit={handleAdEdit}
                       handleOpenPlan={handleOpenPlan}
+                      handleOpenChatId={handleOpenChatId}
                       />
                     </div>
                   );
