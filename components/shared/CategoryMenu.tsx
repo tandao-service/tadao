@@ -27,10 +27,12 @@ type MobileProps = {
   categoryList: Category[];
   subcategoryList: any;
   footerRef: any;
+  loans:any;
   hoveredCategory:any;
   handleCategory:(value:string)=> void;
   handleHoverCategory:(value:string)=> void;
   handleSubCategory:(category:string, subcategory:string)=> void;
+  handleDrawer:(category:string, subcategory:string)=> void;
   
 };
 const CategoryMenu = ({
@@ -38,9 +40,11 @@ const CategoryMenu = ({
   subcategoryList,
   footerRef,
   hoveredCategory,
+   handleDrawer,
   handleCategory,
   handleSubCategory,
   handleHoverCategory,
+  loans,
 }: MobileProps) => {
   //const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
@@ -134,8 +138,11 @@ const CategoryMenu = ({
                 <div
                   key={index}
                   onClick={() => {
-                    if (category.adCount > 0) {
-                      handleCategory(category.name);
+                    if (category.name === "Buyer Requests" ?  (category.adCount + loans.adCount) > 0: category.adCount > 0) {
+                     if(category.name !== "Buyer Requests"){
+                       handleCategory(category.name);
+                     }
+                     
                     } else {
                       toast({
                         title: "0 Ads",
@@ -169,9 +176,9 @@ const CategoryMenu = ({
                     </span>
                     <span className="flex-1 text-sm hover:no-underline my-auto">
                       <div className="flex flex-col">
-                        <h2
-                          className={`text-xs ${
-                            category.adCount > 0
+                         <h2
+                          className={`text-xs font-bold ${
+                           category.name === "Buyer Requests" ?  (category.adCount + loans.adCount) > 0: category.adCount > 0
                               ? ""
                               : "text-gray-500 dark:text-gray-500"
                           } `}
@@ -181,7 +188,7 @@ const CategoryMenu = ({
                         <p
                           className={`text-xs text-gray-500 dark:text-gray-500`}
                         >
-                          {category.adCount} ads
+                        {category.name === "Buyer Requests" ?  (category.adCount + loans.adCount): category.adCount} ads
                         </p>
                       </div>
                     </span>
@@ -223,9 +230,22 @@ const CategoryMenu = ({
                   key={index}
                   className="relative dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:hover:dark:bg-[#131B1E] hover:bg-emerald-100 border-b dark:border-gray-600"
                  
-                  onClick={() => {
-                    if (sub.adCount > 0) {
-                      handleSubCategory(hoveredCategory, sub.subcategory);
+                 onClick={() => {
+                    if (hoveredCategory.toString() === "Buyer Requests" ?  (sub.adCount + loans.adCount + 1) > 0: sub.adCount > 0) {
+                     
+                  
+    if (hoveredCategory.toString() === "Buyer Requests") {
+     // setWantedcategory(hoveredCategory);
+     // setWantedsubcategory(sub.subcategory);
+     // setShowWantedPopup(true); // Show the popup instead
+      handleDrawer(hoveredCategory, sub.subcategory)
+    } else {
+       handleSubCategory(hoveredCategory, sub.subcategory);
+    }
+  
+                     
+                     
+                     
                     } else {
                       toast({
                         title: "0 Ads",
@@ -254,8 +274,8 @@ const CategoryMenu = ({
                     <span className="flex-1 text-sm hover:no-underline my-auto">
                       <div className="flex flex-col">
                         <h2
-                          className={`text-xs ${
-                            sub.adCount > 0
+                          className={`text-xs font-bold ${
+                            sub.subcategory?.trim().toLowerCase() === "Loan Request".toLowerCase() ?  (sub.adCount + loans.adCount) > 0: sub.adCount > 0
                               ? ""
                               : "text-gray-500 dark:text-gray-500"
                           } `}
@@ -263,7 +283,7 @@ const CategoryMenu = ({
                           {sub.subcategory}
                         </h2>
                         <p className="text-xs text-gray-500 dark:text-gray-500">
-                          {sub.adCount} ads
+                          {sub.subcategory?.trim().toLowerCase() === "Loan Request".toLowerCase() ?  (sub.adCount + loans.adCount): sub.adCount} ads
                         </p>
                       </div>
                     </span>

@@ -88,6 +88,8 @@ import MappingAds from "./MappingAds";
 import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
 import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
+import { RequestFinancing } from "./RequestFinancing";
+
  // Correct import
 type CardProps = {
   ad: any;
@@ -288,6 +290,19 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
   };
   
   const [inputMode, setInputMode] = useState<'Images' | 'Video' | 'Virtual'>('Images');
+   const [isOpenP, setIsOpenP] = useState(false);
+  const [isPopupOpenLoan, setIsPopupOpenLoan] = useState(false);
+   const handleOpenPopupLoan = () => {
+    setIsPopupOpenLoan(true);
+  };
+
+  const handleClosePopupLoan = () => {
+    setIsPopupOpenLoan(false);
+  };
+
+    const handleCloseP = () => {
+      setIsOpenP(false);
+    };
   return (
     <>
       <div className="text-sm p-0 hidden lg:inline">
@@ -647,7 +662,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                       <SignedOut>
                         <div
                           onClick={() => {
-                            //setIsOpenP(true);
+                            setIsOpenP(true);
                             router.push("/sign-in");
                           }}
                         >
@@ -1038,7 +1053,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                             <SellerProfileCard
                               userId={userId}
                               ad={ad}
-                              fee={user.fee}
+                               fee={user?.user?.fee ?? 500}
                               userImage={userImage}
                               userName={userName} 
                               handleOpenReview={handleOpenReview}
@@ -1332,10 +1347,34 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 </div>
               </>
             )}
+{(ad.data.category === 'Property' || ad.data.category === 'Vehicle') && (<>
+ <div className="flex w-full items-center">
+              <SignedIn>
+              <button onClick={handleOpenPopupLoan} className="flex rounded-sm w-full py-3 px-2 text-lg text-white bg-emerald-600 hover:bg-emerald-700 justify-center items-center gap-1">
+              <SellOutlinedIcon/>
+              Request Financing for This Property
+      </button>
+       
+        </SignedIn>
 
+        <SignedOut>
+        <button onClick={() => {
+              setIsOpenP(true);
+              router.push("/sign-in");
+            }}
+             className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-emerald-600 hover:bg-emerald-700 items-center">
+              <SellOutlinedIcon/>
+              Request Financing for This Property
+      </button>
+      </SignedOut>
+
+        </div>
+        </>)}
             <div className="flex justify-between w-full items-center">
             <ReportUnavailable  userId={userId} ad={ad} isOpen={isPopupOpenAAv} onClose={handleClosePopupAv} userName={userName} userImage={userImage}/>
             <ReportAbuse  userId={userId} ad={ad} isOpen={isPopupOpen} onClose={handleClosePopup} userName={userName} userImage={userImage}/>
+            <RequestFinancing  userId={userId} ad={ad} isOpen={isPopupOpenLoan} onClose={handleClosePopupLoan} userName={userName} userImage={userImage}/>
+            <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} /> 
             </div>
           </div>
         </div>
@@ -1439,7 +1478,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   <SignedOut>
                     <div
                       onClick={() => {
-                        //setIsOpenP(true);
+                        setIsOpenP(true);
                         router.push("/sign-in");
                       }}
                     >
@@ -1530,7 +1569,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 <SignedOut>
                   <div
                     onClick={() => {
-                      //setIsOpenP(true);
+                      setIsOpenP(true);
                       router.push("/sign-in");
                     }}
                   >
@@ -1552,7 +1591,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 <SignedOut>
                   <div
                     onClick={() => {
-                      //setIsOpenP(true);
+                      setIsOpenP(true);
                       router.push("/sign-in");
                     }}
                   >
@@ -1578,7 +1617,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     <SignedOut>
                       <div
                         onClick={() => {
-                         // setIsOpenP(true);
+                         setIsOpenP(true);
                           router.push("/sign-in");
                         }}
                       >
@@ -1602,7 +1641,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 <SellerProfileCard
                   userId={userId}
                   ad={ad}
-                  fee={user.fee}
+                   fee={user?.user?.fee ?? 500}
                   userImage={userImage}
                   userName={userName} 
                   handleOpenReview={handleOpenReview}
@@ -1634,7 +1673,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
         <SignedOut>
 
         <Button onClick={() => {
-              //setIsOpenP(true);
+              setIsOpenP(true);
               router.push("/sign-in");
             }} variant="default" className="flex w-full items-center gap-2">
          😃
@@ -1673,7 +1712,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
 
         <SignedOut>
         <Button onClick={() => {
-             // setIsOpenP(true);
+              setIsOpenP(true);
               router.push("/sign-in");
             }}
              variant="outline" className="flex text-blue-600 items-center gap-1">

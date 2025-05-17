@@ -48,9 +48,13 @@ interface WindowProps {
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
   handleOpenSearchTab:(value:string)=> void;
+  packagesList:any;
+  category?:string;
+  subcategory?:string;
+  userImage:string;
 }
 
-const PopupSell = ({ isOpen, type, userId, user, userName, subcategoryList, handleAdView, handleOpenSettings,
+const PopupSell = ({userImage, packagesList, category, subcategory, isOpen, type, userId, user, userName, subcategoryList, handleAdView, handleOpenSettings,
   handleOpenShop,handleOpenSearchTab,
   handleOpenPerfomance, handleCategory, handleOpenChat, onClose,handleOpenPlan, handleOpenBook, handleOpenSell, handlePay, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
  
@@ -64,15 +68,13 @@ const PopupSell = ({ isOpen, type, userId, user, userName, subcategoryList, hand
           userId={userId}
           type={type}
           user={user}
-         // daysRemaining={daysRemaining}
-         // packname={planPackage}
+          // daysRemaining={daysRemaining}
+          // packname={planPackage}
           //planId={planId}
           userName={userName}
-        //  packagesList={packagesList}
-        //  listed={remainingAds}
-         // expirationDate={expirationDate}
-         // priority={priority}
-        //  adstatus={adStatus}
+          packagesList={packagesList}
+          category={category}
+          subcategory={subcategory}
           subcategoryList={subcategoryList}
           onClose={onClose}
           handleOpenSell={handleOpenSell}
@@ -85,11 +87,12 @@ const PopupSell = ({ isOpen, type, userId, user, userName, subcategoryList, hand
           handleOpenBook={handleOpenBook}
           handleCategory={handleCategory}
           handleOpenChat={handleOpenChat}
-           handleOpenPlan={handleOpenPlan}
-           handleOpenShop={handleOpenShop} 
-           handleOpenPerfomance={handleOpenPerfomance}
-           handleOpenSettings={handleOpenSettings}
-           handleAdView={handleAdView} />
+          handleOpenPlan={handleOpenPlan}
+          handleOpenShop={handleOpenShop}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenSettings={handleOpenSettings}
+          handleAdView={handleAdView} 
+          userImage={userImage} />
         <Toaster />
       </div>
     </div>

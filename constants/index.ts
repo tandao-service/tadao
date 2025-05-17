@@ -157,6 +157,10 @@ export const adminLinks = [
     label: 'Communication',
     route: '/communication',
 
+  }, {
+    label: 'Loan Requests',
+    route: '/financeRequest',
+
   }
   , {
     label: 'Abuse',

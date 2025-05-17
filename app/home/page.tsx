@@ -8,6 +8,7 @@ import {
   getselectedCategories,
 } from "@/lib/actions/category.actions";
 import { getTotalProducts } from "@/lib/actions/dynamicAd.actions";
+import { getallLaons } from "@/lib/actions/loan.actions";
 import { getallPayments } from "@/lib/actions/payment.actions";
 import { getallReported } from "@/lib/actions/report.actions";
 import {
@@ -61,6 +62,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const catList = await getselectedCategories();
   const subscriptionsExpirely = await checkExpiredLatestSubscriptionsPerUser();
   const topadvertiser = await getToAdvertiser();
+   const financeRequests = await getallLaons(limit, page);
  // console.log(topadvertiser);
   return (
    
@@ -83,6 +85,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
           contacts={contacts}
           subscriptionsExpirely={subscriptionsExpirely}
           topadvertiser={topadvertiser}
+          financeRequests={financeRequests}
         />
       
   );

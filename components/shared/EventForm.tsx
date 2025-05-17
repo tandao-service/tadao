@@ -61,6 +61,7 @@ import Barsscale from "@iconify-icons/svg-spinners/bars-scale"; // Correct impor
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { updateUserPhone } from "@/lib/actions/user.actions";
+import { createLoan } from "@/lib/actions/loan.actions";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
   loading: () => (
@@ -166,15 +167,16 @@ type Package = {
 };
 type AdFormProps = {
   userId: string;
+  userImage:string;
  user: any;
   type: string;
   ad?: any;
   adId?: string;
   categories:any;
   userName: string;
-  //daysRemaining: number;
- // packname: string;
- // packagesList: any;
+  category?:string
+  subcategory?:string
+  packagesList: any;
   //listed: number;
   //priority: number;
   //expirationDate: Date;
@@ -186,6 +188,7 @@ type AdFormProps = {
 
 const AdForm = ({
   userId,
+  userImage,
   user,
   type,
   ad,
@@ -193,11 +196,9 @@ const AdForm = ({
   userName,
   //daysRemaining,
   //packname,
-  //packagesList,
- // listed,
-  //priority,
- // expirationDate,
- // adstatus,
+  packagesList,
+  category,
+  subcategory,
   categories,
   handleAdView,
   handlePay,
@@ -208,6 +209,9 @@ const AdForm = ({
   );
   const [selectedCategory, setSelectedCategory] = useState(
     ad ? ad.data.category : ""
+  );
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    ad ? ad.category : ""
   );
   const [selectedSubCategory, setSelectedSubCategory] = useState(
     ad ? ad.data.subcategory : ""
@@ -298,23 +302,7 @@ const AdForm = ({
     string[]
   >([]);
  
-  const [activeButton, setActiveButton] = useState(0);
-  const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
-  const [priceInput, setPriceInput] = useState("");
-  const [periodInput, setPeriodInput] = useState("");
-   const [subscription, setSubscription] = useState<any>(null);
-    const [packagesList, setPackagesList] = useState<Package[]>([]);
-    const [daysRemaining, setDaysRemaining] = useState(0);
-    const [remainingAds, setRemainingAds] = useState(0);
-    const [listed, setListed] = useState(0);
-    const [Plan, setplan] = useState("Free");
-    const [PlanId, setplanId] = useState(FreePackId);
-    const [Priority_, setpriority] = useState(0);
-    const [Adstatus_, setadstatus] = useState("Pending");
-    const [color, setColor] = useState("#000000");
-    const [loadingSub, setLoadingSub] = useState<boolean>(true);
-    const [ExpirationDate_, setexpirationDate] = useState(new Date());
-    const [activePackage, setActivePackage] = useState<Package | null>(null);
+   
     const [countryCode, setCountryCode] = useState("+254"); // Default country code
     const [phoneNumber, setPhoneNumber] = useState("");
     useEffect(() => {
@@ -339,6 +327,7 @@ const AdForm = ({
                 category.subcategory === selectedSubCategory
             );
             // Update fields if a match is found
+             setSelectedCategoryId(selectedData.category._id)
             setFields(selectedData ? selectedData.fields : []);
             setFormData(ad.data);
           
@@ -351,7 +340,35 @@ const AdForm = ({
               ...formData,
               phone: ad.data.phone,
             });
-          }
+          }else{
+if(subcategory && category){
+  setSelectedCategory(category);
+  setSelectedSubCategory(subcategory);
+  const selectedData: any = categories.find(
+              (ca: any) =>
+                ca.category.name === category &&
+                ca.subcategory === subcategory
+            );
+            // Update fields if a match is founds
+            setSelectedCategoryId(selectedData.category._id)
+            setSelectedSubCategoryId(selectedData._id);
+            setFields(selectedData ? selectedData.fields : []);
+            if(category==='Buyer Requests'){
+    
+     setFormData({
+                ...formData,
+                category: category,
+                subcategory: subcategory,
+                imageUrls: [userImage],
+              });
+            
+          }else{
+             setFormData({
+                ...formData,
+                category: category,
+                subcategory: subcategory,
+              });
+          }}}
           setShowLoad(false)
         } catch (error) {
           setShowLoad(false)
@@ -361,19 +378,34 @@ const AdForm = ({
       getCategory();
     }, []);
 
-  useEffect(() => {
+   const [activePackage, setActivePackage] = useState<Package | null>(null);
+    const [activeButton, setActiveButton] = useState(0);
+    const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
+    const [priceInput, setPriceInput] = useState("");
+    const [periodInput, setPeriodInput] = useState("");
+    const [subscription, setSubscription] = useState<any>(null);
+    const [daysRemaining, setDaysRemaining] = useState(0);
+    const [remainingAds, setRemainingAds] = useState(0);
+    const [listed, setListed] = useState(0);
+    const [Plan, setplan] = useState("Free");
+    const [PlanId, setplanId] = useState(FreePackId);
+    const [Priority_, setpriority] = useState(0);
+    const [Adstatus_, setadstatus] = useState("Pending");
+    const [color, setColor] = useState("#000000");
+    const [loadingSub, setLoadingSub] = useState<boolean>(true);
+    const [ExpirationDate_, setexpirationDate] = useState(new Date());
+   
+useEffect(() => {
     if(type === "Create"){
-        const fetchData = async () => {
+        const fetchData =() => {
           try {
-            setLoadingSub(true);
            
-            const subscriptionData = await getData(userId);
-            const packages = await getAllPackages();
-            setPackagesList(packages);
-        //  console.log(subscriptionData);
-
+           
+            const subscriptionData = user;
+            const packages = packagesList;
+          
             if (subscriptionData) {
-              setSubscription(subscriptionData);
+             // setSubscription(subscriptionData);
               const listedAds = subscriptionData.ads || 0;
               setListed(listedAds);
               if (subscriptionData.currentpack && !Array.isArray(subscriptionData.currentpack)) { 
@@ -398,6 +430,8 @@ const AdForm = ({
                   : packages[1]
                 : null
             );
+   
+
             } else {
               console.warn("No current package found for the user.");
             }
@@ -406,12 +440,13 @@ const AdForm = ({
             console.error("Failed to fetch data", error);
           } finally {
          
-            setLoadingSub(false);
+       
           }
         };
         fetchData();
     }
     }, []);
+
   const validateForm = async () => {
     //console.log("start: ");
     const validationSchema = createValidationSchema(fields);
@@ -455,15 +490,26 @@ const AdForm = ({
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleInputCategoryChange = (field: string, value: any) => {
+  const handleInputCategoryChange = (field: string, value: any, _id:string) => {
     setSelectedCategory(value);
+    setSelectedCategoryId(_id);
     setSelectedSubCategory("");
     setSelectedSubCategoryId("");
     setFields([]);
-    setFormData({
+   
+     if(value ==='Buyer Requests'){
+    
+     setFormData({
+                ...formData,
+                  [field]: value,
+                imageUrls: [userImage],
+              });
+    }else{
+       setFormData({
       ...formData,
       [field]: value,
     });
+    }
   };
   const handleInputSubCategoryChange = (
     field: string,
@@ -578,7 +624,8 @@ const AdForm = ({
           
           return;
         }
-        const phone= countryCode + removeLeadingZero(phoneNumber);
+
+const phone= countryCode + removeLeadingZero(phoneNumber);
 if(!isValidKenyanPhoneNumber(phone)){
 
   toast({
@@ -590,6 +637,34 @@ if(!isValidKenyanPhoneNumber(phone)){
 
   return
 }
+
+if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerCase() === "Loan Request".toLowerCase()) {
+
+  await createLoan({
+          loan: {
+          userId: userId,
+          adId: null,
+          loanType:formData["Loan Type"].toString(),
+          monthlyIncome:formData["Monthly Income"].toString(),
+          deposit:formData["Deposit Amount"].toString(),
+          loanterm:formData["Preferred Loan Term"].toString(),
+          employmentStatus:formData["Employment Status"].toString(),
+          messageComments:formData["Comment"].toString(),
+          status: "Pending",
+          },
+          path: "/create",
+            });
+      setFormData(defaults);
+      setFiles([]);
+        toast({
+        title: "Submitted",
+        description: "Loan request submitted successfully.",
+        duration: 5000,
+        className: "bg-[#30AF5B] text-white",
+      });
+  return;
+ }
+
       
         const uploadedUrls = await uploadFiles();
 
@@ -938,7 +1013,7 @@ if(!isValidKenyanPhoneNumber(phone)){
               </div>
             </>
           )}
-          {selectedSubCategory && (
+          {selectedSubCategory &&  selectedCategory !== "Buyer Requests" && (
             <>
               <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 items-center">
                 <FileUploader
@@ -1760,7 +1835,7 @@ if(!isValidKenyanPhoneNumber(phone)){
             </div>
           ))}
            
-          {type === "Create" && selectedSubCategory && (
+          {type === "Create" && selectedCategory !== "Buyer Requests" && selectedSubCategory && (
             <>
               <div className="rounded-lg mt-4 p-0">
               {loadingSub ? (<><div className="w-full min-h-[100px] h-full flex flex-col items-center justify-center">

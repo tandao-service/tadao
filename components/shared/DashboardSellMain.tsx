@@ -20,16 +20,14 @@ type dashboardProps = {
   userId: string;
   user: any;
  // daysRemaining: number;
-  //packname: string;
+ userImage: string;
   userName: string;
   type: string;
   ad?: any;
   adId?: string;
- // packagesList: any;
- // listed: number;
- // priority: number;
-//expirationDate: Date;
- // adstatus: string;
+  packagesList: any;
+ category?:string;
+  subcategory?:string;
   onClose: () => void;
   handleOpenBook: () => void;
   handleOpenChat: () => void;
@@ -53,15 +51,13 @@ const DashboardSellMain = ({
   user,
   //packname,
   userName,
-  //daysRemaining,
+  userImage,
   type,
   ad,
   adId,
-  //packagesList,
-  //listed,
-  //priority,
-  //expirationDate,
-  //adstatus,
+  packagesList,
+  category,
+  subcategory,
   subcategoryList,
   onClose,
   handleCategory,
@@ -105,8 +101,8 @@ const DashboardSellMain = ({
        
       <div className="z-10 top-0 fixed w-full">
     <Navbar
-      user={user}
-      userstatus={user.status}
+     user={user?.user ?? []}
+      userstatus={user.user?.status ?? "User"}
       userId={userId}
       onClose={onClose}
       popup={popup}
@@ -130,19 +126,16 @@ const DashboardSellMain = ({
    
               <EventForm
                 userId={userId}
+                userImage={userImage}
                 type={type}
                 ad={ad}
                 categories={subcategoryList}
                 adId={adId}
                 user={user}
                 userName={userName}
-                //daysRemaining={daysRemaining}
-               // packname={packname}
-               // listed={listed}
-                //priority={priority}
-                //expirationDate={expirationDate}
-                //adstatus={adstatus}
-                //packagesList={packagesList}
+                category={category}
+                subcategory={subcategory}
+                packagesList={packagesList}
                 handleAdView={handleAdView}
                 handlePay={handlePay}
                 handleOpenTerms={handleOpenTerms}

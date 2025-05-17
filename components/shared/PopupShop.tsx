@@ -51,9 +51,10 @@ interface WindowProps {
   userName: string;
   userImage: string;
   queryObject:any;
+  loans:any;
 }
 
-const PopupShop = ({ isOpen, userId, user, shopAcc, queryObject, userName,userImage, onClose,handlePay, handleOpenShop,
+const PopupShop = ({ isOpen, loans, userId, user, shopAcc, queryObject, userName,userImage, onClose,handlePay, handleOpenShop,
   handleOpenPerfomance, handleOpenSettings, handleOpenChatId, handleOpenReview, handleOpenChat, handleOpenBook,handleOpenPlan, handleOpenSell, handleAdEdit,handleAdView, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
 
   if (!isOpen) return null;
@@ -66,6 +67,7 @@ const PopupShop = ({ isOpen, userId, user, shopAcc, queryObject, userName,userIm
                           userId={userId}
                           user={user}
                           shopAcc={shopAcc}
+                          loans={loans}
                           userImage={userImage}
                           userName={userName}
                           emptyTitle="No ads have been created yet"

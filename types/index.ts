@@ -83,6 +83,25 @@ export type CreateAdShopParams = {
   adstatus: string
   path: string
 }
+//==========Loan
+export type CreateLoanParams = {
+  loan: {
+    userId: string
+    adId: string | null;
+    loanType: string;
+    monthlyIncome: number,
+    deposit: number,
+    loanterm: string,
+    employmentStatus: string,
+    messageComments: string,
+    status: string,
+  }
+  path: string
+}
+export type DeleteLoanParams = {
+  _id: string
+  path: string
+}
 
 // ====== Ad PARAMS
 export type CreateAdParams = {

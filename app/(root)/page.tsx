@@ -7,6 +7,8 @@ import { duplicateSubcategories, getAllSubCategories } from "@/lib/actions/subca
 import { getAdsCountAllRegion } from "@/lib/actions/dynamicAd.actions";
 import CollectionInfinite from "@/components/shared/CollectionInfinite";
 import { checkExpiredLatestSubscriptionsPerUser } from "@/lib/actions/transactions.actions";
+import { getallPendingLaons, getByUserIdLaons } from "@/lib/actions/loan.actions";
+import { getAllPackages } from "@/lib/actions/packages.actions";
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const { sessionClaims } = auth();
@@ -21,16 +23,20 @@ export default async function Home({ searchParams }: SearchParamProps) {
     : {};
 
   let user: any = [];
+ let myloans: any = [];
   if (userId) {
     user = await getUserById(userId);
+    myloans = await getByUserIdLaons(userId);
   }
   const categoryList = await getAllCategories();
   const subcategoryList = await getAllSubCategories();
   const AdsCountPerRegion = await getAdsCountAllRegion();
- 
+  const packagesList = await getAllPackages();
+  const loans = await getallPendingLaons();
 //const categoryList:any = [];
 //const subcategoryList:any = [];
 //const AdsCountPerRegion:any = [];
+//console.log(user)
   return (
     <main>
 
@@ -47,6 +53,9 @@ export default async function Home({ searchParams }: SearchParamProps) {
             categoryList={categoryList}
             subcategoryList={subcategoryList}
             AdsCountPerRegion={AdsCountPerRegion}
+            packagesList={packagesList}
+            loans={loans}
+            myloans={myloans}
           />
 
           <Toaster />

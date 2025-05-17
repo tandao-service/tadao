@@ -31,53 +31,24 @@ interface PackProps {
   handleOpenSettings: () => void;
   handlePay: (id:string) => void;
   handleCategory: (value:string) => void;
- 
+ packagesList:any;
 }
 
-const PackageComponent =  ({userId,user, onClose,handlePay, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety, handleOpenPerfomance,
+const PackageComponent =  ({userId,user, packagesList, onClose,handlePay, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety, handleOpenPerfomance,
   handleOpenSettings,
   handleOpenShop, handleOpenChat, handleOpenPlan, handleOpenBook, handleOpenSell}:PackProps) => {
  
- 
-   const [packagesList, setPackagesList] = useState<any>([]);
-    const [daysRemaining, setDaysRemaining] = useState(5);
-    const [planPackage, setPlanPackage] = useState("Free");
-     const [loading, setLoading] = useState<boolean>(true);
-    
-    let subscription: any = [];
-   useEffect(() => {
-    
-         const fetchData = async () => {
-           try {
-             setLoading(true);
-            
-             const packages = await getAllPackages();
-             setPackagesList(packages);
-             const createdAtDate = new Date(subscription[0].createdAt);
-             setPlanPackage(subscription[0].plan)
-             // Step 2: Extract the number of days from the period string
-             const periodDays = parseInt(subscription[0].period);
-         
-             // Step 3: Calculate expiration date by adding period days to createdAt date
-             const expirationDate = new Date(
-               createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000
-             );
-             // Step 4: Calculate the number of days remaining until the expiration date
-             const currentDate = new Date();
-            const remainingDays = Math.ceil(
-               (expirationDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
-             );
-             setDaysRemaining(remainingDays);
-           } catch (error) {
-             console.error("Failed to fetch data", error);
-           } finally {
-             setLoading(false); // Mark loading as complete
-           }
-         };
+const createdAt = new Date(user.transaction?.createdAt || new Date());
+     const periodInDays = parseInt(user.transaction?.period) || 0;
+     const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
+     const currentTime = new Date();
+     const remainingTime = expiryDate.getTime() - currentTime.getTime();
+     const daysRemaining = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+    const planPackage = user.currentpack.name;
+    const color = user.currentpack.color;
+
+
    
-         fetchData();
-       
-     }, []);
  
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
  
@@ -122,7 +93,7 @@ const PackageComponent =  ({userId,user, onClose,handlePay, handleOpenAbout,hand
                 <p className="text-[25px] font-bold">Plan</p>
                 <div className="wrapper flex">
                   <div className="text-center sm:text-left">
-                  {loading ? (<> </>):(<> {daysRemaining > 0 ? (
+               {daysRemaining > 0 ? (
                       <>
                         <div className="flex flex-col">
                           <div className="font-bold">
@@ -133,20 +104,20 @@ const PackageComponent =  ({userId,user, onClose,handlePay, handleOpenAbout,hand
                       </>
                     ) : (
                       <>Choose the plan that will work for you</>
-                    )}</>)}
+                    )}
                   
                    
                   </div>
                 </div>
               </section>
-              {loading ? (<> <PricingPlansSkeleton/></>):( <Listpackages
+            <Listpackages
                 packagesList={packagesList}
                 userId={userId}
                 daysRemaining={daysRemaining}
                 packname={planPackage}
                 user={user}
                 handlePayNow={handlePay} 
-              />)}
+              />
               <Toaster />
             </div>
           </div>

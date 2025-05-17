@@ -36,7 +36,7 @@ import CollectionUsers from "./CollectionUsers";
 import BroadcastMessage from "./BroadcastMessage";
 import CollectionTransactions from "./CollectionTransactions";
 import AssistantPhotoOutlinedIcon from '@mui/icons-material/AssistantPhotoOutlined';
-
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import {
   formUrlQuery,
   formUrlQuerymultiple,
@@ -60,6 +60,7 @@ import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlin
 import CollectionPayments from "./CollectionPayments";
 import TopAdvertiser from "./TopAdvertiser";
 import AdvertiserSubscriptions from "./AdvertiserSubscriptions";
+import CollectionLoans from "./CollectionLoans";
 type homeProps = {
   userId: string;
   userName: string;
@@ -79,6 +80,7 @@ type homeProps = {
   contacts:any;
   subscriptionsExpirely:any;
   topadvertiser:any;
+   financeRequests:any;
 };
 const HomeDashboard = ({
   userId,
@@ -99,6 +101,7 @@ const HomeDashboard = ({
   contacts,
   subscriptionsExpirely,
   topadvertiser,
+  financeRequests,
 }: homeProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -152,8 +155,7 @@ const HomeDashboard = ({
     const transactions = async () => {
       const allt = await getallTrans();
       setalltrans(allt);
-      console.log(allt);
-      //  alert(allt);
+    
     };
     transactions();
   }, []);
@@ -168,7 +170,7 @@ const HomeDashboard = ({
   };
   const handleFee = async () => {
   const res = await updateVerifiesFee(fee,VerificationPackId);
-  console.log(res);
+  //console.log(res);
   toast({
     title: "Updated!",
     description: "Verification fee updated",
@@ -260,6 +262,7 @@ const HomeDashboard = ({
     const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   
       useEffect(() => {
+       // console.log(subcategories);
          const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
          const isDark = savedTheme === mode;
          
@@ -375,6 +378,11 @@ const HomeDashboard = ({
                             <MonetizationOnOutlinedIcon className="w-10 p-1" />
                           </span>
                         )}
+                          {link.label === "Loan Requests" && (
+                          <span>
+                            <AccountBalanceOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
                       {link.label === "User Management" && (
                         <span>
                           <GroupsOutlinedIcon className="w-10 p-1" />
@@ -453,6 +461,11 @@ const HomeDashboard = ({
                          {link.label === "Payments" && (
                           <span>
                             <MonetizationOnOutlinedIcon className="w-10 p-1" />
+                          </span>
+                        )}
+                          {link.label === "Loan Requests" && (
+                          <span>
+                            <AccountBalanceOutlinedIcon className="w-10 p-1" />
                           </span>
                         )}
                         {link.label === "User Management" && (
@@ -928,6 +941,29 @@ const HomeDashboard = ({
                     </div>
               </div>
             
+            </div>
+          </>
+        )}
+           {activeTab === "Loan Requests" && (
+          <>
+            <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">Loan Requests</h1>
+              <div className="flex flex-col lg:flex-row gap-3"></div>
+              {/* Date Filter Section */}
+
+              <ScrollArea className="w-[340px] lg:w-full">
+                <CollectionLoans
+                  data={financeRequests.data}
+                  emptyTitle={`No Loan Request`}
+                  emptyStateSubtext="Come back later"
+                  limit={limit}
+                  page={page}
+                  userId={userId}
+                  totalPages={financeRequests.totalPages}
+                  handleOpenChatId={handleOpenChatId}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
             </div>
           </>
         )}

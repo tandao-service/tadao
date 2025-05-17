@@ -55,6 +55,7 @@ import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct i
 import { getUserById } from "@/lib/actions/user.actions";
 import SearchByTitle from "./SearchByTitle";
 import PopupAccount from "./PopupAccount";
+import { DrawerDemo } from "./DrawerDemo";
  // Correct import
 type CollectionProps = {
   limit: number;
@@ -64,6 +65,9 @@ type CollectionProps = {
   queryObject: any;
   urlParamName?: string;
   user: any;
+  loans:any;
+  myloans:any;
+  packagesList:any;
   userName: string;
   userImage: string;
   categoryList: any;
@@ -85,6 +89,9 @@ const CollectionInfinite = ({
   categoryList,
   subcategoryList,
   AdsCountPerRegion,
+  loans,
+  myloans,
+  packagesList,
 }: CollectionProps) => {
   const [isChatOpen, setChatOpen] = useState(false);
   const toggleChat = () => {
@@ -128,7 +135,9 @@ const CollectionInfinite = ({
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [CategorySelect, setCategorySelect] = useState('');
   const [isOpenSearchByTitle, setIsOpenSearchByTitle] = useState(false);
- 
+ const [wantedsubcategory, setWantedsubcategory] = useState('');
+ const [showWantedPopup, setShowWantedPopup] = useState(false);
+const [wantedcategory, setWantedcategory] = useState('');
   const [showBottomNav, setShowBottomNav] = useState(true);
 
   const scrollRefB = useRef<HTMLDivElement>(null);
@@ -218,7 +227,7 @@ const CollectionInfinite = ({
      setIsOpenPerfomance(false);
      setIsOpenSell(false);
      setIsOpenAdView(false);
-     //setIsOpenSearchByTitle(false);
+     setShowWantedPopup(false);
      setIsOpenAdEdit(false);
      setIsOpenPay(false);
      setIsOpenSearchTab(false);
@@ -521,7 +530,10 @@ const CollectionInfinite = ({
 const handlePay = (id:string) => {
   handleClose();
   setTxtId(id);
-  setIsOpenPay(true);
+  
+   setTimeout(() => {
+   setIsOpenPay(true);
+  }, 500); // Delay in milliseconds (adjust as needed)
   };
 
   const handleClosePay = () => {
@@ -594,10 +606,31 @@ const handleCloseAdView = () => {
     setIsOpenCategory(false);
   };
 
-  const handleOpenSell = () => {
-    handleClose();
+ const handleDrawer = (category: string, subcategory: string) => {
+  handleClose();
+  if (category && subcategory) {
+    setWantedcategory(category);
+    setWantedsubcategory(subcategory);
+    setShowWantedPopup(true);
+  }
+
+  //setTimeout(() => {
+  //  setIsOpenSell(true);
+ // }, 500); // Delay in milliseconds (adjust as needed)
+};
+
+ const handleOpenSell = (category?: string, subcategory?: string) => {
+  handleClose();
+
+  if (category && subcategory) {
+    setWantedcategory(category);
+    setWantedsubcategory(subcategory);
+  }
+
+  setTimeout(() => {
     setIsOpenSell(true);
- };
+  }, 500); // Delay in milliseconds (adjust as needed)
+};
 
   const handleCloseSell = () => {
     const params = new URLSearchParams(window.location.search);
@@ -798,8 +831,8 @@ const handleCloseAdView = () => {
       <div  onMouseEnter={() => handleHoverCategory('')} className="sm:hidden fixed top-0 z-10 w-full">
         {user ? (
           <Navbarhome
-          user={user}
-            userstatus={user.status}
+          user={user?.user ?? []}
+           userstatus={user?.user?.status ?? "User"}
             userId={userId}
                   AdsCountPerRegion={AdsCountPerRegion}  
                   onClose={handleClose} 
@@ -844,8 +877,8 @@ const handleCloseAdView = () => {
         <div  onMouseEnter={() => handleHoverCategory('')} className="w-full">
           {user ? (
             <Navbarhome
-            user={user}
-                  userstatus={user.status}
+            user={user?.user ?? []}
+                 userstatus={user?.user?.status ?? "User"}
                   userId={userId}
                   AdsCountPerRegion={AdsCountPerRegion}  
                   onClose={handleClose} 
@@ -899,6 +932,8 @@ const handleCloseAdView = () => {
             handleCategory={handleCategory}
             handleSubCategory={handleSubCategory}
             footerRef={footerRef}
+            handleDrawer={handleDrawer}
+            loans={loans}
           />
         </div>
 
@@ -909,16 +944,19 @@ const handleCloseAdView = () => {
        {/* <div ref={viewportRef} onMouseEnter={() => handleHoverCategory('')} className="flex-1"> */}
           <div className="mt-[170px] lg:hidden">
            <MenuSubmobileMain
-                 categoryList={categoryList}
-                 subcategoryList={subcategoryList}
-                 handleSubCategory={handleSubCategory}
-                 handleOpenSell={handleOpenSell}
-                 handleCategory={handleCategory}
-                 handleOpenChat={handleOpenChat}
-                 handleOpenSearchTab={handleOpenSearchTab}
-                 handleOpenSettings={handleOpenSettings}
-                 userId={userId}
-               />
+                    categoryList={categoryList}
+                    subcategoryList={subcategoryList}
+                    handleSubCategory={handleSubCategory}
+                    handleOpenSell={handleOpenSell}
+                    handleCategory={handleCategory}
+                    handleOpenChat={handleOpenChat}
+                    handleOpenSearchTab={handleOpenSearchTab}
+                    handleOpenSettings={handleOpenSettings}
+                    handlePayNow={handlePay}
+                    userId={userId}
+                    user={user} 
+                    loans={loans} 
+                    packagesList={packagesList}               />
           </div>
           <div>
           <h2 className="font-bold p-2 text-[30px]">Trending Ads</h2>
@@ -953,7 +991,7 @@ const handleCloseAdView = () => {
                 handleAdEdit={handleAdEdit}
                 handleAdView={handleAdView}
                 handleOpenPlan={handleOpenPlan}
-              
+                handleOpenChatId={handleOpenChatId}
               />
             </div>
           );
@@ -1023,38 +1061,44 @@ const handleCloseAdView = () => {
               handleOpenSearchByTitle={handleOpenSearchByTitle}
               categoryList={categoryList}
               subcategoryList={subcategoryList}
-              user={user}
+              user={user?.user ?? []}
               />
 
       <PopupShop isOpen={isOpenShop} handleOpenReview={handleOpenReview} onClose={handleCloseShop} userId={userId} shopAcc={shopId} userName={userName} userImage={userImage} queryObject={newqueryObject} handleOpenSell={handleOpenSell} handleAdView={handleAdView} handleAdEdit={handleAdEdit} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} 
       handleOpenShop={handleOpenShop}
       handleOpenPerfomance={handleOpenPerfomance} 
       handlePay={handlePay}
-      user={user}/>
+      user={user}
+       loans={myloans}/>
 
-      <PopupSell isOpen={isOpenSell} onClose={handleCloseSell} type={"Create"} userId={userId} userName={userName} handleOpenSell={handleOpenSell} handlePay={handlePay} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat} handleCategory={handleCategory}
+      <PopupSell isOpen={isOpenSell} packagesList={packagesList} category={wantedcategory} subcategory={wantedsubcategory} onClose={handleCloseSell} type={"Create"} userId={userId} userName={userName} handleOpenSell={handleOpenSell} handlePay={handlePay} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat} handleCategory={handleCategory}
               handleOpenShop={handleOpenShop}
               handleOpenPerfomance={handleOpenPerfomance}
               handleOpenSettings={handleOpenSettings}
               handleOpenSearchTab={handleOpenSearchTab}
               subcategoryList={subcategoryList}
               handleAdView={handleAdView}
-              user={user} />
+              user={user}
+              userImage={userImage} />
 
       <PopupAdEdit isOpen={isOpenAdEdit} onClose={handleCloseAdEdit} type={"Update"} userId={userId} userName={userName} ad={adId} handleOpenSell={handleOpenSell} handleAdView={handleAdView} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
-              handleOpenShop={handleOpenShop}
-              handleOpenPerfomance={handleOpenPerfomance}
-              handleOpenSettings={handleOpenSettings}
-              handleCategory={handleCategory} 
-              subcategoryList={subcategoryList}
-              user={user} />
+                handleOpenShop={handleOpenShop}
+                handleOpenPerfomance={handleOpenPerfomance}
+                handleOpenSettings={handleOpenSettings}
+                handleCategory={handleCategory}
+                subcategoryList={subcategoryList}
+                user={user?.user ?? []}
+                packagesList={packagesList}
+                category={wantedcategory}
+                subcategory={wantedsubcategory} 
+                userImage={userImage}/>
  
       <PopupAdView isOpen={isOpenAdView} onClose={handleCloseAdView} userId={userId} userName={userName} userImage={userImage} ad={adId} handleOpenSell={handleOpenSell} handleAdView={handleAdView} handleAdEdit={handleAdEdit} handleSubCategory={handleSubCategory} type={"Create"} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat} handleOpenReview={handleOpenReview} handleOpenShop={handleOpenShop} handleOpenChatId={handleOpenChatId}
       handleOpenSettings={handleOpenSettings}
       handleOpenPerfomance={handleOpenPerfomance}
       handleCategory={handleCategory} 
       handlePay={handlePay}
-      user={user}/>
+      user={user?.user ?? []}/>
 
       <PopupBookmark isOpen={isOpenBook} onClose={handleCloseBook} userId={userId} handleOpenSell={handleOpenSell} handleAdEdit={handleAdEdit} handleAdView={handleAdView} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
       handleOpenPerfomance={handleOpenPerfomance}
@@ -1062,7 +1106,7 @@ const handleCloseAdView = () => {
       handleOpenShop={handleOpenShop} 
       handleOpenChatId={handleOpenChatId} 
       handleOpenSettings={handleOpenSettings}
-      user={user}/>
+      user={user?.user ?? []}/>
 
       <PopupPerfomance isOpen={isOpenPerfomance} onClose={handleClosePerfomance} userId={userId} handleOpenSell={handleOpenSell} handleAdEdit={handleAdEdit} handleAdView={handleAdView} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat} userName={userName} userImage={userImage}
       handleOpenPerfomance={handleOpenPerfomance}
@@ -1084,14 +1128,15 @@ const handleCloseAdView = () => {
       handleOpenTerms={handleOpenTerms} 
       handleOpenPrivacy={handleOpenPrivacy} 
       handleOpenSafety={handleOpenSafety}
-      user={user}/>
+      user={user}
+      packagesList={packagesList}/>
 
       <PopupChat isOpen={isOpenChat} onClose={handleCloseChat} handleOpenChatId={handleOpenChatId} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} handleOpenSettings={handleOpenSettings} handleCategory={handleCategory} handleOpenReview={handleOpenReview}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenShop={handleOpenShop}
       handlePay={handlePay}
       handleOpenSearchTab={handleOpenSearchTab}
-      user={user}/>
+      user={user?.user ?? []}/>
 
       <PopupChatId isOpen={isOpenChatId} onClose={handleCloseChatId} recipientUid={recipientUid} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} handleOpenShop={handleOpenShop} handleOpenChatId={handleOpenChatId}
       handleOpenPerfomance={handleOpenPerfomance}
@@ -1100,14 +1145,14 @@ const handleCloseAdView = () => {
       handleAdEdit={handleAdEdit} 
       handleAdView={handleAdView}
       handleOpenSearchTab={handleOpenSearchTab}
-      user={user}/>
+      user={user?.user ?? []}/>
       
       <PopupReviews isOpen={isOpenReview} onClose={handleCloseReview} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} recipient={recipient} handleOpenSettings={handleOpenSettings} handleOpenChatId={handleOpenChatId} handleOpenReview={handleOpenReview}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenShop={handleOpenShop}
       handleCategory={handleCategory}
       handlePay={handlePay}
-      user={user}/>
+      user={user?.user ?? []}/>
 
 
 <PopupSettings isOpen={isOpenProfile} onClose={handleCloseProfile} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
@@ -1116,7 +1161,7 @@ const handleCloseAdView = () => {
       handleCategory={handleCategory}
       handlePay={handlePay}
       handleOpenShop={handleOpenShop}
-      user={user}
+      user={user?.user ?? []}
       handleOpenSearchTab={handleOpenSearchTab}/>
 
      <PopupAccount isOpen={isOpenSettings} onClose={handleCloseSettings} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
@@ -1125,7 +1170,7 @@ const handleCloseAdView = () => {
       handleCategory={handleCategory}
       handlePay={handlePay}
       handleOpenShop={handleOpenShop}
-      user={user}
+      user={user?.user ?? []}
       handleOpenSearchTab={handleOpenSearchTab}
       handleOpenProfile={handleOpenProfile}
       handleOpenFaq={handleOpenFaq}
@@ -1142,40 +1187,40 @@ const handleCloseAdView = () => {
       handleCategory={handleCategory}
       handleOpenShop={handleOpenShop} 
       handleOpenChatId={handleOpenChatId}
-      user={user}/>
+      user={user?.user ?? []}/>
        
       <PopupAbout isOpen={isOpenAbout} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleCloseAbout} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenSettings={handleOpenSettings}
       handleOpenShop={handleOpenShop}
-      user={user}/>
+      user={user?.user ?? []}/>
 
       <PopupTerms isOpen={isOpenTerms} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleCloseTerms} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
        handleOpenPerfomance={handleOpenPerfomance}
        handleOpenSettings={handleOpenSettings}
        handleOpenShop={handleOpenShop}
-       user={user}
+       user={user?.user ?? []}
        />
 
       <PopupPrivacy isOpen={isOpenPrivacy} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleClosePrivacy} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
        handleOpenPerfomance={handleOpenPerfomance}
        handleOpenSettings={handleOpenSettings}
        handleOpenShop={handleOpenShop}
-       user={user}
+       user={user?.user ?? []}
        />
 
       <PopupSafety isOpen={isOpenSafety} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleCloseSafety} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
        handleOpenShop={handleOpenShop}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenSettings={handleOpenSettings}
-      user={user}
+      user={user?.user ?? []}
      />
 
 <PopupFaq isOpen={isOpenFaq} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} onClose={handleCloseFaq} userId={userId} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
        handleOpenShop={handleOpenShop}
       handleOpenPerfomance={handleOpenPerfomance}
       handleOpenSettings={handleOpenSettings} 
-      user={user}
+      user={user?.user ?? []}
      />
       <SearchTabWindow 
                 isOpen={isOpenSearchTab}
@@ -1195,6 +1240,18 @@ const handleCloseAdView = () => {
         handleAdView={handleAdView}
         handleOpenPlan={handleOpenPlan}
         queryObject={queryObject} />
+         <DrawerDemo 
+          handleOpenSell={handleOpenSell}
+          handlePayNow={handlePay}
+          userId={userId}
+          category={wantedcategory}
+          subcategory={wantedsubcategory}
+          user={user}
+        isOpen={showWantedPopup} 
+        packagesList={packagesList}
+        onClose={handleClose} 
+        handleSubCategory={handleSubCategory}/>
+      
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
       </ScrollArea.Viewport>
   <ScrollArea.Scrollbar orientation="vertical" />

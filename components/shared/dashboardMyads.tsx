@@ -28,7 +28,7 @@ import Footersub from "./Footersub";
 import Navbar from "./navbar";
 import { mode } from "@/constants";
 import { Toaster } from "../ui/toaster";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { getData } from "@/lib/actions/transactions.actions";
 import { Icon } from "@iconify/react";
 import Barsscale from "@iconify-icons/svg-spinners/bars-scale"; 
@@ -38,6 +38,7 @@ import SellerProfile from "./SellerProfile";
 import SubscriptionSkeleton from "./SubscriptionSkeleton";
 
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
+import CollectionMyLoans from "./CollectionMyLoans";
  // Correct import
 // Correct import
 //const CollectionMyads = dynamic(() => import("./CollectionMyads"), {
@@ -61,7 +62,8 @@ type CollectionProps = {
   sortby: string;
   userImage: string;
   userName: string;
-  user: IUser;
+  user: any;
+  loans:any;
   emptyTitle: string;
   emptyStateSubtext: string;
   limit: number;
@@ -93,7 +95,7 @@ const DashboardMyads = ({
   //data,
  // packname,
  // daysRemaining,
- // color,
+ loans,
   emptyTitle,
   emptyStateSubtext,
   sortby,
@@ -118,55 +120,15 @@ CollectionProps) => {
   const [isVertical, setisVertical] = useState(true);
   const [loading, setLoading] = useState(false);
 
- const [loadingSub, setLoadingSub] = useState<boolean>(true);
-  const [daysRemaining, setDaysRemaining] = useState(0);
-  const [remainingAds, setRemainingAds] = useState(0);
-  const [planPackage, setPlanPackage] = useState("Free");
-  const [color, setColor] = useState("#000000");
- const isAdCreator = userId === shopAcc._id;
- const [listed, setListed] = useState(0);
- useEffect(() => {
- if(isAdCreator){
-    const fetchData = async () => {
-      try {
-      
-        setLoadingSub(true);
-        const subscriptionData = await getData(userId);
-    
-        if (subscriptionData) {
-        
-          const listedAds = subscriptionData.ads || 0;
-          setListed(listedAds);
-          if (subscriptionData.currentpack && !Array.isArray(subscriptionData.currentpack)) {
-            
-            setRemainingAds(subscriptionData.currentpack.list - listedAds);
-            setColor(subscriptionData.currentpack.color);
-            setPlanPackage(subscriptionData.currentpack.name);
-          const createdAtDate = new Date(subscriptionData.transaction?.createdAt || new Date());
-          const periodDays = parseInt(subscriptionData.transaction?.period) || 0;
-          const expiryDate = new Date(createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000);
-       
-          const currentDate = new Date();
-          const remainingDays = Math.ceil((expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
-          setDaysRemaining(remainingDays);
-        
-        } else {
-          console.warn("No current package found for the user.");
-        }
-        }
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-      } finally {
-     
-        setLoadingSub(false);
-      }
-    }
-    fetchData();
-  }
-  
-}, []);
-
-
+ const createdAt = new Date(user.transaction?.createdAt || new Date());
+     const periodInDays = parseInt(user.transaction?.period) || 0;
+     const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
+     const currentTime = new Date();
+     const remainingTime = expiryDate.getTime() - currentTime.getTime();
+     const daysRemaining = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+    const color = user.currentpack.color;
+    const planPackage = user.currentpack.name;
+    const isAdCreator = userId === shopAcc._id;
   const handleButtonClick = (index: number) => {
     setActiveButton(index);
     if (index === 0) {
@@ -221,7 +183,7 @@ CollectionProps) => {
     <>
         <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
        <div className="top-0 z-10 fixed w-full">
-                        <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"shop"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                        <Navbar user={user.user ?? []} userstatus={user.user?.status ?? "User"} userId={userId} onClose={onClose} popup={"shop"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                                             handleOpenPerfomance={handleOpenPerfomance}
                                             handleOpenSettings={handleOpenSettings}
                                             handleOpenAbout={handleOpenAbout}
@@ -238,9 +200,7 @@ CollectionProps) => {
             
               <div className="flex mt-2 lg:mt-0 gap-1 flex-col border rounded-lg flex justify-center items-center w-full h-full">
             
-          {isAdCreator && (<>   {loadingSub ? (<>  <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-                             <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
-                             </div></>):(<>
+          {isAdCreator && (<>   
 
                              {isAdCreator &&
                              planPackage !== "Free" &&
@@ -276,7 +236,8 @@ CollectionProps) => {
   </div></>
                              )}
                              </>)}
-                             </>)} 
+                            
+
                 <SellerProfile
                       user={shopAcc}
                       loggedId={userId}
@@ -293,9 +254,7 @@ CollectionProps) => {
           <div className="flex-1 min-h-screen">
           <div className="p-1 lg:hidden">
             <div className="flex flex-col gap-1 w-full ">
-            {isAdCreator && (<>   {loadingSub ? (<>   <div className="w-full mt-0 h-full flex flex-col items-center justify-center">
-                           <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
-                           </div></>):(<>
+            {isAdCreator && (<>   
 
                              {isAdCreator &&
                              planPackage !== "Free" &&
@@ -385,7 +344,8 @@ CollectionProps) => {
                                </>
                              )}
                              </>)}
-                             </>)} 
+                             
+
               <SellerProfile user={shopAcc} loggedId={userId} userId={shopAcc._id} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/>
               </div>
             </div>
@@ -446,6 +406,28 @@ CollectionProps) => {
                   </div>
                 </div>
  */}
+ {loans && isAdCreator && (<>
+  <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+              <h1 className="text-2xl font-bold mb-4">
+                My loan Requests</h1>
+              <div className="flex flex-col lg:flex-row gap-3"></div>
+              {/* Date Filter Section */}
+
+              <ScrollArea className="w-[300px] lg:w-full">
+                <CollectionMyLoans
+                  data={loans.data}
+                  emptyTitle={`No request`}
+                  emptyStateSubtext="(0) Finance Request"
+                  limit={200}
+                  page={1}
+                  userId={userId}
+                  totalPages={loans.totalPages}
+                  handleOpenChatId={handleOpenChatId}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+ </>)}
               <CollectionMyads
                   emptyTitle="No ads have been created yet"
                   emptyStateSubtext="Go create some now"
