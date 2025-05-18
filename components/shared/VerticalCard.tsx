@@ -62,7 +62,7 @@ const VerticalCard = ({
   const { toast } = useToast();
 
   const router = useRouter();
-
+const [isDeleted, setIsDeleted] = useState(false);
   //const isAdCreator = userId === ad.organizer._id.toString();
   const truncateTitle = (title: string, maxLength: number) => {
     if (title.length > maxLength) {
@@ -299,7 +299,7 @@ const VerticalCard = ({
     
     
     
-    </>):(<>
+    </>):(<>{!isDeleted && (
       <div
         className={`mb-2 w-full lg:min-w-[200px] rounded-lg border shadow-sm bg-white dark:bg-[#2D3236] overflow-hidden`}
      
@@ -380,7 +380,7 @@ const VerticalCard = ({
                   height={20}
                 />
               </div>
-              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} />
+              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} onDeleteSuccess={() => setIsDeleted(true)}/>
             </div>
           )}
 
@@ -636,8 +636,20 @@ const VerticalCard = ({
               </div>
             )}
           </div>
+
+<div className="flex gap-5">
+     <button className="border border-emerald-600 bg-emerald-100 text-emerald-600 py-2 rounded-lg text-sm font-semibold">
+                      Renew
+                    </button>
+                 <button className="bg-emerald-600 text-white py-2 rounded-lg text-sm font-semibold">
+                      Top ad
+                    </button>
+              
+</div>
+
+
         </div>
-      </div> </>)}
+      </div>)} </>)}
     </>
   );
 };

@@ -22,14 +22,17 @@ type FileUploaderProps = {
   onFieldChange: (urls: string[]) => void;
   imageUrls: string[];
   userName: string;
+  category: string;
   adId: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
 };
-const compressImage = async (file: File): Promise<File> => {
+const compressImagee = async (file: File): Promise<File> => {
   const options = {
-    maxSizeMB: 2, // Target size in MB
-    maxWidthOrHeight: 1280,
-    useWebWorker: true,
+   // maxSizeMB: 2, // Target size in MB
+   // maxWidthOrHeight: 1280,
+   maxSizeMB: 0.8,           // Slightly higher quality, still compressed
+  maxWidthOrHeight: 1280,   // Better clarity on retina screens
+  useWebWorker: true,
   };
 
   try {
@@ -39,6 +42,53 @@ const compressImage = async (file: File): Promise<File> => {
     console.error("Image compression error:", error);
     return file;
   }
+};
+const getNetworkType = (): "4g" | "3g" | "2g" | "slow-2g" | "unknown" => {
+  if (typeof navigator !== "undefined" && "connection" in navigator) {
+    // @ts-ignore
+    return navigator.connection.effectiveType || "unknown";
+  }
+  return "unknown";
+};
+
+const isMobile = (): boolean => {
+  return typeof window !== "undefined" && window.innerWidth < 768;
+};
+
+const getSmartCompressionOptions = () => {
+  const network = getNetworkType();
+  const mobile = isMobile();
+
+  if (network === "2g" || network === "slow-2g") {
+    return {
+      maxSizeMB: 0.3,
+      maxWidthOrHeight: mobile ? 800 : 1024,
+    };
+  }
+
+  if (network === "3g") {
+    return {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: mobile ? 1024 : 1280,
+    };
+  }
+
+  // Good network (4g or unknown)
+  return {
+    maxSizeMB: 0.8,
+    maxWidthOrHeight: mobile ? 1280 : 1600,
+  };
+};
+
+const compressImage = async (file: File): Promise<File> => {
+  const smartOptions = getSmartCompressionOptions();
+
+  const options = {
+    ...smartOptions,
+    useWebWorker: true,
+  };
+
+  return await imageCompression(file, options);
 };
 
 const applyWatermark = (
@@ -128,6 +178,7 @@ const applyWatermark = (
 export function FileUploader({
   imageUrls,
   userName,
+  category,
   adId,
   onFieldChange,
   setFiles,
@@ -138,94 +189,77 @@ export function FileUploader({
   const [processingStatus, setProcessingStatus] = useState(false);
   const [showmessage, setmessage] = useState("");
   const onDrop = useCallback(
-    async (acceptedFiles: File[]) => {
-      try{
-      const filteredFiles = acceptedFiles.filter(async (file) => {
-        setProcessingStatus(true);
+  async (acceptedFiles: File[]) => {
+    setProcessingStatus(true);
+    try {
+      const processedFiles: File[] = [];
+
+      for (const originalFile of acceptedFiles) {
         const isScreenshot =
-          /screenshot/i.test(file.name) || /Screen\s?Shot/i.test(file.name);
+          /screenshot/i.test(originalFile.name) || /Screen\s?Shot/i.test(originalFile.name);
         if (isScreenshot) {
-          setmessage(
-            `${file.name} appears to be a screenshot and will not be uploaded.`
-          );
-          //  setShowAlert(true);
           toast({
             variant: "destructive",
             title: "Failed!",
-            description: showmessage,
+            description: `${originalFile.name} appears to be a screenshot and will not be uploaded.`,
             duration: 5000,
           });
-         
-          return false;
+          continue;
         }
 
-        if (imageUrls.includes(convertFileToUrl(file))) {
-          setmessage(`${file.name} has already been uploaded.`);
-          //  setShowAlert(true);
+        const previewUrl = convertFileToUrl(originalFile);
+        if (imageUrls.includes(previewUrl)) {
           toast({
             variant: "destructive",
             title: "Failed!",
-            description: showmessage,
+            description: `${originalFile.name} has already been uploaded.`,
             duration: 5000,
           });
-          
-          return false;
+          continue;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
+        let file = originalFile;
+
+        if (file.size > 0.8 * 1024 * 1024) {
           try {
             const compressed = await compressImage(file);
-            if (compressed.size > 5 * 1024 * 1024) {
-              setmessage(
-                `${file.name} is still too large after compression. Skipped.`
-              );
+            if (compressed.size > 0.8 * 1024 * 1024) {
               toast({
                 variant: "destructive",
                 title: "Failed!",
-                description: showmessage,
+                description: `${file.name} is still too large after compression. Skipped.`,
                 duration: 5000,
               });
-             
-              return false;
+              continue;
             }
-            file = compressed; // Replace original file with compressed one
+            file = compressed;
           } catch (err) {
             console.error("Compression failed", err);
-        
-            return false;
+            continue;
           }
         }
-        return true;
-      });
 
+        try {
+          const watermarked = await applyWatermark(file, userName.toUpperCase(), "Posted on mapa");
+          processedFiles.push(watermarked);
+        } catch (error) {
+          console.error("Watermarking failed, proceeding with original image:", error);
+          processedFiles.push(file);
+        }
+      }
 
-      const processedFiles: File[] = await Promise.all(
-        filteredFiles.map(async (file) => {
-          try {
-            return await applyWatermark(
-              file,
-              userName.toUpperCase(),
-              "Posted on PocketShop.co.ke"
-            );
-          } catch (error) {
-            console.error("Watermark failed, proceeding without:", error);
-            return file; // Return the original file if watermarking fails
-          }
-        })
-      );
-
-      setFiles((prevFiles: File[]) => [...prevFiles, ...processedFiles]);
-      const urls = processedFiles.map((file: File) => convertFileToUrl(file));
+      setFiles((prevFiles) => [...prevFiles, ...processedFiles]);
+      const urls = processedFiles.map((file) => convertFileToUrl(file));
       onFieldChange([...imageUrls, ...urls]);
     } catch (err) {
       console.error("Processing failed", err);
-     
     } finally {
       setProcessingStatus(false);
     }
-    },
-    [imageUrls, setFiles, onFieldChange]
-  );
+  },
+  [imageUrls, setFiles, onFieldChange, userName, toast]
+);
+
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -261,16 +295,17 @@ export function FileUploader({
       <div className="text-left text-sm w-full">
         <div className="font-semibold">Add Photo</div>
         <div>
-          <small className="dark:text-gray-500 text-[#464b4f]">
-            Add at least 3 photos for this category
-          </small>
-          <br />
+         
+        <small className="dark:text-gray-500 text-[#464b4f]">Add at least 3 photos for this category</small>  <br />
           <small className="dark:text-gray-500 text-[#464b4f]">
             First picture - is the title picture.
           </small>
+         
+          
+        
         </div>
         {processingStatus && (
-        <div className="flex gap-2 text-gray-500 justify-center items-center">
+        <div className="flex p-2 gap-2 text-gray-500 justify-center items-center">
           <CircularProgress sx={{ color: "gray" }} size={30}/> processing images...
         </div>
       )}

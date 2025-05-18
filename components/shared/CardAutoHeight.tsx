@@ -56,7 +56,7 @@ const CardAutoHeight = ({
 }: CardProps) => {
   const pathname = usePathname();
   const { toast } = useToast();
-
+const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
 
   const isAdCreator = userId === ad.organizer._id.toString();
@@ -251,7 +251,7 @@ const CardAutoHeight = ({
   </div>
   </div>
 </div>
-</>):(<>
+</>):(<>{!isDeleted && (
       <div
         className={`mb-2 w-full rounded-lg lg:min-w-[200px] border shadow-sm bg-white dark:bg-[#2D3236]`}
        
@@ -334,7 +334,7 @@ const CardAutoHeight = ({
                   height={20}
                 />
               </div>
-              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} />
+              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} onDeleteSuccess={() => setIsDeleted(true)}/>
             </div>
           )}
 
@@ -502,7 +502,7 @@ const CardAutoHeight = ({
             )}
           </div>
         </div>
-      </div></>)}
+      </div>)}</>)}
     </>
   );
 };

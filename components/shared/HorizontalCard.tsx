@@ -56,7 +56,7 @@ const HorizontalCard = ({
 }: CardProps) => {
   const pathname = usePathname();
   const isbookmark = pathname === "/bookmark";
-
+const [isDeleted, setIsDeleted] = useState(false);
   const { toast } = useToast();
   const truncateTitle = (title: string, maxLength: number) => {
     if (title.length > maxLength) {
@@ -284,7 +284,7 @@ const HorizontalCard = ({
     
     
     
-    </>):(<>
+    </>):(<>{!isDeleted && (
       <div
         className={`flex w-full mb-2 border rounded-lg dark:bg-[#2D3236] text-black dark:text-gray-300 bg-white hover:cursor-pointer`}
        
@@ -368,7 +368,7 @@ const HorizontalCard = ({
                   height={20}
                 />
               </div>
-              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} />
+              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} onDeleteSuccess={() => setIsDeleted(true)}/>
             </div>
           )}
 
@@ -626,7 +626,7 @@ const HorizontalCard = ({
             )}
           </div>
         </div>
-      </div> </>)}
+      </div>)} </>)}
     </>
   );
 };

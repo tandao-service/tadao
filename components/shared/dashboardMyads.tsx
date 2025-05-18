@@ -406,33 +406,14 @@ CollectionProps) => {
                   </div>
                 </div>
  */}
- {loans && isAdCreator && (<>
-  <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
-              <h1 className="text-2xl font-bold mb-4">
-                My loan Requests</h1>
-              <div className="flex flex-col lg:flex-row gap-3"></div>
-              {/* Date Filter Section */}
+ 
 
-              <ScrollArea className="w-[300px] lg:w-full">
-                <CollectionMyLoans
-                  data={loans.data}
-                  emptyTitle={`No request`}
-                  emptyStateSubtext="(0) Finance Request"
-                  limit={200}
-                  page={1}
-                  userId={userId}
-                  totalPages={loans.totalPages}
-                  handleOpenChatId={handleOpenChatId}
-                />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
- </>)}
               <CollectionMyads
                   emptyTitle="No ads have been created yet"
                   emptyStateSubtext="Go create some now"
                   collectionType="Ads_Organized"
                   limit={20}
+                  loans={loans}
                   sortby={sortby}
                   urlParamName="adsPage"
                   userId={shopAcc._id}
@@ -442,7 +423,7 @@ CollectionProps) => {
                   handleAdView={handleAdView}
                   handleAdEdit={handleAdEdit}
                   handleOpenPlan={handleOpenPlan}
-                   handleOpenChatId={handleOpenChatId}
+                  handleOpenChatId={handleOpenChatId}
                 />
               </section>
             </div>

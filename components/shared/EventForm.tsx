@@ -1017,12 +1017,12 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
             <>
               <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 items-center">
                 <FileUploader
-                  onFieldChange={(urls) => handleInputChange("imageUrls", urls)}
-                  imageUrls={formData["imageUrls"] || []} // Ensure this is an array
-                  setFiles={setFiles}
-                  adId={adId || ""}
-                  userName={userName}
-                />
+                      onFieldChange={(urls) => handleInputChange("imageUrls", urls)}
+                      imageUrls={formData["imageUrls"] || []} // Ensure this is an array
+                      setFiles={setFiles}
+                      adId={adId || ""}
+                      userName={userName} 
+                      category={selectedCategory}/>
                 {formErrors["imageUrls"] && (
                   <p className="text-red-500 text-sm">
                     {formErrors["imageUrls"]}
@@ -1838,25 +1838,9 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
           {type === "Create" && selectedCategory !== "Buyer Requests" && selectedSubCategory && (
             <>
               <div className="rounded-lg mt-4 p-0">
-              {loadingSub ? (<><div className="w-full min-h-[100px] h-full flex flex-col items-center justify-center">
-                                          <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
-                                          
-                          </div></>):(<>
             
                          
-                         
-                {/* 
-           <PromoSelection
-                packagesList={packagesList}
-                packname={Plan}
-                planId={PlanId}
-                expirationDate={ExpirationDate_}
-                listed={remainingAds}
-                adstatus={Adstatus_}
-                priority={Priority_}
-                daysRemaining={daysRemaining}
-                onChange={handlePackageOnChange}
-              />*/} 
+             
                <div className="w-full mt-2 p-0 dark:text-gray-100 rounded-lg">
                     <div className="flex flex-col mb-5">
                       <p className="text-gray-700 dark:text-gray-300 font-semibold text-xl">
@@ -2096,10 +2080,6 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                     </p>
                     */}
                   </div>
-              
-              
-              </>)}
-
               
               </div>
               {/* 

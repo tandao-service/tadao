@@ -90,6 +90,9 @@ export function Multiselect({
                 ))}
               </ul>
             </ScrollArea>
+              <div className="p-2 flex justify-end">
+              <Button variant="outline" size="sm" onClick={() => setOpen(false)}>Confirm</Button>
+            </div> 
           </div>
         )
       ) : (
@@ -134,6 +137,9 @@ export function Multiselect({
               </ul>
             </div>
           </ScrollArea>
+            <div className="p-2 flex justify-end">
+              <Button variant="outline" size="sm" onClick={() => setOpen(false)}>Confirm</Button>
+            </div> 
         </PopoverContent>
       )}
     </Popover>
