@@ -653,18 +653,10 @@ const [isDeleted, setIsDeleted] = useState(false);
             )}
           </div>
 
-<div className="flex gap-5">
-     <button className="border border-emerald-600 bg-emerald-100 text-emerald-600 py-2 rounded-lg text-sm font-semibold">
-                      Renew
-                    </button>
-                 <button className="bg-emerald-600 text-white py-2 rounded-lg text-sm font-semibold">
-                      Top ad
-                    </button>
-              
-</div>
-  {shouldShowRenewButton(ad.updatedAt, ad.priority) && (<div className="flex mt-2 w-full text-xs justify-between items-center">
+
+  {isAdCreator && shouldShowRenewButton(ad.updatedAt, ad.priority) && (<div className="flex mt-2 w-full text-xs justify-between items-center">
              <button
-    className="bg-green-600 hover:bg-gren-700 text-white p-2 rounded"
+    className="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded"
     onClick={() => handleRenew(ad._id)}
   >
     Renew Ad
