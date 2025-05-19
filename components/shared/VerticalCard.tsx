@@ -574,9 +574,7 @@ const [isDeleted, setIsDeleted] = useState(false);
           <p className="dark:text-gray-300 text-gray-700 text-[12px] hidden lg:inline">
         <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad.data.description, 180) }} />
         </p>
-        <p className="dark:text-gray-300 text-gray-700 text-[12px] lg:inline">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad.data.description, 100) }} />
-        </p>
+      
           <div className="text-gray-500 flex gap-1 items-center dark:text-gray-500 text-[12px] lg:text-xs">
             <LocationOnIcon sx={{ fontSize: 14 }} />
             {ad.data.region} - {ad.data.area}
