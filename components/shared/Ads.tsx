@@ -443,6 +443,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               className="w-full"
             >
               <CarouselContent>
+                  {ad.data.imageUrls.length > 0 ? (<>
                 {ad.data.imageUrls.map((image: string, index: number) => (
                   <CarouselItem key={index}>
                     <div className="relative w-full">
@@ -468,6 +469,21 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     </div>
                   </CarouselItem>
                 ))}
+                </>):(<>
+                <CarouselItem> 
+                  <Image
+                     src={"/fallback.jpg"}
+                    alt={"Ad image"}
+                    width={800} // Adjust the width as needed
+                    height={500} // Adjust the height as needed
+                    layout="fill"
+                    className={`object-cover h-[400px] cursor-pointer ${
+                        isLoading ? "opacity-0" : "opacity-100"
+                      } transition-opacity duration-300`}
+                    onLoadingComplete={() => setIsLoading(false)}
+                    placeholder="empty"
+                    /> </CarouselItem>
+                    </>)}
               </CarouselContent>
               <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
               <CarouselNext className="h-[50px] w-[50px] mr-20 font-bold border-0 bg-white bg-opacity-50 text-white p-2" />

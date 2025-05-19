@@ -8,6 +8,7 @@ import { UTApi } from "uploadthing/server"
 import Subcategory from "../database/models/subcategory.model"
 import Category from "../database/models/category.model"
 import mongoose from "mongoose"
+import DynamicAd from "../database/models/dynamicAd.model"
 
 const populateAd = (query: any) => {
   return query
@@ -95,52 +96,54 @@ export const getAllSubCategories = async () => {
   try {
     await connectToDatabase();
 
-    const subcategories = await Subcategory.aggregate([
+    // Step 1: Get all subcategories with their categories populated
+    const subcategories = await Subcategory.find({}).populate({
+      path: "category",
+      model: Category,
+      select: "name imageUrl"
+    }).lean(); // lean() improves performance for read-only ops
+
+    // Step 2: Aggregate ad counts grouped by data.category + data.subcategory
+    const adCounts = await DynamicAd.aggregate([
       {
-        $lookup: {
-          from: "dynamicads",
-          let: { subcategoryName: "$subcategory" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$data.subcategory", "$$subcategoryName"] }, // Match subcategory
-                    { $eq: ["$adstatus", "Active"] } // Match active ads
-                  ]
-                }
-              }
-            }
-          ],
-          as: "dynamicads"
-        }
+        $match: { adstatus: "Active" }
       },
       {
-        $addFields: {
-          adCount: { $size: "$dynamicads" } // Count active ads
-        }
-      },
-      {
-        $project: {
-          dynamicads: 0 // Exclude dynamicAds field from the output
+        $group: {
+          _id: {
+            category: "$data.category",
+            subcategory: "$data.subcategory"
+          },
+          count: { $sum: 1 }
         }
       }
     ]);
 
-    // Populate category names for each subcategory
-    const populatedSubcategories = await Subcategory.populate(subcategories, {
-      path: "category",
-      model: Category,
-      select: "name imageUrl"
+    // Step 3: Create a lookup map for fast matching
+    const countMap = new Map();
+    for (const item of adCounts) {
+      const key = `${item._id.category}|${item._id.subcategory}`;
+      countMap.set(key, item.count);
+    }
+
+    // Step 4: Attach ad count to each subcategory
+    const enrichedSubcategories = subcategories.map(subcat => {
+      const key = `${subcat.category?.name}|${subcat.subcategory}`;
+      const adCount = countMap.get(key) || 0;
+
+      return {
+        ...subcat,
+        adCount
+      };
     });
 
-    //  console.log(populatedSubcategories);
-    return JSON.parse(JSON.stringify(populatedSubcategories));
+    return enrichedSubcategories;
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    handleError(error);
+    console.error("Error fetching subcategories with ad counts:", error);
+    throw error;
   }
 };
+
 
 // DELETE
 export async function deleteCategory(categoryId: string, iconUrl: string) {

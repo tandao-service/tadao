@@ -171,13 +171,13 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
     let AdQuery: any = [];
     if (queryObject.sortby === "recommeded") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
+        .sort({ priority: -1, updatedAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
         .limit(limit)
 
     } else if (queryObject.sortby === "new") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
+        .sort({ priority: -1, updatedAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
         .limit(limit)
     } else if (queryObject.sortby === "lowest") {
@@ -333,8 +333,8 @@ export async function getRelatedAdByCategory({
     const conditions = { $and: [{ subcategory: subcategory }, { _id: { $ne: adId } }, { adstatus: "Active" }] }
 
     const AdQuery = DynamicAd.find(conditions)
-      //  .sort({ createdAt: 'desc' })
-      .sort({ priority: -1, createdAt: -1 })
+      //  .sort({ updatedAt: 'desc' })
+      .sort({ priority: -1, updatedAt: -1 })
       .skip(skipAmount)
       .limit(limit)
 
@@ -368,12 +368,12 @@ export async function getAdByUser({ userId, limit = 20, page, sortby, myshop }: 
     let AdQuery: any = [];
     if (sortby === "recommeded") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
+        .sort({ priority: -1, updatedAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
         .limit(limit)
     } else if (sortby === "new") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, createdAt: -1 })
+        .sort({ priority: -1, updatedAt: -1 })
         .skip(skipAmount)
         .limit(limit)
     } else if (sortby === "lowest") {
@@ -847,7 +847,24 @@ export const getAdsCountPerRegion = async (category: string, subcategory?: strin
     // Ensure the connection is closed after the operation
   }
 };
+export async function updateCreatedAt(_id: string) {
+  try {
+    await connectToDatabase();
 
+    const update = await DynamicAd.findByIdAndUpdate(
+      _id,
+      {
+        updatedAt: new Date()
+      },
+      { new: true }
+    );
+
+    return JSON.parse(JSON.stringify(update));
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
 export const getAdsCountPerVerifiedTrue = async (category: string, subcategory: string) => {
   try {
     await connectToDatabase();

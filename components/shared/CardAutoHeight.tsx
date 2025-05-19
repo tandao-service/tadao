@@ -33,6 +33,12 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import sanitizeHtml from "sanitize-html";
  // Correct import
 import ProgressPopup from "./ProgressPopup";
+import { formatDistanceToNow, isBefore, subMonths } from "date-fns";
+import { updateCreatedAt } from "@/lib/actions/dynamicAd.actions";
+const shouldShowRenewButton = (updatedAt: Date, priority: number) => {
+  const oneMonthAgo = subMonths(new Date(), 1);
+  return priority === 1 && isBefore(new Date(updatedAt), oneMonthAgo);
+};
 type CardProps = {
   ad: any;
   hasOrderLink?: boolean;
@@ -116,7 +122,22 @@ const [isDeleted, setIsDeleted] = useState(false);
         : safeMessage;
       return truncatedMessage;
     };
-  //console.log(ad.imageUrls);
+     const handleRenew = async (_id: string) => {
+  try {
+   await updateCreatedAt(
+          _id
+        );
+        toast({
+          title: "Alert",
+          description: "Renewal successful",
+          duration: 5000,
+          className: "bg-black text-white",
+        });
+  } catch (error) {
+    console.error(error);
+    alert("Error renewing ad.");
+  }
+};
   return (
     <>
     {ad.loanterm ?(<><div className="bg-white hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg text-xs border border-gray-300 dark:border-gray-600">
@@ -278,11 +299,9 @@ const [isDeleted, setIsDeleted] = useState(false);
           )}
 
           <Image
-            onClick={() => {
-              handleAdView(ad);
-            }}
-            src={`${ad.data.imageUrls[0]}`}
-            alt={`${ad.data.title}`}
+            onClick={() => handleAdView(ad)}
+            src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+            alt={ad.data.title || "Ad image"}
             width={400} // Set a width to control layout consistency
             height={0} // Proportional height
             style={{ minHeight: "200px" }} // Set the minimum height here
@@ -501,6 +520,22 @@ const [isDeleted, setIsDeleted] = useState(false);
               </div>
             )}
           </div>
+            {shouldShowRenewButton(ad.updatedAt, ad.priority) && (<div className="flex mt-2 w-full text-xs justify-between items-center">
+             <button
+    className="bg-green-600 hover:bg-gren-700 text-white p-2 rounded"
+    onClick={() => handleRenew(ad._id)}
+  >
+    Renew Ad
+  </button>
+  <button
+  className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded"
+  onClick={() => handleOpenPlan()}
+>
+  Top Ad
+</button>
+          </div>
+ 
+)}
         </div>
       </div>)}</>)}
     </>

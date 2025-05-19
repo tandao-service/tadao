@@ -158,11 +158,9 @@ const HorizontalCardPublic = ({
             )}
 
             <Image
-              onClick={() => {
-                handleAdView(ad);
-              }}
-              src={ad.data.imageUrls[0]}
-              alt="ad image"
+              onClick={() => handleAdView(ad)}
+             src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+             alt={ad.data.title || "Ad image"}
               width={400} // Adjust width to match the `w-36` Tailwind class
               height={400} // Adjust height to match the `h-24` Tailwind class
               className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${
