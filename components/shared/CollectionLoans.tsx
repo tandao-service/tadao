@@ -23,6 +23,7 @@ import ContactUser from "./ContactUser";
 import Zoom from "@mui/material/Zoom";
 import { deleteLoan } from "@/lib/actions/loan.actions";
 import { DeleteLoan } from "./DeleteLoan";
+import { Button } from "../ui/button";
 type CollectionProps = {
   data: any[];
   emptyTitle: string;
@@ -216,12 +217,12 @@ const CollectionLoans = ({
           </p>
            <p className="text-xs items-center flex gap-2 text-gray-600 dark:text-gray-300 mb-1">
                     
-                       <button
+                       <Button
                                                           onClick={() => handleOpenContact(loan.userId)}
-                                                          className="bg-gray-100 border px-3 py-1 rounded hover:bg-[#e4ebeb]"
+                                                          variant="outline"
                                                         >
                                                          <QuestionAnswerOutlinedIcon/> Contact Applier
-                                                        </button>
+                                                        </Button >
                     </p>      
         </div>
       </div>

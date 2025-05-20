@@ -33,11 +33,12 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import sanitizeHtml from "sanitize-html";
  // Correct import
 import ProgressPopup from "./ProgressPopup";
-import { formatDistanceToNow, isBefore, subMonths } from "date-fns";
+import { formatDistanceToNow, isBefore, subWeeks } from "date-fns";
 import { updateCreatedAt } from "@/lib/actions/dynamicAd.actions";
+
 const shouldShowRenewButton = (updatedAt: Date, priority: number) => {
-  const oneMonthAgo = subMonths(new Date(), 1);
-  return priority === 1 && isBefore(new Date(updatedAt), oneMonthAgo);
+  const twoWeeksAgo = subWeeks(new Date(), 1);
+  return priority === 1 && isBefore(new Date(updatedAt), twoWeeksAgo);
 };
 type CardProps = {
   ad: any;

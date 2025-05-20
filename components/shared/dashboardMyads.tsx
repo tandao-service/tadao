@@ -198,7 +198,7 @@ CollectionProps) => {
           <div className="hidden lg:inline">
             <div className="w-full">
             
-              <div className="flex mt-2 lg:mt-0 gap-1 flex-col border rounded-lg flex justify-center items-center w-full h-full">
+              <div className="flex mt-2 lg:mt-0 gap-1 flex-col rounded-lg flex justify-center items-center w-full h-full">
             
           {isAdCreator && (<>   
 
@@ -207,7 +207,7 @@ CollectionProps) => {
                              daysRemaining &&
                              daysRemaining > 0 ? (
                                <>
-                                 <div className="flex gap-1 w-full items-center bg-green-100 px-3 py-1 rounded-lg">
+                                 <div className="flex gap-1 w-full items-center dark:bg-black px-3 py-1 rounded-lg">
                                  <div
                                    style={{
                                      backgroundColor: color,
@@ -224,7 +224,7 @@ CollectionProps) => {
                              ) : (
                                <>
 
-<div className="flex w-full items-center gap-1 bg-green-100 px-3 py-1 rounded-lg">
+<div className="flex w-full items-center gap-1 dark:bg-black px-3 py-1 rounded-lg">
 <div
                                    style={{
                                      backgroundColor: color,
@@ -289,7 +289,7 @@ CollectionProps) => {
                                    </div>
                                  </div> */}
 
-                                 <div className="flex gap-1 w-full items-center dark:bg-[#2D3236] bg-green-100 px-3 py-1 rounded-lg">
+                                 <div className="flex gap-1 w-full items-center dark:bg-black px-3 py-1 rounded-lg">
                                  <div
                                    style={{
                                      backgroundColor: color,
@@ -306,7 +306,7 @@ CollectionProps) => {
                              ) : (
                                <>
 
-<div className="flex w-full items-center gap-1 bg-green-100 dark:bg-[#2D3236] px-3 py-1 rounded-lg">
+<div className="flex w-full items-center gap-1 dark:bg-black px-3 py-1 rounded-lg">
 <div
                                    style={{
                                      backgroundColor: color,

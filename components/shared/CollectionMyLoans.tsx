@@ -114,7 +114,7 @@ const CollectionMyLoans = ({
            };
          
   return (
-    <div className="dark:bg-[#2D3236]">
+    <div>
       {data.length > 0 ? (
       
       <div className="w-full">

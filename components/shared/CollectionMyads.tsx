@@ -136,8 +136,8 @@ const filteredAds = selectedCategory
               onClick={() => setInputMode("Ads")}
               className={`h-12 p-3 rounded-tl-0 lg:rounded-tl-xl flex gap-2 justify-center items-center ${
                 inputMode === "Ads"
-                  ? "bg-white"
-                  : "bg-green-600 hover:bg-green-700 text-white"
+                  ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
+                  : "bg-emerald-600 hover:bg-emerald-700 text-white"
               }`}
             >
               <ListOutlinedIcon /> My Ads
@@ -148,8 +148,8 @@ const filteredAds = selectedCategory
               onClick={() => setInputMode("Loans")}
               className={`h-12 p-3 rounded-0 lg:rounded-tr-xl flex gap-2 justify-center items-center ${
                 inputMode === "Loans"
-                  ? "bg-white"
-                  : "bg-green-600 hover:bg-green-700 text-white"
+                  ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
+                  : "bg-emerald-600 hover:bg-emerald-700 text-white"
               }`}
             >
               <ChecklistRtlOutlinedIcon  /> Loan Requests
@@ -158,7 +158,7 @@ const filteredAds = selectedCategory
        { inputMode==="Ads" && (<div
           className={`rounded-b-lg p-2 flex flex-col min-h-screen ${
             inputMode === "Ads"
-              ? "bg-white"
+              ? "dark:bg-[#131B1E] dark:text-gray-100 bg-white"
               : "bg-[#131B1E]"
           }`}
         > 
@@ -304,13 +304,13 @@ const filteredAds = selectedCategory
         { inputMode==="Loans" && ( <div
           className={`rounded-b-lg p-2 flex flex-col min-h-screen ${
             inputMode === "Loans"
-              ? "bg-white"
+              ? "dark:bg-[#131B1E] dark:text-gray-100 bg-white"
               : "bg-[#131B1E]"
           }`}
         >
       
       {loans && isAdCreator && (<>
-        <div className="container mx-auto p-1 lg:p-4 border rounded-xl">
+        <div className="container mx-auto p-1 lg:p-4 rounded-xl">
                     <h1 className="text-2xl font-bold mb-4">Loan Requests</h1>
                     <div className="flex flex-col lg:flex-row gap-3"></div>
                     {/* Date Filter Section */}

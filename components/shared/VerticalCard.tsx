@@ -32,11 +32,12 @@ import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
  import { Email, Phone } from '@mui/icons-material'; // Or from 'react-icons/md'
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import { formatDistanceToNow, isBefore, subMonths } from "date-fns";
+import { formatDistanceToNow, isBefore, subWeeks } from "date-fns";
 import { updateCreatedAt } from "@/lib/actions/dynamicAd.actions";
+
 const shouldShowRenewButton = (updatedAt: Date, priority: number) => {
-  const oneMonthAgo = subMonths(new Date(), 1);
-  return priority === 1 && isBefore(new Date(updatedAt), oneMonthAgo);
+  const twoWeeksAgo = subWeeks(new Date(), 1);
+  return priority === 1 && isBefore(new Date(updatedAt), twoWeeksAgo);
 };
 type CardProps = {
   ad: any;
