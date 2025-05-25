@@ -48,6 +48,7 @@ export const RequestFinancing: React.FC<loanProps> = ({
 }) => {
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [deposit, setDeposit] = useState(0);
+  const [LoanAmount, setLoanAmount] = useState(ad.data.price);
   const [loanterm, setLoanterm] = useState("");
   const [loanType] = useState("Property Financing");
   const [employmentStatus, setEmploymentStatus] = useState("");
@@ -76,7 +77,6 @@ export const RequestFinancing: React.FC<loanProps> = ({
       maximumFractionDigits: 0,
     }).format(numberValue);
   };
-
   const parseCurrencyToNumber = (value: string): number => {
     return Number(value.replace(/,/g, ""));
   };
@@ -107,6 +107,7 @@ export const RequestFinancing: React.FC<loanProps> = ({
           userId,
           adId: ad._id,
           loanType,
+          LoanAmount,
           monthlyIncome,
           deposit,
           loanterm,
@@ -207,7 +208,7 @@ export const RequestFinancing: React.FC<loanProps> = ({
           <SelectTrigger className="w-full text-base border p-2 rounded-md dark:text-gray-300 text-gray-700">
             <SelectValue placeholder="" />
           </SelectTrigger>
-          <SelectContent className="text-base">
+          <SelectContent className="text-base dark:bg-[#131B1E]">
             <SelectItem value="Employed">Employed</SelectItem>
             <SelectItem value="Self-employed">Self-employed</SelectItem>
             <SelectItem value="Business Owner">Business Owner</SelectItem>
@@ -222,8 +223,8 @@ export const RequestFinancing: React.FC<loanProps> = ({
           <SelectTrigger className="w-full text-base border p-2 rounded-md dark:text-gray-300 text-gray-700">
             <SelectValue placeholder="" />
           </SelectTrigger>
-          <SelectContent className="text-base">
-            {["12", "24", "36", "48", "60"].map((m) => (
+          <SelectContent className="text-base dark:bg-[#131B1E]">
+            {["6", "12", "24", "36", "48", "60","72","84","96","108","120","+120"].map((m) => (
               <SelectItem key={m} value={`${m} months`}>
                 {m} months
               </SelectItem>
@@ -261,7 +262,7 @@ export const RequestFinancing: React.FC<loanProps> = ({
     <>
       {isMobile && isOpen ? (
         <div className="fixed inset-0 z-20 bg-[#e4ebeb] dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
-          <div className="flex w-full gap-2 items-center dark:bg-[#131B1E] border-b pb-2">
+          <div className="flex w-full gap-2 items-centerdark:bg-[#222528] border-b pb-2">
             <button
               onClick={onClose}
               className="flex justify-center p-2 items-center text-gray-600 dark:text-[#e4ebeb] dark:hover:bg-gray-700 hover:text-green-600 rounded-full"
@@ -276,7 +277,7 @@ export const RequestFinancing: React.FC<loanProps> = ({
         </div>
       ) : (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-xl dark:bg-[#2D3236] dark:text-gray-300 max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Financing Request Form</DialogTitle>
             </DialogHeader>

@@ -209,6 +209,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                         >
                           <option value="text">Text</option>
                           <option value="number">Number</option>
+                          <option value="money">Money</option>
                           <option value="select">Select</option>
                           <option value="radio">Radio</option>
                           <option value="checkbox">Checkbox</option>
@@ -226,11 +227,12 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                           </option>
                           <option value="delivery">Delivery Option</option>
                           <option value="youtube-link">YouTube link</option>
+                           <option value="notify">notify</option>
                           <option value="related-autocompletes">
                             Related-autocompletes
                           </option>
                         </select>
-                        {(field.type === "select" ||
+                      {/*   {(field.type === "select" ||
                           field.type === "radio" ||
                           field.type === "checkbox" ||
                           field.type === "autocomplete" ||
@@ -252,7 +254,30 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                               placeholder="Comma-separated options"
                             />
                           </div>
-                        )}
+                        )}*/}
+                        {(field.type === "select" ||
+  field.type === "multi-select" ||
+  field.type === "radio" ||
+  field.type === "notify" ||
+  field.type === "autocomplete" ||
+  field.type === "checkbox") && (
+  <input
+    type="text"
+    placeholder={field.type === "notify" ? "Notification" : "Comma-separated options"}
+    value={field.options.join(",")}
+    onChange={(e) =>
+                                handleEditFieldChange(
+                                  index,
+                                  "options",
+                                  e.target.value
+                                    .split(",")
+                                    .map((option) => option.trim())
+                                )
+                              }
+    className="border rounded-lg p-2 flex-1 dark:text-gray-300 dark:bg-[#2D3236] bg-white"
+  />
+)}
+
                         {field.type === "related-autocompletes" && (
                           <TextareaAutosize
                             placeholder="Comma-separated options"
@@ -273,7 +298,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                                 e.target.value
                               )
                             }
-                            className="border w-full rounded-lg p-2 flex-1 dark:bg-[#2D3236] bg-white"
+                            className="border w-full dark:text-gray-300 rounded-lg p-2 flex-1 dark:bg-[#2D3236] bg-white"
                           />
                         )}
                         <label className="flex items-center mb-1">
@@ -393,12 +418,13 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                               <span className="text-red-500"> *Required</span>
                             )}
                             {(field.type === "select" ||
+                             field.type === "notify" ||
                               field.type === "autocomplete" ||
                               field.type === "multi-select") && (
-                              <div className="ml-4 text-sm text-gray-600">
+                              <div className="ml-4 dark:text-gray-400 text-sm text-gray-600">
                                 Options: {field.options.join(", ")}{" "}
                                 {field.multiSelect && (
-                                  <span className="text-blue-500">
+                                  <span className="dark:text-gray-300 text-blue-500">
                                     (Multi-Select)
                                   </span>
                                 )}

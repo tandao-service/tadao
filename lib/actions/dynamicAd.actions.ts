@@ -171,13 +171,13 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
     let AdQuery: any = [];
     if (queryObject.sortby === "recommeded") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, updatedAt: -1 }) // Both sorted in descending order
+        .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
         .limit(limit)
 
     } else if (queryObject.sortby === "new") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, updatedAt: -1 }) // Both sorted in descending order
+        .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
         .limit(limit)
     } else if (queryObject.sortby === "lowest") {
@@ -333,8 +333,8 @@ export async function getRelatedAdByCategory({
     const conditions = { $and: [{ subcategory: subcategory }, { _id: { $ne: adId } }, { adstatus: "Active" }] }
 
     const AdQuery = DynamicAd.find(conditions)
-      //  .sort({ updatedAt: 'desc' })
-      .sort({ priority: -1, updatedAt: -1 })
+      //  .sort({ createdAt: 'desc' })
+      .sort({ priority: -1, createdAt: -1 })
       .skip(skipAmount)
       .limit(limit)
 
@@ -368,12 +368,12 @@ export async function getAdByUser({ userId, limit = 20, page, sortby, myshop }: 
     let AdQuery: any = [];
     if (sortby === "recommeded") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, updatedAt: -1 }) // Both sorted in descending order
+        .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
         .limit(limit)
     } else if (sortby === "new") {
       AdQuery = DynamicAd.find(conditions)
-        .sort({ priority: -1, updatedAt: -1 })
+        .sort({ priority: -1, createdAt: -1 })
         .skip(skipAmount)
         .limit(limit)
     } else if (sortby === "lowest") {
@@ -854,7 +854,7 @@ export async function updateCreatedAt(_id: string) {
     const update = await DynamicAd.findByIdAndUpdate(
       _id,
       {
-        updatedAt: new Date()
+        createdAt: new Date()
       },
       { new: true }
     );

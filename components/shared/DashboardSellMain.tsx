@@ -138,6 +138,7 @@ const DashboardSellMain = ({
                 packagesList={packagesList}
                 handleAdView={handleAdView}
                 handlePay={handlePay}
+                handleOpenShop={handleOpenShop}
                 handleOpenTerms={handleOpenTerms}
               />
             </div>

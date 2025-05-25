@@ -7,10 +7,20 @@ import { Icon } from "@iconify/react";
 import Barsscale from "@iconify-icons/svg-spinners/bars-scale";
  import Image from "next/image";
  import Zoom from "react-medium-image-zoom";
+ import { db, storage } from "@/lib/firebase";
+ import {
+   addDoc,
+   collection,
+   getDocs,
+   query,
+   serverTimestamp,
+   where,
+ } from "firebase/firestore";
+import { AdminId } from "@/constants";
 // Correct import
 export default function ContactUser({
-    isOpen,
-    user,
+  isOpen,
+  user,
   handleOpenChatId,
   onClose,
 }: {
@@ -34,6 +44,20 @@ export default function ContactUser({
                  
             const token = user.token;
             sendNotify(token, message)
+             const read = "1";
+             const imageUrl='';
+                  const messageData = {
+                    text: message,
+                    name: "PocketShop Team",
+                    avatar: '',
+                    createdAt: serverTimestamp(),
+                    uid:AdminId,
+                    recipientUid:user._id,
+                    imageUrl,
+                    read,
+                  };
+            
+                  await addDoc(collection(db, "messages"), messageData);
           }
           if(user.email && emailType ==='email'){
            
@@ -42,6 +66,20 @@ export default function ContactUser({
               recipientEmail,
               message
             );
+               const read = "1";
+             const imageUrl='';
+                  const messageData = {
+                    text: message,
+                    name: "PocketShop Team",
+                    avatar: '',
+                    createdAt: serverTimestamp(),
+                    uid:AdminId,
+                    recipientUid:user._id,
+                    imageUrl,
+                    read,
+                  };
+            
+                  await addDoc(collection(db, "messages"), messageData);
           }
              
      setMessage("");
@@ -89,7 +127,12 @@ export default function ContactUser({
              <h3 className="text-lg">{user.firstName} {user.lastName}</h3>
              </div>
              </div>
-           
+            <button
+            onClick={()=> handleOpenChatId(user._id)}
+            className="underline hover:font-bold text-xs cursor-pointer text-gray-300 px-6 py-2 rounded-full"
+          >
+           History
+          </button>
            </div>
 
     <div className="w-full rounded-xl h-[70vh] shadow-lg p-4 dark:bg-[#131B1E] dark:text-gray-300 bg-white">

@@ -29,9 +29,10 @@ const dynamicAdSchema = new mongoose.Schema({
   abused: { type: String },
   subcategory: { type: Schema.Types.ObjectId, ref: 'Subcategory' },
   organizer: { type: Schema.Types.ObjectId, ref: 'User' },
-  plan: { type: Schema.Types.ObjectId, ref: 'Packages' }
+  plan: { type: Schema.Types.ObjectId, ref: 'Packages' },
+  createdAt: { type: Date, default: Date.now } // ✅ explicitly define it
 },
-  { timestamps: true });
+  { timestamps: false });
 const Ad = mongoose.model('DynamicAd', dynamicAdSchema);
 
 function calculateExpiration(createdAt, period) {
@@ -83,11 +84,11 @@ async function checkExpiredSubscriptions() {
 
     // Update createdAt for Premium ads
     premiumAds.forEach(async (ad) => {
-      const lastUpdatedTime = new Date(ad.updatedAt).getTime();
+      const lastUpdatedTime = new Date(ad.createdAt).getTime();
       const currentTime = new Date().getTime();
 
       if (currentTime - lastUpdatedTime >= 24 * 60 * 60 * 1000) { // 24 hours
-        ad.updatedAt = new Date(); // Update to current time
+        ad.createdAt = new Date(); // Update to current time
         await ad.save();
         console.log(`Updated Premium ad: ${ad._id}`);
       }
@@ -99,13 +100,13 @@ async function checkExpiredSubscriptions() {
       adstatus: 'Active',
     });
 
-    // Update updatedAt for Diamond ads
+    // Update createdAt for Diamond ads
     diamondAds.forEach(async (ad) => {
-      const lastUpdatedTime = new Date(ad.updatedAt).getTime();
+      const lastUpdatedTime = new Date(ad.createdAt).getTime();
       const currentTime = new Date().getTime();
 
       if (currentTime - lastUpdatedTime >= 12 * 60 * 60 * 1000) { // 12 hours
-        ad.updatedAt = new Date(); // Update to current time
+        ad.createdAt = new Date(); // Update to current time
         await ad.save();
         console.log(`Updated Diamond ad: ${ad._id}`);
       }

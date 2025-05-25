@@ -22,8 +22,9 @@ import SubCategorySelect from "./SubCategorySelect";
 import { Multiselect } from "./Multiselect";
 import AutoComplete from "./AutoComplete";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-
+import { BellIcon } from "lucide-react";
 import {
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -76,6 +77,7 @@ interface Field {
   type:
     | "text"
     | "number"
+    | "money"
     | "select"
     | "radio"
     | "checkbox"
@@ -94,6 +96,7 @@ interface Field {
     | "gps"
     | "propertyarea"
     | "virtualTourLink"
+    | "notify"
     | "related-autocompletes";
   required?: boolean;
   options?: string[];
@@ -106,6 +109,9 @@ const generateDefaultValues = (fields: Field[]) => {
       defaults[field.name] = "";
     } else if (field.type === "number") {
       defaults[field.name] = 0;
+    }else if (field.type === "money") {
+      defaults[field.name] = 0;
+      
     } else if (field.type === "select") {
       defaults[field.name] = field.options?.[0] || "";
     } else if (field.type === "multi-select") {
@@ -180,7 +186,7 @@ type AdFormProps = {
   //listed: number;
   //priority: number;
   //expirationDate: Date;
- // adstatus: string;
+   handleOpenShop: (shopId:any) => void;
   handleAdView?:(ad:any) => void;
   handlePay?:(id:string) => void;
   handleOpenTerms:() => void;
@@ -203,6 +209,7 @@ const AdForm = ({
   handleAdView,
   handlePay,
   handleOpenTerms,
+  handleOpenShop,
 }: AdFormProps) => {
   const [formData, setFormData] = useState<Record<string, any>>(
     ad ? ad.data : []
@@ -448,23 +455,23 @@ useEffect(() => {
     }, []);
 
   const validateForm = async () => {
-    //console.log("start: ");
-    const validationSchema = createValidationSchema(fields);
-    // console.log("validationSchema: " + validationSchema);
+    console.log("start: ");
+    const validationSchema = createValidationSchema(fields, selectedCategory);
+    console.log("validationSchema: " + JSON.stringify(validationSchema) );
 
     const result = validationSchema.safeParse(formData);
-    // console.log("result:" + result);
+     console.log("result:" + JSON.stringify(result));
     if (!result.success) {
       const errors = result.error.errors.reduce((acc: any, err: any) => {
         acc[err.path[0]] = err.message;
-        //  console.log("acc:" + acc);
+          console.log("acc:" + JSON.stringify(acc));
         return acc;
       }, {});
-      // console.log("faild:" + errors);
+       console.log("faild:" + JSON.stringify(errors));
       setFormErrors(errors);
       return false;
     }
-    //console.log("success:");
+    console.log("success:");
     setFormErrors({});
     return true;
   };
@@ -489,7 +496,10 @@ useEffect(() => {
   const handleInputChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
-
+const handleInputChangeMoney = (field: string, value: string) => {
+  const numericValue = value.replace(/,/g, "");
+  setFormData((prev) => ({ ...prev, [field]: numericValue }));
+};
   const handleInputCategoryChange = (field: string, value: any, _id:string) => {
     setSelectedCategory(value);
     setSelectedCategoryId(_id);
@@ -627,7 +637,6 @@ useEffect(() => {
 
 const phone= countryCode + removeLeadingZero(phoneNumber);
 if(!isValidKenyanPhoneNumber(phone)){
-
   toast({
     variant: "destructive",
     title: "Invalid Phone",
@@ -638,44 +647,68 @@ if(!isValidKenyanPhoneNumber(phone)){
   return
 }
 
-if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerCase() === "Loan Request".toLowerCase()) {
+try {
+  if (
+    selectedCategory === "Buyer Requests" &&
+    selectedSubCategory.trim().toLowerCase() === "loan request"
+  ) {
+    
+    const newAd = await createLoan({
+      loan: {
+        userId: userId,
+        adId: null,
+        loanType: formData["Loan Type"]?.toString() || "",
+        LoanAmount: parseCurrencyToNumber(formData["Loan Amount"]?.toString() || 0),
+        monthlyIncome: parseCurrencyToNumber(formData["Monthly Income"]?.toString() || 0),
+        deposit: parseCurrencyToNumber(formData["Deposit Amount"]?.toString() || 0),
+        loanterm: formData["Preferred Loan Term"]?.toString() || "",
+        employmentStatus: formData["Employment Status"]?.toString() || "",
+        messageComments: formData["Comment"]?.toString() || "",
+        status: "Pending",
+      },
+      path: "/create",
+    });
 
-  await createLoan({
-          loan: {
-          userId: userId,
-          adId: null,
-          loanType:formData["Loan Type"].toString(),
-          monthlyIncome:formData["Monthly Income"].toString(),
-          deposit:formData["Deposit Amount"].toString(),
-          loanterm:formData["Preferred Loan Term"].toString(),
-          employmentStatus:formData["Employment Status"].toString(),
-          messageComments:formData["Comment"].toString(),
-          status: "Pending",
-          },
-          path: "/create",
-            });
-      setFormData(defaults);
-      setFiles([]);
-        toast({
-        title: "Submitted",
-        description: "Loan request submitted successfully.",
-        duration: 5000,
-        className: "bg-[#30AF5B] text-white",
-      });
-  return;
- }
+    setFormData(defaults);
+    setFiles([]);
+
+    if (handleOpenShop) {
+      handleOpenShop(user.user);
+    }
+
+    toast({
+      title: "Submitted",
+      description: "Loan request submitted successfully.",
+      duration: 5000,
+      className: "bg-[#30AF5B] text-white",
+    });
+
+    return;
+  }
+} catch (error) {
+  console.error("Loan submission failed:", error);
+  toast({
+    title: "Submission Failed",
+    description: "Please check your form data and try again.",
+    duration: 5000,
+    variant: "destructive",
+  });
+}
+
 
       
         const uploadedUrls = await uploadFiles();
 
         if (!uploadedUrls) return;
 
-        const finalData = {
-          ...formData,
-          imageUrls: uploadedUrls,
-          price: parseCurrencyToNumber(formData["price"].toString()),
-          phone: phone,
-        };
+       const baseData = {
+  ...formData,
+  imageUrls: uploadedUrls,
+  price: formData["price"] ? parseCurrencyToNumber(formData["price"].toString()) : 0,
+  phone,
+};
+
+const finalData = baseData;
         const pricePack = Number(priceInput);
         const newAd = await createData({
           userId: userId,
@@ -741,7 +774,7 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
         const finalData = {
           ...formData,
           imageUrls: finalImageUrls,
-          price: parseCurrencyToNumber(formData["price"].toString()),
+         price: formData["price"] ? parseCurrencyToNumber(formData["price"].toString()) : 0,
           phone: phone,
         };
         const _id = ad._id;
@@ -797,10 +830,10 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
       maximumFractionDigits: 0,
     }).format(numberValue);
   };
-  const parseCurrencyToNumber = (value: string): number => {
-    // Remove any commas from the string and convert to number
-    return Number(value.replace(/,/g, ""));
-  };
+ const parseCurrencyToNumber = (value: string): number => {
+  const cleaned = value.replace(/[^0-9.-]+/g, ""); // removes anything that's not a digit, dot, or minus sign
+  return Number(cleaned);
+};
   function capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
@@ -860,7 +893,7 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
     setPhoneNumber(formatted);
     setFormData({
       ...formData,
-      phone: countryCode + removeLeadingZero(phoneNumber),
+      phone: countryCode + removeLeadingZero(formatted),
     });
   };
   const [selectedCounty, setSelectedCounty] = useState<string | null>(null);
@@ -1141,7 +1174,7 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                     label={capitalizeFirstLetter(field.name)}
                     value={formatToCurrency(formData[field.name] ?? 0)}
                     onChange={(e) =>
-                      handleInputChange(field.name, e.target.value)
+                      handleInputChangeMoney(field.name, e.target.value)
                     }
                     variant="outlined"
                     placeholder={`Enter ${field.name.replace("-", " ")}`}
@@ -1223,7 +1256,7 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                       label={capitalizeFirstLetter("price")}
                       value={formatToCurrency(formData["price"] ?? 0)}
                       onChange={(e) =>
-                        handleInputChange("price", e.target.value)
+                        handleInputChangeMoney("price", e.target.value)
                       }
                       variant="outlined"
                       placeholder={`Enter Price`}
@@ -1323,7 +1356,7 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                       label={capitalizeFirstLetter("price")}
                       value={formatToCurrency(formData["price"] ?? 0)}
                       onChange={(e) =>
-                        handleInputChange("price", e.target.value)
+                        handleInputChangeMoney("price", e.target.value)
                       }
                       variant="outlined"
                       placeholder={`Enter Price`}
@@ -1422,7 +1455,7 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                       label={capitalizeFirstLetter("price")}
                       value={formatToCurrency(formData["price"] ?? 0)}
                       onChange={(e) =>
-                        handleInputChange("price", e.target.value)
+                        handleInputChangeMoney("price", e.target.value)
                       }
                       variant="outlined"
                       placeholder={`Enter Price`}
@@ -1536,6 +1569,35 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                     value={formData[field.name] || 0}
                     onChange={(e) =>
                       handleInputChange(field.name, e.target.value)
+                    }
+                    variant="outlined"
+                    placeholder={`Enter ${field.name.replace("-", " ")}`}
+                    InputProps={{
+                      classes: {
+                        root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
+                        notchedOutline: "border-gray-300 dark:border-gray-600",
+                        focused: "",
+                      },
+                    }}
+                    InputLabelProps={{
+                      classes: {
+                        root: "text-gray-500 dark:text-gray-400",
+                        focused: "text-emerald-500 dark:text-emerald-400",
+                      },
+                    }}
+                    className="w-full"
+                  />
+                </>
+              )}
+                 {field.type === "money" && (
+                <>
+                  <TextField
+                    required={field.required}
+                    id={field.name}
+                    label={capitalizeFirstLetter(field.name.replace("-", " "))}
+                    value={formatToCurrency(formData[field.name] ?? 0)}
+                    onChange={(e) =>
+                      handleInputChangeMoney(field.name, e.target.value)
                     }
                     variant="outlined"
                     placeholder={`Enter ${field.name.replace("-", " ")}`}
@@ -1829,6 +1891,12 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
                 </div>
                  
               )}
+               {field.type === "notify" && (
+  <label className="flex items-center mt-2 mb-2 gap-2 dark:text-gray-400 text-green-600 text-sm">
+    <BellIcon className="w-4 h-4" />
+    {field.options}
+  </label>
+)}
               {formErrors[field.name] && (
                 <p className="text-red-500 text-sm">{formErrors[field.name]}</p>
               )}
@@ -2363,7 +2431,8 @@ if (selectedCategory === 'Buyer Requests' && selectedSubCategory.trim().toLowerC
             <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
               {/* Header */}
               <div className="flex gap-1 text-[#D1D5DB] items-center">
-              <CircularProgressWithLabel value={uploadProgress} />
+              {/*<CircularProgressWithLabel value={uploadProgress} />*/}
+              <CircularProgress  sx={{ color: '#D1D5DB' }}/>
                {type ==="Update" ? "Updating Ad...":"Creating Ad..."} 
               </div>
             </div>

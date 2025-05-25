@@ -72,7 +72,7 @@ const Contact = ({ ad, user, userId, userName, userImage,handlePay, handleOpenRe
       <div className="lg:hidden justify-between flex w-full gap-1">
         <Verificationmobile
           user={ad.organizer}
-          fee={user?.user?.fee ?? 500}
+          fee={user?.fee ?? 500}
           userId={userId}
           isAdCreator={isAdCreator}
           handlePayNow={handlePay}

@@ -507,7 +507,8 @@ export async function checkExpiredLatestSubscriptionsPerUser() {
             tiktok: 1,
             imageUrl: 1,
             verified: 1,
-            token: 1
+            token: 1,
+            notifications: 1
           }
         }
       }

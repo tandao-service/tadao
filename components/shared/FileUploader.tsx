@@ -296,11 +296,16 @@ export function FileUploader({
         <div className="font-semibold">Add Photo</div>
         <div>
          
-        <small className="dark:text-gray-500 text-[#464b4f]">Add at least 3 photos for this category</small>  <br />
+       
+       {category === "Buyer Requests" || category === "Services" || category === "Seeking Work CVs" || category === "Jobs" ? (<>
+       <small className="dark:text-gray-500 text-[#464b4f]">Add Profile Picture</small>  <br />
+          
+         </>):(<>
+         <small className="dark:text-gray-500 text-[#464b4f]">Add at least 3 photos for this category</small>  <br />
           <small className="dark:text-gray-500 text-[#464b4f]">
             First picture - is the title picture.
           </small>
-         
+         </>)} 
           
         
         </div>

@@ -117,9 +117,9 @@ const CollectionMyLoans = ({
     <div>
       {data.length > 0 ? (
       
-      <div className="w-full">
+      <div className="w-full dark:bg-[#2D3236]">
   {/* Header Row */}
-  <div className="hidden md:grid grid-cols-3 gap-4 bg-[#e4ebeb] dark:bg-gray-800 text-xs font-semibold border border-gray-300 dark:border-gray-600 p-2">
+  <div className="hidden md:grid grid-cols-3 gap-4 bg-[#e4ebeb] dark:bg-[#2D3236] text-xs font-semibold border border-gray-300 dark:border-gray-600 p-2">
     <div className="px-2 py-1 border border-gray-300 dark:border-gray-600">Property</div>
     <div className="px-2 py-1 border border-gray-300 dark:border-gray-600">Application Details</div>
     <div className="px-2 py-1 border border-gray-300 dark:border-gray-600">Actions</div>
@@ -199,6 +199,10 @@ const CollectionMyLoans = ({
           <p className="text-xs text-gray-600 dark:text-gray-300">
             Loan Request Type: <span className="font-semibold">{loan.loanType ?? "Property Financing Loan"}</span>
           </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+       Loan Amount:
+        <span className="font-semibold"> KES {loan.LoanAmount.toLocaleString()}</span>
+      </p>
           <p className="text-xs text-gray-600 dark:text-gray-300">
             Monthly Income: <span className="font-semibold">KES {loan.monthlyIncome.toLocaleString()}</span>
           </p>

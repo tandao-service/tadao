@@ -254,14 +254,14 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
                   onClick={handlePostRequest}
                   className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
                 >
-                  Post a Request
+                  Post a Loan Request
                 </button>
                 <button
                   onClick={handleViewRequests}
                   disabled={isSending}
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {isSending ? "Checking..." : "View Posted Requests"}
+                  {isSending ? "Checking..." : "View Posted Loan Requests"}
                 </button>
                   </SignedIn>
                   <SignedOut>
@@ -272,7 +272,7 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
              }} 
                   className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
                 >
-                  Post a Request
+                  Post a Loan Request
                 </button>
                 <button
                   onClick={() => {
@@ -282,7 +282,7 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
                   disabled={isSending}
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {isSending ? "Checking..." : "View Posted Requests"}
+                  {isSending ? "Checking..." : "View Posted Loan Requests"}
                 </button>
                  <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
                   </SignedOut>

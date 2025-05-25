@@ -53,7 +53,7 @@ interface AdsProps {
     handleSubCategory:(category: string, subcategory: string) => void;
     handleOpenReview: (value:any) => void;
     handleOpenShop: (value:any) => void;
-    handleOpenChatId: (value:string) => void;
+    handleOpenChatId: (value:any) => void;
     handleOpenSettings: () => void;
     handleOpenPerfomance: () => void;
 }

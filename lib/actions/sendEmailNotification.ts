@@ -20,7 +20,7 @@ export async function sendEmailNotification(
   const mailOptions = {
     from: '"PocketShop" <support@pocketshop.co.ke>',
     to: recipientEmail,
-    subject: `Important Notification`,
+    subject: `You've got a message from PocketShop`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
         <div style="text-align: center; margin-bottom: 30px;">
@@ -30,7 +30,7 @@ export async function sendEmailNotification(
 </span>
         </div>
 
-        <h2 style="color: #064E3B;">Important Notification</h2>
+        <h2 style="color: #064E3B;">You've got a message from PocketShop</h2>
         <p>Hello,</p>
         <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #064E3B; border-radius: 5px;">
           <p style="margin: 0;">"${message}"</p>

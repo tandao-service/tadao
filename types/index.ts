@@ -89,6 +89,7 @@ export type CreateLoanParams = {
     userId: string
     adId: string | null;
     loanType: string;
+    LoanAmount: number,
     monthlyIncome: number,
     deposit: number,
     loanterm: string,

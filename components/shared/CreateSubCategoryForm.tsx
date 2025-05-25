@@ -191,6 +191,7 @@ const CreateSubCategoryForm = () => {
                 >
                   <option value="text">Text</option>
                   <option value="number">Number</option>
+                  <option value="money">Money</option>
                   <option value="select">Select</option>
                   <option value="radio">Radio</option>
                   <option value="checkbox">Checkbox</option>
@@ -206,29 +207,32 @@ const CreateSubCategoryForm = () => {
                   <option value="bulkprice">Price & BulkPrice</option>
                   <option value="delivery">Delivery Option</option>
                   <option value="youtube-link">YouTube link</option>
+                  <option value="notify">notify</option>
                   <option value="related-autocompletes">
                     Related-autocompletes
                   </option>
                 </select>
-                {(field.type === "select" ||
-                  field.type === "multi-select" ||
-                  field.type === "radio" ||
-                  field.type === "autocomplete" ||
-                  field.type === "checkbox") && (
-                  <input
-                    type="text"
-                    placeholder="Comma-separated options"
-                    value={field.options.join(",")}
-                    onChange={(e) =>
-                      handleFieldChange(
-                        index,
-                        "options",
-                        e.target.value.split(",")
-                      )
-                    }
-                    className="border rounded-lg p-2 flex-1 dark:bg-[#2D3236] bg-white"
-                  />
-                )}
+               {(field.type === "select" ||
+  field.type === "multi-select" ||
+  field.type === "radio" ||
+  field.type === "notify" ||
+  field.type === "autocomplete" ||
+  field.type === "checkbox") && (
+  <input
+    type="text"
+    placeholder={field.type === "notify" ? "Notification" : "Comma-separated options"}
+    value={field.options.join(",")}
+    onChange={(e) =>
+      handleFieldChange(
+        index,
+        "options",
+        e.target.value.split(",")
+      )
+    }
+    className="border rounded-lg p-2 flex-1 dark:bg-[#2D3236] bg-white"
+  />
+)}
+
                 {field.type === "related-autocompletes" && (
                   <textarea
                     placeholder="Comma-separated options"

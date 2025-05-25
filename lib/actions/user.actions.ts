@@ -378,14 +378,18 @@ export async function getUserAgragate(limit: number, page: number) {
           firstName: 1,
           lastName: 1,
           photo: 1,
+          phone: 1,
           status: 1,
           verified: 1,
+          token: 1,
+          notifications: 1,
           businessname: 1,
           adsCount: 1,
           activeCount: 1,
           pendingCount: 1,
           inactiveCount: 1,
           totalPaid: 1
+
         }
       },
       { $sort: { adsCount: -1 } },  // Sort by adsCount descending
@@ -478,8 +482,11 @@ export async function getToAdvertiser() {
           firstName: 1,
           lastName: 1,
           photo: 1,
+          phone: 1,
           status: 1,
           verified: 1,
+          token: 1,
+          notifications: 1,
           businessname: 1,
           adsCount: 1,
           activeCount: 1,

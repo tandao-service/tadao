@@ -209,6 +209,10 @@ const [isDeleted, setIsDeleted] = useState(false);
         Client Name:
         <span className="font-semibold">  {ad.userId.firstName} {ad.userId.lastName}</span>
       </p>
+        <p className="text-xs text-gray-600 dark:text-gray-300">
+       Loan Amount:
+        <span className="font-semibold"> KES {ad.LoanAmount.toLocaleString()}</span>
+      </p>
       <p className="text-xs text-gray-600 dark:text-gray-300">
         Monthly Income:
         <span className="font-semibold"> KES {ad.monthlyIncome.toLocaleString()}</span>
@@ -458,9 +462,9 @@ const [isDeleted, setIsDeleted] = useState(false);
               <div className="font-bold">Contact for price</div>
             ) : (
               <>
-                <span className="font-bold">
+              {ad.data.price > 0 && (<span className="font-bold">
                   Ksh {ad.data.price.toLocaleString()}
-                </span>
+                </span>)}  
               </>
             )}{" "}
             {ad.data.unit && ad.data.contact === "specify" && (
@@ -474,6 +478,13 @@ const [isDeleted, setIsDeleted] = useState(false);
                 {ad.data.period}
               </div>
             )}
+
+           {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (
+  <div className="flex flex-col font-bold">
+    <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
+    <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
+  </div>
+)}
           </div>
 
           <div className="flex gap-2 text-gray-500 text-sm mt-2">

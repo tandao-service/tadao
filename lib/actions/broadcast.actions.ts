@@ -35,7 +35,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
         const mailOptions = {
           from: '"PocketShop" <support@pocketshop.co.ke>',
           to: recipient.email,
-          subject: `Important Notification`,
+          subject: `You've got a message from PocketShop`,
           html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
                 <div style="text-align: center; margin-bottom: 30px;">
@@ -45,7 +45,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
                   </span>
                 </div>
         
-                <h2 style="color: #064E3B;">Important Notification</h2>
+                <h2 style="color: #064E3B;">You've got a message from PocketShop</h2>
                 <p>Hello,</p>
                 <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #064E3B; border-radius: 5px;">
                   <p style="margin: 0;">"${message}"</p>
@@ -76,7 +76,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
             body: JSON.stringify({
               token: recipient.token,
               notification: {
-                title: "Important Notification",
+                title: "You've got a message from PocketShop",
                 body: message,
                 icon: "https://pocketshop.co.ke/logo_green.png",
                 click_action: `https://pocketshop.co.ke/?action=chat`,
@@ -124,7 +124,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
           const mailOptions = {
             from: '"PocketShop" <support@pocketshop.co.ke>',
             to: email,
-            subject: `Important Notification`,
+            subject: `You've got a message from PocketShop`,
             html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
               <div style="text-align: center; margin-bottom: 30px;">
@@ -134,7 +134,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
                 </span>
               </div>
       
-              <h2 style="color: #064E3B;">Important Notification</h2>
+              <h2 style="color: #064E3B;">You've got a message from PocketShop</h2>
               <p>Hello,</p>
               <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #064E3B; border-radius: 5px;">
                 <p style="margin: 0;">"${message}"</p>

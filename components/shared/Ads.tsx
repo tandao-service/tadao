@@ -697,9 +697,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                       </p>
                     ) : (
                       <>
-                        <span className="text-lg lg:text-xl font-bold w-min rounded-full p-1 dark:text-emerald-500 text-emerald-950">
-                          {formatKsh(ad.data.price)}
-                        </span>
+                       {ad.data.price > 0 && (<span className="text-lg lg:text-xl font-bold w-min rounded-full p-1 dark:text-emerald-500 text-emerald-950">
+                  Ksh {ad.data.price.toLocaleString()}
+                </span>)}  
+                      
                       </>
                     )}{" "}
                     {ad.data.unit && ad.data.contact === "specify" && (
@@ -717,6 +718,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                         {ad.data.period}
                       </div>
                     )}
+                      {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-emerald-500 text-emerald-950 font-bold">
+                 <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
+                 <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
+                </div>)} 
                   </div>
                 </div>
                 {ad.data.bulkprice?.length > 0 && (
@@ -841,7 +846,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                         <>
                           <div key={key} className="mb-2 md:flex-row">
                             <div className="dark:text-gray-300 text-emerald-950 text-sm">
-                              {value}
+                              {key ==='Maximum Amount' || key==='Minimum Amount' ? Number(value).toLocaleString():value}
                             </div>
                             <div className="dark:text-gray-500 text-gray-600 text-xs">
                               {capitalizeFirstLetter(key.replace("-", " "))}
@@ -1069,7 +1074,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                             <SellerProfileCard
                               userId={userId}
                               ad={ad}
-                               fee={user?.user?.fee ?? 500}
+                               fee={user?.fee ?? 500}
                               userImage={userImage}
                               userName={userName} 
                               handleOpenReview={handleOpenReview}
@@ -1463,9 +1468,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   </p>
                 ) : (
                   <>
-                    <span className="flex gap-1 text-2xl font-bold w-min rounded-full px-4 py-1 dark:text-emerald-500 text-emerald-950">
-                      {formatKsh(ad.data.price)}
-                    </span>
+                    {ad.data.price > 0 && (<span className="flex gap-1 text-2xl font-bold w-min rounded-full px-4 py-1 dark:text-emerald-500 text-emerald-950">
+                  Ksh {ad.data.price.toLocaleString()}
+                </span>)}  
+                   
                   </>
                 )}
                 {ad.data.unit && ad.data.contact === "specify" && (
@@ -1479,6 +1485,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     {ad.data.period}
                   </div>
                 )}
+                  {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-emerald-500 text-emerald-950 font-bold">
+                 <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
+                 <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
+                </div>)} 
               </div>
               {ad.data.contact && ad.data.contact === "contact" && (
                 <div>
@@ -1657,7 +1667,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 <SellerProfileCard
                   userId={userId}
                   ad={ad}
-                   fee={user?.user?.fee ?? 500}
+                   fee={user?.fee ?? 500}
                   userImage={userImage}
                   userName={userName} 
                   handleOpenReview={handleOpenReview}

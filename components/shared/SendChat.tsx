@@ -11,8 +11,12 @@ export default function SendChat() {
     const truncate = (str: string, n: number) =>
       str.length > n ? str.slice(0, n - 1) + "…" : str;
   
-    const notificationTitle = `New inquiry on: ${truncate(ad.data.title, 35)}`;
-    const notificationBody = `${userName} is interested in your ${truncate(ad.data.title, 40)}. Tap to view.`;
+   // const notificationTitle = `New inquiry on: ${truncate(ad.data.title, 35)}`;
+    //const notificationBody = `${userName} is interested in your ${truncate(ad.data.title, 40)}. Tap to view.`;
+    
+    const notificationTitle = `🔔 Inquiry on: ${truncate(ad.data.title, 35)}`;
+const notificationBody = `👤 ${userName} is interested in your ${truncate(ad.data.title, 40)}. Tap to view.`;
+    
     const res = await fetch("/api/send-push", {
       method: "POST",
       headers: {
@@ -53,7 +57,7 @@ export default function SendChat() {
       body: JSON.stringify({
        token: token,
        notification: {
-          title: "New Message",
+          title: "💬 New Message",
           body: message,
           icon: "https://pocketshop.co.ke/logo_green.png",
           click_action: `https://pocketshop.co.ke/?action=chat`,

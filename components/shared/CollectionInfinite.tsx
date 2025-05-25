@@ -1088,7 +1088,7 @@ const handleCloseAdView = () => {
                 handleOpenSettings={handleOpenSettings}
                 handleCategory={handleCategory}
                 subcategoryList={subcategoryList}
-                user={user?.user ?? []}
+                user={user}
                 packagesList={packagesList}
                 category={wantedcategory}
                 subcategory={wantedsubcategory} 
