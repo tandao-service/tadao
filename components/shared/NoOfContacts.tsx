@@ -32,7 +32,7 @@ const NoOfContacts = ({ userId}: UnreadProp) => {
   return (
     <div>
       {unreadCount !== 0 && (
-        <div className="bg-green-100 shadow-lg rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+        <div className="dark:bg-gray-900 dark:text-white bg-green-100 shadow-lg rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
           {unreadCount}
         </div>
       )}
