@@ -192,7 +192,7 @@ const handlewhatsappClick = () => {
     
      <div className="flex flex-col gap-1 items-center w-full">
                   <SignedIn>
-                  <Button onClick={handleShowPhoneClick} variant="default" className="w-full">
+                  <Button onClick={handleShowPhoneClick} variant="outline" className="w-full">
                   <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
                  </Button>
                     
@@ -202,7 +202,7 @@ const handlewhatsappClick = () => {
                   <Button onClick={() => {
                        // handleOpenP();
                         router.push(`/sign-in`);
-                      }} variant="default" className="w-full">
+                      }} variant="outline" className="w-full">
                   <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
                  </Button>
                    
@@ -214,7 +214,7 @@ const handlewhatsappClick = () => {
                              handleOpenChatId(userId);
                              
                             }}
-                       variant="default" className="w-full">
+                       variant="outline" className="w-full">
                   <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
                   <div>Message</div>
                  </Button>
@@ -224,7 +224,7 @@ const handlewhatsappClick = () => {
                        // handleOpenP();
                         router.push(`/sign-in`);
                       }}
-                       variant="default" className="w-full">
+                       variant="outline" className="w-full">
                   <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
                   <div>Message</div>
                  </Button>
@@ -238,7 +238,7 @@ const handlewhatsappClick = () => {
                     
                       <Button 
                       onClick={handlewhatsappClick}
-                       variant="default" className="w-full">
+                       variant="outline" className="w-full">
                   <WhatsAppIcon sx={{ fontSize: 18 }} />
       
                  <div>WhatsApp</div>
@@ -253,7 +253,7 @@ const handlewhatsappClick = () => {
                            // handleOpenP();
                             router.push(`/sign-in`);
                           }}
-                       variant="default" className="w-full">
+                       variant="outline" className="w-full">
                  <WhatsAppIcon sx={{ fontSize: 18 }} />
       
       <div >WhatsApp</div>

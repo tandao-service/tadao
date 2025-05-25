@@ -158,7 +158,7 @@ const filteredAds = selectedCategory
        { inputMode==="Ads" && (<div
           className={`rounded-b-lg p-2 flex flex-col min-h-screen ${
             inputMode === "Ads"
-              ? "dark:bg-[#131B1E] dark:text-gray-100 bg-white"
+              ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
               : "bg-[#131B1E]"
           }`}
         > 
@@ -170,7 +170,7 @@ const filteredAds = selectedCategory
    <div className="w-full lg:w-[450px] justify-between lg:justify-end flex items-center gap-4 mb-2 p-1 rounded-md">   
       <label className="text-xs lg:text-base">Filter by Category: </label>
       <select
-      className="py-2 border rounded-md w-[250px]"
+      className="py-2 border dark:text-gray-100 dark:bg-[#2D3236] rounded-md w-[250px]"
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
@@ -304,7 +304,7 @@ const filteredAds = selectedCategory
         { inputMode==="Loans" && ( <div
           className={`rounded-b-lg p-2 flex flex-col min-h-screen ${
             inputMode === "Loans"
-              ? "dark:bg-[#131B1E] dark:text-gray-100 bg-white"
+              ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
               : "bg-[#131B1E]"
           }`}
         >
