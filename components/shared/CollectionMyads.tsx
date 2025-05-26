@@ -315,7 +315,7 @@ const filteredAds = selectedCategory
                     <div className="flex flex-col lg:flex-row gap-3"></div>
                     {/* Date Filter Section */}
       
-                    <ScrollArea className="w-[300px] lg:w-full">
+                    <ScrollArea className="w-full">
                       <CollectionMyLoans
                         data={loans.data}
                         emptyTitle={`No request`}

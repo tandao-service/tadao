@@ -398,6 +398,7 @@ const HomeDashboard = ({
                           <AssistantPhotoOutlinedIcon className="w-10 p-1" />
                         </span>
                       )}
+                      
                        {link.label === "Verification" && (
                         <span>
                           <GppGoodOutlinedIcon className="w-10 p-1" />

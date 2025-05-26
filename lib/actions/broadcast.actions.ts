@@ -172,7 +172,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
             body: JSON.stringify({
               token,
               notification: {
-                title: "New Message",
+                title: "💬 New Message",
                 body: message,
                 icon: "https://pocketshop.co.ke/logo_green.png",
                 click_action: `https://pocketshop.co.ke/?action=chat`,
