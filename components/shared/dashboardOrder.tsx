@@ -57,33 +57,33 @@ const dashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomanc
 
   if (isDarkMode === null) return null; // Avoid flickering before state is set
 
-  useEffect(() => {
+  //useEffect(() => {
 
-    const fetchData = async () => {
-      try {
+  // const fetchData = async () => {
+  // try {
 
-        await sendEmailTrans(
-          user.email,
-          trans.firstName,
-          trans.orderTrackingId,
-          trans.merchantId,
-          trans.plan,
-          trans.period,
-          trans.amount,
-          trans.createdAt
+  //   await sendEmailTrans(
+  //   user.email,
+  //   trans.firstName,
+  // trans.orderTrackingId,
+  // trans.merchantId,
+  // trans.plan,
+  // trans.period,
+  // trans.amount,
+  // trans.createdAt
 
-        )
+  //)
 
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-      } finally {
+  //} catch (error) {
+  // console.error("Failed to fetch data", error);
+  //} finally {
 
-      }
-    };
+  //}
+  // };
 
-    fetchData();
+  //fetchData();
 
-  }, []);
+  //}, []);
 
   if (trans.length === 0) {
     return (
