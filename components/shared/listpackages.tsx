@@ -29,7 +29,7 @@ type PackProps = {
   daysRemaining: number;
   packname: string;
   user: IUser;
-  handlePayNow: (id:string) => void;
+  handlePayNow: (id: string) => void;
 };
 export default function Listpackages({
   packagesList,
@@ -48,7 +48,12 @@ export default function Listpackages({
     periodInput: string,
     priceInput: string
   ) => {
-    const customerId = uuidv4();
+
+    function generateRandomOrderId() {
+      const timestamp = Date.now(); // Current timestamp in milliseconds
+      return `MERCHANT_${userId}_${timestamp}`;
+    }
+    const customerId = generateRandomOrderId();
 
     const trans = {
       orderTrackingId: customerId,
@@ -57,14 +62,14 @@ export default function Listpackages({
       planId: packIdInput,
       period: periodInput,
       buyerId: userId,
-      merchantId: userId,
+      merchantId: customerId,
       status: "Pending",
       createdAt: new Date(),
     };
     const response = await createTransaction(trans);
     if (response.status === "Pending") {
-      handlePayNow(response.orderTrackingId)
-     // router.push(`/pay/${response.orderTrackingId}`);
+      handlePayNow(response.merchantId)
+      // router.push(`/pay/${response.orderTrackingId}`);
     }
   };
   const handleButtonClick = (index: number, title: string) => {
@@ -121,18 +126,17 @@ export default function Listpackages({
           packagesList.map((pack, index: any) => (
             <div
               key={index}
-              className={`shadow-md rounded-md p-0 cursor-pointer ${
-                activePackage === pack
-                  ? "dark:bg-[#2D3236] bg-[#F2FFF2] border-[#4DCE7A] border-2"
-                  : "dark:bg-[#2D3236] dark:text-gray-300 bg-white"
-              }`}
+              className={`shadow-md rounded-md p-0 cursor-pointer ${activePackage === pack
+                ? "dark:bg-[#2D3236] bg-[#FAE6DA] border-orange-600 border-2"
+                : "dark:bg-[#2D3236] dark:text-gray-300 bg-white"
+                }`}
               onClick={() => handleClick(pack)}
             >
               <div
                 className="text-lg font-bold rounded-t-md text-white py-2 px-4 mb-4 flex flex-col items-center justify-center"
                 style={{
                   backgroundColor:
-                    activePackage === pack ? "#4DCE7A" : pack.color,
+                    activePackage === pack ? "#ea580c" : pack.color,
                 }}
               >
                 {pack.name}
@@ -170,16 +174,14 @@ export default function Listpackages({
                           {pack.price.map((price: any, index: number) => (
                             <li
                               key={index}
-                              className={`flex items-center gap-0 ${
-                                index !== activeButton ? "hidden" : ""
-                              }`}
+                              className={`flex items-center gap-0 ${index !== activeButton ? "hidden" : ""
+                                }`}
                             >
                               <p
-                                className={`text-xs font-bold lg:text-lg ${
-                                  activePackage === pack
-                                    ? "text-[#30AF5B] "
-                                    : "text-gray-600 dark:text-gray-300"
-                                }`}
+                                className={`text-xs font-bold lg:text-lg ${activePackage === pack
+                                  ? "text-orange-500 "
+                                  : "text-gray-600 dark:text-gray-300"
+                                  }`}
                               >
                                 Ksh {price.amount.toLocaleString()}/{" "}
                                 {activeButtonTitle}
@@ -196,9 +198,8 @@ export default function Listpackages({
                   {pack.features.map((feature: any, index: number) => (
                     <li key={index} className="flex items-center gap-4">
                       <img
-                        src={`/assets/icons/${
-                          feature.checked ? "check" : "cross"
-                        }.svg`}
+                        src={`/assets/icons/${feature.checked ? "check" : "cross"
+                          }.svg`}
                         alt={feature.checked ? "check" : "cross"}
                         width={24}
                         height={24}
@@ -218,51 +219,46 @@ export default function Listpackages({
 
         <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 justify-between items-center mb-2 md:mb-0">
           <button
-            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm  ${
-              activeButton === 0
-                ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-            }`}
+            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm  ${activeButton === 0
+              ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+              : "border border-orange-500 text-orange-500 rounded-full p-2"
+              }`}
             onClick={() => handleButtonClick(0, "1 week")}
           >
             1 week
           </button>
           <button
-            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
-              activeButton === 1
-                ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-            }`}
+            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
+              ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+              : "border border-orange-500 text-orange-500 rounded-full p-2"
+              }`}
             onClick={() => handleButtonClick(1, "1 month")}
           >
             1 month
           </button>
           <button
-            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
-              activeButton === 2
-                ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-            }`}
+            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 2
+              ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+              : "border border-orange-500 text-orange-500 rounded-full p-2"
+              }`}
             onClick={() => handleButtonClick(2, "3 months")}
           >
             3 months
           </button>
           <button
-            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
-              activeButton === 3
-                ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-            }`}
+            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 3
+              ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+              : "border border-orange-500 text-orange-500 rounded-full p-2"
+              }`}
             onClick={() => handleButtonClick(3, " 6 months")}
           >
             6 months
           </button>
           <button
-            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
-              activeButton === 4
-                ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-            }`}
+            className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 4
+              ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+              : "border border-orange-500 text-orange-500 rounded-full p-2"
+              }`}
             onClick={() => handleButtonClick(4, " 1 year")}
           >
             1 year

@@ -20,28 +20,27 @@ export async function sendEmail(
     }
   });
 
-
   const mailOptions = {
-    from: '"PocketShop" <support@pocketshop.co.ke>',
+    from: '"Tadao" <support@tadaoservices.com>',
     to: recipientEmail,
     subject: `New Inquiry on Your Ad: ${adTitle}`,
     html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
      <div style="text-align: center; margin-bottom: 30px;">
   <span style="display: inline-flex; align-items: center; gap: 6px;">
-  <img src="https://pocketshop.co.ke/logo_green.png" alt="PocketShop Logo" style="height: 24px; width: auto; display: block;" />
-  <span style="font-size: 14px; font-weight: bold; color: #064E3B;">PocketShop</span>
+  <img src="https://tadaoservices.com/logo.png" alt="Tadao Logo" style="height: 24px; width: auto; display: block;" />
+  <span style="font-size: 14px; font-weight: bold; color: #FF914C;">Tadao</span>
 </span>
 </div>
     
-    <h2 style="color: #064E3B;">You've Received a New Inquiry</h2>
+    <h2 style="color: #FF914C;">You've Received a New Inquiry</h2>
 
       <p>Hello,</p>
 
       <p>You have a new message regarding your listing:</p>
       <h3 style="color: #444;">${adTitle}</h3>
 
-      <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #064E3B; border-radius: 5px;">
+      <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #FF914C; border-radius: 5px;">
         <p style="margin: 0;">"${message}"</p>
       </div>
 
@@ -53,22 +52,22 @@ export async function sendEmail(
         </div>
       </div>
 
-      <a href="${adUrl}" style="display: inline-block; padding: 12px 24px; background-color: #064E3B; color: white; text-decoration: none; border-radius: 5px;">
-        View Ad on PocketShop
+      <a href="${adUrl}" style="display: inline-block; padding: 12px 24px; background-color: #FF914C; color: white; text-decoration: none; border-radius: 5px;">
+        View Ad on Tadao
       </a>
 
-      <p style="margin-top: 30px;">Please respond to this inquiry by logging into your PocketShop account.</p>
+      <p style="margin-top: 30px;">Please respond to this inquiry by logging into your Tadao account.</p>
 
       <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
 
-      <p style="font-size: 12px; color: #999;">This email was sent by PocketShop (<a href="https://pocketshop.co.ke" style="color: #999;">pocketshop.co.ke</a>).</p>
+      <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
     </div>
     `,
   };
 
   try {
     const response = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', response);
+    //console.log('Email sent:', response);
     return "success";
   } catch (error) {
     console.error('Error sending email:', error);

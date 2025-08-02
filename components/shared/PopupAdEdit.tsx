@@ -34,37 +34,47 @@ interface WindowProps {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  handleAdView: (ad:any) => void;
+  handleAdView: (ad: any) => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
   handleOpenBook: () => void;
   handleOpenPerfomance: () => void;
-handleOpenSettings: () => void;
-handleOpenShop: (shopId:any) => void;
-handleCategory:(value:string) => void;
+  handleOpenSettings: () => void;
+  handleOpenShop: (shopId: any) => void;
+  handleCategory: (value: string) => void;
   type: string;
   userId: string;
   userName: string;
-  userImage:string;
-  ad:any;
-  user:any;
-  subcategoryList:any;
-  packagesList:any;
-category:string;
-subcategory:string;
+  userImage: string;
+  ad: any;
+  user: any;
+  subcategoryList: any;
+  packagesList: any;
+  category: string;
+  subcategory: string;
 }
 
 const PopupAdEdit = ({ isOpen, category, subcategory, type, user, userId, userImage, userName, subcategoryList, packagesList, ad, handleOpenPerfomance,
   handleOpenSettings,
-  handleOpenShop,handleCategory, onClose, handleAdView, handleOpenBook ,handleOpenChat,handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
- 
+  handleOpenShop, handleCategory, onClose, handleAdView, handleOpenBook, handleOpenChat, handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#FAE6DA] z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-       
-     
+
+
         <DashboardSellMain
           userId={userId}
           type={type}
@@ -88,9 +98,9 @@ const PopupAdEdit = ({ isOpen, category, subcategory, type, user, userId, userIm
           handleOpenShop={handleOpenShop}
           handleOpenPerfomance={handleOpenPerfomance}
           handleOpenSettings={handleOpenSettings}
-          handleCategory={handleCategory} 
-          userImage={userImage} 
-          category={category} subcategory={subcategory}/>
+          handleCategory={handleCategory}
+          userImage={userImage}
+          category={category} subcategory={subcategory} />
         <Toaster />
       </div>
     </div>

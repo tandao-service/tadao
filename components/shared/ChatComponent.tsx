@@ -38,18 +38,18 @@ interface AdsProps {
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
   handleOpenSettings: () => void;
-  handleOpenChatId: (value:string) => void;
-  handleOpenReview: (value:any) => void;
-  handleCategory: (value:string) => void;
-  handleOpenSearchTab: (value:string) => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenChatId: (value: string) => void;
+  handleOpenReview: (value: any) => void;
+  handleCategory: (value: string) => void;
+  handleOpenSearchTab: (value: string) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
-  handlePay: (id:string) => void;
+  handlePay: (id: string) => void;
 }
 
-const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay,handleOpenSearchTab, handleOpenShop,
-  handleOpenPerfomance, handleCategory,handleOpenSettings,handleOpenReview,handleOpenChat,handleOpenChatId, handleOpenBook, handleOpenSell, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety}:AdsProps) => {
- const [isOpenP, setIsOpenP] = useState(false);
+const ChatComponent = ({ senderId, senderName, senderImage, user, onClose, handlePay, handleOpenSearchTab, handleOpenShop,
+  handleOpenPerfomance, handleCategory, handleOpenSettings, handleOpenReview, handleOpenChat, handleOpenChatId, handleOpenBook, handleOpenSell, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: AdsProps) => {
+  const [isOpenP, setIsOpenP] = useState(false);
   const handleOpenP = () => {
     setIsOpenP(true);
   };
@@ -61,58 +61,58 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
   const recipientUid = senderId;
   // console.log(senderId);
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
-  
-      useEffect(() => {
-         const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
-         const isDark = savedTheme === mode;
-         
-         setIsDarkMode(isDark);
-         document.documentElement.classList.toggle(mode, isDark);
-       }, []);
-     
-       useEffect(() => {
-         if (isDarkMode === null) return; // Prevent running on initial mount
-     
-         document.documentElement.classList.toggle(mode, isDarkMode);
-         localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-       }, [isDarkMode]);
-     
-       if (isDarkMode === null) return null; // Avoid flickering before state is set
-     
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+    const isDark = savedTheme === mode;
+
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle(mode, isDark);
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode === null) return; // Prevent running on initial mount
+
+    document.documentElement.classList.toggle(mode, isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  if (isDarkMode === null) return null; // Avoid flickering before state is set
+
   return (
-     <div className="h-[100vh] bg-white lg:bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-       
+    <div className="h-[100vh] bg-white lg:bg-[#FAE6DA] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+
       <div className="z-10 top-0 fixed w-full">
-                 <Navbar user={user} userstatus={user.status} userId={senderId} onClose={onClose} 
-                 handleOpenSell={handleOpenSell} 
-                 handleOpenPlan={handleOpenPlan} 
-                 popup={"chat"} 
-                 handleOpenBook={handleOpenBook} 
-                 handleOpenChat={handleOpenChat}
-                  handleOpenShop={handleOpenShop} 
-                  handleOpenPerfomance={handleOpenPerfomance}
-                  handleOpenSettings={handleOpenSettings} 
-                  handleOpenAbout={handleOpenAbout} 
-                  handleOpenTerms={handleOpenTerms}
-                  handleOpenPrivacy={handleOpenPrivacy}
-                  handleOpenSafety={handleOpenSafety}/>
-               </div>
+        <Navbar user={user} userstatus={user.status} userId={senderId} onClose={onClose}
+          handleOpenSell={handleOpenSell}
+          handleOpenPlan={handleOpenPlan}
+          popup={"chat"}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenShop={handleOpenShop}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety} />
+      </div>
       <div className="w-full lg:max-w-6xl lg:mx-auto h-full flex mt-[60px] mb-0 p-1">
         <div className="hidden lg:inline mr-5">
           <div className="w-full rounded-lg p-1">
-            <SellerProfileChat
+            <SellerProfile
               user={user}
               loggedId={senderId}
               userId={recipientUid}
-              handleOpenReview={handleOpenReview} 
-              handleOpenChatId={handleOpenChatId} 
-              handleOpenSettings={handleOpenSettings} 
-              handlePay={handlePay}/>
+              handleOpenReview={handleOpenReview}
+              handleOpenChatId={handleOpenChatId}
+              handleOpenSettings={handleOpenSettings}
+              handlePay={handlePay} />
           </div>
         </div>
 
         <div className="flex-1 h-screen dark:bg-[#2D3236] lg:dark:bg-[#131B1E]">
-        
+
           <div className="rounded-lg mb-20 h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
             <div className="lg:flex-1 h-screen p-1">
               <div className="w-full p-1 w-full bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
@@ -125,34 +125,34 @@ const ChatComponent =  ({senderId,senderName,senderImage,user,onClose, handlePay
                 </div>
               </div>
               <ScrollArea className="h-[75vh] p-1 bg-white rounded-b-lg dark:bg-[#2D3236]">
-    
-              <Sidebarmain userId={senderId} handleOpenChatId={handleOpenChatId}/>
+
+                <Sidebarmain userId={senderId} handleOpenChatId={handleOpenChatId} />
               </ScrollArea>
               <Toaster />
-                 <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
+              <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
             </div>
           </div>
         </div>
       </div>
       <footer>
         <div className="hidden lg:inline">
-          <Footersub 
-          handleOpenAbout={handleOpenAbout}
-         handleOpenTerms={handleOpenTerms}
-         handleOpenPrivacy={handleOpenPrivacy}
-         handleOpenSafety={handleOpenSafety}/>
+          <Footersub
+            handleOpenAbout={handleOpenAbout}
+            handleOpenTerms={handleOpenTerms}
+            handleOpenPrivacy={handleOpenPrivacy}
+            handleOpenSafety={handleOpenSafety} />
         </div>
         <div
-                       className={`lg:hidden fixed bottom-0 left-0 right-0 transition-transform duration-300 translate-y-full}`}
-                     >
-          <BottomNavigation userId={senderId} 
-          popup={"chat"}
-          onClose={onClose} 
-          handleOpenSell={handleOpenSell}
-          handleOpenChat={handleOpenChat}
-          handleOpenP={handleOpenP}
-          handleOpenSettings={handleOpenSettings}
-          handleOpenSearchTab={handleOpenSearchTab} />
+          className={`lg:hidden fixed bottom-0 left-0 right-0 transition-transform duration-300 translate-y-full}`}
+        >
+          <BottomNavigation userId={senderId}
+            popup={"chat"}
+            onClose={onClose}
+            handleOpenSell={handleOpenSell}
+            handleOpenChat={handleOpenChat}
+            handleOpenP={handleOpenP}
+            handleOpenSettings={handleOpenSettings}
+            handleOpenSearchTab={handleOpenSearchTab} />
         </div>
       </footer>
     </div>

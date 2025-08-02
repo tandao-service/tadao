@@ -79,40 +79,40 @@ export default function Navbardashboard({
   };
   return (
     <div className="w-full bg-gray-200">
-      <div className="fixed bg-[#064E3B] border-b z-10 flex p-3 w-full">
+      <div className="fixed bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90% border-b z-10 flex p-3 w-full">
         <div className="flex-1">
           <div className="flex items-center">
-          
-              <div
-                className="mr-5 w-5 h-8 flex items-center justify-center rounded-sm hover:text-green-600 hover:cursor-pointer"
-                data-tip="Back"
-                onClick={() => {
-                  router.back();
-                }}
-              >
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <ArrowBackOutlinedIcon />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Back</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-         
-              <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-                <StyledBrandName />
-              </div>
-           
+
+            <div
+              className="mr-5 w-5 h-8 flex items-center justify-center rounded-sm text-white hover:text-gray-100 hover:cursor-pointer"
+              data-tip="Back"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ArrowBackOutlinedIcon />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Back</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            <div className="flex items-center gap-2">
+
+              <StyledBrandName />
+            </div>
+
           </div>
         </div>
-        
+
         <div className="hidden lg:inline">
           <div className="flex items-center gap-2">
-           
+
             <div>
               <SignedOut>
                 <button
@@ -135,7 +135,7 @@ export default function Navbardashboard({
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>
-       
+
         </div>
       </div>
       <div>

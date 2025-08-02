@@ -30,17 +30,17 @@ type Category = {
 type MobileProps = {
   categoryList: Category[];
   subcategoryList: any;
-   handleSubCategory: (category:string, subcategory:string) => void;
+  handleSubCategory: (category: string, subcategory: string) => void;
   handleOpenSell: () => void;
-  userId:string;
+  userId: string;
   handleOpenChat: () => void;
   handleOpenSettings: () => void;
-  handleCategory:(value:string)=> void;
-  handleOpenSearchTab:(value:string)=> void;
-  handlePayNow:(id:string)=> void;
-  loans:any;
-  user:any;
-  packagesList:any;
+  handleCategory: (value: string) => void;
+  handleOpenSearchTab: (value: string) => void;
+  handlePayNow: (id: string) => void;
+  loans: any;
+  user: any;
+  packagesList: any;
 };
 
 export default function MenuSubmobileMain({
@@ -61,7 +61,7 @@ export default function MenuSubmobileMain({
   const router = useRouter();
   const searchParams = useSearchParams();
 
- 
+
   const [isOpen, setIsOpen] = useState(false);
   const [category, setCategory] = useState("");
   const handleOpen = (query: string) => {
@@ -89,7 +89,7 @@ export default function MenuSubmobileMain({
             onClick={() => {
               handleOpenSell();
             }}
-            className="hidden lg:inline h-[120px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
+            className="hidden lg:inline h-[120px] bg-[#F7DACA] text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">
@@ -122,7 +122,7 @@ export default function MenuSubmobileMain({
             key={index} // Using sub.title as a unique key
             // onClick={() => handleCategory(category.name)}
             onClick={() => handleOpen(category.name)}
-            className="h-[120px] dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border hover:bg-emerald-100"
+            className="h-[120px] dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border hover:bg-gray-200"
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="rounded-full dark:bg-[#131B1E] bg-gray-100 p-2">
@@ -137,7 +137,7 @@ export default function MenuSubmobileMain({
               <div className="flex flex-col">
                 <h2 className="text-xs">{category.name}</h2>
                 <p className="text-xs text-gray-500 dark:text-gray-500">
-                  {category.name === "Buyer Requests" ?  (category.adCount + loans.adCount): category.adCount} ads
+                  {category.name === "Buyer Requests" ? (category.adCount + loans.adCount) : category.adCount} ads
                 </p>
               </div>
             </div>

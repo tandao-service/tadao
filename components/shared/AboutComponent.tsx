@@ -13,196 +13,174 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
 import { ScrollArea } from "../ui/scroll-area";
+
 interface Props {
   userId: string;
-  user:any;
-  handleOpenSell:() => void;
+  user: any;
+  handleOpenSell: () => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
-  onClose:() => void;
-  handleOpenAbout:() => void;
+  onClose: () => void;
+  handleOpenAbout: () => void;
   handleOpenTerms: () => void;
-handleOpenPrivacy: () => void;
-handleOpenSafety: () => void;
-handleOpenPerfomance: () => void;
-handleOpenSettings: () => void;
-handleOpenShop: (shopId:any) => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleOpenPerfomance: () => void;
+  handleOpenSettings: () => void;
+  handleOpenShop: (shopId: any) => void;
 }
 
-const AboutComponent =  ({userId,user, onClose,
+const AboutComponent = ({
+  userId,
+  user,
+  onClose,
   handleOpenSell,
   handleOpenBook,
   handleOpenChat,
   handleOpenPerfomance,
   handleOpenSettings,
   handleOpenShop,
-  handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }:Props) => {
- const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+  handleOpenPlan,
+  handleOpenAbout,
+  handleOpenTerms,
+  handleOpenPrivacy,
+  handleOpenSafety,
+}: Props) => {
+  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
 
-    useEffect(() => {
-       const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
-       const isDark = savedTheme === mode;
-       
-       setIsDarkMode(isDark);
-       document.documentElement.classList.toggle(mode, isDark);
-     }, []);
-   
-     useEffect(() => {
-       if (isDarkMode === null) return; // Prevent running on initial mount
-   
-       document.documentElement.classList.toggle(mode, isDarkMode);
-       localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-     }, [isDarkMode]);
-   
-     if (isDarkMode === null) return null; // Avoid flickering before state is set
-   
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || mode;
+    const isDark = savedTheme === mode;
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle(mode, isDark);
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode === null) return;
+    document.documentElement.classList.toggle(mode, isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  if (isDarkMode === null) return null;
 
   return (
-    <ScrollArea className="h-[100vh] bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-    
-    <Head>
-        <title>
-          About PocketShop | Kenya&apos;s Leading Vehicle Marketplace
-        </title>
-        <meta
-          name="description"
-          content="Learn about PocketShop.co.ke, Kenya's premier platform for buying and selling vehicles. From cars to heavy-duty machinery, we connect buyers and sellers nationwide."
-        />
-        <meta
-          property="og:title"
-          content="About PocketShop | Kenya's Leading Vehicle Marketplace"
-        />
-        <meta
-          property="og:description"
-          content="At PocketShop.co.ke, we offer a seamless, transparent, and secure platform to buy and sell vehicles across Kenya. Discover a wide selection of cars, motorbikes, buses, and machinery."
-        />
-        <meta property="og:image" content="/assets/images/logo.png" />
-        <meta property="og:url" content="https://PocketShop.co.ke/about" />
-        <meta property="og:type" content="website" />
-        <meta
-          name="keywords"
-          content="PocketShop, buy vehicles, sell vehicles, cars, motorbikes, buses, machinery, Kenya"
-        />
-        <meta name="author" content="PocketShop" />
-      </Head>
+    <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+      <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+        <style jsx>{`
+    @media (max-width: 1024px) {
+      div::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  `}</style>
+        <Head>
+          <title>About Tadao | Kenya&apos;s Smart Marketplace</title>
+          <meta
+            name="description"
+            content="Learn about TadaoServices.com, Kenya's growing marketplace for online shopping and product listings. From electronics to home goods, we make buying and selling seamless."
+          />
+          <meta property="og:title" content="About TadaoServices.com | Kenya's Smart Marketplace" />
+          <meta
+            property="og:description"
+            content="At Tadao Services, we connect buyers and sellers across diverse categories with transparency and convenience."
+          />
+          <meta property="og:image" content="/assets/images/logo.png" />
+          <meta property="og:url" content="https://tadaoservices.com/about" />
+          <meta property="og:type" content="website" />
+          <meta name="keywords" content="Tadao, online shopping Kenya, sell products, e-commerce, buy online" />
+          <meta name="author" content="Tadao" />
+        </Head>
 
-     <div className="top-0 z-10 fixed w-full">
-                        <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"about"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+        <div className="top-0 z-10 fixed w-full">
+          <Navbar
+            user={user}
+            userstatus={user.status}
+            userId={userId}
+            onClose={onClose}
+            popup={"about"}
+            handleOpenSell={handleOpenSell}
+            handleOpenBook={handleOpenBook}
+            handleOpenPlan={handleOpenPlan}
+            handleOpenChat={handleOpenChat}
+            handleOpenPerfomance={handleOpenPerfomance}
+            handleOpenSettings={handleOpenSettings}
+            handleOpenAbout={handleOpenAbout}
+            handleOpenTerms={handleOpenTerms}
+            handleOpenPrivacy={handleOpenPrivacy}
+            handleOpenSafety={handleOpenSafety}
+            handleOpenShop={handleOpenShop}
+          />
+        </div>
 
-        handleOpenPerfomance={handleOpenPerfomance}
-        handleOpenSettings={handleOpenSettings}
-        handleOpenAbout={handleOpenAbout}
-        handleOpenTerms={handleOpenTerms}
-        handleOpenPrivacy={handleOpenPrivacy}
-        handleOpenSafety={handleOpenSafety} 
-        handleOpenShop={handleOpenShop}/>
-                       </div>
+        <div className="max-w-3xl mx-auto flex mt-[60px] p-1">
+          <div className="flex-1">
+            <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
+              <div className="max-w-4xl mx-auto p-8">
+                <h1 className="text-3xl font-bold dark:text-gray-400 text-gray-800 mb-6 text-center">
+                  About Tadao Services
+                </h1>
 
-    <div className="max-w-3xl mx-auto flex mt-[60px] p-1">
-      <div className="hidden lg:inline mr-5"></div>
+                <div className="space-y-6 dark:text-gray-300 text-gray-700">
+                  <p className="text-lg">
+                    Welcome to <span className="font-semibold text-[#BD7A4F]">Tadao Services</span>, Kenya&apos;s growing online
+                    marketplace for discovering and selling a wide range of goods. From home appliances and electronics to fashion,
+                    books, beauty products, and much more - we&apos;re here to simplify your online shopping experience.
+                  </p>
 
-      <div className="flex-1">
-        <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto lg:flex-row mt-0 p-1 justify-center">
-        <div className="max-w-4xl mx-auto p-8">
-  <h1 className="text-3xl font-bold dark:text-gray-400 text-gray-800 mb-6 text-center">
-    About PocketShop.co.ke
-  </h1>
+                  <div>
+                    <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Our Mission</h2>
+                    <p>
+                      Our mission at TadaoServices.com is to empower Kenyans with a simple, secure, and smart way to shop and sell
+                      online. We believe everyone should have access to a modern digital marketplace that is trustworthy and easy to use.
+                    </p>
+                  </div>
 
-  <div className="space-y-6 dark:text-gray-300 text-gray-700">
-    <p className="text-lg">
-      Welcome to <span className="font-semibold text-emerald-600">PocketShop.co.ke</span>,
-      Kenya&apos;s premier online marketplace for buying and selling a wide range of products.
-      Whether you&apos;re looking for electronics, fashion, home appliances, vehicles, furniture,
-      or even agricultural and industrial equipment, we provide a trusted platform that
-      connects buyers and sellers across the country.
-    </p>
+                  <div>
+                    <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
+                      Why Tadao Services?
+                    </h2>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li><span className="font-semibold">Broad Categories</span>: From everyday items to specialty goods, find it all in one place.</li>
+                      <li><span className="font-semibold">Trusted Listings</span>: We promote accurate product descriptions and fair transactions.</li>
+                      <li><span className="font-semibold">Secure Platform</span>: We prioritize your safety with industry-standard security and clear guidelines.</li>
+                      <li><span className="font-semibold">Quick Communication</span>: Sellers and buyers can chat directly and close deals faster.</li>
+                      <li><span className="font-semibold">Community Support</span>: Join a growing ecosystem of sellers, shoppers, and local businesses.</li>
+                    </ul>
+                  </div>
 
-    <div>
-      <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
-        Our Mission
-      </h2>
-      <p>
-        At PocketShop.co.ke, our mission is simple: to make the process of buying and selling
-        online as seamless, transparent, and secure as possible. We aim to create a safe
-        environment where you can find what you need or sell with confidence.
-      </p>
-    </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Our Journey</h2>
+                    <p>
+                      Tadao Services was created with the goal of uplifting online commerce in Kenya. Since our start, we&apos;ve grown by
+                      listening to our users and delivering a reliable and evolving marketplace platform.
+                    </p>
+                  </div>
 
-    <div>
-      <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
-        Why Choose PocketShop.co.ke?
-      </h2>
-      <ul className="list-disc pl-6 space-y-2">
-        <li>
-          <span className="font-semibold">Diverse Product Categories</span>: From fashion and
-          electronics to home essentials and vehicles, our marketplace offers an extensive
-          selection of products.
-        </li>
-        <li>
-          <span className="font-semibold">User-Friendly Platform</span>: Easily post listings,
-          search for products, and connect with buyers or sellers with just a few clicks.
-        </li>
-        <li>
-          <span className="font-semibold">Safe and Secure</span>: We implement strong security
-          measures to protect users and provide tips to avoid scams.
-        </li>
-        <li>
-          <span className="font-semibold">Direct Communication</span>: Buyers and sellers can
-          communicate directly via chat, email, or phone to negotiate and finalize transactions.
-        </li>
-        <li>
-          <span className="font-semibold">Transparency and Trust</span>: We ensure accurate
-          representation of listings and encourage honest communication between users.
-        </li>
-      </ul>
-    </div>
-
-    <div>
-      <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
-        Our Story
-      </h2>
-      <p>
-        Founded with the vision of transforming e-commerce in Kenya, PocketShop.co.ke has
-        quickly grown to become a trusted marketplace. Our team is dedicated to innovation
-        and customer satisfaction, continuously improving our platform to better serve you.
-      </p>
-    </div>
-
-    <div>
-      <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">
-        Join Our Community
-      </h2>
-      <p>
-        Whether you&apos;re a business owner, an independent seller, or a shopper looking for
-        the best deals, PocketShop.co.ke is your go-to marketplace. Join our growing
-        community today and experience a hassle-free buying and selling experience.
-      </p>
-      <p>
-        Thank you for choosing <span className="font-semibold text-emerald-600">PocketShop.co.ke</span>.
-        We look forward to connecting you with the best products and deals in Kenya!
-      </p>
-    </div>
-  </div>
-
-
+                  <div>
+                    <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Be a Part of Us</h2>
+                    <p>
+                      Whether you&apos;re a small business, reseller, or buyer looking for quality and value - Tadao is made for you.
+                      Thank you for supporting our vision to build a smarter marketplace in Kenya.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <footer>
+          <Footersub
+            handleOpenAbout={handleOpenAbout}
+            handleOpenTerms={handleOpenTerms}
+            handleOpenPrivacy={handleOpenPrivacy}
+            handleOpenSafety={handleOpenSafety}
+          />
+        </footer>
       </div>
     </div>
-
-    <footer>
-      <div>
-        <Footersub 
-        handleOpenAbout={handleOpenAbout}
-        handleOpenTerms={handleOpenTerms}
-         handleOpenPrivacy={handleOpenPrivacy}
-         handleOpenSafety={handleOpenSafety}/> 
-      </div>
-    </footer>
-
-</ScrollArea>
-
   );
 };
+
 export default AboutComponent;

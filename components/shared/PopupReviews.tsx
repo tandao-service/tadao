@@ -41,52 +41,62 @@ interface WindowProps {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-   handleOpenSettings: () => void;
-    handleOpenChatId: (value:string) => void;
-    handleOpenReview: (value:any) => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenSettings: () => void;
+  handleOpenChatId: (value: string) => void;
+  handleOpenReview: (value: any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
-  handlePay: (id:string) => void;
-  handleCategory: (value:string) => void;
+  handlePay: (id: string) => void;
+  handleCategory: (value: string) => void;
   userImage: string;
   userId: string;
   userName: string;
-  recipient:any;
-  user:any;
-  
+  recipient: any;
+  user: any;
+
 }
 
-const PopupReviews = ({ isOpen, userId, userName, userImage, user, recipient, onClose,handlePay, handleOpenShop, handleOpenPerfomance, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety, handleOpenBook,handleOpenPlan, handleOpenSell, handleOpenSettings,handleOpenReview,handleOpenChat,handleOpenChatId, }: WindowProps) => {
- 
+const PopupReviews = ({ isOpen, userId, userName, userImage, user, recipient, onClose, handlePay, handleOpenShop, handleOpenPerfomance, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety, handleOpenBook, handleOpenPlan, handleOpenSell, handleOpenSettings, handleOpenReview, handleOpenChat, handleOpenChatId, }: WindowProps) => {
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-        
-            <ReviewsComponent
-              displayName={userName}
-              uid={userId}
-              photoURL={userImage}
-              recipient={recipient}
-              user={user}
-              handleOpenReview={handleOpenReview}
-              handleOpenChatId={handleOpenChatId}
-              handleOpenSettings={handleOpenSettings}
-              handleOpenSell={handleOpenSell}
-              handleOpenBook={handleOpenBook}
-              handleOpenPlan={handleOpenPlan}
-              handleOpenChat={handleOpenChat}
-              handleOpenPerfomance={handleOpenPerfomance}
-              handleOpenAbout={handleOpenAbout}
-              handleOpenTerms={handleOpenTerms}
-              handleOpenPrivacy={handleOpenPrivacy}
-              handleOpenSafety={handleOpenSafety}
-              handleOpenShop={handleOpenShop} 
-              onClose={onClose} 
-              handlePay={handlePay}/>
-                
+
+        <ReviewsComponent
+          displayName={userName}
+          uid={userId}
+          photoURL={userImage}
+          recipient={recipient}
+          user={user}
+          handleOpenReview={handleOpenReview}
+          handleOpenChatId={handleOpenChatId}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenChat={handleOpenChat}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenShop={handleOpenShop}
+          onClose={onClose}
+          handlePay={handlePay} />
+
         <Toaster />
       </div>
     </div>

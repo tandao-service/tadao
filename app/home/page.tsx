@@ -41,6 +41,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const contacts = await getAllContacts();
   const reported = await getallReported(limit, page);
   const fee = await getVerifyfee();
+
   const transactions = await getallTransactions(
     transactionId,
     start,

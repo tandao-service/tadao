@@ -24,7 +24,7 @@ import AboutComponent from "./AboutComponent";
 
 interface WindowProps {
   isOpen: boolean;
-  user:any;
+  user: any;
   onClose: () => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
@@ -36,33 +36,43 @@ interface WindowProps {
   handleOpenSafety: () => void;
   userId: string;
   handleOpenPerfomance: () => void;
-handleOpenSettings: () => void;
-handleOpenShop: (shopId:any) => void;
+  handleOpenSettings: () => void;
+  handleOpenShop: (shopId: any) => void;
 }
 
 const PopupAbout = ({ isOpen, userId, user, onClose, handleOpenPerfomance,
   handleOpenSettings,
-  handleOpenShop, handleOpenBook,handleOpenChat,handleOpenPlan, handleOpenSell,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
- 
+  handleOpenShop, handleOpenBook, handleOpenChat, handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-gray-200 p-0 w-full h-[100vh] flex flex-col">
-       
-      <AboutComponent user={user} userId={userId} onClose={onClose} 
-      handleOpenAbout={handleOpenAbout} 
-      handleOpenTerms={handleOpenTerms}
-      handleOpenPrivacy={handleOpenPrivacy}
-      handleOpenSafety={handleOpenSafety} 
-      handleOpenSell={handleOpenSell}
-      handleOpenBook={handleOpenBook}
-                          handleOpenChat={handleOpenChat} 
-                          handleOpenPlan={handleOpenPlan}
-                          handleOpenSettings={handleOpenSettings}
-                          handleOpenShop={handleOpenShop} 
-                          handleOpenPerfomance={handleOpenPerfomance}
-                          />
+      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-[#FAE6DA] p-0 w-full h-[100vh] flex flex-col">
+
+        <AboutComponent user={user} userId={userId} onClose={onClose}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenShop={handleOpenShop}
+          handleOpenPerfomance={handleOpenPerfomance}
+        />
         <Toaster />
       </div>
     </div>

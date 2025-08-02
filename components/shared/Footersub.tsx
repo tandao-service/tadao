@@ -6,15 +6,15 @@ import ProgressPopup from "./ProgressPopup";
 import { usePathname, useRouter } from "next/navigation";
 //import Termspopup from "./termspopup";
 interface footProps {
-  
+
   handleOpenAbout: () => void;
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  
- 
+
+
 }
-const Footersub = ({handleOpenAbout,handleOpenTerms,handleOpenPrivacy, handleOpenSafety}:footProps) => {
+const Footersub = ({ handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: footProps) => {
   const currentYear = new Date().getFullYear();
   const [isOpenP, setIsOpenP] = useState(false);
   const router = useRouter();
@@ -31,50 +31,50 @@ const Footersub = ({handleOpenAbout,handleOpenTerms,handleOpenPrivacy, handleOpe
       <div className="mt-4 mb-4"></div>
       <div className="flex flex-col items-center justify-center">
         <p className="text-xs font-bold">
-          {currentYear} PocketShop. All Rights reserved.
+          {currentYear} Tadao Services. All Rights reserved.
         </p>
         <div className="flex text-xs">
           <div className="flex gap-1 w-full text-gray-600">
-            <div className="transition-colors text-[12px] hover:text-green-700 hover:cursor-pointer">
+            <div className="transition-colors text-[12px] hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
                   handleOpenAbout()
-                
+
                 }}
-                className="cursor-pointer dark:text-gray-400 hover:text-green-700 "
+                className="cursor-pointer dark:text-gray-400 hover:text-[#BD7A4F] "
               >
                 About
               </div>
             </div>
             <div>|</div>
-            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-green-700 hover:cursor-pointer">
+            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
                   handleOpenTerms()
                 }}
-                className="cursor-pointer dark:text-gray-400 hover:text-green-700 "
+                className="cursor-pointer dark:text-gray-400 hover:text-[#BD7A4F] "
               >
                 <div>Terms & Conditions</div>
               </div>
             </div>
             <div>|</div>
-            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-green-700 hover:cursor-pointer">
+            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
                   handleOpenPrivacy()
                 }}
-                className="cursor-pointer hover:text-green-700 "
+                className="cursor-pointer hover:text-[#BD7A4F] "
               >
                 Privacy Policy
               </div>
             </div>
             <div>|</div>
-            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-emerald-600 hover:cursor-pointer">
+            <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
                   handleOpenSafety()
                 }}
-                className="cursor-pointer dark:text-gray-400 hover:text-green-700 "
+                className="cursor-pointer dark:text-gray-400 hover:text-[#BD7A4F] "
               >
                 Safety Tips
               </div>
@@ -91,7 +91,7 @@ const Footersub = ({handleOpenAbout,handleOpenTerms,handleOpenPrivacy, handleOpe
           </Link>
         </p>
       </div>
-    
+
     </div>
   );
 };

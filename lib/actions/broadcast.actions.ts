@@ -33,26 +33,26 @@ export async function broadcastMessage(type: string, message: string, recipient?
 
 
         const mailOptions = {
-          from: '"PocketShop" <support@pocketshop.co.ke>',
+          from: '"Tadao" <support@tadaoservices.com>',
           to: recipient.email,
-          subject: `You've got a message from PocketShop`,
+          subject: `You've got a message from Tadao`,
           html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
                 <div style="text-align: center; margin-bottom: 30px;">
                   <span style="display: inline-flex; align-items: center; gap: 8px;">
-                    <img src="https://pocketshop.co.ke/logo_green.png" alt="pocketshop Logo" style="height: 30px; width: auto;" />
-                    <span style="font-size: 18px; font-weight: bold; color: #064E3B;">PocketShop</span>
+                    <img src="https://tadaoservices.com/logo.png" alt="Tadao Logo" style="height: 30px; width: auto;" />
+                    <span style="font-size: 18px; font-weight: bold; color: #FF914C;">Tadao</span>
                   </span>
                 </div>
         
-                <h2 style="color: #064E3B;">You've got a message from PocketShop</h2>
+                <h2 style="color: #FF914C;">You've got a message from Tadao</h2>
                 <p>Hello,</p>
-                <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #064E3B; border-radius: 5px;">
+                <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #FF914C; border-radius: 5px;">
                   <p style="margin: 0;">"${message}"</p>
                 </div>
         
                 <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
-                <p style="font-size: 12px; color: #999;">This email was sent by PocketShop (<a href="https://pocketshop.co.ke" style="color: #999;">pocketshop.co.ke</a>).</p>
+                <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
               </div>
             `,
         };
@@ -76,10 +76,10 @@ export async function broadcastMessage(type: string, message: string, recipient?
             body: JSON.stringify({
               token: recipient.token,
               notification: {
-                title: "You've got a message from PocketShop",
+                title: "You've got a message from Tadao",
                 body: message,
-                icon: "https://pocketshop.co.ke/logo_green.png",
-                click_action: `https://pocketshop.co.ke/?action=chat`,
+                icon: "https://tadaoservices.com/logo_green.png",
+                click_action: `https://tadaoservices.com/?action=chat`,
               },
             }),
           });
@@ -122,26 +122,26 @@ export async function broadcastMessage(type: string, message: string, recipient?
 
         const emailPromises = recipients.map((email) => {
           const mailOptions = {
-            from: '"PocketShop" <support@pocketshop.co.ke>',
+            from: '"Tadao" <support@tadaoservices.com>',
             to: email,
-            subject: `You've got a message from PocketShop`,
+            subject: `You've got a message from Tadao`,
             html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
               <div style="text-align: center; margin-bottom: 30px;">
                 <span style="display: inline-flex; align-items: center; gap: 8px;">
-                  <img src="https://pocketshop.co.ke/logo_green.png" alt="pocketshop Logo" style="height: 30px; width: auto;" />
-                  <span style="font-size: 18px; font-weight: bold; color: #064E3B;">PocketShop</span>
+                  <img src="https://tadaoservices.com/logo_green.png" alt="Tadao Logo" style="height: 30px; width: auto;" />
+                  <span style="font-size: 18px; font-weight: bold; color: #FF914C;">Tadao</span>
                 </span>
               </div>
       
-              <h2 style="color: #064E3B;">You've got a message from PocketShop</h2>
+              <h2 style="color: #FF914C;">You've got a message from Tadao</h2>
               <p>Hello,</p>
-              <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #064E3B; border-radius: 5px;">
+              <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #FF914C; border-radius: 5px;">
                 <p style="margin: 0;">"${message}"</p>
               </div>
       
               <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
-              <p style="font-size: 12px; color: #999;">This email was sent by PocketShop (<a href="https://pocketshop.co.ke" style="color: #999;">pocketshop.co.ke</a>).</p>
+              <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
             </div>
           `,
           };
@@ -174,8 +174,8 @@ export async function broadcastMessage(type: string, message: string, recipient?
               notification: {
                 title: "💬 New Message",
                 body: message,
-                icon: "https://pocketshop.co.ke/logo_green.png",
-                click_action: `https://pocketshop.co.ke/?action=chat`,
+                icon: "https://tadaoservices.com/logo_green.png",
+                click_action: `https://tadaoservices.com/?action=chat`,
               },
             }),
           })

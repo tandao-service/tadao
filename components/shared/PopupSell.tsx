@@ -36,34 +36,44 @@ interface WindowProps {
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
   handleOpenChat: () => void;
-  handlePay:(id:string)=> void;
-  handleCategory:(value:string)=> void;
+  handlePay: (id: string) => void;
+  handleCategory: (value: string) => void;
   type: string;
   userId: string;
   userName: string;
-  subcategoryList:any;
-  user:any;
-  handleAdView: (ad:any) => void;
-  handleOpenShop: (shopId:any) => void;
+  subcategoryList: any;
+  user: any;
+  handleAdView: (ad: any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
-  handleOpenSearchTab:(value:string)=> void;
-  packagesList:any;
-  category?:string;
-  subcategory?:string;
-  userImage:string;
+  handleOpenSearchTab: (value: string) => void;
+  packagesList: any;
+  category?: string;
+  subcategory?: string;
+  userImage: string;
 }
 
-const PopupSell = ({userImage, packagesList, category, subcategory, isOpen, type, userId, user, userName, subcategoryList, handleAdView, handleOpenSettings,
-  handleOpenShop,handleOpenSearchTab,
-  handleOpenPerfomance, handleCategory, handleOpenChat, onClose,handleOpenPlan, handleOpenBook, handleOpenSell, handlePay, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
- 
+const PopupSell = ({ userImage, packagesList, category, subcategory, isOpen, type, userId, user, userName, subcategoryList, handleAdView, handleOpenSettings,
+  handleOpenShop, handleOpenSearchTab,
+  handleOpenPerfomance, handleCategory, handleOpenChat, onClose, handleOpenPlan, handleOpenBook, handleOpenSell, handlePay, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-     
+
         <DashboardSellMain
           userId={userId}
           type={type}
@@ -91,7 +101,7 @@ const PopupSell = ({userImage, packagesList, category, subcategory, isOpen, type
           handleOpenShop={handleOpenShop}
           handleOpenPerfomance={handleOpenPerfomance}
           handleOpenSettings={handleOpenSettings}
-          handleAdView={handleAdView} 
+          handleAdView={handleAdView}
           userImage={userImage} />
         <Toaster />
       </div>

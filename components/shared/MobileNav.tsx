@@ -20,13 +20,13 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 type MobileProps = {
   userstatus: string;
   userId: string;
-  popup:string;
-  user:any;
+  popup: string;
+  user: any;
   handleOpenSell: () => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenShop: (shopId: any) => void;
   onClose: () => void;
   handleOpenAbout: () => void;
   handleOpenTerms: () => void;
@@ -35,7 +35,7 @@ type MobileProps = {
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
 };
-const MobileNav = ({ userstatus, userId, popup, user, onClose, handleOpenSettings, handleOpenPerfomance, handleOpenShop,handleOpenChat,handleOpenPlan,handleOpenBook,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety, handleOpenSell }: MobileProps) => {
+const MobileNav = ({ userstatus, userId, popup, user, onClose, handleOpenSettings, handleOpenPerfomance, handleOpenShop, handleOpenChat, handleOpenPlan, handleOpenBook, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety, handleOpenSell }: MobileProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleclicklink = () => {
@@ -50,29 +50,29 @@ const MobileNav = ({ userstatus, userId, popup, user, onClose, handleOpenSetting
             setIsSheetOpen(true);
           }}
         >
-          <div className="flex p-1 items-center text-gray-300 justify-center rounded-full tooltip tooltip-bottom hover:text-gray-100 hover:cursor-pointer">
+          <div className="flex p-1 items-center text-[#8C4B2C] justify-center rounded-full tooltip tooltip-bottom hover:text-white hover:cursor-pointer">
             <MenuIcon />
           </div>
         </SheetTrigger>
         <SheetContent
           className="[&>button]:hidden flex flex-col gap-6 dark:bg-[#131B1E] dark:text-gray-300 bg-white"
-          // onClick={handleclicklink}
+        // onClick={handleclicklink}
         >
           <SheetTitle>
             <div className="flex justify-between items-center">
-            <div className="flex items-center gap-1">
-                           <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-                          <StyledBrandName />
-                         </div>
+              <div className="flex items-center gap-1">
+
+                <StyledBrandNameblack />
+              </div>
               <button
                 onClick={handleclicklink}
-                className="flex justify-center items-center h-10 w-10 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-gray-200 rounded-full"
+                className="flex justify-center items-center h-10 w-10 text-black dark:text-gray-200 hover:text-[#BD7A4F] hover:bg-[#FAE6DA] rounded-full"
               >
                 <CloseOutlinedIcon />
               </button>
             </div>
           </SheetTitle>
-       
+
           <NavItems
             userstatus={userstatus}
             user={user}
@@ -85,8 +85,8 @@ const MobileNav = ({ userstatus, userId, popup, user, onClose, handleOpenSetting
             handleOpenChat={handleOpenChat}
             handleOpenShop={handleOpenShop}
             handleOpenPerfomance={handleOpenPerfomance}
-            handleOpenSettings={handleOpenSettings} popup={popup}          />
-        {/*  <Separator className="border border-gray-300 dark:border-gray-700" />
+            handleOpenSettings={handleOpenSettings} popup={popup} />
+          {/*  <Separator className="border border-gray-300 dark:border-gray-700" />
           <div className="flex text-xs">
             <div className="flex gap-1 w-full dark:text-gray-400 text-gray-600">
               <div className="transition-colors text-[10px] hover:text-emerald-600 hover:cursor-pointer">

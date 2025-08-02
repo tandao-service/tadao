@@ -37,83 +37,95 @@ interface WindowProps {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  handleAdEdit: (ad:any) => void;
-  handleAdView: (ad:any) => void;
-  handleSubCategory:(category: string, subcategory: string) => void;
-  handleOpenReview: (value:any) => void;
-  handleOpenShop: (shopId:any) => void;
-  handleOpenChatId: (value:string) => void;
+  handleAdEdit: (ad: any) => void;
+  handleAdView: (ad: any) => void;
+  handleSubCategory: (category: string, subcategory: string) => void;
+  handleOpenReview: (value: any) => void;
+  handleOpenShop: (shopId: any) => void;
+  handleOpenChatId: (value: string) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
-  handleCategory:(value:string) => void;
-  handlePay: (id:string) => void;
+  handleCategory: (value: string) => void;
+  handlePay: (id: string) => void;
   type: string;
   userId: string;
   userName: string;
   userImage: string;
-  ad:any;
-  user:any;
+  ad: any;
+  user: any;
 }
 
-const PopupAdView = ({ isOpen, type,user, userId, userName, userImage, ad, handlePay, handleOpenPerfomance, handleOpenSettings,
-  handleOpenShop, handleCategory, handleSubCategory,handleOpenReview, handleOpenChatId,
-  onClose, handleOpenSell,handleOpenBook ,handleOpenChat,handleOpenPlan, handleAdView, handleAdEdit, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
+const PopupAdView = ({ isOpen, type, user, userId, userName, userImage, ad, handlePay, handleOpenPerfomance, handleOpenSettings,
+  handleOpenShop, handleCategory, handleSubCategory, handleOpenReview, handleOpenChatId,
+  onClose, handleOpenSell, handleOpenBook, handleOpenChat, handleOpenPlan, handleAdView, handleAdEdit, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
   //const [ad, setAd] = useState<any>([]);
-//const [loading, setLoading] = useState<boolean>(true);
- // useEffect(() => {
- //   if (isOpen) {
-   //   const fetchData = async () => {
-   //     try {
-     //     setLoading(true);
-      //      const ad = await getAdById(id);
-     //       setAd(ad);
-        //  const subscriptionData = await getData(userId);
-         
-      //  } catch (error) {
-      //    console.error("Failed to fetch data", error);
-      //  } finally {
-        //  setLoading(false); // Mark loading as complete
-       // }
-     // };
+  //const [loading, setLoading] = useState<boolean>(true);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //   const fetchData = async () => {
+  //     try {
+  //     setLoading(true);
+  //      const ad = await getAdById(id);
+  //       setAd(ad);
+  //  const subscriptionData = await getData(userId);
 
-     // fetchData();
-    //}
+  //  } catch (error) {
+  //    console.error("Failed to fetch data", error);
+  //  } finally {
+  //  setLoading(false); // Mark loading as complete
+  // }
+  // };
+
+  // fetchData();
+  //}
   //}, [isOpen, id]);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
-     
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
-         <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white w-full h-[100vh] flex flex-col">
-        
-          <AdsComponent 
-            ad={ad}
-            user={user}
-            userId={userId}
-            userName={userName}
-            userImage={userImage}
-            id={ad._id}
-            handleAdView={handleAdView}
-            onClose={onClose}
-            handleSubCategory={handleSubCategory}
-            handleOpenSell={handleOpenSell}
-            handleOpenAbout={handleOpenAbout}
-            handleOpenTerms={handleOpenTerms}
-            handleOpenPrivacy={handleOpenPrivacy}
-            handleOpenSafety={handleOpenSafety}
-            handleOpenBook={handleOpenBook}
-            handleOpenChat={handleOpenChat}
-            handleOpenPlan={handleOpenPlan}
-            handleAdEdit={handleAdEdit}
-            handleOpenReview={handleOpenReview}
-            handleOpenChatId={handleOpenChatId}
-            handleOpenShop={handleOpenShop}
-            handleOpenSettings={handleOpenSettings} 
-            handleOpenPerfomance={handleOpenPerfomance}
-            handlePay={handlePay}/>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
+
+        <AdsComponent
+          ad={ad}
+          user={user}
+          userId={userId}
+          userName={userName}
+          userImage={userImage}
+          id={ad._id}
+          handleAdView={handleAdView}
+          onClose={onClose}
+          handleSubCategory={handleSubCategory}
+          handleOpenSell={handleOpenSell}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenPlan={handleOpenPlan}
+          handleAdEdit={handleAdEdit}
+          handleOpenReview={handleOpenReview}
+          handleOpenChatId={handleOpenChatId}
+          handleOpenShop={handleOpenShop}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handlePay={handlePay} />
         <Toaster />
       </div>
-      </div>
+    </div>
+
   );
 };
 

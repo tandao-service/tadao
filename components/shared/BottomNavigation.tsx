@@ -20,19 +20,19 @@ type navprop = {
   onClose: () => void;
   handleOpenSell: () => void;
   handleOpenChat: () => void;
-  handleOpenSettings : () => void;
-  handleOpenSearchTab: (value:string) => void;
-  handleOpenP:()=>void;
+  handleOpenSettings: () => void;
+  handleOpenSearchTab: (value: string) => void;
+  handleOpenP: () => void;
 
 };
-const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,handleOpenSettings, handleOpenSell, handleOpenChat, onClose }: navprop) => {
+const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, handleOpenSettings, handleOpenSell, handleOpenChat, onClose }: navprop) => {
   const router = useRouter();
   const pathname = usePathname();
- 
-  const isActive = (path: string) => pathname === path;
- 
 
- 
+  const isActive = (path: string) => pathname === path;
+
+
+
   return (
     <nav className="dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bottom-0 z-5 w-full bg-white shadow-md border-t dark:border-gray-700 border-gray-200">
       <div className="flex justify-around py-2 relative">
@@ -42,9 +42,8 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
           }}
         >
           <div
-            className={`flex cursor-pointer flex-col items-center hover:text-emerald-700 ${
-              popup === "home" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-            }`}
+            className={`flex cursor-pointer flex-col items-center hover:text-[#BD7A4F] ${popup === "home" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              }`}
           >
             <span>
               <HomeIcon />
@@ -55,13 +54,12 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
 
         <div
           onClick={() => {
-           handleOpenSearchTab('Vehicle');
+            handleOpenSearchTab('Vehicle');
           }}
         >
           <div
-            className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-              popup === "category" ?  "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-            }`}
+            className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "category" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              }`}
           >
             <span>
               <SearchOutlinedIcon />
@@ -75,20 +73,19 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
         <SignedIn>
           <div
             onClick={() => {
-             
+
               handleOpenSell();
             }}
           >
             <div
-            className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-              popup === "sell" ?  "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-            }`}
-          >
-            <span>
-              <AddCircleOutlineOutlinedIcon />
-            </span>
-            <span className="text-xs">Sell</span>
-          </div>
+              className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "sell" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+                }`}
+            >
+              <span>
+                <AddCircleOutlineOutlinedIcon />
+              </span>
+              <span className="text-xs">Sell</span>
+            </div>
           </div>
         </SignedIn>
 
@@ -96,44 +93,42 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
           <div
             onClick={() => {
               handleOpenP();
-                router.push("/sign-in");
+              router.push("/sign-in");
             }}
           >
             <div
-            className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-              popup === "sell" ?  "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-            }`}
-          >
-            <span>
-              <AddCircleOutlineOutlinedIcon />
-            </span>
-            <span className="text-xs">Sell</span>
-          </div>
+              className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "sell" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+                }`}
+            >
+              <span>
+                <AddCircleOutlineOutlinedIcon />
+              </span>
+              <span className="text-xs">Sell</span>
+            </div>
           </div>
         </SignedOut>
 
         <SignedIn>
           <div
             onClick={() => {
-             // if (pathname !== "/chat") {
+              // if (pathname !== "/chat") {
               handleOpenChat();
               //  router.push("/chat");
-             // }
+              // }
             }}
           >
             <div
-              className={`flex cursor-pointer flex-col items-center hover:text-emerald-700 ${
-                popup === "chat" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-              }`}
+              className={`flex cursor-pointer flex-col items-center hover:text-[#BD7A4F] ${popup === "chat" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+                }`}
             >
-             <span className="relative inline-block w-6 h-6">
-  <div className="absolute inset-0 flex items-center justify-center">
-    <CommentOutlinedIcon />
-  </div>
-  <div className="absolute top-0 right-0">
-    <Unreadmessages userId={userId} />
-  </div>
-</span>
+              <span className="relative inline-block w-6 h-6">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <CommentOutlinedIcon />
+                </div>
+                <div className="absolute top-0 right-0">
+                  <Unreadmessages userId={userId} />
+                </div>
+              </span>
 
               <span className="text-xs">Chat</span>
             </div>
@@ -143,22 +138,21 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
         <SignedOut>
           <div
             onClick={() => {
-             // if (pathname !== "/sign-in") {
+              // if (pathname !== "/sign-in") {
               handleOpenP();
-                router.push("/sign-in");
-            //  }
+              router.push("/sign-in");
+              //  }
             }}
           >
             <div
-              className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-                popup === "chat" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-              }`}
+              className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "chat" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+                }`}
             >
-             <span className="relative inline-block w-6 h-6">
-  <div className="absolute inset-0 flex items-center justify-center">
-    <CommentOutlinedIcon />
-  </div>
-</span>
+              <span className="relative inline-block w-6 h-6">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <CommentOutlinedIcon />
+                </div>
+              </span>
 
               <span className="text-xs">Chat</span>
             </div>
@@ -166,37 +160,35 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab,hand
         </SignedOut>
 
         <SignedIn>
-        <div
-          className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-            popup === "settings" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-          }`}
-          onClick={handleOpenSettings}
-        >
-          <span>
-            <PersonOutlineOutlinedIcon />
-          </span>
-          <span className="text-xs">Profile</span>
-        </div>
+          <div
+            className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "settings" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              }`}
+            onClick={handleOpenSettings}
+          >
+            <span>
+              <PersonOutlineOutlinedIcon />
+            </span>
+            <span className="text-xs">Profile</span>
+          </div>
         </SignedIn>
         <SignedOut>
-        <div
-          className={`flex flex-col cursor-pointer items-center hover:text-emerald-700 ${
-            popup === "settings" ? "text-emerald-600" : "dark:text-gray-400 text-gray-600"
-          }`}
-          onClick={() => {
-            handleOpenP();
-            router.push("/sign-in");
-        }}
-        >
-          <span>
-            <PersonOutlineOutlinedIcon />
-          </span>
-          <span className="text-xs">Profile</span>
-        </div>
+          <div
+            className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "settings" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              }`}
+            onClick={() => {
+              handleOpenP();
+              router.push("/sign-in");
+            }}
+          >
+            <span>
+              <PersonOutlineOutlinedIcon />
+            </span>
+            <span className="text-xs">Profile</span>
+          </div>
         </SignedOut>
-      
+
       </div>
-    
+
     </nav>
   );
 };

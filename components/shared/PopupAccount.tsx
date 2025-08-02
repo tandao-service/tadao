@@ -39,56 +39,66 @@ interface WindowProps {
   handleOpenSafety: () => void;
   handleOpenSettings: () => void;
   handleOpenProfile: () => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
   handleOpenFaq: () => void;
-  handlePay: (id:string) => void;
-  handleCategory: (value:string) => void;
-  handleOpenSearchTab: (value:string) => void;
-  handleOpenReview: (value:any) => void;
-  handleAdEdit: (value:any) => void;
-  handleAdView: (value:any) => void;
+  handlePay: (id: string) => void;
+  handleCategory: (value: string) => void;
+  handleOpenSearchTab: (value: string) => void;
+  handleOpenReview: (value: any) => void;
+  handleAdEdit: (value: any) => void;
+  handleAdView: (value: any) => void;
   userId: string;
   userName: string;
   userImage: string;
-  user:any;
+  user: any;
 }
 
-const PopupAccount = ({ isOpen, userId,userName,userImage, user, handleAdEdit, handleAdView, handleOpenReview, handleOpenFaq ,handleOpenProfile, handleOpenSearchTab, handleCategory, handleOpenShop,handlePay,
-  handleOpenPerfomance, handleOpenSettings, onClose, handleOpenBook,handleOpenChat,handleOpenPlan, handleOpenSell,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
+const PopupAccount = ({ isOpen, userId, userName, userImage, user, handleAdEdit, handleAdView, handleOpenReview, handleOpenFaq, handleOpenProfile, handleOpenSearchTab, handleCategory, handleOpenShop, handlePay,
+  handleOpenPerfomance, handleOpenSettings, onClose, handleOpenBook, handleOpenChat, handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
 
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-    
-      <AccountComponent 
-      userId={userId} 
-      user={user}
-      onClose={onClose}
-        handleOpenAbout={handleOpenAbout}
-        handleOpenTerms={handleOpenTerms}
-        handleOpenPrivacy={handleOpenPrivacy}
-        handleOpenSafety={handleOpenSafety}
-        handleOpenSell={handleOpenSell}
-        handleOpenBook={handleOpenBook}
-        handleOpenChat={handleOpenChat}
-        handleOpenPlan={handleOpenPlan}
-        handleOpenPerfomance={handleOpenPerfomance}
-        handleOpenSettings={handleOpenSettings}
-        handleOpenShop={handleOpenShop}
-        handlePay={handlePay}
-        handleCategory={handleCategory}
-        handleOpenSearchTab={handleOpenSearchTab}
-        handleOpenProfile={handleOpenProfile}
-        handleOpenFaq={handleOpenFaq}
-        handleOpenReview={handleOpenReview}
-        userName={userName}
-        userImage={userImage}
-        handleAdEdit={handleAdEdit} 
-        handleAdView={handleAdView}
-       
+
+        <AccountComponent
+          userId={userId}
+          user={user}
+          onClose={onClose}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenShop={handleOpenShop}
+          handlePay={handlePay}
+          handleCategory={handleCategory}
+          handleOpenSearchTab={handleOpenSearchTab}
+          handleOpenProfile={handleOpenProfile}
+          handleOpenFaq={handleOpenFaq}
+          handleOpenReview={handleOpenReview}
+          userName={userName}
+          userImage={userImage}
+          handleAdEdit={handleAdEdit}
+          handleAdView={handleAdView}
+
         />
         <Toaster />
       </div>

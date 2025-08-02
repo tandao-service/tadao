@@ -26,7 +26,7 @@ type CollectionProps = {
   totalPages: number;
   urlParamName?: string;
   userId: string;
-  handleOpenChatId:(value:any)=> void;
+  handleOpenChatId: (value: any) => void;
 };
 
 const CollectionUsers = ({
@@ -69,13 +69,13 @@ const CollectionUsers = ({
   };
   const [selectedDelivery, setSelectedDelivery] = useState<any | null>(null); // State for selected delivery
   const [isOpenMethods, setIsOpenMethods] = useState(false);
- const [selectUser, setSelectAUser] = useState<any>([]);
+  const [selectUser, setSelectAUser] = useState<any>([]);
   const [isOpenContact, setIsOpenContact] = useState(false);
-    const handleOpenContact = (user:any) => {
-      setSelectAUser(user);
-      setIsOpenContact(true)
-    };
-    const handleCloseContact = () => setIsOpenContact(false);
+  const handleOpenContact = (user: any) => {
+    setSelectAUser(user);
+    setIsOpenContact(true)
+  };
+  const handleCloseContact = () => setIsOpenContact(false);
 
   const handleOpenMethods = (delivery: any) => {
     setSelectedDelivery(delivery); // Set the selected delivery item
@@ -114,7 +114,7 @@ const CollectionUsers = ({
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                   Ads
                 </th>
-               
+
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                   Actions
                 </th>
@@ -136,31 +136,31 @@ const CollectionUsers = ({
                     {user.firstName} {user.lastName}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                   {user.status}
+                    {user.status}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     {user.businessname || "N/A"}
                   </td>
-                  
+
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                  {user.verified && user?.verified[0]?.accountverified === true ? (<> <p className="text-white p-1 bg-[#30AF5B] rounded-sm text-xs cursor-pointer hover:underline">
-                                <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-                                Verified Seller
-                              </p></>):(<> <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-xs cursor-pointer hover:underline">
-                  <ShieldOutlinedIcon sx={{ fontSize: 16 }} />
-                  Unverified Seller
-                </p></>)}
+                    {user.verified && user?.verified[0]?.accountverified === true ? (<> <p className="p-1 bg-green-100 text-green-700 rounded-sm text-xs cursor-pointer hover:underline">
+                      <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
+                      Verified Seller
+                    </p></>) : (<> <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-xs cursor-pointer hover:underline">
+                      <ShieldOutlinedIcon sx={{ fontSize: 16 }} />
+                      Unverified Seller
+                    </p></>)}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     {user.totalPaid || "0"}
                   </td>
                   <td className="border flex gap-2 border-gray-300 dark:border-gray-600 px-4 py-2">
-                  <div className="rounded-sm bg-blue-600 p-2 flex flex-col items-center justify-center text-xs"><div>Total</div> {user.adsCount || "0"}</div>
-                    <div className="rounded-sm bg-green-600 p-2 flex flex-col items-center justify-center text-xs"><div>Active</div> {user.activeCount || 0}</div>
-                    <div className="rounded-sm bg-red-600 p-2 flex flex-col items-center justify-center text-xs"><div>Inactive</div> <div>{user.inactiveCount || 0}</div></div>
-                    <div className="rounded-sm bg-orange-700 p-2 flex flex-col items-center justify-center text-xs"><div>Pending</div> <div>{user.pendingCount || 0}</div></div>
+                    <div className="rounded-sm bg-blue-100  text-blue-600 p-2 flex flex-col items-center justify-center text-xs"><div>Total</div> {user.adsCount || "0"}</div>
+                    <div className="rounded-sm bg-green-100 text-green-600 p-2 flex flex-col items-center justify-center text-xs"><div>Active</div> {user.activeCount || 0}</div>
+                    <div className="rounded-sm bg-red-100 text-red-600 p-2 flex flex-col items-center justify-center text-xs"><div>Inactive</div> <div>{user.inactiveCount || 0}</div></div>
+                    <div className="rounded-sm bg-orange-100 text-orange-700 p-2 flex flex-col items-center justify-center text-xs"><div>Pending</div> <div>{user.pendingCount || 0}</div></div>
                   </td>
-                 
+
 
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     <div
@@ -170,19 +170,19 @@ const CollectionUsers = ({
                       <ModeEditOutlinedIcon />
                     </div>
                   </td>
-                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                                    <button
-                                    onClick={() => handleOpenContact(user)}
-                                    className="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900"
-                                  >
-                                   <QuestionAnswerOutlinedIcon/>
-                                  </button>
-                                  </td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                    <button
+                      onClick={() => handleOpenContact(user)}
+                      className="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900"
+                    >
+                      <QuestionAnswerOutlinedIcon />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-<ContactUser isOpen={isOpenContact} user={selectUser} handleOpenChatId={handleOpenChatId} onClose={handleCloseContact}/>
+          <ContactUser isOpen={isOpenContact} user={selectUser} handleOpenChatId={handleOpenChatId} onClose={handleCloseContact} />
           {totalPages > 1 && (
             <Pagination
               urlParamName={urlParamName}

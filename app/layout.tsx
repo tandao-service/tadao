@@ -11,10 +11,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "PocketShop",
-  description: "PocketShop | Buy and Sell Online in Kenya",
+  title: "Tadao",
+  description: "Tadao | Buy and Sell Online in Kenya",
   icons: {
-    icon: "/logo_green.png",
+    icon: "/logo.png",
   },
 };
 

@@ -18,7 +18,7 @@ const PriceInput = ({
   const [price, setPrice] = useState(price_);
   const [unit, setUnit] = useState(unit_);
   const [negotiable, setNegotiable] = useState(negotiable_);
-   
+
   useEffect(() => {
     setPriceType(priceType_);
     setPrice(price_);
@@ -58,9 +58,8 @@ const PriceInput = ({
             className="hidden"
           />
           <div
-            className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${
-              priceType === "contact" ? "border-gray-500" : "border-gray-300"
-            }`}
+            className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${priceType === "contact" ? "border-gray-500" : "border-gray-300"
+              }`}
           >
             {priceType === "contact" && (
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
@@ -85,15 +84,14 @@ const PriceInput = ({
             className="hidden"
           />
           <div
-            className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${
-              priceType === "specify" ? "border-green-500" : "border-gray-300"
-            }`}
+            className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${priceType === "specify" ? "border-orange-600" : "border-gray-300"
+              }`}
           >
             {priceType === "specify" && (
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-orange-600 rounded-full"></div>
             )}
           </div>
-          <span className="text-green-600">Specify price</span>
+          <span className="text-orange-600">Specify price</span>
         </label>
       </div>
 
@@ -152,12 +150,12 @@ const PriceInput = ({
                   }}
                   className="hidden peer"
                 />
-                <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-green-500 peer-checked:ring-2 peer-checked:ring-green-400 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-orange-600 peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
                   {(negotiable
                     ? negotiable === option.toLowerCase()
                     : option.toLowerCase() === "not sure") && (
-                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-                  )}
+                      <div className="w-2.5 h-2.5 bg-orange-600 rounded-full"></div>
+                    )}
                 </div>
                 <span
                   className={
@@ -166,7 +164,7 @@ const PriceInput = ({
                         ? negotiable === option.toLowerCase()
                         : option.toLowerCase() === "not sure"
                     )
-                      ? "text-green-500 font-medium"
+                      ? "text-orange-600 font-medium"
                       : "text-gray-600 dark:text-gray-400"
                   }
                 >

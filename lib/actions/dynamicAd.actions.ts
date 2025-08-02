@@ -9,7 +9,7 @@ import { UTApi } from "uploadthing/server"
 import Packages from "../database/models/packages.model"
 import Bookmark from "../database/models/bookmark.model"
 import Ad from "../database/models/ad.model"
-
+import nodemailer from 'nodemailer';
 import DynamicAd from "../database/models/dynamicAd.model"
 import User from "../database/models/user.model"
 import { createTransaction } from "./transactions.actions"
@@ -22,6 +22,10 @@ const populateAd = (query: any) => {
     .populate({ path: 'subcategory', model: Subcategory, select: 'fields' })
     .populate({ path: 'organizer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications' })
     .populate({ path: 'plan', model: Packages, select: '_id name color imageUrl' })
+}
+const populateAdBids = (query: any) => {
+  return query
+    .populate({ path: 'userId', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications' })
 }
 export const fetchDynamicAds = async () => {
   try {
@@ -75,7 +79,7 @@ export const createData = async (
         planId: response.plan,
         period: periodPack,
         buyerId: userId,
-        merchantId: userId,
+        merchantId: response._id,
         status: response.adstatus,
         createdAt: new Date(),
       };
@@ -1065,3 +1069,278 @@ export async function deleteAd({ adId, deleteImages, path }: DeleteAdParams) {
     handleError(error)
   }
 }
+interface PlaceBidParams {
+  adId: string;
+  userId: string;
+  username: string;
+  amount: number;
+  path?: string; // optional revalidation
+}
+export async function getAllAds() {
+  try {
+    await connectToDatabase();
+    const allAds = await DynamicAd.find({ adstatus: "Active" });
+
+
+    // Safely return the count for the given subcategory and type
+    return JSON.parse(JSON.stringify(allAds));;
+
+  } catch (error) {
+    handleError(error);
+    return 0;
+  }
+}
+export const placeBid = async ({
+  adId,
+  userId,
+  username,
+  amount,
+  path
+}: PlaceBidParams) => {
+  try {
+    await connectToDatabase();
+
+    // Fetch the ad first
+    const ad = await DynamicAd.findById(adId);
+    // Prevent owner from bidding on own ad
+    if (String(ad.organizer._id) === String(userId)) {
+      throw new Error("You cannot bid on your own ad");
+    }
+
+    // Check if bidding period has expired
+    if (ad.data.biddingEndsAt && new Date(ad.data.biddingEndsAt) < new Date()) {
+      throw new Error("Bidding period has ended");
+    }
+
+    // Ensure bids is an array
+    const bids = Array.isArray(ad.bids) ? ad.bids : [];
+
+    // Get current highest bid
+    const highest = bids.length
+      ? Math.max(...bids.map((b: any) => b.amount))
+      : 0;
+    const minIncrement = ad.data.bidIncrement || 1000;
+
+    if (amount <= highest || amount < highest + minIncrement) {
+      throw new Error(`Bid must be at least Ksh ${highest + minIncrement}`);
+    }
+
+    // Create new bid object
+    const newBid = {
+      amount,
+      userId,
+      username,
+      timestamp: new Date()
+    };
+
+    // Push bid using findByIdAndUpdate
+    const updatedAd = await DynamicAd.findByIdAndUpdate(
+      adId,
+      { $push: { bids: newBid } },
+      { new: true } // return the updated document
+    );
+
+    if (!updatedAd) {
+      throw new Error("Failed to update ad with new bid");
+    }
+
+
+    return {
+      success: true,
+      message: "Bid placed successfully",
+      updatedBids: JSON.parse(JSON.stringify(updatedAd.bids))
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "Something went wrong"
+    };
+  }
+};
+
+export const getAllBidsGroupedByAd = async () => {
+  try {
+    await connectToDatabase();
+
+    // First, find ads with populated bids.userId
+    const ads = await DynamicAd.find(
+      { bids: { $exists: true, $ne: [] } },
+      { _id: 1, bids: 1, "data.title": 1, "data.imageUrls": 1 }
+    )
+      .populate({
+        path: "bids.userId",
+        model: User,
+        select: "_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications",
+      });
+
+    // Now map and group them
+    const grouped = ads.map((ad) => ({
+      adId: ad._id.toString(),
+      title: ad.data.title,
+      thumbnail: ad.data.imageUrls[0] || null,
+      bids: ad.bids.map((bid: any) => ({
+        _id: bid._id?.toString?.(),
+        userId: bid.userId, // This is now populated with full user details
+        amount: bid.amount,
+        timestamp: bid.timestamp,
+        username: bid.username,
+        isWinner: bid.isWinner,
+        isAbusive: bid.isAbusive,
+      })),
+    }));
+
+    return { success: true, data: JSON.parse(JSON.stringify(grouped.reverse())) };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+};
+
+
+export const getAllBids = async () => {
+  try {
+    await connectToDatabase();
+
+    const ads = await DynamicAd.find(
+      { bids: { $exists: true, $ne: [] } },
+      { _id: 1, bids: 1 }
+    );
+    const allBids = ads
+      .flatMap((ad) =>
+        ad.bids?.map((bid: any) => ({
+          amount: bid.amount,
+          timestamp: bid.timestamp,
+          username: bid.username,
+          isWinner: bid.isWinner,
+          isAbusive: bid.isAbusive,
+          _id: bid._id?.toString?.(),
+          adId: ad._id.toString(),
+        })) || []
+      )
+      .reverse();
+    console.log(allBids);
+    return { success: true, data: JSON.parse(JSON.stringify(allBids)) };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+};
+export const getBidsByOrganizer = async (organizerId: string) => {
+  try {
+    await connectToDatabase();
+
+    // Find all ads posted by this organizer
+    const ads = await DynamicAd.find(
+      { organizer: organizerId },
+      { _id: 1, title: 1, bids: 1 }
+    );
+
+    const allBids = ads
+      .flatMap((ad) =>
+        ad.bids?.map((bid: any) => ({
+          ...bid,
+          adId: ad._id.toString(),
+          adTitle: ad.title,
+        })) || []
+      )
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // sort latest first
+
+    return { success: true, data: JSON.parse(JSON.stringify(allBids)) };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+};
+export const removeBid = async (bidId: string) => {
+  try {
+    await connectToDatabase();
+
+    const ad = await DynamicAd.findOneAndUpdate(
+      { 'bids._id': bidId },
+      { $pull: { bids: { _id: bidId } } },
+      { new: true }
+    );
+
+    if (!ad) throw new Error('Bid not found');
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+};
+
+export const markWinner = async (bidId: string) => {
+  try {
+    await connectToDatabase();
+    const ad = await DynamicAd.findOne({ 'bids._id': bidId });
+
+    if (!ad) throw new Error('Bid not found');
+
+    // Update all bids' isWinner field
+    ad.bids = ad.bids.map((bid: any) => ({
+      ...bid,
+      isWinner: bid._id.toString() === bidId,
+    }));
+
+    await ad.save();
+
+    const winningBid = ad.bids.find((b: any) => b._id.toString() === bidId);
+    if (winningBid?.userId && winningBid?.email) {
+      let transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST, // Your SMTP host
+        port: 587, // Use 587 for TLS
+        secure: false, // True if using port 465
+        auth: {
+          user: process.env.SMTP_USER, // Your SMTP user
+          pass: process.env.SMTP_PASS, // Your SMTP password
+        }
+      });
+
+      const mailOptions = {
+        from: '"Tadao" <support@tadaoservices.com>',
+        to: winningBid.email,
+        subject: '🎉 You have won the bid!',
+        html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
+     <div style="text-align: center; margin-bottom: 30px;">
+  <span style="display: inline-flex; align-items: center; gap: 6px;">
+  <img src="https://tadaoservices.com/logo.png" alt="Tadao Logo" style="height: 24px; width: auto; display: block;" />
+  <span style="font-size: 14px; font-weight: bold; color: #FF914C;">Tadao</span>
+</span>
+</div>
+    
+    <h2 style="color: #FF914C;">You've Received a New Inquiry</h2>
+
+      <p>Hello,</p>
+
+      <p>You have a new message regarding your Bidding</p>
+    
+      <div style="margin: 20px 0; padding: 15px; background-color: #fff; border-left: 4px solid #FF914C; border-radius: 5px;">
+        <p style="margin: 0;"> Congratulations ${winningBid.username}, your bid of Ksh ${winningBid.amount} has won!</p>
+      </div>
+
+
+  
+      <p style="margin-top: 30px;">Please respond to this inquiry by logging into your Tadao account.</p>
+
+      <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
+
+      <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
+    </div>
+    `,
+      };
+
+      try {
+        const response = await transporter.sendMail(mailOptions);
+        //console.log('Email sent:', response);
+        return "success";
+      } catch (error) {
+        console.error('Error sending email:', error);
+        return "Failed";
+      }
+
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+};
+

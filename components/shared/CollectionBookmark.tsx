@@ -215,7 +215,12 @@ const CollectionBookmark = ({
             <div>
              
                 <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-                <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                <Image
+                                                src="/assets/icons/loading.gif"
+                                                alt="edit"
+                                                width={60}
+                                                height={60}
+                                              />
                 </div>
               
             </div>

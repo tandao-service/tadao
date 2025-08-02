@@ -30,13 +30,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import sanitizeHtml from "sanitize-html";
 import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
- // Correct import
+// Correct import
 type CardProps = {
   userId: string;
   ad: any;
   isAdCreator?: boolean;
-  handleAdEdit: (ad:any) => void;
-  handleAdView: (ad:any) => void;
+  handleAdEdit: (ad: any) => void;
+  handleAdView: (ad: any) => void;
   handleOpenPlan: () => void;
 };
 
@@ -47,7 +47,7 @@ const HorizontalCardPublic = ({
   handleAdEdit,
   handleAdView,
   handleOpenPlan,
-  
+
 }: CardProps) => {
   const pathname = usePathname();
   const isbookmark = pathname === "/bookmark";
@@ -59,14 +59,14 @@ const HorizontalCardPublic = ({
     }
     return title;
   };
-    const truncateDescription = (description: string, charLimit: number) => {
-        const safeMessage = sanitizeHtml(description); 
-        const truncatedMessage =
-        safeMessage.length > charLimit
-          ? `${safeMessage.slice(0, charLimit)}...`
-          : safeMessage;
-        return truncatedMessage;
-      };
+  const truncateDescription = (description: string, charLimit: number) => {
+    const safeMessage = sanitizeHtml(description);
+    const truncatedMessage =
+      safeMessage.length > charLimit
+        ? `${safeMessage.slice(0, charLimit)}...`
+        : safeMessage;
+    return truncatedMessage;
+  };
   const handle = async (id: string) => {
     if (userId) {
       const newBookmark = await createBookmark({
@@ -136,9 +136,9 @@ const HorizontalCardPublic = ({
         style={
           ad.plan.name !== "Free"
             ? {
-                border: "2px solid",
-                borderColor: ad.plan.color, // Border color for non-free plans
-              }
+              border: "2px solid",
+              borderColor: ad.plan.color, // Border color for non-free plans
+            }
             : undefined
         }
       >
@@ -150,22 +150,21 @@ const HorizontalCardPublic = ({
         >
           <div className="relative w-full h-full">
             {isLoadingsmall && (
-              
 
-<div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-<Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-</div>
+
+              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+              </div>
             )}
 
             <Image
               onClick={() => handleAdView(ad)}
-             src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
-             alt={ad.data.title || "Ad image"}
+              src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+              alt={ad.data.title || "Ad image"}
               width={400} // Adjust width to match the `w-36` Tailwind class
               height={400} // Adjust height to match the `h-24` Tailwind class
-              className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${
-                isLoadingsmall ? "opacity-0" : "opacity-100"
-              } transition-opacity duration-300`}
+              className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                } transition-opacity duration-300`}
               onLoadingComplete={() => setIsLoadingsmall(false)}
               placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
             />
@@ -179,8 +178,8 @@ const HorizontalCardPublic = ({
             >
               <div
                 onClick={() => {
-                 // handleOpenP();
-                 handleOpenPlan();
+                  // handleOpenP();
+                  handleOpenPlan();
                 }}
               >
                 <div className="flex gap-1 cursor-pointer">{ad.plan.name}</div>
@@ -218,7 +217,7 @@ const HorizontalCardPublic = ({
           {isbookmark && (
             <div className="w-full flex justify-end  absolute top-2/3 left-1/2 transform -translate-x-1/2 p-1 rounded-full">
               <div
-                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-red-100 text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-red-100 text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                 data-tip="Bookmark"
                 onClick={() => handledeletebk(ad._id)}
               >
@@ -249,25 +248,25 @@ const HorizontalCardPublic = ({
               <YouTubeIcon
                 sx={{ fontSize: 16, cursor: "pointer" }}
               />
-            
+
             </div>
           )}
-           {ad.data["virtualTourLink"] && (
-              <div className="mb-1 bottom-0 right-0 mr-1 cursor-pointer absolute bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
-                <ThreeDRotationOutlinedIcon
-                  sx={{ fontSize: 16, cursor: "pointer" }}
-                />
-              
-              </div>
-            )}
-            {(ad.data["propertyarea"]) && (
-              <div className="mb-1 bottom-0 right-0 mr-1 cursor-pointer absolute bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
-                <LocationOnIcon
-                  sx={{ fontSize: 16, cursor: "pointer" }}
-                />
-              
-              </div>
-            )}
+          {ad.data["virtualTourLink"] && (
+            <div className="mb-1 bottom-0 right-0 mr-1 cursor-pointer absolute bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
+              <ThreeDRotationOutlinedIcon
+                sx={{ fontSize: 16, cursor: "pointer" }}
+              />
+
+            </div>
+          )}
+          {(ad.data["propertyarea"]) && (
+            <div className="mb-1 bottom-0 right-0 mr-1 cursor-pointer absolute bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
+              <LocationOnIcon
+                sx={{ fontSize: 16, cursor: "pointer" }}
+              />
+
+            </div>
+          )}
         </div>
 
         <div className="flex-1 mt-2 p-2">
@@ -279,13 +278,13 @@ const HorizontalCardPublic = ({
           >
             {ad.data.title}
           </div>
-        
-        <p className="dark:text-gray-300 text-[12px] lg:hidden">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 70) }} />
-        </p>
-        <p className="dark:text-gray-300 text-[12px] hidden lg:inline">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 50) }} />
-        </p>
+
+          <p className="dark:text-gray-300 text-[12px] lg:hidden">
+            <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad?.data.description, 70) }} />
+          </p>
+          <p className="dark:text-gray-300 text-[12px] hidden lg:inline">
+            <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad?.data.description, 50) }} />
+          </p>
           <div className="dark:text-gray-400 text-gray-500 text-[10px] lg:text-xs">
             <LocationOnIcon sx={{ fontSize: 16 }} />
             {ad.data.region} - {ad.data.area}
@@ -332,13 +331,12 @@ const HorizontalCardPublic = ({
               </div>
               {ad.adstatus && isAdCreator && (
                 <div
-                  className={`flex gap-1 text-[8px] lg:text-[10px] p-1 justify-center items-center rounded-full ${
-                    ad.adstatus === "Pending"
-                      ? "text-yellow-600"
-                      : ad.adstatus === "Failed"
+                  className={`flex gap-1 text-[8px] lg:text-[10px] p-1 justify-center items-center rounded-full ${ad.adstatus === "Pending"
+                    ? "text-yellow-600"
+                    : ad.adstatus === "Failed"
                       ? "text-red-600 "
                       : "text-green-600"
-                  }`}
+                    }`}
                 >
                   <RadioButtonCheckedOutlinedIcon sx={{ fontSize: 10 }} />{" "}
                   {ad.adstatus}
@@ -389,11 +387,11 @@ const HorizontalCardPublic = ({
                   {ad.data["engine-CC"]}
                 </div>
               )}
-            {ad.data["land-Type"] && (
-              <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                {ad.data["land-Type"]}
-              </div>
-            )}
+              {ad.data["land-Type"] && (
+                <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+                  {ad.data["land-Type"]}
+                </div>
+              )}
 
               {ad.data["land-Area(acres)"] && (
                 <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
@@ -415,7 +413,7 @@ const HorizontalCardPublic = ({
               <div className="">
                 <SignedIn>
                   <div
-                    className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                    className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                     data-tip="Bookmark"
                     onClick={() => handle(ad._id)}
                   >
@@ -435,13 +433,13 @@ const HorizontalCardPublic = ({
                 <SignedOut>
                   <div
                     onClick={() => {
-                     // handleOpenP();
+                      // handleOpenP();
                       router.push(`/sign-in`);
                     }}
                     className="cursor-pointer"
                   >
                     <div
-                      className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                      className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                       data-tip="Bookmark"
                     >
                       <TooltipProvider>

@@ -23,11 +23,23 @@ export interface IdynamicAd extends Document {
   shared: string;
   bookmarked: string;
   abused: string;
+  bids: any;
+  //biddingEnabled: boolean;
+  //biddingEndsAt?: Date;
+  //bidIncrement?: number;
 }
 export interface Verified {
   accountverified: boolean
   verifieddate: Date
 }
+const BidSchema = new Schema({
+  amount: { type: Number, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  username: String,
+  timestamp: { type: Date, default: Date.now },
+  isWinner: { type: Boolean, default: false }, // seller marks winner
+  isAbusive: { type: Boolean, default: false }  // admin flags abusive bids
+});
 const dynamicAdSchema = new Schema({
   data: Schema.Types.Mixed, // Dynamic data based on selected category
   views: { type: String },
@@ -43,7 +55,11 @@ const dynamicAdSchema = new Schema({
   subcategory: { type: Schema.Types.ObjectId, ref: 'Subcategory' },
   organizer: { type: Schema.Types.ObjectId, ref: 'User' },
   plan: { type: Schema.Types.ObjectId, ref: 'Packages' },
-  createdAt: { type: Date, default: Date.now } // ✅ explicitly define it
+  biddingEnabled: { type: Boolean, default: false },
+  biddingEndsAt: { type: Date },                // When bidding ends
+  bidIncrement: { type: Number, default: 100 }, // Minimum bid increment
+  bids: [BidSchema],
+  createdAt: { type: Date, default: Date.now }
 },
   { timestamps: false });
 delete mongoose.models.DynamicAd;

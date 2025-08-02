@@ -171,13 +171,13 @@ export async function getData(userId: string) {
 
 
 
-export async function getpayTransaction(orderTrackingId: string) {
+export async function getpayTransaction(merchantId: string) {
   try {
     // Connect to the MongoDB server
     await connectToDatabase();
 
     // Find the document by buyerId
-    const conditions = { orderTrackingId: orderTrackingId }
+    const conditions = { merchantId: merchantId }
     const trans = await populateAd(Transaction.find(conditions));
 
     if (!trans) throw new Error('Transaction not found');
@@ -295,6 +295,7 @@ export async function deleteTransaction({ _id, path }: DeleteBookmarkParams) {
     const deletedOrder = await Transaction.findByIdAndDelete(_id)
     // Delete image from uploadthing
     if (deletedOrder) revalidatePath(path)
+    return "deleted";
   } catch (error) {
     handleError(error)
   }
@@ -396,6 +397,34 @@ export async function updateTransaction(orderTrackingId: string) {
         { new: true }
       );
     }
+    return JSON.parse(JSON.stringify(updatedTransaction));
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+export async function updateOrder(merchantId: string, newOrderTrackingId: string) {
+  try {
+    await connectToDatabase();
+    const existingTransaction = await Transaction.findOne({ merchantId });
+
+    if (!existingTransaction) {
+      throw new Error("Transaction not found");
+    }
+
+    // If already active, return as is
+    if (existingTransaction.status === "Active") {
+      return JSON.parse(JSON.stringify(existingTransaction));
+    }
+
+    const updatedTransaction = await Transaction.findOneAndUpdate(
+      { merchantId },
+      { orderTrackingId: newOrderTrackingId },
+      { new: true }
+    );
+
+
     return JSON.parse(JSON.stringify(updatedTransaction));
   } catch (error) {
     handleError(error);

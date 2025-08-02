@@ -29,7 +29,7 @@ type CollectionProps = {
   page: number | string;
   totalPages: number;
   urlParamName?: string;
-  handleOpenChatId:(value:any)=> void;
+  handleOpenChatId: (value: any) => void;
 };
 
 const CollectionTransactions = ({
@@ -44,21 +44,24 @@ const CollectionTransactions = ({
   // const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const pathname = usePathname();
   const { toast } = useToast();
+
+  const [newdata, setdata] = useState<any>(data);
   const [selectUser, setSelectAUser] = useState<any>([]);
   const [isOpenContact, setIsOpenContact] = useState(false);
-    const handleOpenContact = (user:any) => {
-      setSelectAUser(user);
-      setIsOpenContact(true)
-    };
-    const handleCloseContact = () => setIsOpenContact(false);
+  const handleOpenContact = (user: any) => {
+    setSelectAUser(user);
+    setIsOpenContact(true)
+  };
+  const handleCloseContact = () => setIsOpenContact(false);
   const handleDelete = async (_id: string) => {
-    await deleteTransaction({ _id, path: pathname });
-    toast({
-      title: "Alert",
-      description: "Deleted",
-      duration: 5000,
-      className: "bg-[#000000] text-white",
-    });
+    const response = await deleteTransaction({ _id, path: pathname });
+    if (response) {
+      setdata((prev: any) => prev.filter((b: any) => b._id !== _id));
+      toast({ title: 'Trans Deleted', duration: 3000 });
+    } else {
+      toast({ title: 'Error', description: "Failed to delete", variant: 'destructive' });
+    }
+
   };
 
   return (
@@ -69,38 +72,38 @@ const CollectionTransactions = ({
           <div>Total</div>
           <div className="font-bold">
             KES{" "}
-            {data
-              .reduce((total, txs) => total + txs.amount, 0)
+            {newdata
+              .reduce((total: any, txs: any) => total + txs.amount, 0)
               .toLocaleString()}
           </div>
         </div>
 
         {/* Total for successful orders */}
-        <div className="flex gap-2 items-center bg-green-600 p-1 text-xs rounded-sm">
+        <div className="flex gap-2 items-center bg-green-100 text-green-600 p-1 text-xs rounded-sm">
           <div>Successful</div>
           <div className="font-bold">
             KES{" "}
-            {data
-              .filter((txs) => txs.status === "Successful")
-              .reduce((total, txs) => total + txs.amount, 0)
+            {newdata
+              .filter((txs: any) => txs.status === "Successful")
+              .reduce((total: any, txs: any) => total + txs.amount, 0)
               .toLocaleString()}
           </div>
         </div>
 
         {/* Total for pending orders */}
-        <div className="flex gap-2 items-center bg-yellow-600 p-1 text-xs rounded-sm">
+        <div className="flex gap-2 items-center bg-yellow-100 text-yellow-600 p-1 text-xs rounded-sm">
           <div>Pending</div>
           <div className="font-bold">
             KES{" "}
-            {data
-              .filter((txs) => txs.status === "Pending")
-              .reduce((total, txs) => total + txs.amount, 0)
+            {newdata
+              .filter((txs: any) => txs.status === "Pending")
+              .reduce((total: any, txs: any) => total + txs.amount, 0)
               .toLocaleString()}
           </div>
         </div>
       </div>
 
-      {data.length > 0 ? (
+      {newdata.length > 0 ? (
         <div>
           <table className="w-full border-collapse border border-gray-300 text-xs">
             <thead>
@@ -119,7 +122,7 @@ const CollectionTransactions = ({
               </tr>
             </thead>
             <tbody>
-              {data.map((trans: any) => (
+              {newdata.map((trans: any) => (
                 <tr key={trans._id} className="text-xs">
                   <td className="border p-2">
                     <img
@@ -135,13 +138,12 @@ const CollectionTransactions = ({
                   <td className="border p-2">{trans.buyer.email}</td>
                   <td className="border p-2 text-blue-500 cursor-pointer underline">
                     <div
-                      className={`flex flex-col p-1 text-white justify-center items-center w-[70px] rounded-full ${
-                        trans.status === "Pending"
-                          ? "bg-yellow-600"
-                          : trans.status === "Failed"
+                      className={`flex flex-col p-1 text-white justify-center items-center w-[70px] rounded-full ${trans.status === "Pending"
+                        ? "bg-yellow-600"
+                        : trans.status === "Failed"
                           ? "bg-red-600 "
                           : "bg-green-600"
-                      }`}
+                        }`}
                     >
                       {trans.status}
                     </div>
@@ -171,18 +173,18 @@ const CollectionTransactions = ({
                     )}
                   </td>
                   <td className="border p-2">
-                  <button
-                  onClick={() => handleOpenContact(trans.buyer)}
-                  className="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900"
-                >
-                 <QuestionAnswerOutlinedIcon/>
-                </button>
-                </td>
+                    <button
+                      onClick={() => handleOpenContact(trans.buyer)}
+                      className="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900"
+                    >
+                      <QuestionAnswerOutlinedIcon />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <ContactUser isOpen={isOpenContact} user={selectUser} handleOpenChatId={handleOpenChatId} onClose={handleCloseContact}/>
+          <ContactUser isOpen={isOpenContact} user={selectUser} handleOpenChatId={handleOpenChatId} onClose={handleCloseContact} />
           {totalPages > 1 && (
             <Pagination
               urlParamName={urlParamName}

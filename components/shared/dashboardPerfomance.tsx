@@ -42,7 +42,7 @@ import { getData } from "@/lib/actions/transactions.actions";
 import { Icon } from "@iconify/react";
 
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
- // Correct import
+// Correct import
 import AdPerformanceSkeleton from "./AdPerformanceSkeleton";
 import SubscriptionSkeleton from "./SubscriptionSkeleton";
 type CollectionProps = {
@@ -50,9 +50,9 @@ type CollectionProps = {
   userName: string;
   userImage: string;
   loggedId: string;
- // daysRemaining?: number;
- // packname?: string;
- // color: string;
+  // daysRemaining?: number;
+  // packname?: string;
+  // color: string;
   sortby: string;
   user: any;
   emptyTitle: string;
@@ -70,13 +70,13 @@ type CollectionProps = {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  handleAdEdit: (ad:any) => void;
-  handleAdView: (ad:any) => void;
-  handleOpenReview: (value:any) => void;
-  handleOpenShop: (shopId:any) => void;
+  handleAdEdit: (ad: any) => void;
+  handleAdView: (ad: any) => void;
+  handleOpenReview: (value: any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
-  handlePay: (id:string) => void;
+  handlePay: (id: string) => void;
 };
 
 const DashboardPerformance = ({
@@ -84,20 +84,20 @@ const DashboardPerformance = ({
   userName,
   userImage,
   sortby,
- // packname,
- // daysRemaining,
- // color,
+  // packname,
+  // daysRemaining,
+  // color,
   emptyTitle,
   emptyStateSubtext,
   collectionType,
   urlParamName,
   isAdCreator,
   user,
-  loggedId,handlePay, handleOpenPerfomance, handleOpenSettings,
+  loggedId, handlePay, handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, handleOpenReview,
-  onClose, handleOpenChat, handleOpenBook,handleOpenPlan, handleOpenSell, handleAdEdit,handleAdView, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety
+  onClose, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenSell, handleAdEdit, handleAdView, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety
 }: // Accept the onSortChange prop
-CollectionProps) => {
+  CollectionProps) => {
   const [activeButton, setActiveButton] = useState(0);
   const [isVertical, setisVertical] = useState(true);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -107,15 +107,15 @@ CollectionProps) => {
   const [loading, setLoading] = useState(true);
   // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
- const [loadingSub, setLoadingSub] = useState<boolean>(false);
- const createdAt = new Date(user.transaction?.createdAt || new Date());
-     const periodInDays = parseInt(user.transaction?.period) || 0;
-     const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
-     const currentTime = new Date();
-     const remainingTime = expiryDate.getTime() - currentTime.getTime();
-     const daysRemaining = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
-    const planPackage = user.currentpack.name;
-    const color = user.currentpack.color;
+  const [loadingSub, setLoadingSub] = useState<boolean>(false);
+  const createdAt = new Date(user.transaction?.createdAt || new Date());
+  const periodInDays = parseInt(user.transaction?.period) || 0;
+  const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
+  const currentTime = new Date();
+  const remainingTime = expiryDate.getTime() - currentTime.getTime();
+  const daysRemaining = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+  const planPackage = user.currentpack.name;
+  const color = user.currentpack.color;
 
   const fetchAds = async () => {
     setLoading(true);
@@ -164,488 +164,492 @@ CollectionProps) => {
     if (node) observer.current.observe(node);
   };
 
-   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
-    
-        useEffect(() => {
-           const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
-           const isDark = savedTheme === mode;
-           
-           setIsDarkMode(isDark);
-           document.documentElement.classList.toggle(mode, isDark);
-         }, []);
-       
-         useEffect(() => {
-           if (isDarkMode === null) return; // Prevent running on initial mount
-       
-           document.documentElement.classList.toggle(mode, isDarkMode);
-           localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-         }, [isDarkMode]);
-       
-         if (isDarkMode === null) return null; // Avoid flickering before state is set
-       
+  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+    const isDark = savedTheme === mode;
+
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle(mode, isDark);
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode === null) return; // Prevent running on initial mount
+
+    document.documentElement.classList.toggle(mode, isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  if (isDarkMode === null) return null; // Avoid flickering before state is set
+
   return (
     <>
-  <ScrollArea className="h-[100vh] bg-gray-200 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
-     
-      <div className="top-0 z-10 fixed w-full">
-        <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"performance"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
-         handleOpenPerfomance={handleOpenPerfomance}
-         handleOpenSettings={handleOpenSettings}
-         handleOpenAbout={handleOpenAbout}
-         handleOpenTerms={handleOpenTerms}
-         handleOpenPrivacy={handleOpenPrivacy}
-         handleOpenSafety={handleOpenSafety} 
-         handleOpenShop={handleOpenShop}/>
-      </div>
-      <div className="min-h-screen mt-[10vh]">
-      <div className="w-full lg:max-w-6xl mx-auto p-1">
-        <section className="bg-gray-50 dark:bg-[#2D3236] bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
-          <div className="flex flex-col items-center p-1">
-            <div className="flex flex-col">
-              <SellerProfilePermonance
-                userId={userId}
-                userName={userName}
-                userImage={userImage}
-                user={user}
-                handleOpenReview={handleOpenReview}
-                handleOpenShop={handleOpenShop}
-                handlePay={handlePay}
-              />
-            </div>
-            {loadingSub ? (<>    <div className="w-full mt-0 h-full flex flex-col items-center justify-center">
-                           <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
-                           </div></>):(<>
-
-                             {isAdCreator &&
-                             planPackage !== "Free" &&
-                             daysRemaining &&
-                             daysRemaining > 0 ? (
-                               <>
-                                
-
-                                 <div className="w-full lg:max-w-2xl flex gap-1 items-center dark:bg-[#131B1E] bg-green-100 px-3 py-1 rounded-lg">
-                                 <div
-                                   style={{
-                                     backgroundColor: color,
-                                   }}
-                                   className="h-5 w-5 rounded-full"
-                                 ></div>
-    <span className="text-sm text-green-700 font-semibold">Active | {planPackage} Plan | {daysRemaining} Days Left </span>
-    <button  onClick={()=> handleOpenPlan()} className="ml-2 text-green-600 underline">Upgrade</button>
-  </div>
-
-
-
-                               </>
-                             ) : (
-                               <>
-
-<div className="flex w-full lg:max-w-2xl items-center gap-1 bg-green-100 dark:bg-[#131B1E] px-3 py-1 rounded-lg">
-<div
-                                   style={{
-                                     backgroundColor: color,
-                                   }}
-                                   className="h-5 w-5 rounded-full"
-                                 ></div>
-    <span className="text-sm text-green-700 font-semibold">Active | {planPackage} Plan </span>
-    <button  onClick={()=> handleOpenPlan()} className="ml-2 text-green-600 underline">Upgrade</button>
-  </div>
-
-                            
-                               </>
-                             )}
-                             </>)}
+      <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+        <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+          <style jsx>{`
+    @media (max-width: 1024px) {
+      div::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  `}</style>
+          <div className="top-0 z-10 fixed w-full">
+            <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"performance"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+              handleOpenPerfomance={handleOpenPerfomance}
+              handleOpenSettings={handleOpenSettings}
+              handleOpenAbout={handleOpenAbout}
+              handleOpenTerms={handleOpenTerms}
+              handleOpenPrivacy={handleOpenPrivacy}
+              handleOpenSafety={handleOpenSafety}
+              handleOpenShop={handleOpenShop} />
           </div>
-        </section>
-        <h1 className="text-3xl font-bold">Ad Performance</h1>
-        <h1 className="border-b p-1 rounded-full mb-6 dark:text-gray-300 text-gray-500 text-sm">
-          Total Ads: {data.length}
-        </h1>
-
-        {data.length > 0 ? (
-          <div>
-            {data.map((ad: any, index: number) => {
-              if (data.length === index + 1) {
-                return (
-                  <div
-                    ref={lastAdRef}
-                    key={ad._id}
-                    className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-white shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-gray-200"
-                  >
-                    {/* Ad Image */}
-                  
-                    <img
-                      src={ad.data.imageUrls[0] || "/default-ad-image.jpg"}
-                      alt={ad.data.title}
-                      className="flex w-full lg:w-64 h-40 lg:h-full object-cover"
+          <div className="min-h-screen mt-[10vh]">
+            <div className="w-full lg:max-w-6xl mx-auto p-1">
+              <section className="dark:bg-[#2D3236] bg-dotted-pattern bg-cover bg-center py-0 md:py-0 rounded-sm">
+                <div className="flex flex-col items-center p-1">
+                  <div className="flex flex-col">
+                    <SellerProfilePermonance
+                      userId={userId}
+                      userName={userName}
+                      userImage={userImage}
+                      user={user}
+                      handleOpenReview={handleOpenReview}
+                      handleOpenShop={handleOpenShop}
+                      handlePay={handlePay}
                     />
-
-                    <div className="flex-1 p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
-                      {/* 1. Ad Details */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
-                          Ad Details
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <SplitscreenOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Title: </strong> {ad.data.title}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <ClassOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Category: </strong> {ad.data.subcategory || "N/A"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <AccessTimeIcon sx={{ fontSize: 14 }} />
-                          <strong>Created Date: </strong>
-                          {new Date(ad.createdAt).toLocaleDateString()}
-                        </p>
-                      </section>
-
-                      {/* 2. Ad Engagement */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
-                          Ad Engagement
-                        </p>
-
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <VisibilityIcon sx={{ fontSize: 14 }} />
-                          <strong>Ad Views: </strong> {ad.views}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <ChatBubbleOutlineOutlinedIcon
-                            sx={{ fontSize: 14 }}
-                          />
-                          <strong>Inquiries: </strong> {ad.inquiries || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <CallIcon sx={{ fontSize: 14 }} />
-                          <strong>Calls: </strong> {ad.calls || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <WhatsAppIcon sx={{ fontSize: 14 }} />
-                          <strong>WhatsApp: </strong> {ad.whatsapp || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <ShareOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Shared: </strong> {ad.shared || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <BookmarkIcon sx={{ fontSize: 14 }} />
-                          <strong>Bookmarked: </strong> {ad.bookmarked || "0"}
-                        </p>
-                      </section>
-
-                      {/* 3. Ad Duration & Status */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
-                          Ad Status
-                        </h2>
-
-                        {ad.adstatus && (
-                          <div
-                            className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-white justify-center items-center rounded-full ${
-                              ad.adstatus === "Pending"
-                                ? "bg-yellow-600"
-                                : ad.adstatus === "Failed"
-                                ? "bg-red-600 "
-                                : "bg-green-600"
-                            }`}
-                          >
-                            {ad.adstatus}
-                          </div>
-                        )}
-                        <div className="flex mt-2 gap-4 rounded-xl p-3 shadow-sm transition-all">
-                          <div 
-                          onClick={()=> handleAdEdit(ad)}
-                          >
-                            <Image
-                              src="/assets/icons/edit.svg"
-                              alt="edit"
-                              width={20}
-                              height={20}
-                            />
-                          </div>
-                          <DeleteConfirmation
-                            adId={ad._id}
-                            imageUrls={ad.data.imageUrls}
-                          />
-                        </div>
-                      </section>
-
-                      {/* 4. Ad Performance */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
-                          Ad Performance
-                        </h2>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <LowPriorityOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Priority Level: </strong>{" "}
-                          {ad.priority || "N/A"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <FlightTakeoffOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Plan: </strong> {ad.plan?.name || "Free"}
-                        </p>
-                      </section>
-
-                      {/* 5. Contact Info */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
-                          Contact Info
-                        </h2>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <CallIcon sx={{ fontSize: 14 }} />
-                          <strong>Phone: </strong> {ad.data.phone || "N/A"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <WhatsAppIcon sx={{ fontSize: 14 }} />
-                          <strong>WhatsApp: </strong>{" "}
-                          {ad.organizer?.whatsapp || "N/A"}
-                        </p>
-                        <p
-                          className={`flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs ${
-                            ad.organizer?.verified[0]?.accountverified === true
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Verified Status: </strong>{" "}
-                          {ad.organizer?.verified[0]?.accountverified === true
-                            ? "Verified"
-                            : "Not Verified"}
-                        </p>
-                      </section>
-
-                      {/* 6. Geographical Info */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
-                          Geographical Info
-                        </h2>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <LocationOnIcon sx={{ fontSize: 14 }} />
-                          <strong>Location: </strong>  {ad.data.region} - {ad.data.area}
-                        </p>
-                        {(ad.data["propertyarea"]) && (
-                                      <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                                      <AssistantDirectionOutlinedIcon
-                                        sx={{ fontSize: 14 }}
-                                      />
-                                      <strong>Map Enabled: </strong> {"Yes"}
-                                    </p>
-                                    )}
-
-                      </section>
-                    </div>
                   </div>
-                );
-              } else {
-                return (
-                  <div
-                    key={ad._id}
-                    className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-white shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-gray-200"
-                  >
-                    {/* Ad Image */}
-                    <img
-                      src={ad.data.imageUrls[0] || "/default-ad-image.jpg"}
-                      alt={ad.data.title}
-                      className="w-full lg:w-64 h-40 lg:h-full object-cover"
-                    />
+                  {loadingSub ? (<>    <div className="w-full mt-0 h-full flex flex-col items-center justify-center">
+                    <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                  </div></>) : (<>
 
-                    <div className="p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
-                      {/* 1. Ad Details */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
-                          Ad Details
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <SplitscreenOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Title: </strong> {ad.data.title}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <ClassOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Category: </strong> {ad.data.subcategory || "N/A"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <AccessTimeIcon sx={{ fontSize: 14 }} />
-                          <strong>Created Date: </strong>
-                          {new Date(ad.createdAt).toLocaleDateString()}
-                        </p>
-                      </section>
+                    {isAdCreator &&
+                      planPackage !== "Free" &&
+                      daysRemaining &&
+                      daysRemaining > 0 ? (
+                      <>
 
-                      {/* 2. Ad Engagement */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
-                          Ad Engagement
-                        </p>
 
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <VisibilityIcon sx={{ fontSize: 14 }} />
-                          <strong>Ad Views: </strong> {ad.views}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <ChatBubbleOutlineOutlinedIcon
-                            sx={{ fontSize: 14 }}
-                          />
-                          <strong>Inquiries: </strong> {ad.inquiries || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <CallIcon sx={{ fontSize: 14 }} />
-                          <strong>Calls: </strong> {ad.calls || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <WhatsAppIcon sx={{ fontSize: 14 }} />
-                          <strong>WhatsApp: </strong> {ad.whatsapp || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <ShareOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Shared: </strong> {ad.shared || "0"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <BookmarkIcon sx={{ fontSize: 14 }} />
-                          <strong>Bookmarked: </strong> {ad.bookmarked || "0"}
-                        </p>
-                      </section>
-
-                      {/* 3. Ad Duration & Status */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
-                          Ad Status
-                        </h2>
-
-                        {ad.adstatus && (
+                        <div className="w-full lg:max-w-2xl flex gap-1 items-center dark:bg-[#131B1E] bg-green-100 px-3 py-1 rounded-lg">
                           <div
-                            className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-white justify-center items-center rounded-full ${
-                              ad.adstatus === "Pending"
-                                ? "bg-yellow-600"
-                                : ad.adstatus === "Failed"
-                                ? "bg-red-600 "
-                                : "bg-green-600"
-                            }`}
-                          >
-                            {ad.adstatus}
-                          </div>
-                        )}
-                        <div className="flex mt-2 gap-4 rounded-xl p-3 shadow-sm transition-all">
-                        <div 
-                          onClick={()=> handleAdEdit(ad)}
-                          >
-                            <Image
-                              src="/assets/icons/edit.svg"
-                              alt="edit"
-                              width={20}
-                              height={20}
-                            />
-                          </div>
-                          <DeleteConfirmation
-                            adId={ad._id}
-                            imageUrls={ad.data.imageUrls}
-                          />
+                            style={{
+                              backgroundColor: color,
+                            }}
+                            className="h-5 w-5 rounded-full"
+                          ></div>
+                          <span className="text-sm text-green-700 font-semibold">Active | {planPackage} Plan | {daysRemaining} Days Left </span>
+                          <button onClick={() => handleOpenPlan()} className="ml-2 text-green-600 underline">Upgrade</button>
                         </div>
-                      </section>
 
-                      {/* 4. Ad Performance */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
-                          Ad Performance
-                        </h2>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <LowPriorityOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Priority Level: </strong>{" "}
-                          {ad.priority || "N/A"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <FlightTakeoffOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Plan: </strong> {ad.plan?.name || "Free"}
-                        </p>
-                      </section>
 
-                      {/* 5. Contact Info */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
-                          Contact Info
-                        </h2>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <CallIcon sx={{ fontSize: 14 }} />
-                          <strong>Phone: </strong> {ad.data.phone || "N/A"}
-                        </p>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <WhatsAppIcon sx={{ fontSize: 14 }} />
-                          <strong>WhatsApp: </strong>{" "}
-                          {ad.organizer?.whatsapp || "N/A"}
-                        </p>
-                        <p
-                          className={`flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs ${
-                            ad.organizer?.verified[0]?.accountverified === true
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
+
+                      </>
+                    ) : (
+                      <>
+
+                        <div className="flex w-full lg:max-w-2xl items-center gap-1 bg-green-100 dark:bg-[#131B1E] px-3 py-1 rounded-lg">
+                          <div
+                            style={{
+                              backgroundColor: color,
+                            }}
+                            className="h-5 w-5 rounded-full"
+                          ></div>
+                          <span className="text-sm text-green-700 font-semibold">Active | {planPackage} Plan </span>
+                          <button onClick={() => handleOpenPlan()} className="ml-2 text-green-600 underline">Upgrade</button>
+                        </div>
+
+
+                      </>
+                    )}
+                  </>)}
+                </div>
+              </section>
+              <h1 className="text-3xl font-bold">Ad Performance</h1>
+              <h1 className="border-b p-1 rounded-full mb-6 dark:text-gray-300 text-gray-500 text-sm">
+                Total Ads: {data.length}
+              </h1>
+
+              {data.length > 0 ? (
+                <div>
+                  {data.map((ad: any, index: number) => {
+                    if (data.length === index + 1) {
+                      return (
+                        <div
+                          ref={lastAdRef}
+                          key={ad._id}
+                          className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-white shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-[#FAE6DA]"
                         >
-                          <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
-                          <strong>Verified Status: </strong>{" "}
-                          {ad.organizer?.verified[0]?.accountverified === true
-                            ? "Verified"
-                            : "Not Verified"}
-                        </p>
-                      </section>
+                          {/* Ad Image */}
 
-                      {/* 6. Geographical Info */}
-                      <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
-                        <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
-                          Geographical Info
-                        </h2>
-                        <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                          <LocationOnIcon sx={{ fontSize: 14 }} />
-                          <strong>Location: </strong>  {ad.data.region} - {ad.data.area}
-                        </p>
-                         {(ad.data["propertyarea"]) && (
-                                      <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
-                                      <AssistantDirectionOutlinedIcon
-                                        sx={{ fontSize: 14 }}
-                                      />
-                                      <strong>Map Enabled: </strong> {"Yes"}
-                                    </p>
-                                    )}
+                          <img
+                            src={ad.data.imageUrls[0] || "/default-ad-image.jpg"}
+                            alt={ad.data.title}
+                            className="flex w-full lg:w-64 h-40 lg:h-full object-cover"
+                          />
 
-                       
-                      </section>
-                    </div>
+                          <div className="flex-1 p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
+                            {/* 1. Ad Details */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
+                                Ad Details
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <SplitscreenOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Title: </strong> {ad.data.title}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <ClassOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Category: </strong> {ad.data.subcategory || "N/A"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <AccessTimeIcon sx={{ fontSize: 14 }} />
+                                <strong>Created Date: </strong>
+                                {new Date(ad.createdAt).toLocaleDateString()}
+                              </p>
+                            </section>
+
+                            {/* 2. Ad Engagement */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
+                                Ad Engagement
+                              </p>
+
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <VisibilityIcon sx={{ fontSize: 14 }} />
+                                <strong>Ad Views: </strong> {ad.views}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <ChatBubbleOutlineOutlinedIcon
+                                  sx={{ fontSize: 14 }}
+                                />
+                                <strong>Inquiries: </strong> {ad.inquiries || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <CallIcon sx={{ fontSize: 14 }} />
+                                <strong>Calls: </strong> {ad.calls || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <WhatsAppIcon sx={{ fontSize: 14 }} />
+                                <strong>WhatsApp: </strong> {ad.whatsapp || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <ShareOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Shared: </strong> {ad.shared || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <BookmarkIcon sx={{ fontSize: 14 }} />
+                                <strong>Bookmarked: </strong> {ad.bookmarked || "0"}
+                              </p>
+                            </section>
+
+                            {/* 3. Ad Duration & Status */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
+                                Ad Status
+                              </h2>
+
+                              {ad.adstatus && (
+                                <div
+                                  className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-white justify-center items-center rounded-full ${ad.adstatus === "Pending"
+                                    ? "bg-yellow-600"
+                                    : ad.adstatus === "Failed"
+                                      ? "bg-red-600 "
+                                      : "bg-green-600"
+                                    }`}
+                                >
+                                  {ad.adstatus}
+                                </div>
+                              )}
+                              <div className="flex mt-2 gap-4 rounded-xl p-3 shadow-sm transition-all">
+                                <div
+                                  onClick={() => handleAdEdit(ad)}
+                                >
+                                  <Image
+                                    src="/assets/icons/edit.svg"
+                                    alt="edit"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </div>
+                                <DeleteConfirmation
+                                  adId={ad._id}
+                                  imageUrls={ad.data.imageUrls}
+                                />
+                              </div>
+                            </section>
+
+                            {/* 4. Ad Performance */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
+                                Ad Performance
+                              </h2>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <LowPriorityOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Priority Level: </strong>{" "}
+                                {ad.priority || "N/A"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <FlightTakeoffOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Plan: </strong> {ad.plan?.name || "Free"}
+                              </p>
+                            </section>
+
+                            {/* 5. Contact Info */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
+                                Contact Info
+                              </h2>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <CallIcon sx={{ fontSize: 14 }} />
+                                <strong>Phone: </strong> {ad.data.phone || "N/A"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <WhatsAppIcon sx={{ fontSize: 14 }} />
+                                <strong>WhatsApp: </strong>{" "}
+                                {ad.organizer?.whatsapp || "N/A"}
+                              </p>
+                              <p
+                                className={`flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs ${ad.organizer?.verified[0]?.accountverified === true
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                                  }`}
+                              >
+                                <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Verified Status: </strong>{" "}
+                                {ad.organizer?.verified[0]?.accountverified === true
+                                  ? "Verified"
+                                  : "Not Verified"}
+                              </p>
+                            </section>
+
+                            {/* 6. Geographical Info */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
+                                Geographical Info
+                              </h2>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <LocationOnIcon sx={{ fontSize: 14 }} />
+                                <strong>Location: </strong>  {ad.data.region} - {ad.data.area}
+                              </p>
+                              {(ad.data["propertyarea"]) && (
+                                <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                  <AssistantDirectionOutlinedIcon
+                                    sx={{ fontSize: 14 }}
+                                  />
+                                  <strong>Map Enabled: </strong> {"Yes"}
+                                </p>
+                              )}
+
+                            </section>
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div
+                          key={ad._id}
+                          className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-white shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-[#FAE6DA]"
+                        >
+                          {/* Ad Image */}
+                          <img
+                            src={ad.data.imageUrls[0] || "/default-ad-image.jpg"}
+                            alt={ad.data.title}
+                            className="w-full lg:w-64 h-40 lg:h-full object-cover"
+                          />
+
+                          <div className="p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
+                            {/* 1. Ad Details */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
+                                Ad Details
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <SplitscreenOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Title: </strong> {ad.data.title}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <ClassOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Category: </strong> {ad.data.subcategory || "N/A"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <AccessTimeIcon sx={{ fontSize: 14 }} />
+                                <strong>Created Date: </strong>
+                                {new Date(ad.createdAt).toLocaleDateString()}
+                              </p>
+                            </section>
+
+                            {/* 2. Ad Engagement */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
+                                Ad Engagement
+                              </p>
+
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <VisibilityIcon sx={{ fontSize: 14 }} />
+                                <strong>Ad Views: </strong> {ad.views}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <ChatBubbleOutlineOutlinedIcon
+                                  sx={{ fontSize: 14 }}
+                                />
+                                <strong>Inquiries: </strong> {ad.inquiries || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <CallIcon sx={{ fontSize: 14 }} />
+                                <strong>Calls: </strong> {ad.calls || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <WhatsAppIcon sx={{ fontSize: 14 }} />
+                                <strong>WhatsApp: </strong> {ad.whatsapp || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <ShareOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Shared: </strong> {ad.shared || "0"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <BookmarkIcon sx={{ fontSize: 14 }} />
+                                <strong>Bookmarked: </strong> {ad.bookmarked || "0"}
+                              </p>
+                            </section>
+
+                            {/* 3. Ad Duration & Status */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
+                                Ad Status
+                              </h2>
+
+                              {ad.adstatus && (
+                                <div
+                                  className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-white justify-center items-center rounded-full ${ad.adstatus === "Pending"
+                                    ? "bg-yellow-600"
+                                    : ad.adstatus === "Failed"
+                                      ? "bg-red-600 "
+                                      : "bg-green-600"
+                                    }`}
+                                >
+                                  {ad.adstatus}
+                                </div>
+                              )}
+                              <div className="flex mt-2 gap-4 rounded-xl p-3 shadow-sm transition-all">
+                                <div
+                                  onClick={() => handleAdEdit(ad)}
+                                >
+                                  <Image
+                                    src="/assets/icons/edit.svg"
+                                    alt="edit"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </div>
+                                <DeleteConfirmation
+                                  adId={ad._id}
+                                  imageUrls={ad.data.imageUrls}
+                                />
+                              </div>
+                            </section>
+
+                            {/* 4. Ad Performance */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
+                                Ad Performance
+                              </h2>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <LowPriorityOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Priority Level: </strong>{" "}
+                                {ad.priority || "N/A"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <FlightTakeoffOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Plan: </strong> {ad.plan?.name || "Free"}
+                              </p>
+                            </section>
+
+                            {/* 5. Contact Info */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
+                                Contact Info
+                              </h2>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <CallIcon sx={{ fontSize: 14 }} />
+                                <strong>Phone: </strong> {ad.data.phone || "N/A"}
+                              </p>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <WhatsAppIcon sx={{ fontSize: 14 }} />
+                                <strong>WhatsApp: </strong>{" "}
+                                {ad.organizer?.whatsapp || "N/A"}
+                              </p>
+                              <p
+                                className={`flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs ${ad.organizer?.verified[0]?.accountverified === true
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                                  }`}
+                              >
+                                <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
+                                <strong>Verified Status: </strong>{" "}
+                                {ad.organizer?.verified[0]?.accountverified === true
+                                  ? "Verified"
+                                  : "Not Verified"}
+                              </p>
+                            </section>
+
+                            {/* 6. Geographical Info */}
+                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                              <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
+                                Geographical Info
+                              </h2>
+                              <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                <LocationOnIcon sx={{ fontSize: 14 }} />
+                                <strong>Location: </strong>  {ad.data.region} - {ad.data.area}
+                              </p>
+                              {(ad.data["propertyarea"]) && (
+                                <p className="flex gap-1 mb-1 text-gray-700 dark:text-gray-300 text-[10px] lg:text-xs">
+                                  <AssistantDirectionOutlinedIcon
+                                    sx={{ fontSize: 14 }}
+                                  />
+                                  <strong>Map Enabled: </strong> {"Yes"}
+                                </p>
+                              )}
+
+
+                            </section>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              ) : (
+                loading === false && (
+                  <div className="flex items-center lg:min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-5 lg:py-28 text-center">
+                    <h3 className="font-bold text-[16px] lg:text-[25px]">
+                      0 ads
+                    </h3>
+                    <p className="text-sm lg:p-regular-14">No ads to display.</p>
+
                   </div>
-                );
-              }
-            })}
-          </div>
-        ) : (
-          loading === false && (
-            <div className="flex items-center lg:min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-5 lg:py-28 text-center">
-              <h3 className="font-bold text-[16px] lg:text-[25px]">
-                0 ads
-              </h3>
-              <p className="text-sm lg:p-regular-14">No ads to display.</p>
-             
+                )
+              )}
+
+              {loading && (
+                <div>
+
+
+                  <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+                    <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                  </div>
+
+
+
+                </div>
+              )}
             </div>
-          )
-        )}
-
-{loading && (
-           <div>
-          
-            
-                       <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-                                        <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
-                                        </div>
-                     
-                   
-            
-           </div>
-         )}
+            <Toaster />
+          </div>
+          <footer>
+            <Footersub handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} />
+          </footer>
+        </div>
       </div>
-      <Toaster />
-      </div>
-      <footer>
-        <Footersub handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} />
-      </footer>
-    </ScrollArea>
     </>
   );
 };

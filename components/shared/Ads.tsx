@@ -60,7 +60,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
-import SellerProfile from "./SellerProfile";
+
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 
 import Head from "next/head";
@@ -89,23 +89,24 @@ import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
 import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
 import { RequestFinancing } from "./RequestFinancing";
+import Bidding from "./Bidding";
 
- // Correct import
+// Correct import
 type CardProps = {
   ad: any;
-  user:any;
+  user: any;
   userId: string;
   userImage: string;
   userName: string;
   onClose: () => void;
-  handleSubCategory:(category: string, subcategory: string) => void;
-  handleOpenReview: (value:any) => void;
-  handleOpenShop: (value:any) => void;
-  handlePay: (id:string) => void;
+  handleSubCategory: (category: string, subcategory: string) => void;
+  handleOpenReview: (value: any) => void;
+  handleOpenShop: (value: any) => void;
+  handlePay: (id: string) => void;
   handleOpenPlan: () => void;
   handleOpenSell: () => void;
   handleOpenSafety: () => void;
-  
+
 };
 function checkPlatform(url: string) {
   const youtubeRegex = /(?:youtube\.com|youtu\.be)/;
@@ -119,7 +120,7 @@ function checkPlatform(url: string) {
     return "Unknown Platform";
   }
 }
-export default function Ads({ ad, user, userId, userImage, userName, onClose,handlePay, handleOpenSafety, handleOpenSell, handleSubCategory, handleOpenReview, handleOpenPlan, handleOpenShop,}: CardProps) {
+export default function Ads({ ad, user, userId, userImage, userName, onClose, handlePay, handleOpenSafety, handleOpenSell, handleSubCategory, handleOpenReview, handleOpenPlan, handleOpenShop, }: CardProps) {
   const [videoAdId, setvideoAdId] = React.useState<string | null>(null);
   const [tiktokvideoAdId, setTiktokvideoAdId] = React.useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
@@ -184,8 +185,8 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
     if (ad.description) {
       sessionStorage.setItem("description", ad.data.description);
     }
-  
-   
+
+
   }, [
     api,
     ad._id,
@@ -258,7 +259,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
 
   const handleClosePopupAv = () => {
     setIsPopupOpenAv(false);
-   // Clear the textarea on close
+    // Clear the textarea on close
   };
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
@@ -273,7 +274,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
   ) => {
     setAbuseDescription(event.target.value);
   };
- 
+
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingsmall, setIsLoadingsmall] = useState(true);
   const [isLoadingpopup, setIsLoadingpopup] = useState(true);
@@ -288,11 +289,11 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
       "_blank"
     );
   };
-  
+
   const [inputMode, setInputMode] = useState<'Images' | 'Video' | 'Virtual'>('Images');
-   const [isOpenP, setIsOpenP] = useState(false);
+  const [isOpenP, setIsOpenP] = useState(false);
   const [isPopupOpenLoan, setIsPopupOpenLoan] = useState(false);
-   const handleOpenPopupLoan = () => {
+  const handleOpenPopupLoan = () => {
     setIsPopupOpenLoan(true);
   };
 
@@ -300,14 +301,14 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
     setIsPopupOpenLoan(false);
   };
 
-    const handleCloseP = () => {
-      setIsOpenP(false);
-    };
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
     <>
       <div className="text-sm p-0 hidden lg:inline">
         <div className="flex">
-          <div className="mt-4 border hover:text-emerald-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
             <div
               onClick={() => {
                 //setIsOpenP(true);
@@ -316,45 +317,45 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               }}
             >
               <div className="flex items-center gap-2 cursor-pointer ">
-                <p className="text-xs lg:text-sm"> All Ads</p><EastOutlinedIcon sx={{ fontSize: 14 }}/>
+                <p className="text-xs lg:text-sm"> All Ads</p><EastOutlinedIcon sx={{ fontSize: 14 }} />
               </div>
             </div>
           </div>
-          <div className="mt-4 border hover:text-emerald-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
                   onClick={() => {
-                    handleSubCategory(ad.data.category,'');
-                  
+                    handleSubCategory(ad.data.category, '');
+
                   }}
                   className="flex items-center gap-2 cursor-pointer"
                 >
-                 
-                  <p className="text-xs lg:text-sm">{ad.data.category}</p><EastOutlinedIcon sx={{ fontSize: 14 }}/>
+
+                  <p className="text-xs lg:text-sm">{ad.data.category}</p><EastOutlinedIcon sx={{ fontSize: 14 }} />
                 </div>
               )}
             </div>
           </div>
-          <div className="mt-4 border hover:text-emerald-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-400 py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-400 py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
                   onClick={() => {
-                    handleSubCategory(ad.data.category,ad.data.subcategory);
-                  
+                    handleSubCategory(ad.data.category, ad.data.subcategory);
+
                   }}
                   className="flex items-center gap-2 cursor-pointer"
                 >
-                 
-                  <p className="text-xs lg:text-sm">{ad.data.subcategory}</p><EastOutlinedIcon sx={{ fontSize: 14 }}/>
+
+                  <p className="text-xs lg:text-sm">{ad.data.subcategory}</p><EastOutlinedIcon sx={{ fontSize: 14 }} />
                 </div>
               )}
             </div>
           </div>
           <div className="mt-4 border text-gray-700 dark:bg-[#2D3236] dark:text-gray-300 bg-white py-1 px-2 rounded-full">
             <div className="flex items-center">
-           
+
               {ad && <p className="text-xs lg:text-sm">{ad.data.title}</p>}
             </div>
           </div>
@@ -362,43 +363,43 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-1 lg:mt-2 border-t-50 border-emerald-700 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl lg:p-1"
-          //style={
-          //  ad.plan.name !== "Free"
-          //    ? {
-           //       borderTop: "8px",
-           //       borderColor: ad.plan.color, // Border color for non-free plans
-            //    }
-             // : undefined
-          //}
+          className="mt-1 lg:mt-2 border-t-50 border-orange-700 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl lg:p-1"
+        //style={
+        //  ad.plan.name !== "Free"
+        //    ? {
+        //       borderTop: "8px",
+        //       borderColor: ad.plan.color, // Border color for non-free plans
+        //    }
+        // : undefined
+        //}
         >
-{ad.plan.name !== "Free" && (
+          {ad.plan.name !== "Free" && (
+            <div
+              style={{
+                backgroundColor: ad.plan.color,
+              }}
+              className="hidden lg:inline rounded-tr-xl absolute shadow-lg z-10 top-0 right-0 text-white text-[10px] py-1 px-3"
+            >
               <div
-                style={{
-                  backgroundColor: ad.plan.color,
+                onClick={() => {
+                  handleOpenPlan()
                 }}
-                className="hidden lg:inline rounded-tr-xl absolute shadow-lg z-10 top-0 right-0 text-white text-[10px] py-1 px-3"
               >
-                <div
-                  onClick={() => {
-                    handleOpenPlan()
-                  }}
-                >
-                  <div className="flex gap-1 cursor-pointer">
-                    {ad.plan.name}
-                  </div>
+                <div className="flex gap-1 cursor-pointer">
+                  {ad.plan.name}
                 </div>
               </div>
-            )}
-            
-  {/*<div className="grid grid-cols-3 mb-0 flex gap-1">
+            </div>
+          )}
+
+          {/*<div className="grid grid-cols-3 mb-0 flex gap-1">
   <button
     title="Ad Pictures"
     onClick={() => setInputMode("Images")}
     className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs rounded-tl-xl ${
       inputMode === "Images"
         ? "text-white bg-[#131B1E] dark:text-white"
-        : "bg-emerald-600 text-white"
+        : "bg-orange-600 text-white"
     }`}
   >
     <LocalSeeOutlinedIcon sx={{ fontSize: 16 }} /> Pictures
@@ -410,7 +411,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
     className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs ${
       inputMode === "Video"
         ? "text-white bg-[#131B1E] dark:text-white"
-        : "bg-emerald-600 text-white"
+        : "bg-orange-600 text-white"
     }`}
   >
     <YouTubeIcon sx={{ fontSize: 16 }} /> Video
@@ -421,7 +422,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
     className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs rounded-tr-xl ${
       inputMode === "Virtual"
         ? "text-white bg-[#131B1E] dark:text-white"
-        : "bg-emerald-600 text-white"
+        : "bg-orange-600 text-white"
     }`}
   >
     <ThreeDRotationOutlinedIcon sx={{ fontSize: 16 }} />3D Virtual Tour
@@ -431,170 +432,167 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
 
 
 
-<div
-  className={`rounded-0 lg:p-2 flex flex-col bg-[#131B1E] lg:rounded-xl`}
-  >
-  {/* Images Section */}
-  <div className={`${inputMode === "Images" ? "block" : "hidden"}`}>
-  <div className={`relative`}>
-     <Carousel
-              setApi={setApi}
-              plugins={[plugin.current as any]}
-              className="w-full"
-            >
-              <CarouselContent>
-                  {ad.data.imageUrls.length > 0 ? (<>
-                {ad.data.imageUrls.map((image: string, index: number) => (
-                  <CarouselItem key={index}>
-                    <div className="relative w-full">
-                      {isLoading && (
-                       
-                         <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-                                    <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-                                    </div>
-                      )}
-                      <Zoom>
-                      <Image
-                          src={image}
-                          alt={`Image ${index + 1}`}
+          <div
+            className={`rounded-0 lg:p-2 flex flex-col bg-[#131B1E] lg:rounded-xl`}
+          >
+            {/* Images Section */}
+            <div className={`${inputMode === "Images" ? "block" : "hidden"}`}>
+              <div className={`relative`}>
+                <Carousel
+                  setApi={setApi}
+                  plugins={[plugin.current as any]}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {ad.data.imageUrls.length > 0 ? (<>
+                      {ad.data.imageUrls.map((image: string, index: number) => (
+                        <CarouselItem key={index}>
+                          <div className="relative w-full">
+                            {isLoading && (
+
+                              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                              </div>
+                            )}
+                            <Zoom>
+                              <Image
+                                src={image}
+                                alt={`Image ${index + 1}`}
+                                width={800} // Adjust the width as needed
+                                height={500} // Adjust the height as needed
+                                className={`bg-[#000000] h-[420px] lg:h-[380px] object-cover cursor-pointer ${isLoading ? "opacity-0" : "opacity-100"
+                                  } transition-opacity duration-300`}
+                                onLoadingComplete={() => setIsLoading(false)}
+                                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                              />
+                            </Zoom>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </>) : (<>
+                      <CarouselItem>
+                        <Image
+                          src={"/fallback.jpg"}
+                          alt={"Ad image"}
                           width={800} // Adjust the width as needed
                           height={500} // Adjust the height as needed
-                          className={`bg-[#000000] h-[400px] object-cover cursor-pointer ${
-                            isLoading ? "opacity-0" : "opacity-100"
-                          } transition-opacity duration-300`}
+                          layout="fill"
+                          className={`object-cover h-[420px] lg:h-[380px] cursor-pointer ${isLoading ? "opacity-0" : "opacity-100"
+                            } transition-opacity duration-300`}
                           onLoadingComplete={() => setIsLoading(false)}
-                          placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-                        />
-                      </Zoom>
-                    </div>
-                  </CarouselItem>
-                ))}
-                </>):(<>
-                <CarouselItem> 
-                  <Image
-                     src={"/fallback.jpg"}
-                    alt={"Ad image"}
-                    width={800} // Adjust the width as needed
-                    height={500} // Adjust the height as needed
-                    layout="fill"
-                    className={`object-cover h-[400px] cursor-pointer ${
-                        isLoading ? "opacity-0" : "opacity-100"
-                      } transition-opacity duration-300`}
-                    onLoadingComplete={() => setIsLoading(false)}
-                    placeholder="empty"
-                    /> </CarouselItem>
+                          placeholder="empty"
+                        /> </CarouselItem>
                     </>)}
-              </CarouselContent>
-              <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
-              <CarouselNext className="h-[50px] w-[50px] mr-20 font-bold border-0 bg-white bg-opacity-50 text-white p-2" />
-            </Carousel>
-            <div className="flex gap-1 absolute bottom-0 right-0 items-center text-white text-[10px] lg:text-xs m-1 p-0 focus:outline-none">
-              <div className="flex pr-2 pl-2 h-10 rounded-sm items-center bg-black bg-opacity-50">
-                Slide {current} of {count}
-              </div>
-              <div
-                className="p-1 cursor-pointer rounded-sm shadow"
-                onClick={togglePopup}
-              >
-                <Image
-                  src="/assets/icons/expand.png"
-                  alt="logo"
-                  className="w-8 ml-5 hover:cursor-pointer"
-                  width={36}
-                  height={36}
-                />
-              </div>
-            </div>
-            <div className="flex gap-1 absolute bottom-0 left-0 text-white text-xs m-1 p-0 focus:outline-none">
-              <div
-                className="p-1 cursor-pointer rounded-sm"
-                onClick={handlePlay}
-              >
-                {autoplayEnabled ? (
-                  <Image
-                    src="/assets/icons/pause.png"
-                    alt="logo"
-                    className="w-8 ml-5 hover:cursor-pointer"
-                    width={36}
-                    height={36}
-                  />
-                ) : (
-                  <Image
-                    src="/assets/icons/play.png"
-                    alt="logo"
-                    className="w-8 ml-5 hover:cursor-pointer"
-                    width={36}
-                    height={36}
-                  />
-                )}
-              </div>
-            </div>
-            
-            {ad.organizer.verified &&
-              ad.organizer.verified[0].accountverified === true && (
-                <div className="hidden lg:inline absolute bg-emerald-100 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
-                  <div className="flex gap-1 cursor-pointer">
-                    <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-                    Verified
+                  </CarouselContent>
+                  <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
+                  <CarouselNext className="h-[50px] w-[50px] mr-20 font-bold border-0 bg-white bg-opacity-50 text-white p-2" />
+                </Carousel>
+                <div className="flex gap-1 absolute bottom-0 right-0 items-center text-white text-[10px] lg:text-xs m-1 p-0 focus:outline-none">
+                  <div className="flex pr-2 pl-2 h-10 rounded-sm items-center bg-black bg-opacity-50">
+                    Slide {current} of {count}
+                  </div>
+                  <div
+                    className="p-1 cursor-pointer rounded-sm shadow"
+                    onClick={togglePopup}
+                  >
+                    <Image
+                      src="/assets/icons/expand.png"
+                      alt="logo"
+                      className="w-8 ml-5 hover:cursor-pointer"
+                      width={36}
+                      height={36}
+                    />
                   </div>
                 </div>
-              )}
-          </div>
-          <div className="flex space-x-1">
-            <Carousel
-              setApi={setApi2}
-              opts={{
-                align: "start",
-              }}
-              className="w-full ml-2 mr-2 mt-1"
-            >
-              <CarouselContent>
-                {ad.data.imageUrls.map((image: string, index: number) => (
-                  <CarouselItem
-                    key={index}
-                    className="rounded-lg basis-1/3 lg:basis-1/4 pl-5 lg:pr-0"
+                <div className="flex gap-1 absolute bottom-0 left-0 text-white text-xs m-1 p-0 focus:outline-none">
+                  <div
+                    className="p-1 cursor-pointer rounded-sm"
+                    onClick={handlePlay}
                   >
-                    <div
-                      style={{
-                        border:
-                          selectedIndex === index
-                            ? "3px solid black"
-                            : "3px solid transparent",
-                      }}
-                      className="p-0 w-full rounded-lg"
-                    >
-                      <span key={index} onClick={() => handleImageClick(index)}>
-                        <div className="relative">
-                          {isLoadingsmall && (
-                                                   <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-                                                   <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-                                                   </div>
-                          )}
+                    {autoplayEnabled ? (
+                      <Image
+                        src="/assets/icons/pause.png"
+                        alt="logo"
+                        className="w-8 ml-5 hover:cursor-pointer"
+                        width={36}
+                        height={36}
+                      />
+                    ) : (
+                      <Image
+                        src="/assets/icons/play.png"
+                        alt="logo"
+                        className="w-8 ml-5 hover:cursor-pointer"
+                        width={36}
+                        height={36}
+                      />
+                    )}
+                  </div>
+                </div>
 
-                          <Image
-                            src={image}
-                            alt={`Image ${index + 1}`}
-                            width={244} // Adjust width to match the `w-36` Tailwind class
-                            height={196} // Adjust height to match the `h-24` Tailwind class
-                            className={`h-[100px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 ${
-                              isLoadingsmall ? "opacity-0" : "opacity-100"
-                            } transition-opacity duration-300`}
-                            onLoadingComplete={() => setIsLoadingsmall(false)}
-                            placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-                          />
-                        </div>
-                      </span>
+                {ad.organizer.verified &&
+                  ad.organizer.verified[0].accountverified === true && (
+                    <div className="hidden lg:inline absolute bg-orange-100 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                      <div className="flex gap-1 cursor-pointer">
+                        <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
+                        Verified
+                      </div>
                     </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
+                  )}
+              </div>
+              <div className="flex space-x-1">
+                <Carousel
+                  setApi={setApi2}
+                  opts={{
+                    align: "start",
+                  }}
+                  className="w-full ml-2 mr-2 mt-1"
+                >
+                  <CarouselContent>
+                    {ad.data.imageUrls.map((image: string, index: number) => (
+                      <CarouselItem
+                        key={index}
+                        className="rounded-lg basis-1/3 lg:basis-1/4 pl-5 lg:pr-0"
+                      >
+                        <div
+                          style={{
+                            border:
+                              selectedIndex === index
+                                ? "3px solid black"
+                                : "3px solid transparent",
+                          }}
+                          className="p-0 w-full rounded-lg"
+                        >
+                          <span key={index} onClick={() => handleImageClick(index)}>
+                            <div className="relative">
+                              {isLoadingsmall && (
+                                <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                                  <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                                </div>
+                              )}
 
-              <CarouselPrevious className="md:h-10 md:w-10 lg:h-10 lg:w-10 ml-10 font-bold text-white border-2 bg-black bg-opacity-80 p-2" />
-              <CarouselNext className="md:h-10 md:w-10 lg:h-10 lg:w-10 mr-10 font-bold bg-black border-2 bg-opacity-80 text-white p-2" />
-            </Carousel>
+                              <Image
+                                src={image}
+                                alt={`Image ${index + 1}`}
+                                width={244} // Adjust width to match the `w-36` Tailwind class
+                                height={196} // Adjust height to match the `h-24` Tailwind class
+                                className={`h-[70px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-orange-500 ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                                  } transition-opacity duration-300`}
+                                onLoadingComplete={() => setIsLoadingsmall(false)}
+                                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                              />
+                            </div>
+                          </span>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+
+                  <CarouselPrevious className="md:h-10 md:w-10 lg:h-10 lg:w-10 ml-10 font-bold text-white border-2 bg-black bg-opacity-80 p-2" />
+                  <CarouselNext className="md:h-10 md:w-10 lg:h-10 lg:w-10 mr-10 font-bold bg-black border-2 bg-opacity-80 text-white p-2" />
+                </Carousel>
+              </div>
             </div>
-  </div>
-</div>
+          </div>
           {/* Popup for displaying all images */}
           {showPopup && (
             <div className="bg-black fixed top-0 left-0 w-full min-h-screen flex justify-center items-center z-50">
@@ -612,18 +610,17 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                         <CarouselItem key={index}>
                           <div className="relative h-[500px] w-full">
                             {isLoadingpopup && (
-                                                     <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-                                                     <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-                                                     </div>
+                              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                              </div>
                             )}
                             <Zoom>
                               <Image
                                 src={image}
                                 alt={`Image ${index + 1}`}
                                 layout="fill" // Ensures the image scales to the parent container
-                                className={`object-contain ${
-                                  isLoadingpopup ? "opacity-0" : "opacity-100"
-                                } transition-opacity duration-300`}
+                                className={`object-contain ${isLoadingpopup ? "opacity-0" : "opacity-100"
+                                  } transition-opacity duration-300`}
                                 onLoadingComplete={() =>
                                   setIsLoadingpopup(false)
                                 }
@@ -641,7 +638,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     Slide {current} of {totalSlides}
                   </div>
                 </div>
-            
+
               </div>
             </div>
           )}
@@ -653,7 +650,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 <div className="flex gap-1 items-center justify-center">
                   <div className="flex items-center">
                     {ad.data.negotiable === "yes" && (
-                      <div className="flex gap-1 text-[10px] text-emerald-700 font-bold bg-white rounded-lg p-1 justify-center border">
+                      <div className="flex gap-1 text-[10px] text-green-700 font-bold bg-white rounded-lg p-1 justify-center border">
                         Negotiable
                         <CheckCircleIcon sx={{ fontSize: 14 }} />
                       </div>
@@ -668,7 +665,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     <div>
                       <SignedIn>
                         <button
-                          className="bg-emerald-100 hover:bg-[#000000] text-emerald-700 text-xs border border-emerald-700 p-2 rounded-lg"
+                          className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg"
                           onClick={handleShowPhoneClick}
                         >
                           <CallIcon sx={{ marginRight: "5px" }} />
@@ -682,7 +679,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                             router.push("/sign-in");
                           }}
                         >
-                          <button className="bg-emerald-100 cursor-pointer hover:bg-[#000000] text-emerald-700 text-xs border border-emerald-700 p-2 rounded-lg">
+                          <button className="bg-orange-100 cursor-pointer hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg">
                             <CallIcon sx={{ marginRight: "5px" }} />
                             Ask the Price?
                           </button>
@@ -692,15 +689,15 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   )}
                   <div className="flex gap-1 items-center no-underline">
                     {ad.data.contact && ad.data.contact === "contact" ? (
-                      <p className="text-lg lg:text-xl font-bold p-1 dark:text-emerald-500 text-emerald-950">
+                      <p className="text-lg lg:text-xl font-bold p-1 dark:text-orange-500 text-[#BD7A4F]">
                         Contact for price
                       </p>
                     ) : (
                       <>
-                       {ad.data.price > 0 && (<span className="text-lg lg:text-xl font-bold w-min rounded-full p-1 dark:text-emerald-500 text-emerald-950">
-                  Ksh {ad.data.price.toLocaleString()}
-                </span>)}  
-                      
+                        {ad.data.price > 0 && (<span className="flex text-lg lg:text-xl font-bold rounded-full p-1 dark:text-orange-500 text-[#BD7A4F]">
+                          Ksh {ad.data.price.toLocaleString()}
+                        </span>)}
+
                       </>
                     )}{" "}
                     {ad.data.unit && ad.data.contact === "specify" && (
@@ -718,10 +715,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                         {ad.data.period}
                       </div>
                     )}
-                      {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-emerald-500 text-emerald-950 font-bold">
-                 <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
-                 <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
-                </div>)} 
+                    {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-orange-500 text-[#BD7A4F] font-bold">
+                      <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
+                      <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
+                    </div>)}
                   </div>
                 </div>
                 {ad.data.bulkprice?.length > 0 && (
@@ -729,7 +726,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     <Accordion type="single" collapsible>
                       <AccordionItem value="item-1" className="border-0">
                         <AccordionTrigger>
-                          <div className="flex dark:text-emerald-500 gap-1 items-center no-underline">
+                          <div className="flex dark:text-orange-500 gap-1 items-center no-underline">
                             <SellOutlinedIcon sx={{ fontSize: 16 }} />
                             <p className="text-sm">Bulk Price Options</p>
                           </div>
@@ -753,16 +750,16 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                                         </div>
                                       </div>
                                       <div className="flex gap-1">
-  <div>Price:</div>
-  <div className="font-bold">
-    Ksh {item.pricePerPiece.toFixed(2)}{" "}
-    {item.unit === "piece"
-      ? "/piece"
-      : item.unit === "sqm"
-      ? "/sqm"
-      : "/sqft"}
-  </div>
-</div>
+                                        <div>Price:</div>
+                                        <div className="font-bold">
+                                          Ksh {item.pricePerPiece.toFixed(2)}{" "}
+                                          {item.unit === "piece"
+                                            ? "/piece"
+                                            : item.unit === "sqm"
+                                              ? "/sqm"
+                                              : "/sqft"}
+                                        </div>
+                                      </div>
                                     </div>
                                   </li>
                                 )
@@ -777,7 +774,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               </div>
             </div>
             <div className="flex mb-2 items-center w-full">
-              <p className="text-lg lg:text-2xl font-bold dark:text-gray-300 text-emerald-950">
+              <p className="text-lg lg:text-2xl font-bold dark:text-gray-300 text-[#BD7A4F]">
                 {ad.data.title}
               </p>
             </div>
@@ -798,22 +795,22 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               </p>
             </div>
 
-      {ad.data["youtube-link"] && (
-      <>
-        {checkPlatform(ad.data["youtube-link"]) === "TikTok" ? (<>
-          {/*<TikTokEmbed videoUrl={ad.data["youtube-link"]} />*/}
-        </>) : (
-          <>
-           <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-           <p className="mt-5 font-bold dark:text-gray-400 text-emerald-950">
-                  Ad Video
-            </p>
-          <YouTubePlayer videoUrl={ad.data["youtube-link"]} />
-          </>
-        )}
-      </>
-    )}
-      
+            {ad.data["youtube-link"] && (
+              <>
+                {checkPlatform(ad.data["youtube-link"]) === "TikTok" ? (<>
+                  {/*<TikTokEmbed videoUrl={ad.data["youtube-link"]} />*/}
+                </>) : (
+                  <>
+                    <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
+                    <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
+                      Ad Video
+                    </p>
+                    <YouTubePlayer videoUrl={ad.data["youtube-link"]} />
+                  </>
+                )}
+              </>
+            )}
+
 
             <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
             <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-4">
@@ -842,11 +839,15 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                       key !== "propertyarea" &&
                       key !== "virtualTourLink" &&
                       key !== "delivery" &&
+                      key !== "biddingEnabled" &&
+                      key !== "biddingEndsAt" &&
+                      key !== "bidIncrement" &&
+                      key !== "bids" &&
                       key !== "youtube-link" && (
                         <>
                           <div key={key} className="mb-2 md:flex-row">
-                            <div className="dark:text-gray-300 text-emerald-950 text-sm">
-                              {key ==='Maximum Amount' || key==='Minimum Amount' ? Number(value).toLocaleString():value}
+                            <div className="dark:text-gray-300 text-[#BD7A4F] text-sm">
+                              {key === 'Maximum Amount' || key === 'Minimum Amount' ? Number(value).toLocaleString() : value}
                             </div>
                             <div className="dark:text-gray-500 text-gray-600 text-xs">
                               {capitalizeFirstLetter(key.replace("-", " "))}
@@ -862,7 +863,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
             {ad.data.facilities && ad.data.facilities.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                <p className="mt-5 font-bold dark:text-gray-400 text-emerald-950">
+                <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
                   Facilities
                 </p>
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
@@ -879,7 +880,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
             {ad.data.amenities && ad.data.amenities.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                <p className="mt-5 font-bold dark:text-gray-400 text-emerald-950">
+                <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
                   Amenities
                 </p>
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
@@ -896,7 +897,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
             {ad.data.features && ad.data.features.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                <p className="mt-5 font-bold dark:text-gray-400 text-emerald-950">
+                <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
                   Key Features
                 </p>
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
@@ -911,23 +912,23 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               </>
             )}
             <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-            <p className="mt-5 font-bold dark:text-gray-400 text-emerald-950">
+            <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
               Description
             </p>
-            {/* <p className="my-1 text-text-emerald-950">{ad.data.description}</p>*/}
+            {/* <p className="my-1 text-text-[#BD7A4F]">{ad.data.description}</p>*/}
             <DescriptionComponent description={ad.data.description} />
-            
-          
-          
-          
-          
+
+
+
+
+
             {ad.data.delivery?.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
                 <Accordion type="single" collapsible>
                   <AccordionItem value="item-1" className="border-0">
                     <AccordionTrigger>
-                      <div className="mt-5 flex text-emerald-950 dark:text-gray-400 gap-1 items-center font-bold no-underline">
+                      <div className="mt-5 flex text-[#BD7A4F] dark:text-gray-400 gap-1 items-center font-bold no-underline">
                         <LocalShippingOutlinedIcon />
                         <div className="font-bold">Delivery Options</div>
                       </div>
@@ -1018,7 +1019,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 </Accordion>
               </>
             )}
-
+            {/* 
             {ad.organizer.businessname?.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
@@ -1031,55 +1032,24 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   >
                     <AccordionItem value="item-2" className="border-0">
                       <AccordionTrigger className="border-0">
-                        <div className="mt-0 flex text-emerald-950 dark:text-gray-400 gap-1 items-center font-bold no-underline">
+                        <div className="mt-0 flex text-[#BD7A4F] dark:text-gray-400 gap-1 items-center font-bold no-underline">
                           <HelpOutlineOutlinedIcon />
                           <div className="font-bold">About Seller</div>
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="border-0">
                         <div className="p-0 flex grid grid-cols-1 rounded-[20px] m-0 dark:bg-[#2D3236] bg-gray-100">
-                          {/*   {ad.organizer?.imageUrl && (
-                            <div className="flex h-50 w-full flex-1 justify-center">
-                              <div className="relative  h-[200px] w-[200px] rounded-full">
-                                {isLoading && (
-                                  <div className="absolute inset-0 rounded-t-lg flex items-center justify-center bg-[#000000] bg-opacity-50">
-                                
-                                    <CircularProgress
-                                      sx={{ color: "white" }}
-                                      size={30}
-                                    />
-                                  </div>
-                                )}
-                                <Zoom>
-                                  <Image
-                                    src={ad.organizer?.imageUrl}
-                                    alt="image"
-                                    width={900}
-                                    height={500}
-                                    className={`object-center h-full w-full rounded-full ${
-                                      isLoading ? "opacity-0" : "opacity-100"
-                                    } transition-opacity duration-300`}
-                                    onLoadingComplete={() =>
-                                      setIsLoading(false)
-                                    }
-                                    placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-                                  />
-                                </Zoom>
-                              </div>
-                              
-                            </div>
-                          )}
-                            */}
+                         
                           <div className="flex flex-col">
                             <SellerProfileCard
                               userId={userId}
                               ad={ad}
-                               fee={user?.fee ?? 500}
+                              fee={user?.fee ?? 500}
                               userImage={userImage}
-                              userName={userName} 
+                              userName={userName}
                               handleOpenReview={handleOpenReview}
                               handleOpenShop={handleOpenShop}
-                              handlePay={handlePay}                            />
+                              handlePay={handlePay} />
                           </div>
                           <div className="m-3 p-1">
                             {ad.organizer?.businessname && (
@@ -1137,7 +1107,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                                               ad.organizer?.longitude
                                             )
                                           }
-                                          className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
+                                          className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
                                         >
                                           <AssistantDirectionIcon
                                             sx={{ marginRight: "5px" }}
@@ -1367,43 +1337,57 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   </Accordion>
                 </div>
               </>
+            )}*/}
+            {ad.data?.bidIncrement}
+            {ad.data?.biddingEnabled && (<>
+              <Bidding
+                ad={ad}
+                userId={userId}
+                user={ad?.organizer}
+              /></>)}
+
+            {(ad.data && !ad.data.biddingEnabled && (ad.data.category === 'Property' || ad.data.category === 'Vehicle')) && (
+              <>
+                <div className="flex w-full items-center">
+                  <SignedIn>
+                    <button
+                      onClick={handleOpenPopupLoan}
+                      className="flex rounded-sm w-full py-3 px-2 text-lg text-white bg-[#BD7A4F] hover:bg-orange-700 justify-center items-center gap-1"
+                    >
+                      <SellOutlinedIcon />
+                      Request Financing for This Property
+                    </button>
+                  </SignedIn>
+
+                  <SignedOut>
+                    <button
+                      onClick={() => {
+                        setIsOpenP(true);
+                        router.push("/sign-in");
+                      }}
+                      className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-[#BD7A4F] hover:bg-orange-700 items-center"
+                    >
+                      <SellOutlinedIcon />
+                      Request Financing for This Property
+                    </button>
+                  </SignedOut>
+                </div>
+              </>
             )}
-{(ad.data.category === 'Property' || ad.data.category === 'Vehicle') && (<>
- <div className="flex w-full items-center">
-              <SignedIn>
-              <button onClick={handleOpenPopupLoan} className="flex rounded-sm w-full py-3 px-2 text-lg text-white bg-emerald-600 hover:bg-emerald-700 justify-center items-center gap-1">
-              <SellOutlinedIcon/>
-              Request Financing for This Property
-      </button>
-       
-        </SignedIn>
 
-        <SignedOut>
-        <button onClick={() => {
-              setIsOpenP(true);
-              router.push("/sign-in");
-            }}
-             className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-emerald-600 hover:bg-emerald-700 items-center">
-              <SellOutlinedIcon/>
-              Request Financing for This Property
-      </button>
-      </SignedOut>
-
-        </div>
-        </>)}
             <div className="flex justify-between w-full items-center">
-            <ReportUnavailable  userId={userId} ad={ad} isOpen={isPopupOpenAAv} onClose={handleClosePopupAv} userName={userName} userImage={userImage}/>
-            <ReportAbuse  userId={userId} ad={ad} isOpen={isPopupOpen} onClose={handleClosePopup} userName={userName} userImage={userImage}/>
-            <RequestFinancing  userId={userId} ad={ad} isOpen={isPopupOpenLoan} onClose={handleClosePopupLoan} userName={userName} userImage={userImage}/>
-            <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} /> 
+              <ReportUnavailable userId={userId} ad={ad} isOpen={isPopupOpenAAv} onClose={handleClosePopupAv} userName={userName} userImage={userImage} />
+              <ReportAbuse userId={userId} ad={ad} isOpen={isPopupOpen} onClose={handleClosePopup} userName={userName} userImage={userImage} />
+              <RequestFinancing userId={userId} ad={ad} isOpen={isPopupOpenLoan} onClose={handleClosePopupLoan} userName={userName} userImage={userImage} />
+              <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
             </div>
           </div>
         </div>
 
         {/* Right panel */}
-        <div 
-         className={`p-1 lg:w-[32%]`}>
-           {/* Right panel 
+        <div
+          className={`p-1 lg:w-[32%]`}>
+          {/* Right panel 
         {ad.data.propertyarea?.location && ad.data.propertyarea?.location.length !== 0 && (
           <>
             <div className="text-l mb-2 rounded-lg">
@@ -1458,20 +1442,20 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
           )}*/}
 
           <div className="hidden lg:inline">
-            
-            
+
+
             <div className="dark:bg-[#2D3236] dark:text-gray-300 bg-white p-5 border rounded-lg overflow-hidden flex flex-col items-center">
               <div className="flex gap-1 items-center no-underline">
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <p className="flex text-2xl font-bold dark:text-emerald-500 text-emerald-950">
+                  <p className="flex text-2xl font-bold dark:text-orange-500 text-[#BD7A4F]">
                     Contact for price
                   </p>
                 ) : (
                   <>
-                    {ad.data.price > 0 && (<span className="flex gap-1 text-2xl font-bold w-min rounded-full px-4 py-1 dark:text-emerald-500 text-emerald-950">
-                  Ksh {ad.data.price.toLocaleString()}
-                </span>)}  
-                   
+                    {ad.data.price > 0 && (<span className="flex gap-1 text-2xl font-bold rounded-full px-4 py-1 dark:text-orange-500 text-[#BD7A4F]">
+                      Ksh {ad.data.price.toLocaleString()}
+                    </span>)}
+
                   </>
                 )}
                 {ad.data.unit && ad.data.contact === "specify" && (
@@ -1485,16 +1469,16 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     {ad.data.period}
                   </div>
                 )}
-                  {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-emerald-500 text-emerald-950 font-bold">
-                 <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
-                 <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
-                </div>)} 
+                {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-orange-500 text-[#BD7A4F] font-bold">
+                  <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
+                  <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
+                </div>)}
               </div>
               {ad.data.contact && ad.data.contact === "contact" && (
                 <div>
                   <SignedIn>
                     <button
-                      className="bg-emerald-100 hover:bg-[#000000] text-emerald-700 text-xs border border-emerald-700 p-2 rounded-lg"
+                      className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg"
                       onClick={handleShowPhoneClick}
                     >
                       <CallIcon sx={{ marginRight: "5px" }} />
@@ -1508,7 +1492,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                         router.push("/sign-in");
                       }}
                     >
-                      <button className="bg-emerald-100 hover:bg-[#000000] text-emerald-700 text-xs border border-emerald-700 p-2 rounded-lg">
+                      <button className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg">
                         <CallIcon sx={{ marginRight: "5px" }} />
                         Ask the Price?
                       </button>
@@ -1519,7 +1503,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
 
               <div className="flex items-center">
                 {ad.data.negotiable === "yes" && (
-                  <div className="flex gap-2 text-xs text-emerald-700 bg-white rounded-lg p-1 justify-center border">
+                  <div className="flex gap-2 text-xs text-green-700 bg-white rounded-lg p-1 justify-center border">
                     Negotiable
                     <CheckCircleIcon sx={{ fontSize: 16 }} />
                   </div>
@@ -1536,7 +1520,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   <Accordion type="single" collapsible>
                     <AccordionItem value="item-1" className="border-0">
                       <AccordionTrigger>
-                        <div className="flex dark:text-emerald-500 gap-1 items-center no-underline">
+                        <div className="flex dark:text-orange-500 gap-1 items-center no-underline">
                           <SellOutlinedIcon sx={{ fontSize: 16 }} />
                           <p className="text-sm">Bulk Price Options</p>
                         </div>
@@ -1580,12 +1564,12 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 </>
               )}
             </div>
-        
+
             <span className="hidden m-0">
               <div className="justify-between flex w-full  gap-1">
                 <SignedIn>
                   <button
-                    className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
+                    className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
                     onClick={handleShowPhoneClick}
                   >
                     <CallIcon sx={{ marginRight: "5px" }} />
@@ -1599,7 +1583,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                       router.push("/sign-in");
                     }}
                   >
-                    <button className="hover:bg-emerald-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
+                    <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
                       <CallIcon sx={{ marginRight: "5px" }} />
                       Call
                     </button>
@@ -1621,7 +1605,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                       router.push("/sign-in");
                     }}
                   >
-                    <button className="hover:bg-emerald-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
+                    <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
                       <ChatBubbleOutlineOutlinedIcon
                         sx={{ marginRight: "5px" }}
                       />
@@ -1634,7 +1618,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                   <>
                     <SignedIn>
                       <a href={`https://wa.me/${ad.organizer.whatsapp}/`}>
-                        <button className="hover:bg-emerald-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow">
+                        <button className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow">
                           <WhatsAppIcon sx={{ marginRight: "5px" }} />
                           WhatsApp
                         </button>
@@ -1643,11 +1627,11 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                     <SignedOut>
                       <div
                         onClick={() => {
-                         setIsOpenP(true);
+                          setIsOpenP(true);
                           router.push("/sign-in");
                         }}
                       >
-                        <button className="hover:bg-emerald-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
+                        <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
                           <WhatsAppIcon sx={{ marginRight: "5px" }} />
                           WhatsApp
                         </button>
@@ -1659,7 +1643,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
             </span>
           </div>
 
-    
+
 
           <div className="hidden lg:inline">
             <div className="mt-3">
@@ -1667,113 +1651,113 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
                 <SellerProfileCard
                   userId={userId}
                   ad={ad}
-                   fee={user?.fee ?? 500}
+                  fee={user?.fee ?? 500}
                   userImage={userImage}
-                  userName={userName} 
+                  userName={userName}
                   handleOpenReview={handleOpenReview}
-                  handleOpenShop={handleOpenShop} 
-                  handlePay={handlePay}                />
+                  handleOpenShop={handleOpenShop}
+                  handlePay={handlePay} />
               </div>
             </div>
-         
+
           </div>
           <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
-              <div className="flex justify-between">
+            <div className="flex justify-between">
 
 
               <SignedIn>
-          
-              <Button   onClick={() => {
-                      
-                     // setIsOpenP(true);
-                     handleOpenReview(ad.organizer)
-                      //  router.push(`/reviews/${ad.organizer._id}`);
-                      
-                    }} variant="default" className="flex w-full items-center gap-2">
-         😃
-         Leave Feedback?
-      </Button>
 
-        </SignedIn>
+                <Button onClick={() => {
 
-        <SignedOut>
+                  // setIsOpenP(true);
+                  handleOpenReview(ad.organizer)
+                  //  router.push(`/reviews/${ad.organizer._id}`);
 
-        <Button onClick={() => {
-              setIsOpenP(true);
-              router.push("/sign-in");
-            }} variant="default" className="flex w-full items-center gap-2">
-         😃
-         Leave Feedback?
-      </Button>
+                }} variant="default" className="flex w-full items-center gap-2">
+                  😃
+                  Leave Feedback?
+                </Button>
 
-         
-        </SignedOut>
+              </SignedIn>
+
+              <SignedOut>
+
+                <Button onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }} variant="default" className="flex w-full items-center gap-2">
+                  😃
+                  Leave Feedback?
+                </Button>
 
 
-            
-                  
-              </div>
+              </SignedOut>
+
+
+
+
             </div>
-
-
-            <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
-              <div className="flex justify-between">
-
-           < CopyShareAdLink _id={ad._id} titleId={"Ad"}/>
-              
-           
-              </div>
-            </div>
+          </div>
 
 
           <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
-              <div className="flex justify-between">
-              <SignedIn>
-              <Button onClick={handleOpenPopupAv} variant="outline" className="flex text-blue-600 items-center gap-1">
-              <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }}/>
-              Ad Unavailable?
-      </Button>
-       
-        </SignedIn>
+            <div className="flex justify-between">
 
-        <SignedOut>
-        <Button onClick={() => {
-              setIsOpenP(true);
-              router.push("/sign-in");
-            }}
-             variant="outline" className="flex text-blue-600 items-center gap-1">
-              <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }}/>
-              Ad Unavailable?
-      </Button>
-
-        </SignedOut>
+              < CopyShareAdLink _id={ad._id} titleId={"Ad"} />
 
 
-
-              <SignedIn>
-              <Button onClick={handleOpenPopup} variant="outline" className="flex text-red-600 items-center gap-1">
-              <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }}/>
-              Report Abuse
-              </Button>
-       
-        </SignedIn>
-
-        <SignedOut>
-        <Button  onClick={() => {
-             
-              router.push("/sign-in");
-            }} variant="outline" className="flex text-red-600 items-center gap-1">
-              <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }}/>
-              Report Abuse
-              </Button>
-         
-        </SignedOut>
-
-            
-              </div>
             </div>
-         
-        
+          </div>
+
+
+          <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
+            <div className="flex justify-between">
+              <SignedIn>
+                <Button onClick={handleOpenPopupAv} variant="outline" className="flex text-blue-600 items-center gap-1">
+                  <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
+                  Ad Unavailable?
+                </Button>
+
+              </SignedIn>
+
+              <SignedOut>
+                <Button onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+                  variant="outline" className="flex text-blue-600 items-center gap-1">
+                  <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
+                  Ad Unavailable?
+                </Button>
+
+              </SignedOut>
+
+
+
+              <SignedIn>
+                <Button onClick={handleOpenPopup} variant="outline" className="flex text-red-600 items-center gap-1">
+                  <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
+                  Report Abuse
+                </Button>
+
+              </SignedIn>
+
+              <SignedOut>
+                <Button onClick={() => {
+
+                  router.push("/sign-in");
+                }} variant="outline" className="flex text-red-600 items-center gap-1">
+                  <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
+                  Report Abuse
+                </Button>
+
+              </SignedOut>
+
+
+            </div>
+          </div>
+
+
           <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
             <div className="font-bold text-lg text-center">Safety tips</div>
 
@@ -1820,13 +1804,13 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
               </li>
 
               <li>
-                <div className="mt-2 transition-colors font-bold text-emerald-600 hover:text-emerald-950 hover:cursor-pointer">
+                <div className="mt-2 transition-colors font-bold text-orange-600 hover:text-[#BD7A4F] hover:cursor-pointer">
                   <div
                     onClick={() => {
                       handleOpenSafety();
-                     // router.push("/safety");
+                      // router.push("/safety");
                     }}
-                    className="cursor-pointer hover:text-emerald-500 "
+                    className="cursor-pointer hover:text-orange-500 "
                   >
                     Read more....
                   </div>
@@ -1837,39 +1821,39 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose,han
 
 
           <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
-              <div className="flex justify-between">
+            <div className="flex justify-between">
 
-            <SignedIn>
-            <Button onClick={() => {
-            
-            handleOpenSell();
-           // router.push("/ads/create");
-          
-        }} variant="default" className="flex w-full items-center gap-2">
-        <SellOutlinedIcon sx={{ fontSize: 16 }}  />
-        Post Ad like this?
-      </Button>
-              
-            </SignedIn>
+              <SignedIn>
+                <Button onClick={() => {
 
-            <SignedOut>
-            <Button onClick={() => {
-                  
+                  handleOpenSell();
+                  // router.push("/ads/create");
+
+                }} variant="default" className="flex w-full items-center gap-2">
+                  <SellOutlinedIcon sx={{ fontSize: 16 }} />
+                  Post Ad like this?
+                </Button>
+
+              </SignedIn>
+
+              <SignedOut>
+                <Button onClick={() => {
+
                   router.push("/sign-in");
                 }} variant="default" className="flex w-full items-center gap-2">
-        <SellOutlinedIcon sx={{ fontSize: 16 }}  />
-        Post Ad like this?
-      </Button>
-              
-            </SignedOut>
-              
-       
-              </div>
+                  <SellOutlinedIcon sx={{ fontSize: 16 }} />
+                  Post Ad like this?
+                </Button>
+
+              </SignedOut>
+
+
             </div>
+          </div>
 
         </div>
       </div>
-      
+
     </>
   );
 }

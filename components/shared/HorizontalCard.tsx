@@ -32,7 +32,7 @@ import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
 import { Email, Phone } from '@mui/icons-material'; // Or from 'react-icons/md'
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
- import { formatDistanceToNow, isBefore, subWeeks } from "date-fns";
+import { formatDistanceToNow, isBefore, subWeeks } from "date-fns";
 import { updateCreatedAt } from "@/lib/actions/dynamicAd.actions";
 
 const shouldShowRenewButton = (updatedAt: Date, priority: number) => {
@@ -43,9 +43,9 @@ type CardProps = {
   userId: string;
   ad: any;
   isAdCreator?: boolean;
-  handleAdEdit: (ad:any) => void;
-  handleAdView: (ad:any) => void;
-  handleOpenChatId:(value:any) => void;
+  handleAdEdit: (ad: any) => void;
+  handleAdView: (ad: any) => void;
+  handleOpenChatId: (value: any) => void;
   handleOpenPlan: () => void;
   popup?: string;
 };
@@ -62,7 +62,7 @@ const HorizontalCard = ({
 }: CardProps) => {
   const pathname = usePathname();
   const isbookmark = pathname === "/bookmark";
-const [isDeleted, setIsDeleted] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const { toast } = useToast();
   const truncateTitle = (title: string, maxLength: number) => {
     if (title.length > maxLength) {
@@ -70,14 +70,14 @@ const [isDeleted, setIsDeleted] = useState(false);
     }
     return title;
   };
-   const truncateDescription = (description: string, charLimit: number) => {
-      const safeMessage = sanitizeHtml(description); 
-      const truncatedMessage =
+  const truncateDescription = (description: string, charLimit: number) => {
+    const safeMessage = sanitizeHtml(description);
+    const truncatedMessage =
       safeMessage.length > charLimit
         ? `${safeMessage.slice(0, charLimit)}...`
         : safeMessage;
-      return truncatedMessage;
-    };
+    return truncatedMessage;
+  };
   const handle = async (id: string) => {
     if (userId) {
       const newBookmark = await createBookmark({
@@ -139,140 +139,138 @@ const [isDeleted, setIsDeleted] = useState(false);
   };
   const router = useRouter();
   const [isLoadingsmall, setIsLoadingsmall] = useState(true);
-    const handleRenew = async (_id: string) => {
-  try {
-   await updateCreatedAt(
-          _id
-        );
-        toast({
-          title: "Alert",
-          description: "Renewal successful",
-          duration: 5000,
-          className: "bg-black text-white",
-        });
-  } catch (error) {
-    console.error(error);
-    alert("Error renewing ad.");
-  }
-};
+  const handleRenew = async (_id: string) => {
+    try {
+      await updateCreatedAt(
+        _id
+      );
+      toast({
+        title: "Alert",
+        description: "Renewal successful",
+        duration: 5000,
+        className: "bg-black text-white",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Error renewing ad.");
+    }
+  };
   return (
     <>{ad.loanterm ? (<>
-    
-     <div className="flex w-full justify-between bg-white hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg text-xs border border-gray-300 dark:border-gray-600">
-  {/* Section 1: Ad Info */}
-  <div className="px-4 py-2">
-    <div className="flex gap-2">
-      <div className="flex gap-1 border-b p-1 w-full items-start">
-        <div className="relative rounded"
-          onClick={() => {
-           {  
-            handleAdView(ad.adId);
-           }
-            }}>
-          {isLoadingsmall && (
-            <div className="absolute inset-0 flex justify-center items-center bg-gray-100">
-              <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+
+      <div className="flex w-full justify-between bg-white hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg text-xs border border-gray-300 dark:border-gray-600">
+        {/* Section 1: Ad Info */}
+        <div className="px-4 py-2">
+          <div className="flex gap-2">
+            <div className="flex gap-1 border-b p-1 w-full items-start">
+              <div className="relative rounded"
+                onClick={() => {
+                  {
+                    handleAdView(ad.adId);
+                  }
+                }}>
+                {isLoadingsmall && (
+                  <div className="absolute inset-0 flex justify-center items-center bg-gray-100">
+                    <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                  </div>
+                )}
+
+                <Image
+                  src={ad.adId.data.imageUrls[0]}
+                  alt={ad.adId.data.title}
+                  width={800}
+                  height={400}
+                  className={`w-[150px] h-[100px] rounded object-cover cursor-pointer ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                    } transition-opacity duration-300`}
+                  onLoadingComplete={() => setIsLoadingsmall(false)}
+                  placeholder="empty"
+                />
+
+              </div>
+
+              <div className="flex flex-col justify-between h-full">
+                <p className="text-sm font-semibold mb-1">
+                  {ad.adId.data.title.length > 50
+                    ? `${ad.adId.data.title.substring(0, 50)}...`
+                    : ad.adId.data.title}
+                </p>
+
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 max-w-[200px]">
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: truncateDescription(ad.adId.data.description ?? "", 65),
+                    }}
+                  />
+                </p>
+
+                <span className="font-bold text-green-600 dark:text-green-600 mt-1">
+                  {formatKsh(ad.adId.data.price)}
+                </span>
+              </div>
             </div>
-          )}
-         
-            <Image
-              src={ad.adId.data.imageUrls[0]}
-              alt={ad.adId.data.title}
-              width={800}
-              height={400}
-              className={`w-[150px] h-[100px] rounded object-cover cursor-pointer ${
-                isLoadingsmall ? "opacity-0" : "opacity-100"
-              } transition-opacity duration-300`}
-              onLoadingComplete={() => setIsLoadingsmall(false)}
-              placeholder="empty"
-            />
-        
+          </div>
         </div>
 
-        <div className="flex flex-col justify-between h-full">
-          <p className="text-sm font-semibold mb-1">
-            {ad.adId.data.title.length > 50
-              ? `${ad.adId.data.title.substring(0, 50)}...`
-              : ad.adId.data.title}
-          </p>
+        {/* Section 2: User Info */}
+        <div className="px-4 py-2">
+          <div className="flex flex-col gap-1">
+            <div className="flex gap-2 items-center">
+              {/* Optional Avatar */}
 
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 max-w-[200px]">
-            <span
-              dangerouslySetInnerHTML={{
-                __html: truncateDescription(ad.adId.data.description ?? "", 65),
-              }}
-            />
-          </p>
+              <div className="flex flex-col">
+                <p className="text-sm font-semibold">
+                  CUSTOMER INFO
+                </p>
+                <p className="text-sm font-semibold">
+                  {ad.userId.firstName} {ad.userId.lastName}
+                </p>
 
-          <span className="font-bold text-green-600 dark:text-green-600 mt-1">
-            {formatKsh(ad.adId.data.price)}
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  {/* Section 2: User Info */}
-  <div className="px-4 py-2">
-    <div className="flex flex-col gap-1">
-      <div className="flex gap-2 items-center">
-        {/* Optional Avatar */}
-      
-       <div className="flex flex-col">
-        <p className="text-sm font-semibold">
-  CUSTOMER INFO
-  </p>
-  <p className="text-sm font-semibold">
-    {ad.userId.firstName} {ad.userId.lastName}
-  </p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Loan Amount:
+              <span className="font-semibold"> KES {ad.LoanAmount.toLocaleString()}</span>
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Monthly Income:
+              <span className="font-semibold"> KES {ad.monthlyIncome.toLocaleString()}</span>
+            </p>
 
-  
-</div>
-      </div>
-  <p className="text-xs text-gray-600 dark:text-gray-300">
-       Loan Amount:
-        <span className="font-semibold"> KES {ad.LoanAmount.toLocaleString()}</span>
-      </p>
-      <p className="text-xs text-gray-600 dark:text-gray-300">
-        Monthly Income:
-        <span className="font-semibold"> KES {ad.monthlyIncome.toLocaleString()}</span>
-      </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Deposit Amount:
+              <span className="font-semibold"> KES {ad.deposit.toLocaleString()}</span>
+            </p>
 
-      <p className="text-xs text-gray-600 dark:text-gray-300">
-        Deposit Amount:
-        <span className="font-semibold"> KES {ad.deposit.toLocaleString()}</span>
-      </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Preferred Loan Term:
+              <span className="font-semibold"> {ad.loanterm}</span>
+            </p>
 
-      <p className="text-xs text-gray-600 dark:text-gray-300">
-        Preferred Loan Term:
-        <span className="font-semibold"> {ad.loanterm}</span>
-      </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Employment Status:
+              <span className="font-semibold"> {ad.employmentStatus}</span>
+            </p>
 
-      <p className="text-xs text-gray-600 dark:text-gray-300">
-        Employment Status:
-        <span className="font-semibold"> {ad.employmentStatus}</span>
-      </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Message Comments:
+              <span className="font-semibold"> {ad.messageComments}</span>
+            </p>
 
-      <p className="text-xs text-gray-600 dark:text-gray-300">
-        Message Comments:
-        <span className="font-semibold"> {ad.messageComments}</span>
-      </p>
-
-      <p className="flex gap-2 text-xs text-gray-600 dark:text-gray-300">
-        Status:
-        <span
-          className={`flex p-1 justify-center items-center w-[70px] rounded-full ${
-            ad.status === "Pending"
-              ? "bg-orange-100"
-              : ad.status === "Failed"
-              ? "bg-red-100"
-              : "bg-green-100"
-          }`}
-        >
-          {ad.status}
-        </span>
-      </p>
- {/*
+            <p className="flex gap-2 text-xs text-gray-600 dark:text-gray-300">
+              Status:
+              <span
+                className={`flex p-1 justify-center items-center w-[70px] rounded-full ${ad.status === "Pending"
+                  ? "bg-orange-100"
+                  : ad.status === "Failed"
+                    ? "bg-red-100"
+                    : "bg-green-100"
+                  }`}
+              >
+                {ad.status}
+              </span>
+            </p>
+            {/*
       <p className="text-xs text-gray-600 dark:text-gray-300">
         <button
           onClick={() => handleOpenContact(ad.userId)}
@@ -281,68 +279,67 @@ const [isDeleted, setIsDeleted] = useState(false);
           <QuestionAnswerOutlinedIcon /> Contact Client
         </button>
       </p>*/}
-    </div>
-  </div>
+          </div>
+        </div>
 
-  {/* Section 3: Footer (e.g., Delete) */}
-  <div className="px-4 py-2 flex flex-col">
-  <div className="flex items-center gap-2 mb-1 border-b py-1">
-    <a href={`mailto:${ad.userId.email}`} className="flex items-center text-green-600 hover:underline">
-      <Email className="w-4 h-4 mr-1" /> Email
-    </a>
-  </div>
+        {/* Section 3: Footer (e.g., Delete) */}
+        <div className="px-4 py-2 flex flex-col">
+          <div className="flex items-center gap-2 mb-1 border-b py-1">
+            <a href={`mailto:${ad.userId.email}`} className="flex items-center text-green-600 hover:underline">
+              <Email className="w-4 h-4 mr-1" /> Email
+            </a>
+          </div>
 
-  <div className="flex items-center gap-2 mb-1 border-b py-1">
-    <a href={`tel:${ad.userId.phone}`} className="flex items-center text-green-600 hover:underline">
-      <Phone className="w-4 h-4 mr-1" /> Call
-    </a>
-  </div>
-  <div className="flex items-center gap-2 mb-1 border-b py-1">
-      <div onClick={() => handleOpenChatId(ad.userId)} className="flex cursor-pointer items-center text-green-600 hover:underline">
-        <ChatBubbleOutlineOutlinedIcon className="w-4 h-4 mr-1" /> Chat
+          <div className="flex items-center gap-2 mb-1 border-b py-1">
+            <a href={`tel:${ad.userId.phone}`} className="flex items-center text-green-600 hover:underline">
+              <Phone className="w-4 h-4 mr-1" /> Call
+            </a>
+          </div>
+          <div className="flex items-center gap-2 mb-1 border-b py-1">
+            <div onClick={() => handleOpenChatId(ad.userId)} className="flex cursor-pointer items-center text-green-600 hover:underline">
+              <ChatBubbleOutlineOutlinedIcon className="w-4 h-4 mr-1" /> Chat
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-    
-    
-    
-    </>):(<>{!isDeleted && (
+
+
+
+    </>) : (<>{!isDeleted && (
       <div
         className={`flex w-full mb-2 border rounded-lg dark:bg-[#2D3236] text-black dark:text-gray-300 bg-white hover:cursor-pointer`}
-       
+
       >
         <div
           onClick={() => {
             handleAdView(ad);
           }}
           className="relative rounded-l-lg w-[160px] lg:w-[200px] h-[200px]"
-           style={
-          ad.plan.name !== "Free"
-            ? {
+          style={
+            ad.plan.name !== "Free"
+              ? {
                 border: "2px solid",
                 borderColor: ad.plan.color, // Border color for non-free plans
               }
-            : undefined
-        }
+              : undefined
+          }
         >
           <div className="relative w-full h-full">
             {isLoadingsmall && (
-             <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-             <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-             </div>
+              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+              </div>
             )}
 
             <Image
               onClick={() => handleAdView(ad)}
-             src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
-             alt={ad.data.title || "Ad image"}
+              src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+              alt={ad.data.title || "Ad image"}
               width={400} // Adjust width to match the `w-36` Tailwind class
               height={400} // Adjust height to match the `h-24` Tailwind class
-              className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${
-                isLoadingsmall ? "opacity-0" : "opacity-100"
-              } transition-opacity duration-300`}
+              className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                } transition-opacity duration-300`}
               onLoadingComplete={() => setIsLoadingsmall(false)}
               placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
             />
@@ -356,8 +353,8 @@ const [isDeleted, setIsDeleted] = useState(false);
             >
               <div
                 onClick={() => {
-                 // handleOpenP();
-                 handleOpenPlan();
+                  // handleOpenP();
+                  handleOpenPlan();
                 }}
               >
                 <div className="flex gap-1 cursor-pointer">{ad.plan.name}</div>
@@ -366,7 +363,7 @@ const [isDeleted, setIsDeleted] = useState(false);
           )}
           {ad.organizer.verified &&
             ad.organizer?.verified[0]?.accountverified === true && (
-              <div className="absolute bg-emerald-100 dark:text-black top-0 right-0 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-1 rounded-bl-lg">
+              <div className="absolute bg-green-600 top-0 right-0 text-white dark:text-black text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-1 rounded-bl-lg">
                 <div className="flex gap-1 cursor-pointer">
                   <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                   Verified
@@ -388,14 +385,14 @@ const [isDeleted, setIsDeleted] = useState(false);
                   height={20}
                 />
               </div>
-              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} onDeleteSuccess={() => setIsDeleted(true)}/>
+              <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} onDeleteSuccess={() => setIsDeleted(true)} />
             </div>
           )}
 
           {popup && (
             <div className="w-full flex justify-end  absolute top-2/3 left-1/2 transform -translate-x-1/2 p-1 rounded-full">
               <div
-                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-red-100 text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-red-100 text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                 data-tip="Bookmark"
                 onClick={() => handledeletebk(ad._id)}
               >
@@ -417,36 +414,36 @@ const [isDeleted, setIsDeleted] = useState(false);
               </div>
             </div>
           )}
-           <div className="w-full flex justify-between absolute bottom-[15px] left-1/2 transform -translate-x-1/2 p-1 rounded-full">
-          <div className="ml-1 mb-1 gap-1 bg-gray-800 bg-opacity-70 text-[10px] text-white right-50 top-100 flex rounded-lg p-1 shadow-sm transition-all">
-            <FilterOutlinedIcon sx={{ fontSize: 16 }} />
-            {ad.data.imageUrls.length}
-          </div>
-          {ad.data["youtube-link"] && (
-            <div className="mb-1 mr-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
-              <YouTubeIcon
-                sx={{ fontSize: 16, cursor: "pointer" }}
-              />
-            
+          <div className="w-full flex justify-between absolute bottom-[15px] left-1/2 transform -translate-x-1/2 p-1 rounded-full">
+            <div className="ml-1 mb-1 gap-1 bg-gray-800 bg-opacity-70 text-[10px] text-white right-50 top-100 flex rounded-lg p-1 shadow-sm transition-all">
+              <FilterOutlinedIcon sx={{ fontSize: 16 }} />
+              {ad.data.imageUrls.length}
             </div>
-          )}
-           {ad.data["virtualTourLink"] && (
+            {ad.data["youtube-link"] && (
+              <div className="mb-1 mr-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
+                <YouTubeIcon
+                  sx={{ fontSize: 16, cursor: "pointer" }}
+                />
+
+              </div>
+            )}
+            {ad.data["virtualTourLink"] && (
               <div className="mb-1 mr-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
                 <ThreeDRotationOutlinedIcon
                   sx={{ fontSize: 16, cursor: "pointer" }}
                 />
-              
+
               </div>
             )}
-          {/* {(ad.data["propertyarea"]) && (
+            {/* {(ad.data["propertyarea"]) && (
               <div className="mb-1 mr-1 cursor-pointer bg-[#000000] bg-opacity-70 text-[10px] text-white right-0 top-100 flex rounded-lg p-1 shadow-sm transition-all">
                 <LocationOnIcon
                   sx={{ fontSize: 16, cursor: "pointer" }}
                 />
               
               </div>
-            )}*/} 
-            </div>
+            )}*/}
+          </div>
         </div>
 
         <div className="flex-1 mt-2 p-2">
@@ -463,13 +460,13 @@ const [isDeleted, setIsDeleted] = useState(false);
           <div className="text-[12px] lg:text-sm"></div>
 
           <p className="dark:text-gray-300 text-sm hidden lg:inline">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 250) }} />
-        </p>
-        <p className="dark:text-gray-300 text-[12px] lg:hidden">
-        <span dangerouslySetInnerHTML={{ __html:  truncateDescription(ad?.data.description, 100) }} />
-        </p>
+            <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad?.data.description, 250) }} />
+          </p>
+          <p className="dark:text-gray-300 text-[12px] lg:hidden">
+            <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad?.data.description, 100) }} />
+          </p>
 
-        
+
 
           <div className="dark:text-gray-400 text-gray-500 text-[10px] lg:text-xs">
             <LocationOnIcon sx={{ fontSize: 16 }} />
@@ -480,52 +477,51 @@ const [isDeleted, setIsDeleted] = useState(false);
               <div
                 onClick={() => {
                   //handleOpenP();
-                 // router.push(`/ads/${ad._id}`);
-                 handleAdView(ad);
+                  // router.push(`/ads/${ad._id}`);
+                  handleAdView(ad);
                 }}
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-emerald-500 text-emerald-500">
+                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-[#BD7A4F] text-[#BD7A4F]">
                     Contact for price
                   </div>
                 ) : (
                   <>
-                     {ad.data.price > 0 && ( <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-500 text-emerald-500">
+                    {ad.data.price > 0 && (<span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-[#BD7A4F] text-[#BD7A4F]">
                       {formatKsh(ad.data.price)}
-                    </span>)}  
-                   
+                    </span>)}
+
                   </>
                 )}{" "}
                 {ad.data.unit && ad.data.contact === "specify" && (
-                  <div className="text-xs dark:text-emerald-500">
+                  <div className="text-xs dark:text-[#BD7A4F]">
                     {ad.data.unit}
                   </div>
                 )}{" "}
                 {ad.data.per && (
-                  <div className="text-xs dark:text-emerald-500">
+                  <div className="text-xs dark:text-[#BD7A4F]">
                     {ad.data.per}
                   </div>
                 )}
                 {ad.data.period && (
-                  <div className="text-xs dark:text-emerald-500">
+                  <div className="text-xs dark:text-[#BD7A4F]">
                     {ad.data.period}
                   </div>
                 )}
-                 {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col font-bold">
-                <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
-                <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
-                </div>)} 
+                {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col font-bold">
+                  <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
+                  <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
+                </div>)}
               </div>
               {ad.adstatus && isAdCreator && (
                 <div
-                  className={`flex gap-1 text-[8px] lg:text-[10px] p-1 justify-center items-center rounded-full ${
-                    ad.adstatus === "Pending"
-                      ? "text-yellow-600"
-                      : ad.adstatus === "Failed"
+                  className={`flex gap-1 text-[8px] lg:text-[10px] p-1 justify-center items-center rounded-full ${ad.adstatus === "Pending"
+                    ? "text-yellow-600"
+                    : ad.adstatus === "Failed"
                       ? "text-red-600 "
                       : "text-green-600"
-                  }`}
+                    }`}
                 >
                   <RadioButtonCheckedOutlinedIcon sx={{ fontSize: 10 }} />{" "}
                   {ad.adstatus}
@@ -536,13 +532,13 @@ const [isDeleted, setIsDeleted] = useState(false);
             <div className="flex items-center">
               <div
                 onClick={() => {
-                 // handleOpenP();
-                 // router.push(`/ads/${ad._id}`);
-                 handleAdView(ad);
+                  // handleOpenP();
+                  // router.push(`/ads/${ad._id}`);
+                  handleAdView(ad);
                 }}
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
-                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-emerald-500 text-emerald-500">
+                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-[#BD7A4F] text-[#BD7A4F]">
                   {formatKsh(ad.data.price)}
                 </span>{" "}
                 {ad.data.per && (
@@ -578,12 +574,12 @@ const [isDeleted, setIsDeleted] = useState(false);
                   {ad.data["engine-CC"]}
                 </div>
               )}
-            
-            {ad.data["land-Type"] && (
-              <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
-                {ad.data["land-Type"]}
-              </div>
-            )}
+
+              {ad.data["land-Type"] && (
+                <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
+                  {ad.data["land-Type"]}
+                </div>
+              )}
 
               {ad.data["land-Area(acres)"] && (
                 <div className="flex gap-2 text-[8px] lg:text-[10px] dark:bg-[#131B1E] dark:text-gray-300 bg-[#ebf2f7] rounded-lg p-1 justify-center border">
@@ -605,7 +601,7 @@ const [isDeleted, setIsDeleted] = useState(false);
               <div className="">
                 <SignedIn>
                   <div
-                    className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-[#FF914C] to-[#BD7A4F] text-white hover:text-[#FAE6DA] tooltip tooltip-bottom hover:cursor-pointer"
                     data-tip="Bookmark"
                     onClick={() => handle(ad._id)}
                   >
@@ -631,7 +627,7 @@ const [isDeleted, setIsDeleted] = useState(false);
                     className="cursor-pointer"
                   >
                     <div
-                      className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-emerald-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                      className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-[#FF914C] to-[#BD7A4F] text-white hover:text-[#FAE6DA] tooltip tooltip-bottom hover:cursor-pointer"
                       data-tip="Bookmark"
                     >
                       <TooltipProvider>
@@ -650,22 +646,22 @@ const [isDeleted, setIsDeleted] = useState(false);
               </div>
             )}
           </div>
-            {isAdCreator && shouldShowRenewButton(ad.updatedAt, ad.priority) && (<div className="flex mt-2 w-full text-xs justify-between items-center">
-             <button
-    className="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded"
-    onClick={() => handleRenew(ad._id)}
-  >
-    Renew Ad
-  </button>
-  <button
-  className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded"
-  onClick={() => handleOpenPlan()}
->
-  Top Ad
-</button>
+          {isAdCreator && shouldShowRenewButton(ad.updatedAt, ad.priority) && (<div className="flex mt-2 w-full text-xs justify-between items-center">
+            <button
+              className="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded"
+              onClick={() => handleRenew(ad._id)}
+            >
+              Renew Ad
+            </button>
+            <button
+              className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded"
+              onClick={() => handleOpenPlan()}
+            >
+              Top Ad
+            </button>
           </div>
- 
-)}
+
+          )}
         </div>
       </div>)} </>)}
     </>

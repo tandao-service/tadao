@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
     const registerRes = await axios.post('https://api.safaricom.co.ke/mpesa/c2b/v2/registerurl', {
       ShortCode: businessShortCode,
       ResponseType: 'Completed',
-      ConfirmationURL: 'https://pocketshop.co.ke/api/safaricom/confirmation',
-      ValidationURL: 'https://pocketshop.co.ke/api/safaricom/validation',
+      ConfirmationURL: 'https://tadaoservices.com/api/safaricom/confirmation',
+      ValidationURL: 'https://tadaoservices.com/api/safaricom/validation',
     }, {
       headers: {
         Authorization: `Bearer ${accessToken}`,

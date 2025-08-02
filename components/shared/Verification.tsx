@@ -15,9 +15,9 @@ import { VerificationPackId } from "@/constants";
 interface SettingsProp {
   user: any;
   userId: string;
-  fee:string;
+  fee: string;
   isAdCreator: boolean;
-  handlePayNow: (id:string) => void;
+  handlePayNow: (id: string) => void;
 }
 
 const Verification: React.FC<SettingsProp> = ({
@@ -25,40 +25,40 @@ const Verification: React.FC<SettingsProp> = ({
   userId,
   fee,
   isAdCreator,
-  handlePayNow}:
+  handlePayNow }:
   SettingsProp) => {
 
   //const _id = "662b9ab6dd4398a447257e59";
   const router = useRouter();
   //const [activationfee, setActivationFee] = useState(user.fee);
-
+  function generateRandomOrderId() {
+    const timestamp = Date.now(); // Current timestamp in milliseconds
+    return `MERCHANT_${userId}_${timestamp}`;
+  }
   const handlePay = async (
     packIdInput: string,
     packNameInput: string,
     periodInput: string,
     priceInput: string
   ) => {
-   // console.log("pay")
+    // console.log("pay")
     //console.log("priceInput: "+priceInput+ "packIdInput: "+packIdInput+ "packNameInput: "+packNameInput)
-    const customerId = uuidv4();
-   // console.log(customerId);
+    const referenceId = generateRandomOrderId();
+    // console.log(customerId);
     const trans = {
-      orderTrackingId: customerId,
+      orderTrackingId: referenceId,
       amount: Number(priceInput),
       plan: packNameInput,
       planId: packIdInput,
       period: periodInput,
       buyerId: userId,
-      merchantId: userId,
+      merchantId: referenceId,
       status: "Pending",
       createdAt: new Date(),
     };
     const response = await createTransaction(trans);
-    //console.log(response);
-   // console.log("now pay");
     if (response.status === "Pending") {
-     // router.push(`/pay/${response.orderTrackingId}`);
-     handlePayNow(response.orderTrackingId)
+      handlePayNow(response.merchantId)
     }
   };
 
@@ -85,7 +85,7 @@ const Verification: React.FC<SettingsProp> = ({
       />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-emerald-600">
-        Verified Seller
+          Verified Seller
         </h4>
         <p className="text-sm">
           This seller account has been fully verified and is genuine.
@@ -104,7 +104,7 @@ const Verification: React.FC<SettingsProp> = ({
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
-        Unverified Seller
+          Unverified Seller
         </h4>
         <p className="text-sm">
           This seller account is currently unverified. Request verification to enhance

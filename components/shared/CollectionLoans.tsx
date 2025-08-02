@@ -140,7 +140,12 @@ const CollectionLoans = ({
               <div className="relative rounded">
                 {isLoadingsmall && (
                   <div className="absolute inset-0 flex justify-center items-center bg-gray-100">
-                    <Icon icon={threeDotsScale} className="w-6 h-6 text-gray-500" />
+                    <Image
+                                                    src="/assets/icons/loading.gif"
+                                                    alt="edit"
+                                                    width={60}
+                                                    height={60}
+                                                  />
                   </div>
                 )}
                 <a

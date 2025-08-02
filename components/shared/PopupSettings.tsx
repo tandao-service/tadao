@@ -36,42 +36,52 @@ interface WindowProps {
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
   handleOpenSettings: () => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
-  handlePay: (id:string) => void;
-  handleCategory: (value:string) => void;
-  handleOpenSearchTab: (value:string) => void;
+  handlePay: (id: string) => void;
+  handleCategory: (value: string) => void;
+  handleOpenSearchTab: (value: string) => void;
   userId: string;
-  user:any;
+  user: any;
 }
 
-const PopupSettings = ({ isOpen, userId, user, handleCategory, handleOpenSearchTab, handleOpenShop,handlePay,
-  handleOpenPerfomance, handleOpenSettings, onClose, handleOpenBook,handleOpenChat,handleOpenPlan, handleOpenSell,handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
+const PopupSettings = ({ isOpen, userId, user, handleCategory, handleOpenSearchTab, handleOpenShop, handlePay,
+  handleOpenPerfomance, handleOpenSettings, onClose, handleOpenBook, handleOpenChat, handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
 
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-       
-      <SettingsComponent 
-      userId={userId} 
-      user={user}
-      onClose={onClose}
-        handleOpenAbout={handleOpenAbout}
-        handleOpenTerms={handleOpenTerms}
-        handleOpenPrivacy={handleOpenPrivacy}
-        handleOpenSafety={handleOpenSafety}
-        handleOpenSell={handleOpenSell}
-        handleOpenBook={handleOpenBook}
-        handleOpenChat={handleOpenChat}
-        handleOpenPlan={handleOpenPlan}
-        handleOpenPerfomance={handleOpenPerfomance}
-        handleOpenSettings={handleOpenSettings}
-        handleOpenShop={handleOpenShop}
-        handlePay={handlePay}
-        handleCategory={handleCategory}
-        handleOpenSearchTab={handleOpenSearchTab}
+
+        <SettingsComponent
+          userId={userId}
+          user={user}
+          onClose={onClose}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenShop={handleOpenShop}
+          handlePay={handlePay}
+          handleCategory={handleCategory}
+          handleOpenSearchTab={handleOpenSearchTab}
         />
         <Toaster />
       </div>

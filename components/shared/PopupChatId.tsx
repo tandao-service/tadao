@@ -34,58 +34,68 @@ interface WindowProps {
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
   handleOpenSell: () => void;
-  handleOpenShop: (shopId:any) => void;
-  handleOpenChatId: (value:any) => void;
+  handleOpenShop: (shopId: any) => void;
+  handleOpenChatId: (value: any) => void;
   handleOpenAbout: () => void;
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
   handleOpenSettings: () => void;
-  handleCategory: (value:string) => void;
+  handleCategory: (value: string) => void;
   handleOpenPerfomance: () => void;
-  handleAdEdit:(id:string)=> void;
-  handleAdView:(id:string)=> void;
-  handleOpenSearchTab: (value:string) => void;
+  handleAdEdit: (id: string) => void;
+  handleAdView: (id: string) => void;
+  handleOpenSearchTab: (value: string) => void;
   userImage: string;
   userId: string;
   recipientUid: string;
   userName: string;
-  user:any;
+  user: any;
 }
 
-const PopupChatId = ({ isOpen, userId,userName,userImage,recipientUid, user, handleOpenSearchTab, handleAdEdit,handleAdView,
-  handleOpenPerfomance, handleCategory, handleOpenSettings, onClose, handleOpenChatId, handleOpenShop, handleOpenChat,handleOpenBook,handleOpenPlan, handleOpenSell, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
- 
+const PopupChatId = ({ isOpen, userId, userName, userImage, recipientUid, user, handleOpenSearchTab, handleAdEdit, handleAdView,
+  handleOpenPerfomance, handleCategory, handleOpenSettings, onClose, handleOpenChatId, handleOpenShop, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-         <DashboardChat
-            user={user}
-            senderImage={userImage}
-            senderId={userId}
-            senderName={userName}
-            recipientUid={recipientUid}
-            onClose={onClose}
-            handleOpenSell={handleOpenSell}
-            handleOpenBook={handleOpenBook}
-            handleOpenChat={handleOpenChat}
-            handleOpenPlan={handleOpenPlan}
-            handleOpenShop={handleOpenShop}
-            handleOpenChatId={handleOpenChatId}
-            handleOpenAbout={handleOpenAbout}
-            handleOpenTerms={handleOpenTerms}
-            handleOpenPrivacy={handleOpenPrivacy}
-            handleOpenSafety={handleOpenSafety}
-            handleOpenSettings={handleOpenSettings}
-            handleOpenPerfomance={handleOpenPerfomance}
-            handleCategory={handleCategory} 
-            handleAdEdit={handleAdEdit} 
-            handleAdView={handleAdView}
-                   
-    />
-     
+        <DashboardChat
+          user={user}
+          senderImage={userImage}
+          senderId={userId}
+          senderName={userName}
+          recipientUid={recipientUid}
+          onClose={onClose}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenShop={handleOpenShop}
+          handleOpenChatId={handleOpenChatId}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleCategory={handleCategory}
+          handleAdEdit={handleAdEdit}
+          handleAdView={handleAdView}
+
+        />
+
         <Toaster />
       </div>
     </div>

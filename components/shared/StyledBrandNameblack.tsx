@@ -1,12 +1,14 @@
 import React from "react";
 
-const StyledBrandName: React.FC = () => {
+const StyledBrandNameblack: React.FC = () => {
   return (
-    <h1 className="text-lg lg:text-xl">
-      <span className="text-[#FEA03C] font-bold">Auto</span>
-      <span className="text-[#065F46] font-light">Yard</span>
+
+    <h1 className="flex items-center text-lg lg:text-xl">
+      <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
+      <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8C4B2C] to-[#BD7A4F] drop-shadow-md">Tadao</span>
+
     </h1>
   );
 };
 
-export default StyledBrandName;
+export default StyledBrandNameblack;

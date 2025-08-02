@@ -32,7 +32,7 @@ type Package = {
   features: string[];
   color: string;
   priority: number;
- 
+
 };
 export function DrawerDemo({
   handleOpenSell,
@@ -51,7 +51,7 @@ export function DrawerDemo({
   userId: string;
   user: any;
   isOpen: boolean;
-  packagesList:any,
+  packagesList: any,
   onClose: () => void;
   handlePayNow: (id: string) => void;
   handleSubCategory: (category: string, subcategory: string) => void;
@@ -63,18 +63,21 @@ export function DrawerDemo({
   const [isSending, setIsSending] = useState(false);
 
   const handlePostRequest = () => {
-   
+
     handleOpenSell(category, subcategory);
     onClose();
   };
-
+  function generateRandomOrderId() {
+    const timestamp = Date.now(); // Current timestamp in milliseconds
+    return `MERCHANT_${userId}_${timestamp}`;
+  }
   const handlePay = async (
     packIdInput: string,
     packNameInput: string,
     periodInput: string,
     priceInput: string
   ) => {
-    const customerId = uuidv4();
+    const customerId = generateRandomOrderId();
 
     const trans = {
       orderTrackingId: customerId,
@@ -83,7 +86,7 @@ export function DrawerDemo({
       planId: packIdInput,
       period: periodInput,
       buyerId: userId,
-      merchantId: userId,
+      merchantId: customerId,
       status: "Pending",
       createdAt: new Date(),
     };
@@ -92,11 +95,11 @@ export function DrawerDemo({
       setIsSending(true);
       const response = await createTransaction(trans);
       if (response.status === "Pending") {
-        handlePayNow(response.orderTrackingId);
+        handlePayNow(response.merchantId);
         onClose();
       }
     } catch (error) {
-       //console.log(response);
+      //console.log(response);
       console.log("Error processing payment: ", error);
     } finally {
       setIsSending(false);
@@ -104,7 +107,7 @@ export function DrawerDemo({
   };
 
   const handleViewRequests = () => {
-   const isVerified =
+    const isVerified =
       user?.user?.verified && user?.user?.verified[0]?.accountverified === true;
     const hasSubscription = user?.subscriptionStatus === "Active";
 
@@ -121,32 +124,32 @@ export function DrawerDemo({
     handleSubCategory(category, subcategory);
     onClose();
   };
- const [activePackage, setActivePackage] = useState<Package | null>(null);
+  const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [activeButton, setActiveButton] = useState(0);
-   const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
- const createdAt = new Date(user.transaction?.createdAt || new Date());
-const periodInDays = parseInt(user.transaction?.period) || 0;
-const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
-const currentTime = new Date();
-const remainingTime = expiryDate.getTime() - currentTime.getTime();
-const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+  const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
+  const createdAt = new Date(user.transaction?.createdAt || new Date());
+  const periodInDays = parseInt(user.transaction?.period) || 0;
+  const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
+  const currentTime = new Date();
+  const remainingTime = expiryDate.getTime() - currentTime.getTime();
+  const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
 
 
-    const [Plan, setplan] = useState("Free");
-    const [PlanId, setplanId] = useState(FreePackId);
-    const [Priority_, setpriority] = useState(0);
-    const [Adstatus_, setadstatus] = useState("Active");
-    const [priceInput, setPriceInput] = useState("");
-    const [periodInput, setPeriodInput] = useState("");
-     const [ExpirationDate_, setexpirationDate] = useState(new Date());
+  const [Plan, setplan] = useState("Free");
+  const [PlanId, setplanId] = useState(FreePackId);
+  const [Priority_, setpriority] = useState(0);
+  const [Adstatus_, setadstatus] = useState("Active");
+  const [priceInput, setPriceInput] = useState("");
+  const [periodInput, setPeriodInput] = useState("");
+  const [ExpirationDate_, setexpirationDate] = useState(new Date());
 
-      const currDate = new Date();
-    // Add one month to the current date
-    let expirationDate = new Date(currDate);
-   // expirationDate.setMonth(currDate.getMonth() + 1);
-    expirationDate.setDate(currDate.getDate() + 7);
+  const currDate = new Date();
+  // Add one month to the current date
+  let expirationDate = new Date(currDate);
+  // expirationDate.setMonth(currDate.getMonth() + 1);
+  expirationDate.setDate(currDate.getDate() + 7);
 
- useEffect(() => {
+  useEffect(() => {
     setShowVerify(true);
     setShowPackages(true);
     setadstatus("Pending");
@@ -161,9 +164,9 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
         setPeriodInput(price.period);
       }
     });
-     }, []);
+  }, []);
   const handleClick = (pack: Package) => {
-   
+
     if (pack.name === "Free") {
       setadstatus("Active");
     } else {
@@ -191,11 +194,11 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
       }
     });
   };
-   const router = useRouter();
-    const [isOpenP, setIsOpenP] = useState(false);
-    const handleCloseP = () => {
-      setIsOpenP(false);
-    };
+  const router = useRouter();
+  const [isOpenP, setIsOpenP] = useState(false);
+  const handleCloseP = () => {
+    setIsOpenP(false);
+  };
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="dark:bg-[#131B1E]">
@@ -218,7 +221,7 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
                       user.user?.fee
                     )
                   }
-                  className="w-full flex flex-col gap-2 justify-enter items-center bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg shadow"
+                  className="w-full flex flex-col gap-2 justify-enter items-center bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] py-3 px-4 rounded-lg shadow"
                 >
                   {isSending ? (
                     <div className="flex gap-2 items-center">
@@ -229,7 +232,7 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
                       Processing...
                     </div>
                   ) : (
-                   <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center">
                       <CheckCircleIcon sx={{ marginRight: "5px" }} />
                       Verify Now
                     </div>
@@ -249,44 +252,46 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
               </DrawerHeader>
               <div className="flex flex-col gap-4 w-full items-center">
 
-                  <SignedIn>
-                <button
-                  onClick={handlePostRequest}
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-                >
-                  Post a Loan Request
-                </button>
-                <button
-                  onClick={handleViewRequests}
-                  disabled={isSending}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
-                >
-                  {isSending ? "Checking..." : "View Posted Loan Requests"}
-                </button>
-                  </SignedIn>
-                  <SignedOut>
-                 <button
-                  onClick={() => {
-              setIsOpenP(true);
-               router.push("/sign-in");
-             }} 
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-                >
-                  Post a Loan Request
-                </button>
-                <button
-                  onClick={() => {
-              setIsOpenP(true);
-               router.push("/sign-in");
-             }} 
-                  disabled={isSending}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
-                >
-                  {isSending ? "Checking..." : "View Posted Loan Requests"}
-                </button>
-                 <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
-                  </SignedOut>
-              
+                <SignedIn>
+                  <button
+                    onClick={handlePostRequest}
+                    className="w-full bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] py-2 px-4 rounded"
+                  >
+                    Post {subcategory}
+                  </button>
+                  <button
+                    onClick={handleViewRequests}
+                    disabled={isSending}
+                    className="w-full text-[#BD7A4F] bg-white border border-[#BD7A4F] hover:bg-[#FAE6DA] py-2 px-4 rounded  disabled:opacity-50"
+                  >
+                    {isSending ? "Checking..." : `View Posted ${subcategory}`}
+
+                  </button>
+                </SignedIn>
+                <SignedOut>
+                  <button
+                    onClick={() => {
+                      setIsOpenP(true);
+                      router.push("/sign-in");
+                    }}
+                    className="w-full bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] py-2 px-4 rounded"
+                  >
+                    Post {subcategory}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsOpenP(true);
+                      router.push("/sign-in");
+                    }}
+                    disabled={isSending}
+                    className="w-full text-[#BD7A4F] bg-white border border-[#BD7A4F] hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
+                  >
+                    {isSending ? "Checking..." : `View Posted ${subcategory}`}
+
+                  </button>
+                  <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
+                </SignedOut>
+
               </div>
 
             </div>
@@ -294,159 +299,154 @@ const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
 
           {!showPackages && (
             <div className="p-4 text-center text-gray-600">
-              
-               <DrawerHeader>
+
+              <DrawerHeader>
                 <DrawerTitle>Subscription Required</DrawerTitle>
                 <DrawerDescription>
-                   <p>You need a subscription to view requests.</p>
+                  <p>You need a subscription to view requests.</p>
                 </DrawerDescription>
               </DrawerHeader>
-            
+
               <div className="w-full mt-2 p-0 dark:text-gray-100 rounded-lg">
-  
 
-  {/* No Promo */}
-  <div className="w-full">
-    {packagesList.length > 0 &&
-      packagesList.slice(1).map((pack: any, index: number) => {
-        const issamepackage = user.currentpack.name === pack.name;
 
-        return (
-          <div
-            key={index}
-            className={`mb-2 dark:bg-[#2D3236] border bg-white rounded-lg cursor-pointer ${
-              activePackage === pack
-                ? "bg-[#F2FFF2] border-[#4DCE7A] border-2"
-                : ""
-            }`}
-          >
-            <div
-              onClick={() =>
-                (!issamepackage && pack.name === "Free") ||
-                (issamepackage && pack.name === "Free" && (user.currentpack.list - user.ads) === 0)
-                  ? handleClick(pack)
-                  : handleClick(pack)
-              }
-              className="flex justify-between items-center w-full"
-            >
-              {/* Left Column: Package Details */}
-              <div className="p-3">
-                <p className="text-gray-700 font-semibold dark:text-gray-300">
-                  {pack.name}
-                </p>
-                <ul className="flex flex-col gap-1 p-1">
-                  {pack.features.slice(0, 1).map((feature: any, i: number) => (
-                    <li key={i} className="flex items-center gap-1">
-                      <DoneOutlinedIcon />
-                      <p className="text-sm">{feature.title}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                {/* No Promo */}
+                <div className="w-full">
+                  {packagesList.length > 0 &&
+                    packagesList.slice(1).map((pack: any, index: number) => {
+                      const issamepackage = user.currentpack.name === pack.name;
 
-              {/* Right Column: Status and Price */}
-              <div className="p-3">
-                <div className="text-gray-600 mb-1">
-                  <div className="flex gap-2 text-sm">
-                    {remainingDays > 0 && pack.name === user.currentpack.name ? (
-                      <div className="p-1 flex-block rounded-full bg-emerald-500">
-                        <p className="text-white text-xs">Active</p>
-                      </div>
-                    ) : (
-                      <>
-                        {(!issamepackage && pack.name === "Free") ||
-                        (issamepackage &&
-                          pack.name === "Free" &&
-                         (user.currentpack.list - user.ads) === 0) ? null : issamepackage &&
-                          pack.name === "Free" &&
-                          (user.currentpack.list - user.ads) > 0 ? null : null}
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {/* Price Display */}
-                <div className="text-center">
-                  {pack.name !== "Free" && (
-                    <div className="text-gray-800 font-bold mb-0">
-                      <ul className="flex flex-col items-center gap-0 py-0">
-                        {pack.price.map((price: any, i: number) => (
-                          <li
-                            key={i}
-                            className={`flex items-center gap-0 ${
-                              i !== activeButton ? "hidden" : ""
+                      return (
+                        <div
+                          key={index}
+                          className={`mb-2 dark:bg-[#2D3236] border bg-white rounded-lg cursor-pointer ${activePackage === pack
+                            ? "bg-[#F2FFF2] border-orange-600 border-2"
+                            : ""
                             }`}
+                        >
+                          <div
+                            onClick={() =>
+                              (!issamepackage && pack.name === "Free") ||
+                                (issamepackage && pack.name === "Free" && (user.currentpack.list - user.ads) === 0)
+                                ? handleClick(pack)
+                                : handleClick(pack)
+                            }
+                            className="flex justify-between items-center w-full"
                           >
-                            <p
-                              className={`font-semibold ${
-                                activePackage === pack
-                                  ? "text-[#30AF5B]"
-                                  : "text-gray-800 dark:text-gray-400"
-                              }`}
-                            >
-                              Ksh {price.amount.toLocaleString()}/ {activeButtonTitle}
-                            </p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                            {/* Left Column: Package Details */}
+                            <div className="p-3">
+                              <p className="text-gray-700 font-semibold dark:text-gray-300">
+                                {pack.name}
+                              </p>
+                              <ul className="flex flex-col gap-1 p-1">
+                                {pack.features.slice(0, 1).map((feature: any, i: number) => (
+                                  <li key={i} className="flex items-center gap-1">
+                                    <DoneOutlinedIcon />
+                                    <p className="text-sm">{feature.title}</p>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Right Column: Status and Price */}
+                            <div className="p-3">
+                              <div className="text-gray-600 mb-1">
+                                <div className="flex gap-2 text-sm">
+                                  {remainingDays > 0 && pack.name === user.currentpack.name ? (
+                                    <div className="p-1 flex-block rounded-full bg-orange-500">
+                                      <p className="text-white text-xs">Active</p>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      {(!issamepackage && pack.name === "Free") ||
+                                        (issamepackage &&
+                                          pack.name === "Free" &&
+                                          (user.currentpack.list - user.ads) === 0) ? null : issamepackage &&
+                                            pack.name === "Free" &&
+                                            (user.currentpack.list - user.ads) > 0 ? null : null}
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Price Display */}
+                              <div className="text-center">
+                                {pack.name !== "Free" && (
+                                  <div className="text-gray-800 font-bold mb-0">
+                                    <ul className="flex flex-col items-center gap-0 py-0">
+                                      {pack.price.map((price: any, i: number) => (
+                                        <li
+                                          key={i}
+                                          className={`flex items-center gap-0 ${i !== activeButton ? "hidden" : ""
+                                            }`}
+                                        >
+                                          <p
+                                            className={`font-semibold ${activePackage === pack
+                                              ? "text-orange-500"
+                                              : "text-gray-800 dark:text-gray-400"
+                                              }`}
+                                          >
+                                            Ksh {price.amount.toLocaleString()}/ {activeButtonTitle}
+                                          </p>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Button Group */}
+                          {pack.name !== "Free" && activePackage === pack && (
+                            <div className="flex flex-wrap justify-end items-center p-2">
+                              <button
+                                className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
+                                  ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                  : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                  }`}
+                                onClick={() => handleButtonClick(0, "1 week")}
+                              >
+                                1 week
+                              </button>
+                              <button
+                                className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
+                                  ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                  : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                  }`}
+                                onClick={() => handleButtonClick(1, "1 month")}
+                              >
+                                1 month
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
-            </div>
-
-            {/* Button Group */}
-            {pack.name !== "Free" && activePackage === pack && (
-              <div className="flex flex-wrap justify-end items-center p-2">
-                <button
-                  className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
-                    activeButton === 0
-                      ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                      : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-                  }`}
-                  onClick={() => handleButtonClick(0, "1 week")}
-                >
-                  1 week
-                </button>
-                <button
-                  className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${
-                    activeButton === 1
-                      ? "bg-gradient-to-b from-[#4DCE7A] to-[#30AF5B] text-white p-2 rounded-full"
-                      : "border border-[#30AF5B] text-[#30AF5B] rounded-full p-2"
-                  }`}
-                  onClick={() => handleButtonClick(1, "1 month")}
-                >
-                  1 month
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      })}
-  </div>
-</div>
 
               <button
-               onClick={() =>
-                    handlePay(
-                      PlanId,
-                      Plan,
-                      periodInput,
-                      priceInput
-                    )
-                  }
-                className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-sm"
+                onClick={() =>
+                  handlePay(
+                    PlanId,
+                    Plan,
+                    periodInput,
+                    priceInput
+                  )
+                }
+                className="w-full mt-3 hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white px-4 py-2 rounded-sm"
               >
-               Subscribe Now
+                Subscribe Now
               </button>
             </div>
           )}
 
           <DrawerFooter>
-            <Button onClick={()=> {
-               onClose();
-               setShowVerify(true);
-               setShowPackages(true);
+            <Button onClick={() => {
+              onClose();
+              setShowVerify(true);
+              setShowPackages(true);
             }} variant="outline">
               Cancel
             </Button>

@@ -9,6 +9,7 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import Link from "next/link";
 import Verification from "./Verification";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import SellerProfileMobile from "./SellerProfileMobile";
 import Verificationmobile from "./Verificationmobile";
 import Ratingsmobile from "./ratingsmobile";
@@ -20,16 +21,18 @@ type chatProps = {
   userName: string;
   userImage: string;
   ad: any;
-  user:any;
-  handleOpenReview: (value:any) => void;
-  handleOpenChatId: (value:string) => void;
-  handleOpenShop: (value:any) => void;
+  user: any;
+  handleOpenReview: (value: any) => void;
+  handleOpenChatId: (value: string) => void;
+  handleOpenShop: (value: any) => void;
   handleOpenPlan: () => void;
   handleOpenSettings: () => void;
-  handlePay: (id:string) => void;
+  handleOpenEnquire: () => void;
+  handlePay: (id: string) => void;
 };
-const Contact = ({ ad, user, userId, userName, userImage,handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings, handleOpenShop }: chatProps) => {
+const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings, handleOpenShop }: chatProps) => {
   const [showphone, setshowphone] = useState(false);
+  const router = useRouter();
   const [isOpenP, setIsOpenP] = useState(false);
   const handleOpenP = () => {
     setIsOpenP(true);
@@ -66,18 +69,18 @@ const Contact = ({ ad, user, userId, userName, userImage,handlePay, handleOpenRe
   };
 
   const isAdCreator = userId === ad.organizer._id;
-  
+
   return (
     <div className="w-full">
       <div className="lg:hidden justify-between flex w-full gap-1">
         <Verificationmobile
           user={ad.organizer}
-          fee={user?.fee ?? 500}
           userId={userId}
+          fee={user?.fee ?? 500}
           isAdCreator={isAdCreator}
           handlePayNow={handlePay}
         />
-        <Ratingsmobile user={ad.organizer} recipientUid={ad.organizer._id} handleOpenReview={handleOpenReview} />
+        <Ratingsmobile recipientUid={ad.organizer._id} user={ad.organizer} handleOpenReview={handleOpenReview} />
       </div>
       <div className="justify-between lg:justify-end flex w-full gap-1">
         <div className="lg:hidden flex gap-1 items-center p-1 w-full">
@@ -85,43 +88,55 @@ const Contact = ({ ad, user, userId, userName, userImage,handlePay, handleOpenRe
             userId={userId}
             ad={ad}
             userName={userName}
-            userImage={userImage} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handleOpenShop={handleOpenShop}/>
+            userImage={userImage} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handleOpenShop={handleOpenShop} />
         </div>
-        <div className="flex items-center gap-2 p-1 lg:bottom-[10px]">
+        <div className="flex items-center gap-2 p-1 lg:bottom-[10px] lg:mr-20">
           <SignedIn>
             <button
-              className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
+              className="bg-green-600 hover:bg-green-700 text-white text-xs mt-2 p-2 rounded-lg shadow"
               onClick={handleShowPhoneClick}
             >
               <CallIcon sx={{ fontSize: 24 }} />
 
-             {/* <div className="hidden lg:inline">Call</div> */}
+              {/* <div className="hidden lg:inline">Call</div> */}
             </button>
           </SignedIn>
           <SignedOut>
-            <a href={`/sign-in`}>
-              <button className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow">
+            <div
+              onClick={() => {
+                setIsOpenP(true);
+                router.push("/sign-in");
+              }}
+            >
+              <button className="cursor-pointer bg-green-600 hover:bg-green-700 text-white text-xs mt-2 p-2 rounded-lg shadow">
                 <CallIcon sx={{ fontSize: 24 }} />
-               {/*  <div className="hidden lg:inline">Call</div>*/}
+                {/*  <div className="hidden lg:inline">Call</div>*/}
               </button>
-            </a>
+            </div>
           </SignedOut>
 
           <SignedIn>
-            <ChatButtonBottom
-              ad={ad}
-              userId={userId}
-              userImage={userImage}
-              userName={userName}
-            />
+            <button
+              className="bg-green-600 hover:bg-green-700 text-white text-xs mt-2 p-2 rounded-lg shadow"
+              onClick={() => handleOpenEnquire()}
+            >
+              <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
+              {/*<div className="hidden lg:inline"> Enquire</div>*/}
+            </button>
+
           </SignedIn>
           <SignedOut>
-            <a href={`/sign-in`}>
-              <button className="flex gap-1 bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow">
+            <div
+              onClick={() => {
+                setIsOpenP(true);
+                router.push("/sign-in");
+              }}
+            >
+              <button className="flex cursor-pointer gap-1 bg-green-600 hover:bg-green-700 text-white text-xs mt-2 p-2 rounded-lg shadow">
                 <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
                 {/*<div className="hidden lg:inline">Message</div>*/}
               </button>
-            </a>
+            </div>
           </SignedOut>
 
           {ad.organizer.whatsapp && (
@@ -129,21 +144,26 @@ const Contact = ({ ad, user, userId, userName, userImage,handlePay, handleOpenRe
               <SignedIn>
                 <button
                   onClick={handlewhatsappClick}
-                  className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
+                  className="bg-green-600 hover:bg-green-700 text-white text-xs mt-2 p-2 rounded-lg shadow"
                 >
                   <WhatsAppIcon sx={{ fontSize: 24 }} />
 
-                 {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
+                  {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
                 </button>
               </SignedIn>
               <SignedOut>
-                <a href={`/sign-in`}>
-                  <button className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow">
+                <div
+                  onClick={() => {
+                    setIsOpenP(true);
+                    router.push("/sign-in");
+                  }}
+                >
+                  <button className="cursor-pointer bg-green-600 hover:bg-green-700 text-white text-xs mt-2 p-2 rounded-lg shadow">
                     <WhatsAppIcon sx={{ fontSize: 24 }} />
 
-                  {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
+                    {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
                   </button>
-                </a>
+                </div>
               </SignedOut>
             </>
           )}

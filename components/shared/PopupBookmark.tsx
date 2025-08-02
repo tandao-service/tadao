@@ -35,13 +35,13 @@ interface WindowProps {
   handleOpenTerms: () => void;
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  handleAdEdit: (ad:any) => void;
-  handleAdView: (ad:any) => void;
-  handleCategory:(value:string) => void;
-  handleOpenShop: (value:string) => void;
-    handleOpenChatId: (value:string) => void;
-    handleOpenSettings: () => void;
-    handleOpenPerfomance: () => void;
+  handleAdEdit: (ad: any) => void;
+  handleAdView: (ad: any) => void;
+  handleCategory: (value: string) => void;
+  handleOpenShop: (value: string) => void;
+  handleOpenChatId: (value: string) => void;
+  handleOpenSettings: () => void;
+  handleOpenPerfomance: () => void;
   //type: string;
   userId: string;
   user: any;
@@ -50,38 +50,48 @@ interface WindowProps {
 const PopupBookmark = ({ isOpen, userId, user, onClose, handleOpenShop,
   handleOpenChatId,
   handleOpenSettings,
-  handleOpenPerfomance, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenSell, handleAdEdit,handleAdView, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety }: WindowProps) => {
- 
+  handleOpenPerfomance, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenSell, handleAdEdit, handleAdView, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-      
-      <DashboardBookmark
-              userId={userId}
-              user={user}
-              emptyTitle="No ads have been created yet"
-              emptyStateSubtext="Go create some now"
-              collectionType="Ads_Organized"
-              limit={20}
-              urlParamName="adsPage"
-              onClose={onClose}
-              handleOpenSell={handleOpenSell}
-              handleOpenAbout={handleOpenAbout}
-              handleOpenTerms={handleOpenTerms}
-              handleOpenPrivacy={handleOpenPrivacy}
-              handleOpenSafety={handleOpenSafety}
-              handleAdView={handleAdView}
-              handleAdEdit={handleAdEdit}
-              handleOpenPlan={handleOpenPlan}
-              handleOpenBook={handleOpenBook} 
-              handleOpenChat={handleOpenChat}
-              handleOpenChatId={handleOpenChatId}
-              handleOpenShop={handleOpenShop}
-              handleOpenPerfomance={handleOpenPerfomance}
-              handleOpenSettings={handleOpenSettings}/>
-     
+
+        <DashboardBookmark
+          userId={userId}
+          user={user}
+          emptyTitle="No ads have been created yet"
+          emptyStateSubtext="Go create some now"
+          collectionType="Ads_Organized"
+          limit={20}
+          urlParamName="adsPage"
+          onClose={onClose}
+          handleOpenSell={handleOpenSell}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleAdView={handleAdView}
+          handleAdEdit={handleAdEdit}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenBook={handleOpenBook}
+          handleOpenChat={handleOpenChat}
+          handleOpenChatId={handleOpenChatId}
+          handleOpenShop={handleOpenShop}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenSettings={handleOpenSettings} />
+
         <Toaster />
       </div>
     </div>

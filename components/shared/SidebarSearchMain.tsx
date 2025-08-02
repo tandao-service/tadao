@@ -65,7 +65,7 @@ type sidebarProps = {
   category: string;
   categoryList?: any;
   subcategory?: string;
-  handleFilter:(value:any) => void;
+  handleFilter: (value: any) => void;
 };
 const SidebarSearchMain = ({
   category,
@@ -74,15 +74,15 @@ const SidebarSearchMain = ({
   handleFilter,
 }: sidebarProps) => {
   const [query, setQuery] = useState(subcategory);
- 
+
   // Usage
   const handleQuery = (index: number, query: string) => {
 
     handleFilter({
-          category: category.toString(),
-           subcategory: query.toString(),
-        });
-        setQuery(query);
+      category: category.toString(),
+      subcategory: query.toString(),
+    });
+    setQuery(query);
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +94,7 @@ const SidebarSearchMain = ({
   const closeDialog = () => {
     setIsOpen(false);
   };
-  
+
 
 
   const selectedCategory = categoryList.find(
@@ -111,18 +111,18 @@ const SidebarSearchMain = ({
   const categoryImageUrl = selectedCategory
     ? selectedCategory.category.imageUrl[0]
     : "";
- 
+
   const filteredList =
     categoryList?.filter((cat: any) => cat.category.name === category) || [];
 
- // const visibleItems = showAll ? filteredList : filteredList.slice(0, 6);
+  // const visibleItems = showAll ? filteredList : filteredList.slice(0, 6);
 
   return (
     <>
       <div className="flex flex-col items-center w-full">
-        
+
         <div className="w-full p-0 dark:bg-[#2D3236] bg-white rounded-lg">
-       
+
           <div className="flex flex-col p-1 text-sm font-bold rounded-t-lg w-full">
             <div className="flex w-full justify-between p-1 text-lg gap-1 items-center mt-1 mb-1 border-b border-gray-300 dark:border-gray-600">
               {selectedCategory && (
@@ -152,16 +152,15 @@ const SidebarSearchMain = ({
             </div>
           </div>
           <div>
-            
+
             {filteredList.map((sub: any, index: number) => (
               <div
                 key={index}
                 onClick={() => handleQuery(index, sub.subcategory)}
-                className={`border-b rounded-sm dark:border-gray-600 flex items-center w-full justify-between p-0 mb-0 text-sm cursor-pointer dark:hover:bg-[#131B1E] dark:hover:text-white hover:bg-emerald-100 hover:text-emerald-600 ${
-                  query === sub.subcategory
-                    ? "bg-green-600 text-white hover:bg-green-600 hover:text-white "
-                    : "dark:bg-[#2D3236] bg-white"
-                }`}
+                className={`border-b rounded-sm dark:border-gray-600 flex items-center w-full justify-between p-0 mb-0 text-sm cursor-pointer dark:hover:bg-[#131B1E] dark:hover:text-white hover:bg-[#FAE6DA] hover:text-[#BD7A4F] ${query === sub.subcategory
+                  ? "bg-[#BD7A4F] text-white hover:bg-[#BD7A4F]"
+                  : "dark:bg-[#2D3236] bg-white"
+                  }`}
               >
                 <div className="flex w-full gap-1 items-center p-2">
                   <Image
@@ -174,26 +173,25 @@ const SidebarSearchMain = ({
                   <div className="flex text-sm flex-col">
                     {sub.subcategory}
                     <div
-                      className={`flex text-xs gap-1 ${
-                        query === sub.subcategory
-                          ? "dark:text-gray-300 text-white"
-                          : "dark:text-gray-500 text-gray-500"
-                      }`}
+                      className={`flex text-xs gap-1 ${query === sub.subcategory
+                        ? "dark:text-gray-300 text-white"
+                        : "dark:text-gray-500 text-gray-500"
+                        }`}
                     >
                       {sub.adCount}
                       <div>ads</div>
                     </div>
                   </div>
                 </div>
-              {/* <ArrowForwardIosIcon sx={{ fontSize: 14 }} /> */} 
+                {/* <ArrowForwardIosIcon sx={{ fontSize: 14 }} /> */}
               </div>
             ))}
 
-         
+
           </div>
         </div>
-      
- 
+
+
       </div>
     </>
   );

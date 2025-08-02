@@ -8,7 +8,7 @@ const consumerSecret = process.env.MPESA_CONSUMER_SECRET || '';
 const businessShortCode = process.env.MPESA_SHORTCODE || '';
 const passkey = process.env.MPESA_PASSKEY || '';
 
-const callbackURL = 'https://pocketshop.co.ke/api/safaricom/callback';
+const callbackURL = 'https://tadaoservices.com/api/safaricom/callback';
 
 function getTimestamp(): string {
   const now = new Date();

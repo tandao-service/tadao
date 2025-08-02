@@ -28,18 +28,18 @@ type NavItemsProps = {
   userstatus: string;
   userId: string;
   popup: string;
-  user:any;
+  user: any;
   onClose: () => void;
   handleOpenSell: () => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
-  handleclicklink:() => void;
+  handleclicklink: () => void;
 };
-const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, handleOpenSettings, handleOpenPlan, handleOpenBook, handleOpenPerfomance, handleOpenChat, handleOpenSell,handleOpenShop }: NavItemsProps) => {
+const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, handleOpenSettings, handleOpenPlan, handleOpenBook, handleOpenPerfomance, handleOpenChat, handleOpenSell, handleOpenShop }: NavItemsProps) => {
   const pathname = usePathname();
   const [isOpenP, setIsOpenP] = useState(false);
   const router = useRouter();
@@ -49,26 +49,26 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
   function capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-   const shareUrl = "https://pocketshop.co.ke"; // Replace with the URL you want to share
-  
-    const handleShare = async () => {
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: "Check out PocketShop",
-            text: "I found this amazing site for property classification!",
-            url: shareUrl,
-          });
-          console.log("Share was successful.");
-        } catch (error) {
-          console.error("Sharing failed:", error);
-        }
-      } else {
-        // Fallback for browsers that do not support the Web Share API
-        console.log("Share not supported on this browser.");
-        // You can also show a modal or a tooltip with the URL or instructions here.
+  const shareUrl = "https://tadaoservices.com"; // Replace with the URL you want to share
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Check out Tadao",
+          text: "I found this amazing online marketing site!",
+          url: shareUrl,
+        });
+        console.log("Share was successful.");
+      } catch (error) {
+        console.error("Sharing failed:", error);
       }
-    };
+    } else {
+      // Fallback for browsers that do not support the Web Share API
+      console.log("Share not supported on this browser.");
+      // You can also show a modal or a tooltip with the URL or instructions here.
+    }
+  };
   return (
     <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white w-full">
       <ul>
@@ -77,182 +77,175 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
           .map((link) => {
             const isActive = capitalizeFirstLetter(popup) === link.label;
             let linki = link.route;
-          //  if (link.label === "My Shop") {
-          //    linki = link.route + "/" + userId;
-          //  }
+            //  if (link.label === "My Shop") {
+            //    linki = link.route + "/" + userId;
+            //  }
 
             return (
               <>
                 <SignedIn>
                   <li key={link.route}>
                     <div>
-                    
-                        {link.label === "Home" && (  <div
-                        onClick={()=>  {onClose(); handleclicklink();} }
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                          <span>
-                          <HomeIcon className="w-10 p-1" />
-                          </span>
-                          <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                        <ArrowForwardIosIcon className="w-10 p-1" />
-                        </span></div>
-                        )}
-                        {link.label === "Sell" && (  <div
-                        onClick={()=>  {handleOpenSell(); handleclicklink()}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                          <span>
-                          <SellOutlinedIcon className="w-10 p-1" />
-                        
-                          </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                        <ArrowForwardIosIcon className="w-10 p-1" />
-                        
-                      
-                        </span>
-                        </div>
-                        )}
-                        {link.label === "My Shop" && (
-                          <div
-                          onClick={()=>  {handleOpenShop(user); handleclicklink();}}
-                          className={`${
-                            isActive &&
-                            "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                        > <span> 
-                          <FormatListBulletedOutlinedIcon className="w-10 p-1" />
-                          </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                        <ArrowForwardIosIcon className="w-10 p-1" />
-                         
-                        </span>
-                        </div>
-                        )}
-                        {link.label === "Chat" && (  <div
-                        onClick={()=>  {handleOpenChat(); handleclicklink();}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                          <span>
-                            
-                            <CommentOutlinedIcon className="w-10 p-1 " />
-                          </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                        </div>
-                        )}
-                        {link.label === "Performance" && (  <div
-                        onClick={()=> { handleOpenPerfomance(); handleclicklink();}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                          <span>
-                            <StackedLineChartOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                          <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                        </div>)}
-                        {link.label === "Bookmark" && (  <div
-                        onClick={()=> {handleOpenBook(); handleclicklink();}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                          <span>
-                            <BookmarkIcon className="w-10 p-1 " />
-                          </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                        
-                        </div>
-                        )}
-                        {link.label === "Plan" && (  <div
-                        onClick={()=>  {handleOpenPlan(); handleclicklink();}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                          <span>
-                            <DiamondIcon className="w-10 p-1 " />
-                          </span>
-                          <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                        </div>
-                        )}
-                        {link.label === "Profile" && (  <div
-                         onClick={()=>  {handleOpenSettings(); handleclicklink();}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                      
-                          <span>
-                            <PersonOutlineOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                          <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                        </div>)}
 
-                        {link.label === "Admin" && (  <div
-                          onClick={()=>  {setIsOpenP(true);
-                            //handleclicklink();
-                            router.push("/home");}}
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
+                      {link.label === "Home" && (<div
+                        onClick={() => { onClose(); handleclicklink(); }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
                       >
-                          <span>
-                            <ManageAccountsOutlinedIcon className="w-10 p-1 " />
+                        <span>
+                          <HomeIcon className="w-10 p-1" />
+                        </span>
+                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1" />
+                        </span></div>
+                      )}
+                      {link.label === "Sell" && (<div
+                        onClick={() => { handleOpenSell(); handleclicklink() }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+                        <span>
+                          <SellOutlinedIcon className="w-10 p-1" />
+
+                        </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1" />
+
+
+                        </span>
+                      </div>
+                      )}
+                      {link.label === "My Shop" && (
+                        <div
+                          onClick={() => { handleOpenShop(user); handleclicklink(); }}
+                          className={`${isActive &&
+                            "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                            } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                        > <span>
+                            <FormatListBulletedOutlinedIcon className="w-10 p-1" />
+                          </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                            {link.label}
                           </span>
-                          <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          <span className="text-right my-auto">
+                            <ArrowForwardIosIcon className="w-10 p-1" />
+
+                          </span>
+                        </div>
+                      )}
+                      {link.label === "Chat" && (<div
+                        onClick={() => { handleOpenChat(); handleclicklink(); }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+                        <span>
+
+                          <CommentOutlinedIcon className="w-10 p-1 " />
+                        </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
                           {link.label}
                         </span>
                         <span className="text-right my-auto">
                           <ArrowForwardIosIcon className="w-10 p-1 " />
                         </span>
-                        </div>)}
-                       
-                     
+                      </div>
+                      )}
+                      {link.label === "Performance" && (<div
+                        onClick={() => { handleOpenPerfomance(); handleclicklink(); }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+                        <span>
+                          <StackedLineChartOutlinedIcon className="w-10 p-1 " />
+                        </span>
+                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1 " />
+                        </span>
+                      </div>)}
+                      {link.label === "Bookmark" && (<div
+                        onClick={() => { handleOpenBook(); handleclicklink(); }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+                        <span>
+                          <BookmarkIcon className="w-10 p-1 " />
+                        </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1 " />
+                        </span>
+
+                      </div>
+                      )}
+                      {link.label === "Plan" && (<div
+                        onClick={() => { handleOpenPlan(); handleclicklink(); }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+                        <span>
+                          <DiamondIcon className="w-10 p-1 " />
+                        </span>
+                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1 " />
+                        </span>
+                      </div>
+                      )}
+                      {link.label === "Profile" && (<div
+                        onClick={() => { handleOpenSettings(); handleclicklink(); }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+
+                        <span>
+                          <PersonOutlineOutlinedIcon className="w-10 p-1 " />
+                        </span>
+                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1 " />
+                        </span>
+                      </div>)}
+
+                      {link.label === "Admin" && (<div
+                        onClick={() => {
+                          setIsOpenP(true);
+                          //handleclicklink();
+                          router.push("/home");
+                        }}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                      >
+                        <span>
+                          <ManageAccountsOutlinedIcon className="w-10 p-1 " />
+                        </span>
+                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+                          {link.label}
+                        </span>
+                        <span className="text-right my-auto">
+                          <ArrowForwardIosIcon className="w-10 p-1 " />
+                        </span>
+                      </div>)}
+
+
                     </div>
                   </li>
                 </SignedIn>
@@ -262,19 +255,18 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                     <div
                       onClick={() => {
                         //if (!isActive) {
-                          setIsOpenP(true);
-                         // handleclicklink();
-                          router.push("/sign-in");
-                       // } else {
+                        setIsOpenP(true);
+                        // handleclicklink();
+                        router.push("/sign-in");
+                        // } else {
                         //  onClose();
                         //}
                       }}
                     >
                       <div
-                        className={`${
-                          isActive &&
-                          "dark:bg-emerald-600 dark:text-white bg-emerald-600 text-white rounded-full"
-                        } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer`}
+                        className={`${isActive &&
+                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
                       >
                         {link.label === "Home" && (
                           <span>
@@ -332,24 +324,24 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                     </div>
                   </li>
                 </SignedOut>
-                
+
               </>
             );
           })}
       </ul>
-      <div 
-                  onClick={handleShare}
-                  className={`flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-slate-100 rounded-sm hover:text-green-600 p-3 mb-1 hover:cursor-pointer`}>
-                          <span>
-                            <ShareOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                          <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          Share
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1" />
-                        </span>
-                      </div>
+      <div
+        onClick={handleShare}
+        className={`flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}>
+        <span>
+          <ShareOutlinedIcon className="w-10 p-1 " />
+        </span>
+        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
+          Share
+        </span>
+        <span className="text-right my-auto">
+          <ArrowForwardIosIcon className="w-10 p-1" />
+        </span>
+      </div>
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );

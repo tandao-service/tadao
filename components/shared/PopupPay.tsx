@@ -36,66 +36,76 @@ interface WindowProps {
   handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
 
-  handleOpenShop: (shopId:any) => void;
-  handleOpenChatId: (value:string) => void;
+  handleOpenShop: (shopId: any) => void;
+  handleOpenChatId: (value: string) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
-  handleCategory:(value:string) => void;
+  handleCategory: (value: string) => void;
   userId: string;
   userName: string;
   txtId: string;
-  user:any;
+  user: any;
 }
 
-const PopupPay = ({ isOpen, userId, userName, txtId, user,  handleOpenPerfomance, handleOpenSettings,
-  handleOpenShop, handleOpenChatId, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout,handleOpenTerms,handleOpenPrivacy,handleOpenSafety, }: WindowProps) => {
+const PopupPay = ({ isOpen, userId, userName, txtId, user, handleOpenPerfomance, handleOpenSettings,
+  handleOpenShop, handleOpenChatId, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety, }: WindowProps) => {
   const [trans, settrans] = useState<any>(null);
- const [loading, setLoading] = useState<boolean>(true);
- 
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     if (isOpen && userId) {
       const fetchData = async () => {
         try {
           setLoading(true);
-         const tran = await getpayTransaction(txtId);
-         settrans(tran);
-         
+          const tran = await getpayTransaction(txtId);
+          settrans(tran);
+
         } catch (error) {
-                 console.error("Failed to fetch data", error);
-               } finally {
-                 setLoading(false); // Mark loading as complete
-               }
+          console.error("Failed to fetch data", error);
+        } finally {
+          setLoading(false); // Mark loading as complete
+        }
       };
 
       fetchData();
     }
   }, [isOpen, userId]);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
 
+    return () => {
+      document.body.classList.remove('overflow-hidden'); // Cleanup on unmount
+    };
+  }, [isOpen]);
   if (!isOpen) return null;
-     
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-0 w-full h-[100vh] flex flex-col">
-       
-       {loading ? (
-                   <div className="h-screen w-full dark:bg-[#131B1E] dark:text-gray-300 bg-gray-200"> 
-                   <div className="top-0 z-10 fixed w-full">
-                    <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
-                    handleOpenPerfomance={handleOpenPerfomance}
-                    handleOpenSettings={handleOpenSettings}
-                    handleOpenAbout={handleOpenAbout}
-                    handleOpenTerms={handleOpenTerms}
-                    handleOpenPrivacy={handleOpenPrivacy}
-                    handleOpenSafety={handleOpenSafety} 
-                    handleOpenShop={handleOpenShop}/>
-                    </div>
-                    <div className="flex justify-center items-center h-full text-lg font-bold">
-                    <div className="flex gap-2 items-center">  <CircularProgress sx={{ color: "gray" }} size={30} /> <div className="hidden lg:inline">Loading...</div></div>
-                   </div>
-                   </div>
-                  
-                 ) : (
-         <DashboardPay user={user} userId={userId} trans={trans} recipientUid={userId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
+
+        {loading ? (
+          <div className="h-screen w-full dark:bg-[#131B1E] dark:text-gray-300 bg-[#FAE6DA]">
+            <div className="top-0 z-10 fixed w-full">
+              <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+                handleOpenPerfomance={handleOpenPerfomance}
+                handleOpenSettings={handleOpenSettings}
+                handleOpenAbout={handleOpenAbout}
+                handleOpenTerms={handleOpenTerms}
+                handleOpenPrivacy={handleOpenPrivacy}
+                handleOpenSafety={handleOpenSafety}
+                handleOpenShop={handleOpenShop} />
+            </div>
+            <div className="flex justify-center items-center h-full text-lg font-bold">
+              <div className="flex gap-2 items-center">  <CircularProgress sx={{ color: "gray" }} size={30} /> <div className="hidden lg:inline">Loading...</div></div>
+            </div>
+          </div>
+
+        ) : (
+          <DashboardPay user={user} userId={userId} trans={trans} recipientUid={userId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
             handleOpenTerms={handleOpenTerms}
             handleOpenPrivacy={handleOpenPrivacy}
             handleOpenSafety={handleOpenSafety}
@@ -105,8 +115,8 @@ const PopupPay = ({ isOpen, userId, userName, txtId, user,  handleOpenPerfomance
             handleOpenPerfomance={handleOpenPerfomance}
             handleOpenSettings={handleOpenSettings}
             handleOpenShop={handleOpenShop}
-            handleOpenChatId={handleOpenChatId}/>)}
-       
+            handleOpenChatId={handleOpenChatId} />)}
+
         <Toaster />
       </div>
     </div>

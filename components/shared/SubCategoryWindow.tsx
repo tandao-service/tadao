@@ -35,17 +35,17 @@ interface ChatWindowProps {
   onClose: () => void;
   category: string;
   subcategoryList: any;
-  packagesList:any;
-  user:any;
-  handleSubCategory: (category:string, subcategory:string) => void;
-  userId:string;
-  loans:any;
+  packagesList: any;
+  user: any;
+  handleSubCategory: (category: string, subcategory: string) => void;
+  userId: string;
+  loans: any;
   handleOpenChat: () => void;
-  handleOpenSell:()=> void;
-  handleCategory:(value:string)=> void;
-  handleOpenSearchTab:(value:string)=> void;
-  handleOpenSettings: () => void; 
-  handlePayNow:(id:string)=> void;
+  handleOpenSell: () => void;
+  handleCategory: (value: string) => void;
+  handleOpenSearchTab: (value: string) => void;
+  handleOpenSettings: () => void;
+  handlePayNow: (id: string) => void;
 }
 
 const SubCategoryWindow: React.FC<ChatWindowProps> = ({
@@ -70,7 +70,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isOpenP, setIsOpenP] = useState(false);
-const [showWantedPopup, setShowWantedPopup] = useState(false);
+  const [showWantedPopup, setShowWantedPopup] = useState(false);
   if (!isOpen) return null; // Keep the early return after defining hooks
 
   const handleOpenP = (query: string) => {
@@ -81,19 +81,19 @@ const [showWantedPopup, setShowWantedPopup] = useState(false);
     setIsOpenP(false);
   };
 
- const handleQuery = (query: string) => {
-  if (query) {
-    if (category.toString() === "Buyer Requests") {
-      setQuery(query);
-      setShowWantedPopup(true); // Show the popup instead
-    } else {
-      setQuery(query);
-      handleSubCategory(category.toString(), query.toString());
-      onClose();
+  const handleQuery = (query: string) => {
+    if (query) {
+      if (category.toString() === "Buyer Requests" || category.toString() === "Donations") {
+        setQuery(query);
+        setShowWantedPopup(true); // Show the popup instead
+      } else {
+        setQuery(query);
+        handleSubCategory(category.toString(), query.toString());
+        onClose();
+      }
     }
-  }
-};
-const handleClose = () => {
+  };
+  const handleClose = () => {
     setShowWantedPopup(false);
   };
   const totalAdCount = subcategoryList.reduce((sum: any, item: any) => {
@@ -138,7 +138,7 @@ const handleClose = () => {
                         key={index}
                         className="relative p-0 mb-0 cursor-pointer"
                         onSelect={() => {
-                          if (category.toString() === "Buyer Requests" ?  (sub.adCount + loans.adCount + 1) > 0: sub.adCount > 0) {
+                          if (category.toString() === "Donations" || category.toString() === "Buyer Requests" ? (sub.adCount + loans.adCount + 1) > 0 : sub.adCount > 0) {
                             handleQuery(sub.subcategory);
                           } else {
                             toast({
@@ -165,24 +165,22 @@ const handleClose = () => {
                             </div>
                             <div className="flex text-base flex-col">
                               <div
-                                className={`w-[300px] font-bold ${
-                                  sub.subcategory?.trim().toLowerCase() === "Loan Request".toLowerCase() ?  (sub.adCount + loans.adCount) > 0: sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
-                                }`}
+                                className={`w-[300px] font-bold ${sub.subcategory?.trim().toLowerCase() === "Loan Request".toLowerCase() ? (sub.adCount + loans.adCount) > 0 : sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
+                                  }`}
                               >
                                 {sub.subcategory}
                               </div>
                               <div className="flex text-sm text-gray-500 dark:text-gray-500 gap-1">
-                                 {sub.subcategory?.trim().toLowerCase() === "Loan Request".toLowerCase() ?  (sub.adCount + loans.adCount): sub.adCount}
+                                {sub.subcategory?.trim().toLowerCase() === "Loan Request".toLowerCase() ? (sub.adCount + loans.adCount) : sub.adCount}
                                 <div>ads</div>
                               </div>
                             </div>
                           </div>
                           <div
-                            className={`flex items-center justify-end w-full ${
-                              sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
-                            }`}
+                            className={`flex items-center justify-end w-full ${sub.adCount > 0 ? "" : "text-gray-500 dark:text-gray-500"
+                              }`}
                           >
-                         {/*   <ArrowForwardIosIcon sx={{ fontSize: 14 }} /> */}
+                            {/*   <ArrowForwardIosIcon sx={{ fontSize: 14 }} /> */}
                           </div>
                         </div>
                       </CommandItem>
@@ -193,18 +191,18 @@ const handleClose = () => {
           </div>
         </div>
 
-      <DrawerDemo 
-  handleOpenSell={handleOpenSell}
-  handlePayNow={handlePayNow}
-  userId={userId}
-  category={category}
-  subcategory={query}
-  user={user}
-isOpen={showWantedPopup} 
-packagesList={packagesList}
-onClose={handleClose} 
-handleSubCategory={handleSubCategory}/>
-  
+        <DrawerDemo
+          handleOpenSell={handleOpenSell}
+          handlePayNow={handlePayNow}
+          userId={userId}
+          category={category}
+          subcategory={query}
+          user={user}
+          isOpen={showWantedPopup}
+          packagesList={packagesList}
+          onClose={handleClose}
+          handleSubCategory={handleSubCategory} />
+
       </div>
     </div>
   );

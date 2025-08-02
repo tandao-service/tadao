@@ -64,28 +64,28 @@ const UserButton = dynamic(
 type NavProps = {
   userstatus: string;
   userId: string;
-  user:any;
-  AdsCountPerRegion:any;
+  user: any;
+  AdsCountPerRegion: any;
   onClose: () => void;
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
   handleOpenSell: () => void;
-  handleOpenShop: (shopId:string) => void;
+  handleOpenShop: (shopId: string) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
   handleOpenAbout: () => void;
   handleOpenTerms: () => void;
-  handleOpenPrivacy: () => void; 
+  handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
   handleFilter: (value: any) => void;
   handleOpenSearchByTitle: () => void;
-  popup:string;
+  popup: string;
 };
-export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, onClose, popup,handleFilter, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
+export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion, onClose, popup, handleFilter, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan,
   handleOpenShop,
   handleOpenPerfomance,
-  handleOpenSettings, 
+  handleOpenSettings,
   handleOpenAbout,
   handleOpenTerms,
   handleOpenPrivacy,
@@ -102,120 +102,120 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
     setIsOpenP(false);
   };
   return (
-    <div className="w-full bg-[#064E3B]">
-      <div className="fixed bg-[#064E3B] z-10 flex p-3 w-full">
+    <div className="w-full bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90%">
+      <div className="fixed bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90% z-10 flex p-3 w-full">
         <div className="flex-1">
           <div className="flex items-center">
-          
-          <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-               <StyledBrandName />
-              </div>
+
+            <div className="flex items-center gap-2">
+
+              <StyledBrandName />
+            </div>
 
           </div>
         </div>
-        
+
         <div className="hidden lg:inline">
           <div className="flex items-center gap-2">
-          <SignedIn>
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                handleOpenBook();
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <BookmarkIcon sx={{ fontSize: 16 }} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Bookmark</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <SignedIn>
+              <div
+                className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236]  bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  handleOpenBook();
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Bookmark</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </SignedIn>
             <SignedOut>
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                setIsOpenP(true);
-                 router.push("/sign-in");
-               }} 
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <BookmarkIcon sx={{ fontSize: 16 }} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Bookmark</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236]  bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Bookmark</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </SignedOut>
             <SignedIn>
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                handleOpenChat();
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="relative flex items-center justify-center">
-                      <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
-                      <div className="absolute z-10">
+              <div
+                className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  handleOpenChat();
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="relative flex items-center justify-center">
+                        <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                        <div className="absolute z-10">
+                          <Unreadmessages userId={userId} />
+                        </div>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div
+                        onClick={() => {
+                          handleOpenChat();
+                        }}
+                        className="flex gap-1"
+                      >
+                        Chats
                         <Unreadmessages userId={userId} />
                       </div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <div
-                       onClick={() => {
-                        handleOpenChat();
-                      }}
-                      className="flex gap-1"
-                    >
-                      Chats
-                      <Unreadmessages userId={userId} />
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </SignedIn>
             <SignedOut>
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                setIsOpenP(true);
-                 router.push("/sign-in");
-               }} 
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                  <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Message</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+              <div
+                className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Message</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </SignedOut>
 
-           
+
             <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
+              className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
               onClick={() => {
                 handleOpenPlan();
@@ -232,16 +232,16 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
                 </Tooltip>
               </TooltipProvider>
             </div>
-           
-            
+
+
             <div>
               <SignedIn>
                 <button
-                   onClick={() => {
+                  onClick={() => {
                     handleOpenSell();
-                  
-                   }} 
-                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-full`}
+
+                  }}
+                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 text-white bg-[#BD7A4F] hover:bg-[#8C4B2C] p-1 rounded-full`}
                 >
                   <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
                 </button>
@@ -251,10 +251,10 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
               <SignedOut>
                 <button
                   onClick={() => {
-                   setIsOpenP(true);
+                    setIsOpenP(true);
                     router.push("/sign-in");
-                  }} 
-                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-full`}
+                  }}
+                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 text-white bg-[#BD7A4F] hover:bg-[#8C4B2C] p-1 rounded-full`}
                 >
                   <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
                 </button>
@@ -265,30 +265,30 @@ export default function Navbarhome({ userstatus,user, userId,AdsCountPerRegion, 
 
         <div className="flex gap-1">
           <SignedIn>
-            <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
+            <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer">
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>
           <MobileNav user={user} userstatus={userstatus} userId={userId}
-      popup={popup}
-      handleOpenSell={handleOpenSell}
-      handleOpenBook={handleOpenBook}
-      handleOpenPlan={handleOpenPlan}
-      handleOpenChat={handleOpenChat}
-      handleOpenShop={handleOpenShop}
-      handleOpenPerfomance={handleOpenPerfomance}
-      handleOpenSettings={handleOpenSettings}
-      handleOpenAbout={handleOpenAbout}
-      handleOpenTerms={handleOpenTerms}
-      handleOpenPrivacy={handleOpenPrivacy}
-      handleOpenSafety={handleOpenSafety} onClose={onClose}/>
-     
+            popup={popup}
+            handleOpenSell={handleOpenSell}
+            handleOpenBook={handleOpenBook}
+            handleOpenPlan={handleOpenPlan}
+            handleOpenChat={handleOpenChat}
+            handleOpenShop={handleOpenShop}
+            handleOpenPerfomance={handleOpenPerfomance}
+            handleOpenSettings={handleOpenSettings}
+            handleOpenAbout={handleOpenAbout}
+            handleOpenTerms={handleOpenTerms}
+            handleOpenPrivacy={handleOpenPrivacy}
+            handleOpenSafety={handleOpenSafety} onClose={onClose} />
+
         </div>
       </div>
       <div>
-      <Header handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle} AdsCountPerRegion={AdsCountPerRegion}
-       
-         />
+        <Header handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle} AdsCountPerRegion={AdsCountPerRegion}
+
+        />
         <AppPopup />
         <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
       </div>

@@ -48,21 +48,21 @@ type NavProps = {
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
   handleOpenSell: () => void;
-  handleOpenShop: (shopId:any) => void;
+  handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
   handleOpenAbout: () => void;
   handleOpenTerms: () => void;
-  handleOpenPrivacy: () => void; 
+  handleOpenPrivacy: () => void;
   handleOpenSafety: () => void;
-  popup:string;
-  user:any;
+  popup: string;
+  user: any;
 };
 
-export default function Navbar({ userstatus, user, userId, onClose, popup, handleOpenSell,handleOpenChat, handleOpenBook,handleOpenPlan ,
+export default function Navbar({ userstatus, user, userId, onClose, popup, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan,
   handleOpenShop,
   handleOpenPerfomance,
-  handleOpenSettings, 
+  handleOpenSettings,
   handleOpenAbout,
   handleOpenTerms,
   handleOpenPrivacy,
@@ -78,145 +78,146 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
     setIsOpenP(false);
   };
   return (
-    <div className="h-[60px] bg-[#064E3B] items-center flex p-2 lg:p-3 gap-1 w-full">
+    <div className="h-[60px] bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90% items-center flex p-2 lg:p-3 gap-1 w-full">
+
       <div className="flex-1 mt-1">
         <div className="flex items-center">
-       
-            <div
-              className="mr-2 w-5 h-8 flex items-center text-gray-300 justify-center rounded-sm tooltip tooltip-bottom hover:cursor-pointer hover:text-gray-100"
-              data-tip="Back"
-              onClick={() => {
-                onClose()
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ArrowBackOutlinedIcon />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Back</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-         
-           <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full" />
-               <StyledBrandName />
-              </div>
-        
+
+          <div
+            className="mr-2 w-5 h-8 flex items-center text-white justify-center rounded-sm tooltip tooltip-bottom hover:cursor-pointer hover:text-gray-100"
+            data-tip="Back"
+            onClick={() => {
+              onClose()
+            }}
+          >
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ArrowBackOutlinedIcon />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Back</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+
+          <div className="flex items-center gap-2">
+
+            <StyledBrandName />
+          </div>
+
         </div>
       </div>
-    
+
       <div className="hidden lg:inline">
-        
-      <div className="flex mt-1 items-center gap-2">   
-      {popup !=="bookmark" && (<>
-        
-         <SignedIn>
-                    <div
-                      className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
-                      data-tip="Messages"
-                      onClick={() => {
-                        handleOpenBook();
-                      }}
-                    >
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <BookmarkIcon sx={{ fontSize: 16 }} />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Bookmark</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    </SignedIn>
-                    <SignedOut>
-                    <div
-                      className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white emerald-500 tooltip tooltip-bottom hover:cursor-pointer"
-                      data-tip="Messages"
-                      onClick={() => {
-                        setIsOpenP(true);
-                         router.push("/sign-in");
-                       }} 
-                    >
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <BookmarkIcon sx={{ fontSize: 16 }} />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Bookmark</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    </SignedOut>
-                    </>)}    
-        {popup !=="chat" && (<>
-          
-          
-          <SignedIn>
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                handleOpenChat();
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="relative flex items-center justify-center">
-                      <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
-                      <div className="absolute z-10">
-                        <Unreadmessages userId={userId} />
-                      </div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <div
-                       onClick={() => {
-                        handleOpenChat();
-                      }}
-                      className="flex gap-1"
-                    >
-                      Chats
-                      <Unreadmessages userId={userId} />
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+
+        <div className="flex mt-1 items-center gap-2">
+          {popup !== "bookmark" && (<>
+
+            <SignedIn>
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  handleOpenBook();
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Bookmark</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </SignedIn>
             <SignedOut>
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
-              data-tip="Messages"
-              onClick={() => {
-                setIsOpenP(true);
-                 router.push("/sign-in");
-               }} 
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                  <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Message</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Bookmark</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </SignedOut>
-          </>)}  
+          </>)}
+          {popup !== "chat" && (<>
 
-         {popup !=="plan" && (<div
-            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-gray-200 hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
+
+            <SignedIn>
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  handleOpenChat();
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="relative flex items-center justify-center">
+                        <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                        <div className="absolute z-10">
+                          <Unreadmessages userId={userId} />
+                        </div>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div
+                        onClick={() => {
+                          handleOpenChat();
+                        }}
+                        className="flex gap-1"
+                      >
+                        Chats
+                        <Unreadmessages userId={userId} />
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </SignedIn>
+            <SignedOut>
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                data-tip="Messages"
+                onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Message</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </SignedOut>
+          </>)}
+
+          {popup !== "plan" && (<div
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
             onClick={() => {
               handleOpenPlan();
@@ -232,59 +233,59 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>)} 
+          </div>)}
 
-          {popup !=="sell" && (  <div className="flex gap-1">
-          <SignedIn>
+          {popup !== "sell" && (<div className="flex gap-1">
+            <SignedIn>
 
-          <button
-                   onClick={() => {
-                    handleOpenSell();
-                  
-                   }} 
-                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-full`}
-                >
-                  <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
-                </button>
+              <button
+                onClick={() => {
+                  handleOpenSell();
 
-</SignedIn>
+                }}
+                className={`w-[100px] dark:bg-[#131B1E] text-white dark:hover:bg-[#2D3236] dark:text-gray-300 hover:bg-[#8C4B2C] bg-[#BD7A4F] text-black p-1 rounded-full`}
+              >
+                <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+              </button>
 
-<SignedOut>
-<button
-                  onClick={() => {
-                   setIsOpenP(true);
-                    router.push("/sign-in");
-                  }} 
-                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-full`}
-                >
-                  <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
-                </button>
+            </SignedIn>
 
-  
-</SignedOut>
+            <SignedOut>
+              <button
+                onClick={() => {
+                  setIsOpenP(true);
+                  router.push("/sign-in");
+                }}
+                className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white dark:text-gray-300 hover:bg-[#8C4B2C] bg-[#BD7A4F] text-black p-1 rounded-full`}
+              >
+                <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+              </button>
+
+
+            </SignedOut>
 
           </div>)}
-        
+
         </div>
       </div>
       <SignedIn>
-        <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
+        <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-[#8C4B2C] tooltip tooltip-bottom hover:cursor-pointer">
           <UserButton afterSignOutUrl="/" />
         </div>
       </SignedIn>
       <MobileNav user={user} userstatus={userstatus} userId={userId}
-      popup={popup}
-      handleOpenSell={handleOpenSell}
-      handleOpenBook={handleOpenBook}
-      handleOpenPlan={handleOpenPlan}
-      handleOpenChat={handleOpenChat}
-      handleOpenShop={handleOpenShop}
-      handleOpenPerfomance={handleOpenPerfomance}
-      handleOpenSettings={handleOpenSettings}
-      handleOpenAbout={handleOpenAbout}
-      handleOpenTerms={handleOpenTerms}
-      handleOpenPrivacy={handleOpenPrivacy}
-      handleOpenSafety={handleOpenSafety} onClose={onClose}/>
+        popup={popup}
+        handleOpenSell={handleOpenSell}
+        handleOpenBook={handleOpenBook}
+        handleOpenPlan={handleOpenPlan}
+        handleOpenChat={handleOpenChat}
+        handleOpenShop={handleOpenShop}
+        handleOpenPerfomance={handleOpenPerfomance}
+        handleOpenSettings={handleOpenSettings}
+        handleOpenAbout={handleOpenAbout}
+        handleOpenTerms={handleOpenTerms}
+        handleOpenPrivacy={handleOpenPrivacy}
+        handleOpenSafety={handleOpenSafety} onClose={onClose} />
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );
