@@ -62,11 +62,11 @@ type chatProps = {
   userName: string;
   userImage: string;
   ad: any;
-  handleOpenReview: (value:any) => void;
-  handleOpenChatId: (value:string) => void;
+  handleOpenReview: (value: any) => void;
+  handleOpenChatId: (value: string) => void;
   handleOpenSettings: () => void;
-  handleOpenShop: (value:any) => void;
- 
+  handleOpenShop: (value: any) => void;
+
 };
 const SellerProfileMobile = ({
   ad,
@@ -74,11 +74,11 @@ const SellerProfileMobile = ({
   userName,
   userImage,
   handleOpenShop,
-  handleOpenReview,handleOpenChatId,handleOpenSettings,
+  handleOpenReview, handleOpenChatId, handleOpenSettings,
 }: chatProps) => {
-  
+
   const pathname = usePathname();
- 
+
 
   let formattedCreatedAt = "";
   try {
@@ -105,7 +105,24 @@ const SellerProfileMobile = ({
   } catch {
     // Handle error when formatting date
   }
-  
+ const getInitials = (firstName?: string, lastName?: string) => {
+        const first = firstName?.[0]?.toUpperCase() || '';
+        const last = lastName?.[0]?.toUpperCase() || '';
+        return `${first}${last}`;
+    };
+    function isDefaultClerkAvatar(imageUrl: string): boolean {
+        try {
+            const base64 = imageUrl.split("/").pop();
+            if (!base64) return false;
+
+            const json = atob(base64); // decode Base64
+            const data = JSON.parse(json);
+
+            return data.type === "default";
+        } catch (e) {
+            return false;
+        }
+    }
   return (
     <div className="flex gap-1 items-center">
       <div className="lg:hidden flex gap-1 items-center p-1 w-full">
@@ -116,17 +133,19 @@ const SellerProfileMobile = ({
           }}
           className="cursor-pointer no-underline font-bold m-1"
         >
-          <div className="w-10 h-10 rounded-full bg-white">
-            <Zoom>
-              <Image
-                className="w-full h-w-full rounded-full object-cover"
-                src={ad.organizer.photo ?? "/avator.png"}
-                alt="Avator"
-                width={200}
-                height={200}
-              />
-            </Zoom>
+          {ad.organizer?.photo && !isDefaultClerkAvatar(ad.organizer.photo) ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
+            <img
+              src={ad.organizer.photo}
+              alt="Organizer avatar"
+              className="w-10 h-10 rounded-full object-cover"
+            />
           </div>
+
+          ) : (
+            <div className="w-10 h-10 mx-auto bg-[#8C4B2C] rounded-full flex items-center justify-center text-xl font-bold text-white">
+              {getInitials(ad.organizer?.firstName, ad.organizer?.lastName)}
+            </div>
+          )}
         </div>
         <div className="flex flex-col">
           <div
@@ -155,7 +174,7 @@ const SellerProfileMobile = ({
         </div>
       </div>
       {/* <Ratingsmobile recipientUid={userId} />*/}
-      
+
     </div>
   );
 };

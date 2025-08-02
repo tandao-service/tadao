@@ -186,7 +186,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                 </div>
 
                 ) : (
-                    <div className="w-16 h-16 mx-auto bg-green-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
+                    <div className="w-16 h-16 mx-auto bg-[#8C4B2C] rounded-full flex items-center justify-center text-xl font-bold text-white">
                         {getInitials(user?.firstName, user?.lastName)}
                     </div>
                 )}

@@ -191,7 +191,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
                 className="w-16 h-16 rounded-full object-cover"
               />
             ) : (
-              <div className="w-16 h-16 bg-green-500 text-white flex items-center justify-center text-2xl font-bold rounded-full">
+              <div className="w-16 h-16 bg-[#8C4B2C] text-white flex items-center justify-center text-2xl font-bold rounded-full">
                 {getInitials(user?.firstName, user?.lastName)}
               </div>
             )}

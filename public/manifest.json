@@ -1,11 +1,11 @@
 {
-    "name": "PocketShop Kenya",
-    "short_name": "PocketShop",
+    "name": "Tadao Services",
+    "short_name": "Tadao",
     "start_url": "/?source=pwa",
     "scope": "/",
     "display": "standalone",
-    "background_color": "#064D3B",
-    "theme_color": "#064D3B",
+    "background_color": "#ffffff",
+    "theme_color": "#BD7A4F",
     "orientation": "portrait",
     "icons": [
         {
