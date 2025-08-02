@@ -34,9 +34,41 @@ type payProps = {
   handleOpenPerfomance: () => void;
 
 };
-const dashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomance, handleOpenSettings,
+const DashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: payProps) => {
+  const { toast } = useToast();
 
+
+
+  useEffect(() => {
+
+
+
+    const fetchData = async () => {
+      try {
+
+        await sendEmailTrans(
+          user.email,
+          trans.firstName,
+          trans.orderTrackingId,
+          trans.merchantId,
+          trans.plan,
+          trans.period,
+          trans.amount,
+          trans.createdAt
+
+        )
+
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+
+      }
+    };
+
+    fetchData();
+
+  }, []);
 
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
 
@@ -56,34 +88,6 @@ const dashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomanc
   }, [isDarkMode]);
 
   if (isDarkMode === null) return null; // Avoid flickering before state is set
-
-  //useEffect(() => {
-
-  // const fetchData = async () => {
-  // try {
-
-  //   await sendEmailTrans(
-  //   user.email,
-  //   trans.firstName,
-  // trans.orderTrackingId,
-  // trans.merchantId,
-  // trans.plan,
-  // trans.period,
-  // trans.amount,
-  // trans.createdAt
-
-  //)
-
-  //} catch (error) {
-  // console.error("Failed to fetch data", error);
-  //} finally {
-
-  //}
-  // };
-
-  //fetchData();
-
-  //}, []);
 
   if (trans.length === 0) {
     return (
@@ -188,4 +192,4 @@ const dashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomanc
   );
 };
 
-export default dashboardOrder;
+export default DashboardOrder;
