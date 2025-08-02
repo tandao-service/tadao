@@ -36,13 +36,28 @@ type payProps = {
 };
 const dashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: payProps) => {
-  const { toast } = useToast();
 
 
+  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+    const isDark = savedTheme === mode;
 
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle(mode, isDark);
+  }, []);
+  const handlePrint = () => window.print();
+  useEffect(() => {
+    if (isDarkMode === null) return; // Prevent running on initial mount
 
+    document.documentElement.classList.toggle(mode, isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  if (isDarkMode === null) return null; // Avoid flickering before state is set
+
+  useEffect(() => {
 
     const fetchData = async () => {
       try {
@@ -69,25 +84,6 @@ const dashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomanc
     fetchData();
 
   }, []);
-
-  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
-    const isDark = savedTheme === mode;
-
-    setIsDarkMode(isDark);
-    document.documentElement.classList.toggle(mode, isDark);
-  }, []);
-  const handlePrint = () => window.print();
-  useEffect(() => {
-    if (isDarkMode === null) return; // Prevent running on initial mount
-
-    document.documentElement.classList.toggle(mode, isDarkMode);
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
-
-  if (isDarkMode === null) return null; // Avoid flickering before state is set
 
   if (trans.length === 0) {
     return (

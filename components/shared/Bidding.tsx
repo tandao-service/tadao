@@ -162,7 +162,7 @@ export default function Bidding({ ad, userId, user }: adProps) {
                     Please login to place a bid.
                 </button>
             ) : isOwner ? (
-                <p className="text-yellow-600 text-sm font-medium">You can't bid on your own item.</p>
+                <p className="text-yellow-600 text-sm font-medium">You can&apos;t bid on your own item.</p>
             ) : (
                 <div className="space-y-3">
                     {!phone && (<>
