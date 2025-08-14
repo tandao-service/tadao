@@ -134,7 +134,7 @@ export default function TadaoHomePage() {
                         {/* Example hero image placeholder — replace with your asset */}
                         <div className="relative h-48 md:h-56 rounded-lg overflow-hidden shadow">
                             <Image
-                                src="/assets/hero-tadao.jpg"
+                                src="/assets/logo.png"
                                 alt="Tadao marketplace"
                                 fill
                                 style={{ objectFit: "cover" }}
@@ -187,7 +187,7 @@ export default function TadaoHomePage() {
                     <h2 className="text-2xl font-semibold mb-3">Our Journey</h2>
                     <p className="text-gray-700">
                         Tadao was created to uplift online commerce in Kenya.
-                        Since launch, we've grown by listening to users and continuously
+                        Since launch, we&apos;ve grown by listening to users and continuously
                         improving the marketplace experience for both buyers and sellers.
                     </p>
                 </section>
