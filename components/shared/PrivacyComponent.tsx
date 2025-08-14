@@ -66,8 +66,8 @@ const PrivacyComponent = ({
   if (isDarkMode === null) return null;
 
   return (
-    <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-      <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+      <div className="h-full overflow-y-auto bg-gray-100 border">
         <style jsx>{`
           @media (max-width: 1024px) {
             div::-webkit-scrollbar {
@@ -76,15 +76,15 @@ const PrivacyComponent = ({
           }
         `}</style>
         <Head>
-          <title>Privacy Policy | tadaoservices.com</title>
-          <meta name="description" content="Learn how tadaoservices.com collects, uses, and protects your personal information. Our Privacy Policy outlines your data protection rights and how we safeguard your privacy when using our website." />
-          <meta property="og:title" content="Privacy Policy | tadaoservices.com" />
-          <meta property="og:description" content="Read tadaoservices.com&apos;s Privacy Policy to understand how your personal information is handled. Your privacy and data protection are important to us." />
-          <meta property="og:url" content="https://tadaoservices.com/privacy" />
+          <title>Privacy Policy | tadaomarket.com</title>
+          <meta name="description" content="Learn how tadaomarket.com collects, uses, and protects your personal information. Our Privacy Policy outlines your data protection rights and how we safeguard your privacy when using our website." />
+          <meta property="og:title" content="Privacy Policy | tadaomarket.com" />
+          <meta property="og:description" content="Read tadaomarket.com&apos;s Privacy Policy to understand how your personal information is handled. Your privacy and data protection are important to us." />
+          <meta property="og:url" content="https://tadaomarket.com/privacy" />
           <meta property="og:type" content="article" />
-          <meta name="keywords" content="privacy policy, tadaoservices, data protection, personal information, cookies, Kenya online marketplace" />
-          <meta name="author" content="Tadao Services" />
-          <link rel="canonical" href="https://tadaoservices.com/privacy" />
+          <meta name="keywords" content="privacy policy, tadaomarket, data protection, personal information, cookies, Kenya online marketplace" />
+          <meta name="author" content="Tadao" />
+          <link rel="canonical" href="https://tadaomarket.com/privacy" />
         </Head>
 
         <div className="top-0 z-10 fixed w-full">
@@ -115,7 +115,7 @@ const PrivacyComponent = ({
               <div className="privacy-policy p-6 dark:text-gray-300 text-gray-800">
                 <h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
                 <p className="mb-4">
-                  Your privacy is important to us at <strong>Tadao services</strong>. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. By using our site, you agree to the terms outlined in this policy. If you do not agree with the terms, please do not use our website.
+                  Your privacy is important to us at <strong>Tadao</strong>. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. By using our site, you agree to the terms outlined in this policy. If you do not agree with the terms, please do not use our website.
                 </p>
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">1. Information We Collect</h2>
@@ -185,7 +185,7 @@ const PrivacyComponent = ({
                 </ul>
 
                 <p className="mt-4">
-                  For any questions about this Privacy Policy, please contact us at <strong><a href="mailto:support@tadaoservices.com" className="text-[#BD7A4F] hover:underline">support@tadaoservices.com</a></strong>.
+                  For any questions about this Privacy Policy, please contact us at <strong><a href="mailto:support@tadaomarket.com" className="text-[#BD7A4F] hover:underline">support@tadaomarket.com</a></strong>.
                 </p>
               </div>
             </div>

@@ -186,7 +186,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                 </div>
 
                 ) : (
-                    <div className="w-16 h-16 mx-auto bg-[#8C4B2C] rounded-full flex items-center justify-center text-xl font-bold text-white">
+                    <div className="w-16 h-16 mx-auto bg-orange-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
                         {getInitials(user?.firstName, user?.lastName)}
                     </div>
                 )}
@@ -228,7 +228,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                                     href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[#BD7A4F] hover:underline"
+                                    className="text-orange-500 hover:underline"
                                 >
                                     {user.website}
                                 </a>
@@ -242,13 +242,13 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                         {user?.phone ? (
                             showPhone ? (
                                 <>
-                                    <span className="text-[#BD7A4F] font-medium">{user.phone}</span>
+                                    <span className="text-orange-500 font-medium">{user.phone}</span>
 
                                 </>
                             ) : (
                                 <button
                                     onClick={() => setShowPhone(true)}
-                                    className="text-[#BD7A4F] hover:underline text-sm"
+                                    className="text-orange-500 hover:underline text-sm"
                                 >
                                     Click to show number
                                 </button>
@@ -260,7 +260,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                     {showPhone && (
                         <>
                             <p className="text-xs bg-gray-100 text-gray-500 mt-1 border rounded-sm p-1">
-                                ⚠️ Never pay before meeting the seller and verifying the property. Tadao Services doesn&apos;t offer payment protection. Report fraud: <a href="mailto:support@tadaoservices.com" className="underline">support@tadaoservices.com</a>
+                                ⚠️ Never pay before meeting the seller and verifying the property. Tadao Services doesn&apos;t offer payment protection. Report fraud: <a href="mailto:support@tadaomarket.com" className="underline">support@tadaomarket.com</a>
                             </p>
                         </>
                     )}
@@ -272,7 +272,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
 
                     {user?.facebook && (
                         <a href={`${user?.facebook}`} target="_blank" rel="noopener noreferrer">
-                            <FaFacebook className="hover:text-[#BD7A4F]" />
+                            <FaFacebook className="hover:text-orange-500" />
                         </a>
                     )}
                     {user?.instagram && (
@@ -283,7 +283,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
 
                     {user?.whatsapp && (
                         <a href={`https://wa.me/${user.whatsapp}/`} target="_blank" rel="noopener noreferrer">
-                            <FaWhatsapp className="hover:text-[#BD7A4F]" />
+                            <FaWhatsapp className="hover:text-orange-500" />
                         </a>
                     )}
                     {user?.twitter && (
@@ -303,11 +303,11 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
             <div className="mt-4 border-t pt-4">
                 <p className="text-sm font-semibold text-gray-700 mb-2">Share Options</p>
                 <div className="flex justify-around text-sm text-gray-600 pt-3">
-                    <button onClick={handleCopy} className="flex items-center gap-1 hover:text-[#BD7A4F]">
+                    <button onClick={handleCopy} className="flex items-center gap-1 hover:text-orange-500">
                         <FaLink /> {copied ? "Copied!" : "Copy Link"}
                     </button>
 
-                    <button onClick={handleShare} className="flex items-center gap-1 hover:text-[#BD7A4F]">
+                    <button onClick={handleShare} className="flex items-center gap-1 hover:text-orange-500">
                         <FaShareAlt /> Share
                     </button>
                 </div>
@@ -321,11 +321,11 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                         daysRemaining &&
                         daysRemaining > 0 ? (
                         <>
-                            📈 Plan: <span className="font-semibold">{pack} | {daysRemaining} Days Left</span> | <div onClick={() => handleOpenPlan()} className="cursor-pointer text-[#BD7A4F] hover:underline">Upgrade Plan</div>
+                            📈 Plan: <span className="font-semibold">{pack} | {daysRemaining} Days Left</span> | <div onClick={() => handleOpenPlan()} className="cursor-pointer text-orange-500 hover:underline">Upgrade Plan</div>
                         </>
                     ) : (
                         <>
-                            📈 Plan: <span className="font-semibold">{pack}</span> | <div onClick={() => handleOpenPlan()} className="cursor-pointer text-[#BD7A4F] hover:underline">Upgrade Plan</div>
+                            📈 Plan: <span className="font-semibold">{pack}</span> | <div onClick={() => handleOpenPlan()} className="cursor-pointer text-orange-500 hover:underline">Upgrade Plan</div>
                         </>
                     )}
                 </>)}

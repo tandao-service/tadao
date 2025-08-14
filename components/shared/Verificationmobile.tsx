@@ -16,9 +16,9 @@ import { VerificationPackId } from "@/constants";
 interface SettingsProp {
   user: any;
   userId: string;
-  fee:string;
+  fee: string;
   isAdCreator: boolean;
-  handlePayNow: (id:string) => void;
+  handlePayNow: (id: string) => void;
 }
 
 const Verificationmobile: React.FC<SettingsProp> = ({
@@ -28,7 +28,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
   isAdCreator,
   handlePayNow,
 }) => {
-  
+
   const router = useRouter();
   const [activationfee, setActivationFee] = useState(500);
 
@@ -38,10 +38,10 @@ const Verificationmobile: React.FC<SettingsProp> = ({
     periodInput: string,
     priceInput: string
   ) => {
-   // console.log("pay")
-        //console.log("priceInput: "+priceInput+ ", packIdInput: "+packIdInput+ ", packNameInput: "+packNameInput)
-        const customerId = uuidv4();
-       // console.log(customerId);
+    // console.log("pay")
+    //console.log("priceInput: "+priceInput+ ", packIdInput: "+packIdInput+ ", packNameInput: "+packNameInput)
+    const customerId = uuidv4();
+    // console.log(customerId);
     const trans = {
       orderTrackingId: customerId,
       amount: Number(priceInput),
@@ -54,9 +54,9 @@ const Verificationmobile: React.FC<SettingsProp> = ({
       createdAt: new Date(),
     };
     const response = await createTransaction(trans);
-       // console.log(response);
-      //  console.log("now pay")
-    
+    // console.log(response);
+    //  console.log("now pay")
+
     if (response.status === "Pending") {
       //router.push(`/pay/${response.orderTrackingId}`);
       handlePayNow(response.orderTrackingId)
@@ -82,11 +82,11 @@ const Verificationmobile: React.FC<SettingsProp> = ({
     <div className="flex justify-between space-x-4">
       <VerifiedUserOutlinedIcon
         sx={{ fontSize: 24 }}
-        className="text-emerald-600"
+        className="text-green-600"
       />
       <div className="space-y-1">
-        <h4 className="text-sm font-semibold text-emerald-600">
-        Verified Seller
+        <h4 className="text-sm font-semibold text-green-600">
+          Verified Seller
         </h4>
         <p className="text-sm">
           This seller account has been fully verified and is genuine.
@@ -105,7 +105,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
-        Unverified Seller
+          Unverified Seller
         </h4>
         <p className="text-sm">
           This seller account is currently unverified. Request verification to enhance
@@ -129,7 +129,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
       <ShieldOutlinedIcon sx={{ fontSize: 24 }} className="text-[#ff0000]" />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-[#ff0000]">
-        Unverified Seller
+          Unverified Seller
         </h4>
         <p className="text-sm">
           The seller&apos;s account has not been verified.
@@ -143,7 +143,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
       {user.verified && user?.verified[0]?.accountverified === true ? (
         <ShowPopupmobile
           trigger={
-            <p className="text-white p-1 bg-[#30AF5B] rounded-sm text-sm cursor-pointer hover:underline">
+            <p className="text-green-700 p-1 bg-green-100 rounded-sm text-sm cursor-pointer hover:underline">
               <VerifiedUserOutlinedIcon sx={{ fontSize: 14 }} />
               Verified Seller
             </p>

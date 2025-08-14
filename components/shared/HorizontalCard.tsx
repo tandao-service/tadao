@@ -363,7 +363,7 @@ const HorizontalCard = ({
           )}
           {ad.organizer.verified &&
             ad.organizer?.verified[0]?.accountverified === true && (
-              <div className="absolute bg-green-600 top-0 right-0 text-white dark:text-black text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-1 rounded-bl-lg">
+              <div className="absolute bg-green-100 top-0 right-0 text-green-700 dark:text-black text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-1 rounded-bl-lg">
                 <div className="flex gap-1 cursor-pointer">
                   <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                   Verified
@@ -392,7 +392,7 @@ const HorizontalCard = ({
           {popup && (
             <div className="w-full flex justify-end  absolute top-2/3 left-1/2 transform -translate-x-1/2 p-1 rounded-full">
               <div
-                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-red-100 text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                className="w-8 h-8 p-1 mt-[-20px] shadow-lg flex items-center justify-center rounded-full bg-red-100 text-orange-500 tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
                 data-tip="Bookmark"
                 onClick={() => handledeletebk(ad._id)}
               >
@@ -483,29 +483,29 @@ const HorizontalCard = ({
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-[#BD7A4F] text-[#BD7A4F]">
+                  <div className="text-[12px] w-full lg:text-lg font-bold rounded-full dark:text-orange-500 text-orange-500">
                     Contact for price
                   </div>
                 ) : (
                   <>
-                    {ad.data.price > 0 && (<span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-[#BD7A4F] text-[#BD7A4F]">
+                    {ad.data.price > 0 && (<span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-orange-500 text-orange-500">
                       {formatKsh(ad.data.price)}
                     </span>)}
 
                   </>
                 )}{" "}
                 {ad.data.unit && ad.data.contact === "specify" && (
-                  <div className="text-xs dark:text-[#BD7A4F]">
+                  <div className="text-xs dark:text-orange-500">
                     {ad.data.unit}
                   </div>
                 )}{" "}
                 {ad.data.per && (
-                  <div className="text-xs dark:text-[#BD7A4F]">
+                  <div className="text-xs dark:text-orange-500">
                     {ad.data.per}
                   </div>
                 )}
                 {ad.data.period && (
-                  <div className="text-xs dark:text-[#BD7A4F]">
+                  <div className="text-xs dark:text-orange-500">
                     {ad.data.period}
                   </div>
                 )}
@@ -538,7 +538,7 @@ const HorizontalCard = ({
                 }}
                 className="flex gap-1 cursor-pointer items-center no-underline"
               >
-                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-[#BD7A4F] text-[#BD7A4F]">
+                <span className="text-[12px] lg:text-lg font-bold w-min rounded-full dark:text-orange-500 text-orange-500">
                   {formatKsh(ad.data.price)}
                 </span>{" "}
                 {ad.data.per && (
@@ -601,7 +601,7 @@ const HorizontalCard = ({
               <div className="">
                 <SignedIn>
                   <div
-                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-[#FF914C] to-[#BD7A4F] text-white hover:text-[#FAE6DA] tooltip tooltip-bottom hover:cursor-pointer"
+                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                     data-tip="Bookmark"
                     onClick={() => handle(ad._id)}
                   >
@@ -627,7 +627,7 @@ const HorizontalCard = ({
                     className="cursor-pointer"
                   >
                     <div
-                      className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-[#FF914C] to-[#BD7A4F] text-white hover:text-[#FAE6DA] tooltip tooltip-bottom hover:cursor-pointer"
+                      className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                       data-tip="Bookmark"
                     >
                       <TooltipProvider>

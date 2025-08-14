@@ -42,7 +42,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
           }}
         >
           <div
-            className={`flex cursor-pointer flex-col items-center hover:text-[#BD7A4F] ${popup === "home" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+            className={`flex cursor-pointer flex-col items-center hover:text-orange-500 ${popup === "home" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
               }`}
           >
             <span>
@@ -58,7 +58,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
           }}
         >
           <div
-            className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "category" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+            className={`flex flex-col cursor-pointer items-center hover:text-orange-500 ${popup === "category" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
               }`}
           >
             <span>
@@ -78,7 +78,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
             }}
           >
             <div
-              className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "sell" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              className={`flex flex-col cursor-pointer items-center hover:text-orange-500 ${popup === "sell" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
                 }`}
             >
               <span>
@@ -97,7 +97,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
             }}
           >
             <div
-              className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "sell" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              className={`flex flex-col cursor-pointer items-center hover:text-orange-500 ${popup === "sell" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
                 }`}
             >
               <span>
@@ -118,7 +118,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
             }}
           >
             <div
-              className={`flex cursor-pointer flex-col items-center hover:text-[#BD7A4F] ${popup === "chat" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              className={`flex cursor-pointer flex-col items-center hover:text-orange-500 ${popup === "chat" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
                 }`}
             >
               <span className="relative inline-block w-6 h-6">
@@ -145,7 +145,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
             }}
           >
             <div
-              className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "chat" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+              className={`flex flex-col cursor-pointer items-center hover:text-orange-500 ${popup === "chat" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
                 }`}
             >
               <span className="relative inline-block w-6 h-6">
@@ -161,7 +161,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
 
         <SignedIn>
           <div
-            className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "settings" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+            className={`flex flex-col cursor-pointer items-center hover:text-orange-500 ${popup === "settings" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
               }`}
             onClick={handleOpenSettings}
           >
@@ -173,7 +173,7 @@ const BottomNavigation = ({ userId, popup, handleOpenP, handleOpenSearchTab, han
         </SignedIn>
         <SignedOut>
           <div
-            className={`flex flex-col cursor-pointer items-center hover:text-[#BD7A4F] ${popup === "settings" ? "text-[#BD7A4F]" : "dark:text-gray-400 text-gray-600"
+            className={`flex flex-col cursor-pointer items-center hover:text-orange-500 ${popup === "settings" ? "text-orange-500" : "dark:text-gray-400 text-gray-600"
               }`}
             onClick={() => {
               handleOpenP();

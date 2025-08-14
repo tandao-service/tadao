@@ -191,7 +191,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
                 className="w-16 h-16 rounded-full object-cover"
               />
             ) : (
-              <div className="w-16 h-16 bg-[#8C4B2C] text-white flex items-center justify-center text-2xl font-bold rounded-full">
+              <div className="w-16 h-16 bg-orange-500 text-white flex items-center justify-center text-2xl font-bold rounded-full">
                 {getInitials(user?.firstName, user?.lastName)}
               </div>
             )}
@@ -216,17 +216,17 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
         {/* Contact Buttons */}
         {userId !== loggedId && (<div className="flex items-center justify-center w-full gap-2 mt-4">
           <SignedIn>
-            <button onClick={handleShowPhoneClick} className="flex text-sm gap-1 items-center justify-center border border-green-500 text-green-700 hover:bg-green-50 py-1 px-2 rounded-md text-sm font-medium">
+            <button onClick={handleShowPhoneClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Phone className="w-5 h-5" /> Call
             </button>
 
             <button onClick={() => {
               handleOpenChatId(userId);
-            }} className="flex text-sm gap-1 items-center justify-center border border-green-500 text-green-700 hover:bg-green-50 py-1 px-2 rounded-md text-sm font-medium">
+            }} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Mail className="w-5 h-5" /> Message
             </button>
 
-            {user.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-green-500 text-green-700 hover:bg-green-50 py-1 px-2 rounded-md text-sm font-medium">
+            {user.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
             </button></>)}
           </SignedIn>
@@ -234,20 +234,20 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
             <button onClick={() => {
               setIsOpenP(true);
               router.push(`/sign-in`);
-            }} className="flex text-sm gap-1 items-center justify-center items-center justify-center border border-green-500 text-green-700 hover:bg-green-50 py-1 px-2 rounded-md text-sm font-medium">
+            }} className="flex text-sm gap-1 items-center justify-center items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Phone className="w-5 h-5" /> Call
             </button>
             <button onClick={() => {
               setIsOpenP(true);
               router.push(`/sign-in`);
-            }} className="flex text-sm gap-1 items-center justify-center border border-green-500 text-green-700 hover:bg-green-50 py-1 px-2 rounded-md text-sm font-medium">
+            }} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Mail className="w-5 h-5" /> Message
             </button>
             <button onClick={() => {
               setIsOpenP(true);
               router.push(`/sign-in`);
             }}
-              className="flex text-sm gap-1 items-center justify-center border border-green-500 text-green-700 hover:bg-green-50 py-1 px-2 rounded-md text-sm font-medium">
+              className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
             </button>
           </SignedOut>
@@ -260,7 +260,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
           {userId === loggedId ? (
             <>
               <button onClick={() => handleOpenSettings()}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-600 bg-white border border-green-600 rounded-full shadow-sm hover:bg-green-50 active:bg-green-100 transition lg:text-base">
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-orange-600 bg-white border border-orange-600 rounded-full shadow-sm hover:bg-orange-50 active:bg-orange-100 transition lg:text-base">
                 <EditOutlinedIcon sx={{ fontSize: 14 }} />
                 Edit Profile
               </button>
@@ -269,7 +269,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
               <button onClick={() => {
                 handleOpenReview(user)
               }}
-                className="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded-md text-sm font-semibold">
+                className="bg-orange-500 hover:bg-orange-600 text-white w-full py-2 rounded-md text-sm font-semibold">
                 😃 Leave Your Feedback
               </button>
             </>)}
@@ -284,11 +284,11 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
           <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-300">
 
 
-            <button onClick={handleCopy} className="flex items-center gap-1 hover:text-green-600">
+            <button onClick={handleCopy} className="flex items-center gap-1 hover:text-orange-600">
               📋 {copied ? "Copied!" : "Copy Link"}
             </button>
 
-            <button onClick={handleShare} className="flex items-center gap-1 hover:text-green-600">
+            <button onClick={handleShare} className="flex items-center gap-1 hover:text-orange-600">
               📤 Share
             </button>
 
@@ -393,7 +393,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
                                   <div className="justify-between flex w-full mb-5">
                                     <button
                                       onClick={handleDirectionClick}
-                                      className="hover:bg-green-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
+                                      className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
                                     >
                                       <AssistantDirectionIcon
                                         sx={{ marginRight: "5px" }}
@@ -678,7 +678,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
                 <div className="flex justify-center w-full p-1 items-center">
                   <div>
                     <a href={`/settings/`}>
-                      <button className="p-2 gap-1 text-xs bg-green-900 rounded-lg text-white  hover:bg-green-600">
+                      <button className="p-2 gap-1 text-xs bg-orange-900 rounded-lg text-white  hover:bg-orange-600">
                         <EditOutlinedIcon sx={{ fontSize: 14 }} />
                         Edit your Profile
                       </button>

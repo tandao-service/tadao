@@ -185,8 +185,8 @@ const DashboardPerformance = ({
 
   return (
     <>
-      <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-        <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+      <div className="h-[100vh] bg-[#ffffff] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+        <div className="h-full overflow-y-auto border">
           <style jsx>{`
     @media (max-width: 1024px) {
       div::-webkit-scrollbar {
@@ -277,7 +277,7 @@ const DashboardPerformance = ({
                         <div
                           ref={lastAdRef}
                           key={ad._id}
-                          className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-white shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-[#FAE6DA]"
+                          className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-[#ffffff] shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-gray-100"
                         >
                           {/* Ad Image */}
 
@@ -289,7 +289,7 @@ const DashboardPerformance = ({
 
                           <div className="flex-1 p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
                             {/* 1. Ad Details */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1 border border-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
                               <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
                                 Ad Details
                               </p>
@@ -309,7 +309,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 2. Ad Engagement */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
                                 Ad Engagement
                               </p>
@@ -343,14 +343,14 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 3. Ad Duration & Status */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
                                 Ad Status
                               </h2>
 
                               {ad.adstatus && (
                                 <div
-                                  className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-white justify-center items-center rounded-full ${ad.adstatus === "Pending"
+                                  className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-[#ffffff] justify-center items-center rounded-full ${ad.adstatus === "Pending"
                                     ? "bg-yellow-600"
                                     : ad.adstatus === "Failed"
                                       ? "bg-red-600 "
@@ -379,7 +379,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 4. Ad Performance */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
                                 Ad Performance
                               </h2>
@@ -395,7 +395,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 5. Contact Info */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
                                 Contact Info
                               </h2>
@@ -423,7 +423,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 6. Geographical Info */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
                                 Geographical Info
                               </h2>
@@ -448,7 +448,7 @@ const DashboardPerformance = ({
                       return (
                         <div
                           key={ad._id}
-                          className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-white shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-[#FAE6DA]"
+                          className="flex flex-col lg:flex-row gap-1 dark:bg-[#2D3236] bg-[#ffffff] shadow-lg rounded-lg overflow-hidden mb-6 border dark:border-gray-600 border-gray-100"
                         >
                           {/* Ad Image */}
                           <img
@@ -459,7 +459,7 @@ const DashboardPerformance = ({
 
                           <div className="p-2 grid grid-cols-2 lg:grid-cols-3 w-full">
                             {/* 1. Ad Details */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
                                 Ad Details
                               </p>
@@ -479,7 +479,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 2. Ad Engagement */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1 border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <p className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
                                 Ad Engagement
                               </p>
@@ -513,14 +513,14 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 3. Ad Duration & Status */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1  border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
                                 Ad Status
                               </h2>
 
                               {ad.adstatus && (
                                 <div
-                                  className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-white justify-center items-center rounded-full ${ad.adstatus === "Pending"
+                                  className={`flex flex-col w-[100px] text-[8px] lg:text-[10px] p-1 text-[#ffffff] justify-center items-center rounded-full ${ad.adstatus === "Pending"
                                     ? "bg-yellow-600"
                                     : ad.adstatus === "Failed"
                                       ? "bg-red-600 "
@@ -549,7 +549,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 4. Ad Performance */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1 border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1 text-gray-800 dark:text-gray-400">
                                 Ad Performance
                               </h2>
@@ -565,7 +565,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 5. Contact Info */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1 border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
                                 Contact Info
                               </h2>
@@ -593,7 +593,7 @@ const DashboardPerformance = ({
                             </section>
 
                             {/* 6. Geographical Info */}
-                            <section className="mb-1 mr-1 bg-gray-100 dark:bg-[#131B1E] p-1 rounded-lg">
+                            <section className="mb-1 mr-1 border-gray-100 border dark:bg-[#131B1E] p-1 rounded-lg">
                               <h2 className="text-xs lg:text-base font-bold mb-1  text-gray-800 dark:text-gray-400">
                                 Geographical Info
                               </h2>
@@ -635,7 +635,12 @@ const DashboardPerformance = ({
 
 
                   <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-                    <Icon icon={Gooeyballs} className="w-10 h-10 text-gray-500" />
+                    <Image
+                      src="/assets/icons/loading.gif"
+                      alt="edit"
+                      width={40}
+                      height={40}
+                    />
                   </div>
 
 

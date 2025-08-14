@@ -90,8 +90,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Home" && (<div
                         onClick={() => { onClose(); handleclicklink(); }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
                           <HomeIcon className="w-10 p-1" />
@@ -106,8 +106,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Sell" && (<div
                         onClick={() => { handleOpenSell(); handleclicklink() }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
                           <SellOutlinedIcon className="w-10 p-1" />
@@ -126,8 +126,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                         <div
                           onClick={() => { handleOpenShop(user); handleclicklink(); }}
                           className={`${isActive &&
-                            "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                            } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                            "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                            } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                         > <span>
                             <FormatListBulletedOutlinedIcon className="w-10 p-1" />
                           </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
@@ -142,8 +142,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Chat" && (<div
                         onClick={() => { handleOpenChat(); handleclicklink(); }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
 
@@ -159,8 +159,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Performance" && (<div
                         onClick={() => { handleOpenPerfomance(); handleclicklink(); }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
                           <StackedLineChartOutlinedIcon className="w-10 p-1 " />
@@ -175,8 +175,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Bookmark" && (<div
                         onClick={() => { handleOpenBook(); handleclicklink(); }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
                           <BookmarkIcon className="w-10 p-1 " />
@@ -192,8 +192,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Plan" && (<div
                         onClick={() => { handleOpenPlan(); handleclicklink(); }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
                           <DiamondIcon className="w-10 p-1 " />
@@ -209,8 +209,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                       {link.label === "Profile" && (<div
                         onClick={() => { handleOpenSettings(); handleclicklink(); }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
 
                         <span>
@@ -231,8 +231,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                           router.push("/home");
                         }}
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         <span>
                           <ManageAccountsOutlinedIcon className="w-10 p-1 " />
@@ -265,8 +265,8 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
                     >
                       <div
                         className={`${isActive &&
-                          "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}
+                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
                       >
                         {link.label === "Home" && (
                           <span>
@@ -331,7 +331,7 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
       </ul>
       <div
         onClick={handleShare}
-        className={`flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-[#FAE6DA] rounded-sm hover:text-[#BD7A4F] p-3 mb-1 hover:cursor-pointer`}>
+        className={`flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}>
         <span>
           <ShareOutlinedIcon className="w-10 p-1 " />
         </span>

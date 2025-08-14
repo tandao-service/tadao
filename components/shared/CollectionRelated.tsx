@@ -16,7 +16,7 @@ import VerticalCard from "./VerticalCard";
 import Skeleton from "@mui/material/Skeleton";
 import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
- // Correct import
+// Correct import
 type CollectionProps = {
   //  data: IAd[];
   emptyTitle: string;
@@ -31,10 +31,10 @@ type CollectionProps = {
   userId: string;
   userName: string;
   userImage: string;
-  handleAdView: (ad:any) => void;
-  handleAdEdit: (ad:any) => void;
+  handleAdView: (ad: any) => void;
+  handleAdEdit: (ad: any) => void;
   handleOpenPlan: () => void;
-  handleOpenChatId: (id:any) => void;
+  handleOpenChatId: (id: any) => void;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
 };
 
@@ -120,7 +120,7 @@ const CollectionRelated = ({
     1100: 3, // 2 columns for screens <= 1100px
     700: 2, // 1 column for screens <= 700px
   };
-  
+
   const [isOpenP, setIsOpenP] = useState(false);
   const handleOpenP = () => {
     setIsOpenP(true);
@@ -149,15 +149,15 @@ const CollectionRelated = ({
                   className="flex justify-center"
                 >
                   {/* Render Ad */}
-                 <VerticalCard
-                                           ad={ad}
-                                           userId={userId}
-                                           isAdCreator={isAdCreator}
-                                           handleAdEdit={handleAdEdit}
-                                           handleAdView={handleAdView}
-                                           handleOpenPlan={handleOpenPlan}
-                                           handleOpenChatId={handleOpenChatId}
-                                         />
+                  <VerticalCard
+                    ad={ad}
+                    userId={userId}
+                    isAdCreator={isAdCreator}
+                    handleAdEdit={handleAdEdit}
+                    handleAdView={handleAdView}
+                    handleOpenPlan={handleOpenPlan}
+                    handleOpenChatId={handleOpenChatId}
+                  />
                 </div>
               );
             } else {
@@ -165,14 +165,14 @@ const CollectionRelated = ({
                 <div key={ad._id} className="flex justify-center">
                   {/* Render Ad */}
                   <VerticalCard
-                                            ad={ad}
-                                            userId={userId}
-                                            isAdCreator={isAdCreator}
-                                            handleAdEdit={handleAdEdit}
-                                            handleAdView={handleAdView}
-                                            handleOpenPlan={handleOpenPlan}
-                                              handleOpenChatId={handleOpenChatId}
-                                          />
+                    ad={ad}
+                    userId={userId}
+                    isAdCreator={isAdCreator}
+                    handleAdEdit={handleAdEdit}
+                    handleAdView={handleAdView}
+                    handleOpenPlan={handleOpenPlan}
+                    handleOpenChatId={handleOpenChatId}
+                  />
                 </div>
               );
             }
@@ -191,21 +191,21 @@ const CollectionRelated = ({
         )
       )}
 
-       {loading && (
-             <div>
-                
-                 <div className="w-full mt-10 lg:mt-0 lg:min-h-[200px] h-full flex flex-col items-center justify-center">
-                                <Image
-                                                                src="/assets/icons/loading.gif"
-                                                                alt="edit"
-                                                                width={60}
-                                                                height={60}
-                                                              />
-                                </div>
-             
-             
-             </div>
-           )}
+      {loading && (
+        <div>
+
+          <div className="w-full mt-10 lg:mt-0 lg:min-h-[200px] h-full flex flex-col items-center justify-center">
+            <Image
+              src="/assets/icons/loading.gif"
+              alt="edit"
+              width={40}
+              height={40}
+            />
+          </div>
+
+
+        </div>
+      )}
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );

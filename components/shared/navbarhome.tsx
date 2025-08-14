@@ -81,8 +81,9 @@ type NavProps = {
   handleFilter: (value: any) => void;
   handleOpenSearchByTitle: () => void;
   popup: string;
+  isnav: boolean;
 };
-export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion, onClose, popup, handleFilter, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan,
+export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion, isnav, onClose, popup, handleFilter, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan,
   handleOpenShop,
   handleOpenPerfomance,
   handleOpenSettings,
@@ -101,9 +102,17 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
   const handleCloseP = () => {
     setIsOpenP(false);
   };
+  //isnav
   return (
-    <div className="w-full bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90%">
-      <div className="fixed bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90% z-10 flex p-3 w-full">
+    <div
+      className={`w-full bg-gradient-to-r from-orange-300  from-10% via-orange-400 via-40% to-orange-500 to-90% ${isnav ? "lg:from-orange-400  lg:via-orange-400 lg:to-orange-500" : "lg:from-transparent  lg:via-transparent lg:to-transparent"
+        }`}
+    >
+      <div
+
+        className={`fixed z-10 flex p-3 w-full bg-gradient-to-r from-orange-300 from-10% via-orange-400 via-40% to-orange-500 to-90% ${isnav ? "lg:from-orange-400  lg:via-orange-400 lg:to-orange-500" : "lg:from-transparent  lg:via-transparent lg:to-transparent"
+          }`}
+      >
         <div className="flex-1">
           <div className="flex items-center">
 
@@ -119,7 +128,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
           <div className="flex items-center gap-2">
             <SignedIn>
               <div
-                className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236]  bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex text-white hover:bg-orange-300 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   handleOpenBook();
@@ -128,7 +137,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                      <BookmarkIcon />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Bookmark</p>
@@ -139,7 +148,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
             </SignedIn>
             <SignedOut>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236]  bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   setIsOpenP(true);
@@ -149,7 +158,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                      <BookmarkIcon />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Bookmark</p>
@@ -160,7 +169,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
             </SignedOut>
             <SignedIn>
               <div
-                className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex text-white hover:bg-orange-400 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   handleOpenChat();
@@ -170,7 +179,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="relative flex items-center justify-center">
-                        <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                        <MessageIcon className="absolute" />
                         <div className="absolute z-10">
                           <Unreadmessages userId={userId} />
                         </div>
@@ -193,7 +202,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
             </SignedIn>
             <SignedOut>
               <div
-                className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex text-white hover:bg-orange-400 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   setIsOpenP(true);
@@ -203,7 +212,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                      <MessageIcon className="absolute" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Message</p>
@@ -215,7 +224,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
 
 
             <div
-              className="w-8 h-8 flex text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
+              className="w-8 h-8 flex text-white hover:bg-orange-400 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
               onClick={() => {
                 handleOpenPlan();
@@ -224,7 +233,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <DiamondIcon sx={{ fontSize: 16 }} />
+                    <DiamondIcon />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Premium Services</p>
@@ -241,9 +250,9 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
                     handleOpenSell();
 
                   }}
-                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 text-white bg-[#BD7A4F] hover:bg-[#8C4B2C] p-1 rounded-full`}
+                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white text-gray-500 hover:text-gray-900 p-1 rounded-full`}
                 >
-                  <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+                  <SellOutlinedIcon /> SELL
                 </button>
               </SignedIn>
             </div>
@@ -254,9 +263,9 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
                     setIsOpenP(true);
                     router.push("/sign-in");
                   }}
-                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 text-white bg-[#BD7A4F] hover:bg-[#8C4B2C] p-1 rounded-full`}
+                  className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white text-gray-500 hover:text-gray-900 p-1 rounded-full`}
                 >
-                  <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+                  <SellOutlinedIcon /> SELL
                 </button>
               </SignedOut>
             </div>
@@ -265,7 +274,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
 
         <div className="flex gap-1">
           <SignedIn>
-            <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer">
+            <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>

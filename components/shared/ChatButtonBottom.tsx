@@ -145,7 +145,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
     <>
 
       <button
-        className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
+        className="bg-orange-700 hover:bg-orange-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
         onClick={() => setIsOpen(true)}
       >
         <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
@@ -161,7 +161,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-2 dark:text-white rounded hover:text-green-600 focus:outline-none"
+                className="px-4 py-2 dark:text-white rounded hover:text-orange-500 focus:outline-none"
                 disabled={isSending} // Disable close button while sending
               >
                 <CloseOutlinedIcon />
@@ -173,7 +173,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
               <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad.data.description ?? "", 65) }} />
 
             </p>
-            <span className="font-bold w-min rounded-full mt-1 dark:text-green-600 text-green-600">
+            <span className="font-bold w-min rounded-full mt-1 dark:text-orange-500 text-orange-500">
               {formatKsh(ad.data.price)}
             </span>
 
@@ -189,7 +189,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
                 <button
                   key={index}
                   onClick={() => handleQuickMessageClick(msg)}
-                  className="text-sm border px-2 py-1 text-white rounded-md bg-emerald-700 hover:bg-emerald-800 transition"
+                  className="text-sm border px-2 py-1 text-white rounded-md bg-gray-900 hover:bg-black transition"
                 >
                   {msg}
                 </button>
@@ -212,7 +212,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
             <div className="flex justify-end">
               <button
                 onClick={handleSendMessage}
-                className={`px-4 py-2 text-white rounded hover:bg-green-700 focus:outline-none mr-2  ${isSending ? "bg-green-200" : "bg-green-600"
+                className={`px-4 py-2 text-white rounded hover:bg-orange-600 focus:outline-none mr-2  ${isSending ? "bg-orange-200" : "bg-orange-500"
                   }`}
                 disabled={isSending} // Disable button while sending
               >

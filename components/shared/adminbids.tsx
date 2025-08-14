@@ -51,11 +51,11 @@ export default function AdminBidsPage({
                                 <div key={group.adId} className="border rounded-lg mb-4 shadow">
                                     {/* Header */}
                                     <div
-                                        className="flex justify-between items-center p-4 cursor-pointer bg-[#FAE6DA] hover:bg-[#F5CBA7] rounded-t-lg"
+                                        className="flex justify-between items-center p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-t-lg"
                                         onClick={() => setExpandedAdId(expandedAdId === group.adId ? null : group.adId)}
                                     >
                                         <div className="flex flex-col">
-                                            <h2 className="text-base font-semibold text-[#8C4B2C]">{group.title}</h2>
+                                            <h2 className="text-base font-semibold text-black">{group.title}</h2>
                                             <p className="text-xs text-gray-600">{group.bids.length} bidder{group.bids.length !== 1 ? "s" : ""}</p>
                                         </div>
                                         {group.thumbnail ? (
@@ -138,7 +138,7 @@ export default function AdminBidsPage({
                                                                         size="sm"
                                                                         disabled={hasWinner}
                                                                         onClick={() => handleMarkWinner(bid._id)}
-                                                                        className="bg-gradient-to-r from-[#8C4B2C] via-[#BD7A4F] to-[#F5CBA7] text-white hover:opacity-90"
+                                                                        className="bg-gradient-to-r from-orange-500 via-[#BD7A4F] to-orange-200 text-white hover:opacity-90"
                                                                     >
                                                                         Mark Winner
                                                                     </Button>

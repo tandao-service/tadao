@@ -36,33 +36,33 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
   const [sendemail, setsendemail] = useState(false);
 
   const [messages, setMessages] = useState<{ senderName: string; message: string }[]>([]);
- 
+
   const { NotifyUser } = SendChat(); // Get the sendMessage function
-  
- // useEffect(() => {
- //   const checkSubscription = async () => {
+
+  // useEffect(() => {
+  //   const checkSubscription = async () => {
   //    try {
   //      subscription = await getData(ad.organizer._id);
 
-   //     setsendsms(subscription.currentpack.features[5].checked);
-    //    setsendemail(subscription.currentpack.features[6].checked);
-    //    setplanpackage(subscription.currentpack.name);
-    //    const createdAtDate = new Date(subscription.transaction.createdAt);
-     //   const periodDays = parseInt(subscription.transaction.period);
-    //    const expirationDate = new Date(
-     //     createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000
-     //   );
-    //    const currentDate = new Date();
-     //   const daysRemaining_ = Math.ceil(
-     //     (expirationDate.getTime() - currentDate.getTime()) /
-      //      (1000 * 60 * 60 * 24)
-     //   );
-      //  setdaysRemaining(daysRemaining_);
-    //  } catch (error) {
-     //   console.error("Error checking subscription: ", error);
-     // }
-   // };
-   // checkSubscription();
+  //     setsendsms(subscription.currentpack.features[5].checked);
+  //    setsendemail(subscription.currentpack.features[6].checked);
+  //    setplanpackage(subscription.currentpack.name);
+  //    const createdAtDate = new Date(subscription.transaction.createdAt);
+  //   const periodDays = parseInt(subscription.transaction.period);
+  //    const expirationDate = new Date(
+  //     createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000
+  //   );
+  //    const currentDate = new Date();
+  //   const daysRemaining_ = Math.ceil(
+  //     (expirationDate.getTime() - currentDate.getTime()) /
+  //      (1000 * 60 * 60 * 24)
+  //   );
+  //  setdaysRemaining(daysRemaining_);
+  //  } catch (error) {
+  //   console.error("Error checking subscription: ", error);
+  // }
+  // };
+  // checkSubscription();
   //}, [ad.organizer._id]);
 
   const handleSendMessage = async () => {
@@ -81,33 +81,33 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
         imageUrl: ad.data.imageUrls[0],
         adTitle: ad.data.title,
         adDescription: ad.data.description,
-        adUrl:process.env.NEXT_PUBLIC_DOMAIN_URL+"?Ad="+ad._id,
+        adUrl: process.env.NEXT_PUBLIC_DOMAIN_URL + "?Ad=" + ad._id,
         read: "1",
       });
 
 
-      const callbackUrl = process.env.NEXT_PUBLIC_DOMAIN_URL+"chat"
-    //  sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
-    if(ad.organizer.token && ad.organizer.notifications.fcm){
-           
-      const inquiryMessage = message;
-      NotifyUser(ad, userId, userName, inquiryMessage)
-    }
-    if(ad.organizer.notifications.email){
-     
-      const adTitle = ad.data.title;
-      const adUrl = `https://pocketshop.co.ke/?Ad=${ad._id}`;
-      const recipientEmail = ad?.organizer?.email;
-      await sendEmail(
-        recipientEmail,
-        message,
-        adTitle,
-        adUrl,
-        userName,
-        userImage
-      );
-    }
-       
+      const callbackUrl = process.env.NEXT_PUBLIC_DOMAIN_URL + "chat"
+      //  sendMessage(message, userName, ad.organizer._id, callbackUrl, ad.data.imageUrls[0])
+      if (ad.organizer.token && ad.organizer.notifications.fcm) {
+
+        const inquiryMessage = message;
+        NotifyUser(ad, userId, userName, inquiryMessage)
+      }
+      if (ad.organizer.notifications.email) {
+
+        const adTitle = ad.data.title;
+        const adUrl = `https://tadaoservices.com/?Ad=${ad._id}`;
+        const recipientEmail = ad?.organizer?.email;
+        await sendEmail(
+          recipientEmail,
+          message,
+          adTitle,
+          adUrl,
+          userName,
+          userImage
+        );
+      }
+
       const inquiries = (Number(ad.inquiries ?? "0") + 1).toString();
       const _id = ad._id;
       await updateinquiries({
@@ -136,36 +136,36 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
   };
   return (
     <>
-      <Button  onClick={() => setIsOpen(true)}
-                 variant="outline" className="flex w-full items-center gap-2">
-            <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
-            <div className="hidden lg:inline"> Enquire</div>
-           </Button>
+      <Button onClick={() => setIsOpen(true)}
+        variant="outline" className="flex w-full items-center gap-2 border border-orange-500 text-orange-600 hover:bg-orange-50 ">
+        <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
+        <div className="hidden lg:inline"> Enquire</div>
+      </Button>
 
-    
+
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="h-[90vh] dark:bg-[#2D3236] dark:text-[#F1F3F3] bg-white rounded-lg p-6 w-full max-w-md">
-         <div className="flex items-center justify-between"> <p className="font-semibold mb-2"> {ad.data.title.length > 50
-                ? `${ad.data.title.substring(0, 50)}...`
-                : ad.data.title}</p>
+            <div className="flex items-center justify-between"> <p className="font-semibold mb-2"> {ad.data.title.length > 50
+              ? `${ad.data.title.substring(0, 50)}...`
+              : ad.data.title}</p>
 
-<button
-    onClick={() => setIsOpen(false)}
-    className="px-4 py-2 dark:text-white rounded hover:text-green-600 focus:outline-none"
-    disabled={isSending} // Disable close button while sending
-  >
-    <CloseOutlinedIcon/>
-  </button>
-</div>
-           
+              <button
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2 dark:text-white rounded hover:text-orange-600 focus:outline-none"
+                disabled={isSending} // Disable close button while sending
+              >
+                <CloseOutlinedIcon />
+              </button>
+            </div>
+
 
             <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
               {ad.data.description.length > 80
                 ? `${ad.data.description.substring(0, 80)}...`
                 : ad.data.description}
             </p>
-            <span className="font-bold w-min rounded-full mt-1 dark:text-green-600 text-green-600">
+            <span className="font-bold w-min rounded-full mt-1 dark:text-orange-600 text-orange-600">
               {formatKsh(ad.data.price)}
             </span>
 
@@ -204,9 +204,8 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
             <div className="flex justify-end">
               <button
                 onClick={handleSendMessage}
-                className={`px-4 py-2 text-white rounded hover:bg-green-700 focus:outline-none mr-2  ${
-                  isSending ? "bg-green-200" : "bg-green-600"
-                }`}
+                className={`px-4 py-2 text-white rounded hover:bg-orange-700 focus:outline-none mr-2  ${isSending ? "bg-orange-200" : "bg-orange-600"
+                  }`}
                 disabled={isSending} // Disable button while sending
               >
                 <div className="flex gap-1 items-center">
@@ -216,7 +215,7 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
                   {isSending ? "Sending..." : "Send Inquiry"}
                 </div>
               </button>
-             
+
             </div>
           </div>
         </div>

@@ -221,7 +221,7 @@ export function DrawerDemo({
                       user.user?.fee
                     )
                   }
-                  className="w-full flex flex-col gap-2 justify-enter items-center bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] py-3 px-4 rounded-lg shadow"
+                  className="w-full flex flex-col gap-2 justify-enter items-center bg-orange-500 text-white hover:bg-orange-600 py-3 px-4 rounded-lg shadow"
                 >
                   {isSending ? (
                     <div className="flex gap-2 items-center">
@@ -255,14 +255,14 @@ export function DrawerDemo({
                 <SignedIn>
                   <button
                     onClick={handlePostRequest}
-                    className="w-full bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] py-2 px-4 rounded"
+                    className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                   >
                     Post {subcategory}
                   </button>
                   <button
                     onClick={handleViewRequests}
                     disabled={isSending}
-                    className="w-full text-[#BD7A4F] bg-white border border-[#BD7A4F] hover:bg-[#FAE6DA] py-2 px-4 rounded  disabled:opacity-50"
+                    className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded  disabled:opacity-50"
                   >
                     {isSending ? "Checking..." : `View Posted ${subcategory}`}
 
@@ -274,7 +274,7 @@ export function DrawerDemo({
                       setIsOpenP(true);
                       router.push("/sign-in");
                     }}
-                    className="w-full bg-[#BD7A4F] text-white hover:bg-[#8C4B2C] py-2 px-4 rounded"
+                    className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                   >
                     Post {subcategory}
                   </button>
@@ -284,7 +284,7 @@ export function DrawerDemo({
                       router.push("/sign-in");
                     }}
                     disabled={isSending}
-                    className="w-full text-[#BD7A4F] bg-white border border-[#BD7A4F] hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
+                    className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
                   >
                     {isSending ? "Checking..." : `View Posted ${subcategory}`}
 
@@ -435,7 +435,7 @@ export function DrawerDemo({
                     priceInput
                   )
                 }
-                className="w-full mt-3 hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white px-4 py-2 rounded-sm"
+                className="w-full mt-3 hover:bg-orange-600 bg-orange-500 text-white px-4 py-2 rounded-sm"
               >
                 Subscribe Now
               </button>

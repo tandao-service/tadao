@@ -51,8 +51,8 @@ const SafetyComponent = ({ userId, user, handleOpenPerfomance,
   if (isDarkMode === null) return null;
 
   return (
-    <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-      <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+      <div className="h-full overflow-y-auto bg-gray-100 border">
         <style jsx>{`
           @media (max-width: 1024px) {
             div::-webkit-scrollbar {
@@ -61,19 +61,19 @@ const SafetyComponent = ({ userId, user, handleOpenPerfomance,
           }
         `}</style>
         <Head>
-          <title>Safety Tips | Tadao services</title>
-          <meta name="description" content="Stay safe while buying or selling on Tadaoservices.com. Follow our safety tips to protect yourself and ensure secure transactions." />
-          <meta name="keywords" content="Tadao Services, safety tips, secure buying, safe selling, online safety, marketplace safety" />
-          <meta property="og:title" content="Safety Tips | Tadaoservices.com" />
-          <meta property="og:description" content="Follow these essential safety tips to protect yourself while using Tadaoservices.com." />
+          <title>Safety Tips | Tadao</title>
+          <meta name="description" content="Stay safe while buying or selling on tadaomarket.com. Follow our safety tips to protect yourself and ensure secure transactions." />
+          <meta name="keywords" content="Tadao, safety tips, secure buying, safe selling, online safety, marketplace safety" />
+          <meta property="og:title" content="Safety Tips | tadaomarket.com" />
+          <meta property="og:description" content="Follow these essential safety tips to protect yourself while using tadaomarket.com." />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://www.tadaoservices.com/safety" />
-          <meta property="og:image" content="https://www.tadaoservices.com/assets/images/safety-tips-cover.jpg" />
+          <meta property="og:url" content="https://www.tadaomarket.com/safety" />
+          <meta property="og:image" content="https://www.tadaomarket.com/assets/images/safety-tips-cover.jpg" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Safety Tips | Tadaoservices.com" />
-          <meta name="twitter:description" content="Learn how to stay safe while buying or selling on Tadaoservices.com with our detailed safety guidelines." />
-          <meta name="twitter:image" content="https://www.tadaoservices.com/assets/images/safety-tips-cover.jpg" />
-          <link rel="canonical" href="https://www.tadaoservices.com/safety" />
+          <meta name="twitter:title" content="Safety Tips | tadaomarket.com" />
+          <meta name="twitter:description" content="Learn how to stay safe while buying or selling on tadaomarket.com with our detailed safety guidelines." />
+          <meta name="twitter:image" content="https://www.tadaomarket.com/assets/images/safety-tips-cover.jpg" />
+          <link rel="canonical" href="https://www.tadaomarket.com/safety" />
         </Head>
 
         <div className="top-0 z-10 fixed w-full">
@@ -84,7 +84,7 @@ const SafetyComponent = ({ userId, user, handleOpenPerfomance,
           <div className="flex-1">
             <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto p-1">
               <div className="max-w-3xl mx-auto p-6">
-                <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Safety Tips for Tadao services Users</h2>
+                <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Safety Tips for Tadao Users</h2>
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-xl font-semibold text-black mb-2">For Sellers:</h3>

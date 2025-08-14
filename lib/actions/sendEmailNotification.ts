@@ -18,14 +18,14 @@ export async function sendEmailNotification(
 
 
   const mailOptions = {
-    from: '"Tadao" <support@tadaoservices.com>',
+    from: '"Tadao" <support@tadaomarket.com>',
     to: recipientEmail,
     subject: `You've got a message from Tadao`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
         <div style="text-align: center; margin-bottom: 30px;">
          <span style="display: inline-flex; align-items: center; gap: 6px;">
-  <img src="https://tadaoservices.com/logo.png" alt="Tadao Logo" style="height: 24px; width: auto; display: block;" />
+  <img src="https://tadaomarket.com/logo.png" alt="Tadao Logo" style="height: 24px; width: auto; display: block;" />
   <span style="font-size: 14px; font-weight: bold; color: #FF914C;">Tadao</span>
 </span>
         </div>
@@ -37,7 +37,7 @@ export async function sendEmailNotification(
         </div>
 
         <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
-        <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
+        <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaomarket.com" style="color: #999;">tadaomarket.com</a>).</p>
       </div>
     `,
   };

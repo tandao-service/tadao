@@ -80,16 +80,16 @@ const TopAdvertiser = ({ handleOpenChatId, topadvertiser }: Props) => {
                       {user.totalPaid || "0"}
                     </td>
                     <td className="border flex gap-2 border-gray-300 dark:border-gray-600 px-4 py-2">
-                      <div className="rounded-sm bg-blue-600 p-2 flex flex-col items-center justify-center text-xs">
+                      <div className="rounded-sm bg-blue-100 text-blue-600 p-2 flex flex-col items-center justify-center text-xs">
                         <div>Total</div> {user.adsCount || "0"}
                       </div>
-                      <div className="rounded-sm bg-green-600 p-2 flex flex-col items-center justify-center text-xs">
+                      <div className="rounded-sm bg-green-100 text-green-600 p-2 flex flex-col items-center justify-center text-xs">
                         <div>Active</div> {user.activeCount || 0}
                       </div>
-                      <div className="rounded-sm bg-red-600 p-2 flex flex-col items-center justify-center text-xs">
+                      <div className="rounded-sm bg-red-100 text-red-600 p-2 flex flex-col items-center justify-center text-xs">
                         <div>Inactive</div> {user.inactiveCount || 0}
                       </div>
-                      <div className="rounded-sm bg-orange-700 p-2 flex flex-col items-center justify-center text-xs">
+                      <div className="rounded-sm bg-orange-100 text-orange-700 p-2 flex flex-col items-center justify-center text-xs">
                         <div>Pending</div> {user.pendingCount || 0}
                       </div>
                     </td>
@@ -97,15 +97,15 @@ const TopAdvertiser = ({ handleOpenChatId, topadvertiser }: Props) => {
                       <NoOfContacts userId={user._id} />
                     </td>
                     <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                     <span  onClick={() => handleOpenContact(user)} className="relative cursor-pointer inline-block w-6 h-6">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <QuestionAnswerOutlinedIcon />
-                      </div>
-                      <div className="absolute top-0 right-0">
-                        <UnreadByAdmin userId={user._id} />
-                      </div>
-                    </span>
-                    
+                      <span onClick={() => handleOpenContact(user)} className="relative cursor-pointer inline-block w-6 h-6">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <QuestionAnswerOutlinedIcon />
+                        </div>
+                        <div className="absolute top-0 right-0">
+                          <UnreadByAdmin userId={user._id} />
+                        </div>
+                      </span>
+
                     </td>
                   </tr>
                 ))}

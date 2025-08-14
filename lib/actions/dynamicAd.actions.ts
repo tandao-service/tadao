@@ -1121,8 +1121,8 @@ export const placeBid = async ({
       : 0;
     const minIncrement = ad.data.bidIncrement || 1000;
 
-    if (amount <= highest || amount < highest + minIncrement) {
-      throw new Error(`Bid must be at least Ksh ${highest + minIncrement}`);
+    if (amount <= Number(highest) || amount < (Number(highest) + Number(minIncrement))) {
+      throw new Error(`Bid must be at least Ksh ${Number(highest) + Number(minIncrement)}`);
     }
 
     // Create new bid object
@@ -1294,14 +1294,14 @@ export const markWinner = async (bidId: string) => {
       });
 
       const mailOptions = {
-        from: '"Tadao" <support@tadaoservices.com>',
+        from: '"Tadao" <support@tadaomarket.com>',
         to: winningBid.email,
         subject: '🎉 You have won the bid!',
         html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
      <div style="text-align: center; margin-bottom: 30px;">
   <span style="display: inline-flex; align-items: center; gap: 6px;">
-  <img src="https://tadaoservices.com/logo.png" alt="Tadao Logo" style="height: 24px; width: auto; display: block;" />
+  <img src="https://tadaomarket.com/logo.png" alt="Tadao Logo" style="height: 24px; width: auto; display: block;" />
   <span style="font-size: 14px; font-weight: bold; color: #FF914C;">Tadao</span>
 </span>
 </div>
@@ -1322,7 +1322,7 @@ export const markWinner = async (bidId: string) => {
 
       <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
 
-      <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
+      <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaomarket.com" style="color: #999;">tadaomarket.com</a>).</p>
     </div>
     `,
       };

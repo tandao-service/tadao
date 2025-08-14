@@ -42,11 +42,10 @@ export default function Menumake({ category, subcategory }: CardProps) {
           commonVehicleMakesInKenya.map((vehicle: any, index: number) => (
             <div
               key={index}
-              className={`flex h-[80px] flex-col items-center justify-center cursor-pointer rounded-sm p-1 border hover:border-emerald-700 ${
-                vehicle.make === searchParams.get("make")
-                  ? "bg-emerald-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-900"
-              }`}
+              className={`flex h-[80px] flex-col items-center justify-center cursor-pointer rounded-sm p-1 border hover:border-orange-700 ${vehicle.make === searchParams.get("make")
+                  ? "bg-orange-500 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-orange-900"
+                }`}
             >
               <div
                 className="flex flex-col text-center items-center"

@@ -89,7 +89,7 @@ export default function MenuSubmobileMain({
             onClick={() => {
               handleOpenSell();
             }}
-            className="hidden lg:inline h-[120px] bg-[#F7DACA] text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
+            className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">
@@ -106,7 +106,7 @@ export default function MenuSubmobileMain({
               setIsOpenP(true);
               router.push("/sign-in");
             }}
-            className="hidden lg:inline h-[120px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600"
+            className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">

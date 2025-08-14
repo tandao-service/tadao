@@ -27,7 +27,7 @@ export default function NotificationPreferences({
   const savePreferences = async (prefs: { email: boolean; fcm: boolean }) => {
     setLoading(true);
     try {
-        await updateNotiPreference(userId, prefs);
+      await updateNotiPreference(userId, prefs);
     } catch (err) {
       console.error("Failed to update notification preferences", err);
     } finally {
@@ -46,7 +46,7 @@ export default function NotificationPreferences({
             type="checkbox"
             checked={preferences.email}
             onChange={() => handleChange("email")}
-            className="accent-[#064E3B] cursor-pointer"
+            className="accent-orange-500 cursor-pointer"
             disabled={loading}
           />
           <span>Email Notification</span>
@@ -57,7 +57,7 @@ export default function NotificationPreferences({
             type="checkbox"
             checked={preferences.fcm}
             onChange={() => handleChange("fcm")}
-            className="accent-[#064E3B] cursor-pointer"
+            className="accent-orange-500 cursor-pointer"
             disabled={loading}
           />
           <span>Push Notification</span>

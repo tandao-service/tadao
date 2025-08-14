@@ -205,7 +205,7 @@ const CollectionMyads = ({
           onClick={() => setInputMode("Ads")}
           className={`h-12 p-3 rounded-tl-0 lg:rounded-tl-xl flex gap-2 justify-center items-center ${inputMode === "Ads"
             ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-            : "hover:bg-[#BD7A4F] bg-[#F5CBA7] text-[#8C4B2C] hover:text-white"
+            : "hover:bg-orange-300 bg-gray-200"
             }`}
         >
           <ListOutlinedIcon /> My Ads
@@ -216,8 +216,8 @@ const CollectionMyads = ({
           title="Bids"
           onClick={() => setInputMode("Bids")}
           className={`h-12 p-3 rounded-0 flex gap-2 justify-center items-center ${inputMode === "Bids"
-            ? "dark:bg-[#222528] dark:text-gray-100 text-[#BD7A4F] bg-white"
-            : "hover:bg-[#BD7A4F] bg-[#F5CBA7] text-[#8C4B2C] hover:text-white"
+            ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
+            : "hover:bg-orange-300 bg-gray-200"
             }`}
         >
           <ChecklistRtlOutlinedIcon /> Bids
@@ -228,7 +228,7 @@ const CollectionMyads = ({
           onClick={() => setInputMode("Loans")}
           className={`h-12 p-3 rounded-0 lg:rounded-tr-xl flex gap-2 justify-center items-center ${inputMode === "Loans"
             ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-            : "hover:bg-[#BD7A4F] bg-[#F5CBA7] text-[#8C4B2C] hover:text-white"
+            : "hover:bg-orange-300 bg-gray-200"
             }`}
         >
           <ChecklistRtlOutlinedIcon /> Loan Requests

@@ -20,7 +20,7 @@ const CollectionRelateddd = dynamic(
     ssr: false,
     loading: () => (
       <div>
-        <div className="w-full h-[300px] mb-2 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-[#FAE6DA] rounded-lg flex flex-col items-center justify-center">
+        <div className="w-full h-[300px] mb-2 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] bg-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Image
             src="/assets/icons/loading2.gif"
             alt="loading"
@@ -146,8 +146,8 @@ const AdsComponent = ({
 
 
   return (
-    <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-      <div ref={scrollRefB} className="h-full overflow-y-auto bg-[#FAE6DA] border">
+    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+      <div ref={scrollRefB} className="h-full overflow-y-auto bg-gray-100 border">
         <style jsx>{`
     @media (max-width: 1024px) {
       div::-webkit-scrollbar {
@@ -155,7 +155,7 @@ const AdsComponent = ({
       }
     }
   `}</style>
-        <div className="top-0 z-10 fixed w-full">
+        <div className="top-0 z-20 fixed w-full">
           <Navbar user={user ?? []} userstatus={user?.status ?? "User"} userId={userId} onClose={onClose} popup={"sell"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
             handleOpenPerfomance={handleOpenPerfomance}
             handleOpenSettings={handleOpenSettings}
@@ -210,7 +210,7 @@ const AdsComponent = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent bg-[#FAE6DA] lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center transition-transform duration-300 ${showBottomNav ? "translate-y-0" : "translate-y-full"
+            className={`fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent bg-gray-100 lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center transition-transform duration-300 ${showBottomNav ? "translate-y-0" : "translate-y-full"
               }`}
           >
 

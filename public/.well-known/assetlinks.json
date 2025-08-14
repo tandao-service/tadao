@@ -5,7 +5,7 @@
         ],
         "target": {
             "namespace": "android_app",
-            "package_name": "ke.co.pocketshop.twa",
+            "package_name": "com.tadaomarket.twa",
             "sha256_cert_fingerprints": [
                 "40:E5:A4:95:97:B9:BF:D8:99:21:86:1E:0E:F6:97:DB:AE:44:F1:CD:AB:9F:21:E0:57:87:68:E2:BF:55:38:F8"
             ]

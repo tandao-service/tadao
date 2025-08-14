@@ -39,7 +39,7 @@ const AppPopup = () => {
         </p>
 
         <a
-          href="https://play.google.com/store/apps/details?id=ke.co.tadao.twa"
+          href="https://play.google.com/store/apps/details?id=com.tadaomarket.twa"
           target="_blank"
           rel="noopener noreferrer"
           className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors duration-300 inline-block mb-4 flex items-center justify-center"

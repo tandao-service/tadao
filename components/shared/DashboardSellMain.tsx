@@ -39,7 +39,7 @@ type dashboardProps = {
   handleOpenSafety: () => void;
   handleAdView: (ad: any) => void;
   handleCategory: (value: string) => void;
-  handlePay?: (id: string) => void;
+  handlePay: (id: string) => void;
   popup: string;
   subcategoryList: any;
   handleOpenShop: (shopId: any) => void;
@@ -97,8 +97,8 @@ const DashboardSellMain = ({
 
   return (
     <>
-      <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-        <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+      <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+        <div className="h-full overflow-y-auto bg-gray-100 border">
           <style jsx>{`
     @media (max-width: 1024px) {
       div::-webkit-scrollbar {

@@ -145,7 +145,8 @@ export default function Listpackages({
               <div className="p-3">
                 <div className="dark:text-gray-400 text-gray-600 mb-1">
                   <div className="flex gap-2 text-sm">
-                    {pack.description}
+                    <div className="flex items-center w-full justify-between">{pack.description} {pack.name !== "Free" && (<div className="border border-gray-300 p-2 rounded-sm">Click here</div>)}</div>
+
 
                     {daysRemaining > 0 && pack.name === packname ? (
                       <>

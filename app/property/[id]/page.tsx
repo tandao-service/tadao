@@ -1,6 +1,10 @@
+
+import Seodiv from '@/components/shared/seodiv';
 import { getAdById } from '@/lib/actions/dynamicAd.actions';
-import { notFound } from 'next/navigation';
 import Head from 'next/head';
+import { headers } from 'next/headers';
+import Link from 'next/link';
+import { notFound, useRouter } from 'next/navigation';
 
 type Props = {
     params: {
@@ -9,13 +13,20 @@ type Props = {
 };
 
 export default async function PropertyPage({ params: { id } }: Props) {
-    const ad = await getAdById(id);
+
+    let ad: any = null;
+
+    try {
+        ad = await getAdById(id);
+    } catch (error) {
+        console.error('Failed to fetch ad:', error);
+    }
 
     if (!ad) {
         return (
             <>
                 <Head>
-                    <title>Property Not Found | Tadao</title>
+                    <title>Property Not Found | tadaomarket.com</title>
                     <meta name="robots" content="noindex, nofollow" />
                 </Head>
                 <main className="p-6 text-center">
@@ -26,65 +37,64 @@ export default async function PropertyPage({ params: { id } }: Props) {
         );
     }
 
-    const { data = {}, category = 'Vehicle', _id } = ad;
+    const { data = {}, category = 'Real Estate', _id } = ad;
     const {
-        title = 'Property Details',
-        description = 'Find your product for sale online tadaoservices.com',
-        price = 0,
+        title,
+        description,
+        price,
         imageUrl = [],
-        region,
-        area,
+        propertyadrea = {},
     } = data;
 
     const displayImage = imageUrl[0] || '/fallback.jpg';
-    const location = region + ' ' + area + '' || 'Kenya';
+    const displayTitle = title || 'Property Details';
+    const location = propertyadrea.myaddress || 'Kenya';
+    const url = `https://tadaomarket.com/property/${_id}`;
 
+    const sharedHead = (
+        <Head>
+            <title>{displayTitle} - {category} | tadaomarket.com</title>
+            <meta name="description" content={description || 'Find properties for sale or rent in Kenya on tadaomarket.com'} />
+            <meta name="keywords" content={`${category}, ${location}, tadaomarket.com`} />
+            <meta property="og:title" content={displayTitle} />
+            <meta property="og:description" content={description} />
+            <meta property="og:image" content={displayImage} />
+            <meta property="og:url" content={url} />
+            <link rel="canonical" href={url} />
+
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Residence",
+                        name: displayTitle,
+                        description,
+                        image: displayImage,
+                        address: {
+                            "@type": "PostalAddress",
+                            addressLocality: location,
+                        },
+                        offers: {
+                            "@type": "Offer",
+                            priceCurrency: "KES",
+                            price,
+                            availability: "https://schema.org/InStock",
+                        },
+                    }),
+                }}
+            />
+        </Head>
+    );
+
+    // Bot-friendly minimal HTML
     return (
         <>
-            <Head>
-                <title>{title} - {category} | Tadao</title>
-                <meta name="description" content={description} />
-                <meta name="keywords" content={`${category}, ${location}, tadaoservices.com`} />
-                <meta property="og:title" content={title} />
-                <meta property="og:description" content={description} />
-                <meta property="og:image" content={displayImage} />
-                <meta property="og:url" content={`https://tadaoservices.com/property/${_id}`} />
-                <link rel="canonical" href={`https://tadaoservices.com/property/${_id}`} />
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "Residence",
-                            name: title,
-                            description,
-                            image: displayImage,
-                            address: {
-                                "@type": "PostalAddress",
-                                addressLocality: location,
-                            },
-                            offers: {
-                                "@type": "Offer",
-                                priceCurrency: "KES",
-                                price,
-                                availability: "https://schema.org/InStock",
-                            },
-                        }),
-                    }}
-                />
-            </Head>
 
-            <main className="px-4 py-6">
-                <h1 className="text-2xl font-bold mb-2">{title}</h1>
-                <p className="mb-4">{description}</p>
-                <img
-                    src={displayImage}
-                    alt={title}
-                    className="w-full max-w-2xl object-cover rounded-lg shadow"
-                />
-                <p className="mt-4 font-semibold">Price: KSh {price.toLocaleString()}</p>
-                <p>Location: {location}</p>
-            </main>
+            {sharedHead}
+            <Seodiv ad={ad} />
         </>
+
     );
+
 }

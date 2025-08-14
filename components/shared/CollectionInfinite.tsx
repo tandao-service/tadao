@@ -820,7 +820,7 @@ const CollectionInfinite = ({
   };
 
 
-
+  const [isnav, setisNav] = useState(false);
   const footerRef = useRef<HTMLDivElement | null>(null);
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
 
@@ -847,7 +847,7 @@ const CollectionInfinite = ({
 
   return (
     <>
-      <div className="bg-[#FAE6DA] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] min-h-screen">
+      <div className="bg-gray-100 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] min-h-screen">
         <Head>
           <title>Tadao | Buy and Sell Online in Kenya</title>
           <meta
@@ -883,6 +883,7 @@ const CollectionInfinite = ({
                 userId={userId}
                 AdsCountPerRegion={AdsCountPerRegion}
                 onClose={handleClose}
+                isnav={isnav}
                 popup={"home"}
                 handleOpenSell={handleOpenSell}
                 handleOpenBook={handleOpenBook}
@@ -902,6 +903,7 @@ const CollectionInfinite = ({
               <Navbarhome
                 userstatus="User"
                 userId=""
+                isnav={isnav}
                 AdsCountPerRegion={AdsCountPerRegion}
                 onClose={handleClose}
                 popup={"home"}
@@ -929,6 +931,7 @@ const CollectionInfinite = ({
                   userId={userId}
                   AdsCountPerRegion={AdsCountPerRegion}
                   onClose={handleClose}
+                  isnav={isnav}
                   popup={"home"}
                   handleOpenSell={handleOpenSell}
                   handleOpenBook={handleOpenBook}
@@ -949,6 +952,7 @@ const CollectionInfinite = ({
                   user={undefined}
                   userstatus="User"
                   userId=""
+                  isnav={isnav}
                   AdsCountPerRegion={AdsCountPerRegion}
                   popup={"home"}
                   onClose={handleClose}
@@ -979,6 +983,7 @@ const CollectionInfinite = ({
                 handleCategory={handleCategory}
                 handleSubCategory={handleSubCategory}
                 footerRef={footerRef}
+                setisNav={setisNav}
                 handleDrawer={handleDrawer}
                 loans={loans}
               />
@@ -1098,8 +1103,8 @@ const CollectionInfinite = ({
                         <Image
                           src="/assets/icons/loading.gif"
                           alt="edit"
-                          width={60}
-                          height={60}
+                          width={40}
+                          height={40}
                         />
                       </div>
                     )}
@@ -1141,6 +1146,7 @@ const CollectionInfinite = ({
                   handleOpenPerfomance={handleOpenPerfomance}
                   handleOpenSettings={handleOpenSettings}
                   handleCategory={handleCategory}
+                  handlePay={handlePay}
                   subcategoryList={subcategoryList}
                   user={user}
                   packagesList={packagesList}

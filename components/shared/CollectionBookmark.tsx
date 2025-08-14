@@ -10,7 +10,7 @@ import ProgressPopup from "./ProgressPopup";
 import Skeleton from "@mui/material/Skeleton";
 import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
- // Correct import
+// Correct import
 type CollectionProps = {
   userId: string;
   //data: IAd[];
@@ -23,9 +23,9 @@ type CollectionProps = {
   isAdCreator: boolean;
   isVertical: boolean;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
-   handleAdView: (ad:any) => void;
-    handleAdEdit: (ad:any) => void;
-    handleOpenChatId: (id:any) => void;
+  handleAdView: (ad: any) => void;
+  handleAdEdit: (ad: any) => void;
+  handleOpenChatId: (id: any) => void;
   handleOpenPlan: () => void;
 };
 
@@ -48,7 +48,7 @@ const CollectionBookmark = ({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -124,15 +124,15 @@ const CollectionBookmark = ({
                     className="flex justify-center"
                   >
                     {/* Render Ad */}
-                 {ad.adId && (<><VerticalCard
+                    {ad.adId && (<><VerticalCard
                       ad={ad.adId}
                       userId={userId}
                       isAdCreator={isAdCreator}
-                      handleAdView={handleAdView} 
-                      handleAdEdit={handleAdEdit} 
+                      handleAdView={handleAdView}
+                      handleAdEdit={handleAdEdit}
                       handleOpenPlan={handleOpenPlan}
                       handleOpenChatId={handleOpenChatId}
-                      popup={"bookmark"}/></>)}   
+                      popup={"bookmark"} /></>)}
                   </div>
                 );
               } else {
@@ -143,12 +143,12 @@ const CollectionBookmark = ({
                       ad={ad.adId}
                       userId={userId}
                       isAdCreator={isAdCreator}
-                      handleAdView={handleAdView} 
+                      handleAdView={handleAdView}
                       handleAdEdit={handleAdEdit}
                       handleOpenPlan={handleOpenPlan}
                       handleOpenChatId={handleOpenChatId}
                       popup={"bookmark"}
-                    /></>)}  
+                    /></>)}
                   </div>
                 );
               }
@@ -166,17 +166,17 @@ const CollectionBookmark = ({
                       className="flex justify-center"
                     >
                       {/* Render Ad */}
-                     
-                       {ad.adId && (<> <HorizontalCard
+
+                      {ad.adId && (<> <HorizontalCard
                         ad={ad}
                         userId={userId}
                         isAdCreator={isAdCreator}
-                        handleAdView={handleAdView} 
+                        handleAdView={handleAdView}
                         handleAdEdit={handleAdEdit}
                         handleOpenPlan={handleOpenPlan}
-                         handleOpenChatId={handleOpenChatId}
+                        handleOpenChatId={handleOpenChatId}
                         popup={"bookmark"}
-                      /></>)}  
+                      /></>)}
                     </div>
                   );
                 } else {
@@ -187,11 +187,11 @@ const CollectionBookmark = ({
                         ad={ad}
                         userId={userId}
                         isAdCreator={isAdCreator}
-                        handleAdView={handleAdView} 
-                      handleAdEdit={handleAdEdit}
-                      handleOpenPlan={handleOpenPlan}
-                       handleOpenChatId={handleOpenChatId}
-                      /></>)}  
+                        handleAdView={handleAdView}
+                        handleAdEdit={handleAdEdit}
+                        handleOpenPlan={handleOpenPlan}
+                        handleOpenChatId={handleOpenChatId}
+                      /></>)}
                     </div>
                   );
                 }
@@ -212,20 +212,20 @@ const CollectionBookmark = ({
         )
       )}
       {loading && (
-            <div>
-             
-                <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-                <Image
-                                                src="/assets/icons/loading.gif"
-                                                alt="edit"
-                                                width={60}
-                                                height={60}
-                                              />
-                </div>
-              
-            </div>
-          )}
-      
+        <div>
+
+          <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+            <Image
+              src="/assets/icons/loading.gif"
+              alt="edit"
+              width={40}
+              height={40}
+            />
+          </div>
+
+        </div>
+      )}
+
     </>
   );
 };

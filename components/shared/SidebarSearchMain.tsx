@@ -1,172 +1,168 @@
-import { ICategory } from "@/lib/database/models/category.model";
-import React, { useEffect, useState } from "react";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useRouter, useSearchParams } from "next/navigation";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
-import {
-  formUrlQuerymultiple,
-  formUrlQuery,
-  removeKeysFromQuery,
-} from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import SignalWifiStatusbarNullOutlinedIcon from "@mui/icons-material/SignalWifiStatusbarNullOutlined";
-import { Label } from "@/components/ui/label";
-import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
-import CategoryFilterSearch from "./CategoryFilterSearch";
-import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
-import DirectionsCarFilledOutlinedIcon from "@mui/icons-material/DirectionsCarFilledOutlined";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
-import InvertColorsOutlinedIcon from "@mui/icons-material/InvertColorsOutlined";
-import FormatPaintOutlinedIcon from "@mui/icons-material/FormatPaintOutlined";
-import FormatStrikethroughOutlinedIcon from "@mui/icons-material/FormatStrikethroughOutlined";
-import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import InsightsOutlinedIcon from "@mui/icons-material/InsightsOutlined";
-import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
-import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
-import AirlineSeatReclineExtraOutlinedIcon from "@mui/icons-material/AirlineSeatReclineExtraOutlined";
-import SignalWifiStatusbarConnectedNoInternet4OutlinedIcon from "@mui/icons-material/SignalWifiStatusbarConnectedNoInternet4Outlined";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import FilterComponent from "./FilterComponent";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-type sidebarProps = {
+
+type SidebarProps = {
   category: string;
-  categoryList?: any;
+  categoryList?: any[];
   subcategory?: string;
   handleFilter: (value: any) => void;
 };
+
 const SidebarSearchMain = ({
   category,
-  categoryList,
+  categoryList = [],
   subcategory,
   handleFilter,
-}: sidebarProps) => {
-  const [query, setQuery] = useState(subcategory);
-
-  // Usage
-  const handleQuery = (index: number, query: string) => {
-
-    handleFilter({
-      category: category.toString(),
-      subcategory: query.toString(),
-    });
-    setQuery(query);
-  };
-
+}: SidebarProps) => {
+  const [query, setQuery] = useState(subcategory || "");
   const [isOpen, setIsOpen] = useState(false);
 
-  const openDialog = () => {
-    setIsOpen(true);
+  const handleQuery = (index: number, queryValue: string) => {
+    handleFilter({
+      category: category.toString(),
+      subcategory: queryValue.toString(),
+    });
+    setQuery(queryValue);
   };
 
-  const closeDialog = () => {
-    setIsOpen(false);
-  };
-
-
-
-  const selectedCategory = categoryList.find(
-    (cat: any) => cat.category.name === category
+  const selectedCategory = categoryList?.find(
+    (cat) => cat?.category?.name === category
   );
-  const totalAdCount = categoryList.reduce((sum: any, item: any) => {
-    if (item.category.name === category) {
-      return sum + item.adCount;
+
+  const totalAdCount = categoryList?.reduce((sum, item) => {
+    if (item?.category?.name === category) {
+      return sum + (item.adCount || 0);
     }
     return sum;
-  }, 0);
+  }, 0) || 0;
 
-  //const totalAdCount = selectedCategory ? selectedCategory.adCount : 0;
-  const categoryImageUrl = selectedCategory
-    ? selectedCategory.category.imageUrl[0]
-    : "";
+  const categoryImageUrl =
+    selectedCategory?.category?.imageUrl?.[0] || "/placeholder.jpg";
 
   const filteredList =
-    categoryList?.filter((cat: any) => cat.category.name === category) || [];
+    categoryList?.filter((cat) => cat?.category?.name === category) || [];
 
-  // const visibleItems = showAll ? filteredList : filteredList.slice(0, 6);
+  // Scroll control hook
+  function useScrollButtons(deps: any[] = []) {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [showScrollUp, setShowScrollUp] = useState(false);
+    const [showScrollDown, setShowScrollDown] = useState(true);
+
+    const handleScroll = () => {
+      if (!scrollRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      setShowScrollUp(scrollTop > 0);
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+      setShowScrollDown(!atBottom);
+    };
+
+    const scrollToTop = () => {
+      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const scrollToBottom = () => {
+      scrollRef.current?.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    };
+
+    useEffect(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+      el.addEventListener("scroll", handleScroll);
+      handleScroll();
+      return () => el.removeEventListener("scroll", handleScroll);
+    }, deps);
+
+    return {
+      scrollRef,
+      showScrollUp,
+      showScrollDown,
+      scrollToTop,
+      scrollToBottom,
+    };
+  }
+
+  const categoryScroll = useScrollButtons();
 
   return (
-    <>
-      <div className="flex flex-col items-center w-full">
-
-        <div className="w-full p-0 dark:bg-[#2D3236] bg-white rounded-lg">
-
-          <div className="flex flex-col p-1 text-sm font-bold rounded-t-lg w-full">
-            <div className="flex w-full justify-between p-1 text-lg gap-1 items-center mt-1 mb-1 border-b border-gray-300 dark:border-gray-600">
-              {selectedCategory && (
-                <>
-                  <div className="flex gap-1 items-center">
-                    <div className="rounded-full dark:bg-[#131B1E] bg-white p-1">
-                      <Image
-                        className="h-7 w-8 object-cover"
-                        src={categoryImageUrl}
-                        alt={
-                          selectedCategory ? selectedCategory.category.name : ""
-                        }
-                        width={60}
-                        height={60}
-                      />
-                    </div>
-                    {selectedCategory ? selectedCategory.category.name : ""}
-                  </div>
-                </>
-              )}
-
+    <div className="flex flex-col items-center w-full">
+      <div className="w-full p-0 dark:bg-[#2D3236] bg-white rounded-lg">
+        {/* Category Header */}
+        <div className="flex flex-col p-1 text-sm font-bold rounded-t-lg w-full">
+          <div className="flex w-full justify-between p-1 text-lg gap-1 items-center mt-1 mb-1 border-b border-gray-300 dark:border-gray-600">
+            {selectedCategory && (
               <div className="flex gap-1 items-center">
-                <div className="text-sm dark:text-gray-500 text-gray-700">
-                  {totalAdCount} ads
+                <div className="rounded-full dark:bg-[#131B1E] bg-white p-1">
+                  <Image
+                    className="h-7 w-8 object-cover"
+                    src={categoryImageUrl}
+                    alt={selectedCategory?.category?.name || "category"}
+                    width={60}
+                    height={60}
+                  />
                 </div>
+                {selectedCategory?.category?.name || ""}
+              </div>
+            )}
+            <div className="flex gap-1 items-center">
+              <div className="text-sm dark:text-gray-500 text-gray-700">
+                {totalAdCount} ads
               </div>
             </div>
           </div>
-          <div>
+        </div>
 
+        {/* Scrollable List */}
+        <div className="w-full h-full relative">
+          <style jsx>{`
+            .scrollbar-none::-webkit-scrollbar {
+              display: none;
+            }
+            .scrollbar-none {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+          `}</style>
+
+          {categoryScroll.showScrollUp && (
+            <button
+              onClick={categoryScroll.scrollToTop}
+              className="absolute top-1 rounded-full left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-gradient-to-l from-orange-400 to-orange-500 text-white shadow-lg hover:from-orange-500 hover:to-orange-400"
+            >
+              ↑ Top
+            </button>
+          )}
+
+          {categoryScroll.showScrollDown && (
+            <button
+              onClick={categoryScroll.scrollToBottom}
+              className="absolute bottom-1 rounded-full left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-gradient-to-l from-orange-400 to-orange-500 text-white shadow-lg hover:from-orange-500 hover:to-orange-400"
+            >
+              ↓ Bottom
+            </button>
+          )}
+
+          <div
+            ref={categoryScroll.scrollRef}
+            className="h-[350px] w-full overflow-y-auto scrollbar-none"
+            style={{ scrollBehavior: "smooth" }}
+          >
             {filteredList.map((sub: any, index: number) => (
               <div
                 key={index}
                 onClick={() => handleQuery(index, sub.subcategory)}
-                className={`border-b rounded-sm dark:border-gray-600 flex items-center w-full justify-between p-0 mb-0 text-sm cursor-pointer dark:hover:bg-[#131B1E] dark:hover:text-white hover:bg-[#FAE6DA] hover:text-[#BD7A4F] ${query === sub.subcategory
-                  ? "bg-[#BD7A4F] text-white hover:bg-[#BD7A4F]"
+                className={`border-b rounded-sm dark:border-gray-600 flex items-center w-full justify-between p-0 mb-0 text-sm cursor-pointer dark:hover:bg-[#131B1E] dark:hover:text-white hover:bg-gray-100 hover:text-black ${query === sub.subcategory
+                  ? "text-orange-500 hover:text-orange-500"
                   : "dark:bg-[#2D3236] bg-white"
                   }`}
               >
                 <div className="flex w-full gap-1 items-center p-2">
                   <Image
                     className="h-6 w-7 object-cover"
-                    src={sub.imageUrl[0] || ""}
-                    alt={sub.subcategory}
+                    src={sub.imageUrl?.[0] || "/placeholder.jpg"}
+                    alt={sub.subcategory || "subcategory"}
                     width={60}
                     height={60}
                   />
@@ -174,26 +170,20 @@ const SidebarSearchMain = ({
                     {sub.subcategory}
                     <div
                       className={`flex text-xs gap-1 ${query === sub.subcategory
-                        ? "dark:text-gray-300 text-white"
+                        ? "dark:text-gray-300"
                         : "dark:text-gray-500 text-gray-500"
                         }`}
                     >
-                      {sub.adCount}
-                      <div>ads</div>
+                      {sub.adCount} <div>ads</div>
                     </div>
                   </div>
                 </div>
-                {/* <ArrowForwardIosIcon sx={{ fontSize: 14 }} /> */}
               </div>
             ))}
-
-
           </div>
         </div>
-
-
       </div>
-    </>
+    </div>
   );
 };
 

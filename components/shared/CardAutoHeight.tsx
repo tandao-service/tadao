@@ -333,7 +333,7 @@ const CardAutoHeight = ({
             )}
             {ad.organizer.verified &&
               ad.organizer?.verified[0]?.accountverified === true && (
-                <div className="absolute bg-green-600 top-0 right-0 text-white dark:text-emerald-900 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-3 rounded-bl-lg rounded-tr-lg">
+                <div className="absolute bg-green-100 top-0 right-0 text-green-700 dark:text-emerald-900 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-3 rounded-bl-lg rounded-tr-lg">
                   <div className="flex gap-1 cursor-pointer">
                     <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                     Verified
@@ -389,7 +389,7 @@ const CardAutoHeight = ({
             <div className="w-full flex justify-end absolute bottom-[-19px] left-1/2 transform -translate-x-1/2 p-1 rounded-full">
               <SignedIn>
                 <div
-                  className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-[#FF914C] to-[#BD7A4F] text-white hover:text-[#FAE6DA] tooltip tooltip-bottom hover:cursor-pointer"
+                  className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                   data-tip="Bookmark"
                   onClick={() => handle(ad._id)}
                 >
@@ -415,7 +415,7 @@ const CardAutoHeight = ({
                   className="cursor-pointer"
                 >
                   <div
-                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-[#FF914C] to-[#BD7A4F] text-white hover:text-[#FAE6DA] tooltip tooltip-bottom hover:cursor-pointer"
+                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                     data-tip="Bookmark"
                   >
                     <TooltipProvider>
@@ -454,7 +454,7 @@ const CardAutoHeight = ({
               onClick={() => {
                 handleAdView(ad);
               }}
-              className="flex gap-1 cursor-pointer items-center dark:text-[#BD7A4F] text-[#BD7A4F] no-underline"
+              className="flex gap-1 cursor-pointer items-center dark:text-orange-500 text-orange-500 no-underline"
             >
               {ad.data.contact && ad.data.contact === "contact" ? (
                 <div className="font-bold">Contact for price</div>
@@ -466,13 +466,13 @@ const CardAutoHeight = ({
                 </>
               )}{" "}
               {ad.data.unit && ad.data.contact === "specify" && (
-                <div className="text-xs dark:text-[#BD7A4F]">{ad.data.unit}</div>
+                <div className="text-xs dark:text-orange-500">{ad.data.unit}</div>
               )}{" "}
               {ad.data.per && (
-                <div className="text-xs dark:text-[#BD7A4F]">{ad.data.per}</div>
+                <div className="text-xs dark:text-orange-500">{ad.data.per}</div>
               )}
               {ad.data.period && (
-                <div className="text-xs dark:text-[#BD7A4F]">
+                <div className="text-xs dark:text-orange-500">
                   {ad.data.period}
                 </div>
               )}

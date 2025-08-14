@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 //import Skeleton from "@mui/material/Skeleton";
 import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
- // Correct import
+// Correct import
 type CollectionProps = {
   userId: string;
   emptyTitle: string;
@@ -26,10 +26,10 @@ type CollectionProps = {
   activeButton: number;
   queryObject: any;
   loadPopup: boolean;
-  handleAdEdit: (ad:any) => void;
+  handleAdEdit: (ad: any) => void;
   handleOpenSell: () => void;
-  handleAdView: (ad:any) => void;
-  handleOpenChatId: (id:any) => void;
+  handleAdView: (ad: any) => void;
+  handleOpenChatId: (id: any) => void;
   handleOpenPlan: () => void;
 };
 
@@ -45,7 +45,7 @@ const CollectionSearch = ({
   handleAdEdit,
   handleAdView,
   handleOpenPlan,
-    handleOpenChatId,
+  handleOpenChatId,
 }: CollectionProps) => {
   const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
   const [page, setPage] = useState(1);
@@ -57,16 +57,16 @@ const CollectionSearch = ({
   const observer = useRef<IntersectionObserver | null>(null);
 
 
-   //const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
- // const handleFilter = (value:any) => {
-   // setNewqueryObject({
-     // ...queryObject, // Preserve existing properties
-      //location: lat+"/"+lng,
-    //  value,
-   // });
-   // setAds([]);
-   // };
-  
+  //const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
+  // const handleFilter = (value:any) => {
+  // setNewqueryObject({
+  // ...queryObject, // Preserve existing properties
+  //location: lat+"/"+lng,
+  //  value,
+  // });
+  // setAds([]);
+  // };
+
 
   let Ads: any = [];
   const fetchAds = async () => {
@@ -101,7 +101,7 @@ const CollectionSearch = ({
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);
-     setIsInitialLoading(false);
+      setIsInitialLoading(false);
     }
   };
 
@@ -156,10 +156,10 @@ const CollectionSearch = ({
                           ad={ad}
                           userId={userId}
                           isAdCreator={isAdCreator}
-                          handleAdEdit={handleAdEdit}    
+                          handleAdEdit={handleAdEdit}
                           handleAdView={handleAdView}
                           handleOpenPlan={handleOpenPlan}
-                            handleOpenChatId={handleOpenChatId}
+                          handleOpenChatId={handleOpenChatId}
                         />
                       </div>
                     );
@@ -171,10 +171,10 @@ const CollectionSearch = ({
                           ad={ad}
                           userId={userId}
                           isAdCreator={isAdCreator}
-                          handleAdEdit={handleAdEdit}    
+                          handleAdEdit={handleAdEdit}
                           handleAdView={handleAdView}
                           handleOpenPlan={handleOpenPlan}
-                            handleOpenChatId={handleOpenChatId}
+                          handleOpenChatId={handleOpenChatId}
                         />
                       </div>
                     );
@@ -201,10 +201,10 @@ const CollectionSearch = ({
                             ad={ad}
                             userId={userId}
                             isAdCreator={isAdCreator}
-                            handleAdEdit={handleAdEdit}    
+                            handleAdEdit={handleAdEdit}
                             handleAdView={handleAdView}
                             handleOpenPlan={handleOpenPlan}
-                              handleOpenChatId={handleOpenChatId}
+                            handleOpenChatId={handleOpenChatId}
                           />
                         </div>
                       );
@@ -216,11 +216,11 @@ const CollectionSearch = ({
                             ad={ad}
                             userId={userId}
                             isAdCreator={isAdCreator}
-                            handleAdView={handleAdView} 
+                            handleAdView={handleAdView}
                             handleAdEdit={handleAdEdit}
-                            handleOpenPlan={handleOpenPlan} 
-                              handleOpenChatId={handleOpenChatId}
-                                                    />
+                            handleOpenPlan={handleOpenPlan}
+                            handleOpenChatId={handleOpenChatId}
+                          />
                         </div>
                       );
                     }
@@ -229,7 +229,7 @@ const CollectionSearch = ({
               </div>
             </>
           )}
-          
+
         </>
       ) : (
         loading === false && (
@@ -241,42 +241,42 @@ const CollectionSearch = ({
               <p className="text-sm lg:p-regular-14">{emptyStateSubtext}</p>
               <SignedIn>
 
-<Button onClick={() => {
-    handleOpenSell();
-    //router.push("/ads/create");
-}} variant="default" className="flex items-center gap-2">
-<AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
-</Button>
+                <Button onClick={() => {
+                  handleOpenSell();
+                  //router.push("/ads/create");
+                }} variant="default" className="flex items-center gap-2">
+                  <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+                </Button>
 
-</SignedIn>
+              </SignedIn>
 
-<SignedOut>
-<Button  onClick={() => {
-     // setIsOpenP(true);
-      router.push("/sign-in");
-    }} variant="outline" className="flex items-center gap-2">
-<AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
-</Button>
-</SignedOut>
+              <SignedOut>
+                <Button onClick={() => {
+                  // setIsOpenP(true);
+                  router.push("/sign-in");
+                }} variant="outline" className="flex items-center gap-2">
+                  <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+                </Button>
+              </SignedOut>
             </div>
           </>
         )
       )}
-       {loading && (
-             <div>
-              
-                 <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
-                  <Image
-                                                  src="/assets/icons/loading.gif"
-                                                  alt="edit"
-                                                  width={60}
-                                                  height={60}
-                                                />
-                 </div>
-               
-             </div>
-           )}
-    {/*  <ProgressPopup isOpen={loadPopup} onClose={handleCloseP} /> */} 
+      {loading && (
+        <div>
+
+          <div className="w-full mt-10 h-full flex flex-col items-center justify-center">
+            <Image
+              src="/assets/icons/loading.gif"
+              alt="edit"
+              width={40}
+              height={40}
+            />
+          </div>
+
+        </div>
+      )}
+      {/*  <ProgressPopup isOpen={loadPopup} onClose={handleCloseP} /> */}
     </>
   );
 };

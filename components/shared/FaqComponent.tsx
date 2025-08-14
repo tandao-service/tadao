@@ -57,8 +57,8 @@ const FaqComponent = ({
   if (isDarkMode === null) return null;
 
   return (
-    <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-      <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+      <div className="h-full overflow-y-auto bg-gray-100 border">
         <style jsx>{`
           @media (max-width: 1024px) {
             div::-webkit-scrollbar {
@@ -67,22 +67,22 @@ const FaqComponent = ({
           }
         `}</style>
         <Head>
-          <title>Frequently Asked Questions | tadaoservices.com</title>
+          <title>Frequently Asked Questions | tadaomarket.com</title>
           <meta
             name="description"
-            content="Find answers to common questions about using tadaoservices.com, including how to post a product, contact sellers, and more."
+            content="Find answers to common questions about using tadaomarket.com, including how to post a product, contact sellers, and more."
           />
           <meta name="keywords" content="Tadao, FAQ, frequently asked questions, product marketplace, post a product, contact seller" />
-          <meta property="og:title" content="Frequently Asked Questions | Tadao services" />
-          <meta property="og:description" content="Get help with common questions about posting products, contacting sellers, and managing your listings on Tadao services." />
+          <meta property="og:title" content="Frequently Asked Questions | Tadao" />
+          <meta property="og:description" content="Get help with common questions about posting products, contacting sellers, and managing your listings on Tadao." />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://www.tadaoservices.com/faq" />
-          <meta property="og:image" content="https://www.tadaoservices.com/assets/images/faq-cover.jpg" />
+          <meta property="og:url" content="https://www.tadaomarket.com/faq" />
+          <meta property="og:image" content="https://www.tadaomarket.com/assets/images/faq-cover.jpg" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Frequently Asked Questions | tadaoservices.com" />
-          <meta name="twitter:description" content="Find answers to your questions about posting products and using Tadao services. Learn more about our marketplace." />
-          <meta name="twitter:image" content="https://www.tadaoservices.com/assets/images/faq-cover.jpg" />
-          <link rel="canonical" href="https://www.tadaoservices.com/faq" />
+          <meta name="twitter:title" content="Frequently Asked Questions | tadaomarket.com" />
+          <meta name="twitter:description" content="Find answers to your questions about posting products and using Tadao. Learn more about our marketplace." />
+          <meta name="twitter:image" content="https://www.tadaomarket.com/assets/images/faq-cover.jpg" />
+          <link rel="canonical" href="https://www.tadaomarket.com/faq" />
         </Head>
 
         <div className="top-0 z-10 fixed w-full">

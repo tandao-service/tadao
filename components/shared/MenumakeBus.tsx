@@ -45,11 +45,10 @@ export default function MenumakeBus({ category, subcategory }: CardProps) {
           BusesMake.slice(0, 8).map((vehicle: any) => (
             <div
               key={vehicle.make} // Always good to have a unique key prop
-              className={`flex h-[80px] shadow flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-1 border-emerald-300 hover:bg-emerald-200 ${
-                vehicle.make === searchParams.get("make")
-                  ? "bg-emerald-600 text-white"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-emerald-200"
-              }`}
+              className={`flex h-[80px] shadow flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-1 border-orange-300 hover:bg-orange-200 ${vehicle.make === searchParams.get("make")
+                  ? "bg-orange-500 text-white"
+                  : "dark:bg-[#131B1E] bg-white hover:bg-orange-200"
+                }`}
             >
               <div
                 className="flex flex-col text-center items-center"

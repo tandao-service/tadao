@@ -57,8 +57,8 @@ const TermsComponent = ({
   if (isDarkMode === null) return null;
 
   return (
-    <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-      <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+      <div className="h-full overflow-y-auto bg-gray-100 border">
         <style jsx>{`
     @media (max-width: 1024px) {
       div::-webkit-scrollbar {
@@ -66,20 +66,20 @@ const TermsComponent = ({
       }
     }
   `}</style>
-        <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+        <div className="h-full overflow-y-auto bg-gray-100 border">
           <Head>
-            <title>Terms and Conditions | Tadao services</title>
+            <title>Terms and Conditions | Tadao</title>
             <meta
               name="description"
-              content="Read the terms and conditions for using tadaoservices.com, our online marketplace. By accessing the site, you agree to be bound by these terms."
+              content="Read the terms and conditions for using tadaomarket.com, our online marketplace. By accessing the site, you agree to be bound by these terms."
             />
-            <meta name="keywords" content="TadaoServices, terms and conditions, Kenya e-commerce, Tadao policies" />
-            <meta property="og:title" content="Terms and Conditions | tadaoservices.com" />
-            <meta property="og:description" content="Understand the terms and conditions for using tadaoservices.com, your trusted marketplace in Kenya." />
+            <meta name="keywords" content="tadaomarket, terms and conditions, Kenya e-commerce, Tadao policies" />
+            <meta property="og:title" content="Terms and Conditions | tadaomarket.com" />
+            <meta property="og:description" content="Understand the terms and conditions for using tadaomarket.com, your trusted marketplace in Kenya." />
             <meta property="og:type" content="website" />
-            <meta property="og:url" content="https://www.tadaoservices.com/terms" />
-            <meta property="og:image" content="https://www.tadaoservices.com/assets/images/terms-and-conditions-cover.jpg" />
-            <link rel="canonical" href="https://www.tadaoservices.com/terms" />
+            <meta property="og:url" content="https://www.tadaomarket.com/terms" />
+            <meta property="og:image" content="https://www.tadaomarket.com/assets/images/terms-and-conditions-cover.jpg" />
+            <link rel="canonical" href="https://www.tadaomarket.com/terms" />
           </Head>
 
           <div className="top-0 z-10 fixed w-full">
@@ -109,12 +109,12 @@ const TermsComponent = ({
               <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto p-6">
                 <h1 className="text-2xl font-bold mb-4 dark:text-gray-400">Terms and Conditions</h1>
                 <p className="mb-4">
-                  Welcome to <strong>Tadao services</strong>! By using our website, you agree to comply with and be bound by the following terms and conditions. Please review them carefully. If you do not agree to these terms, you should not use this website.
+                  Welcome to <strong>Tadao</strong>! By using our website, you agree to comply with and be bound by the following terms and conditions. Please review them carefully. If you do not agree to these terms, you should not use this website.
                 </p>
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">1. Acceptance of Terms</h2>
                 <p className="mb-4">
-                  By accessing and using Tadao services, you accept and agree to be bound by these terms. Any posted guidelines or rules applicable to our services may be updated periodically and are incorporated into these Terms of Service.
+                  By accessing and using Tadao, you accept and agree to be bound by these terms. Any posted guidelines or rules applicable to our services may be updated periodically and are incorporated into these Terms of Service.
                 </p>
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">2. User Obligations</h2>
@@ -146,7 +146,7 @@ const TermsComponent = ({
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">7. Intellectual Property</h2>
                 <p className="mb-4">
-                  All site content belongs to Tadao services or its content creators. Do not reproduce or reuse any content without written permission.
+                  All site content belongs to Tadao or its content creators. Do not reproduce or reuse any content without written permission.
                 </p>
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">8. Limitation of Liability</h2>
@@ -166,7 +166,7 @@ const TermsComponent = ({
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">11. Contact</h2>
                 <p className="mb-4">
-                  For any questions, contact us at <a className="text-[#BD7A4F] hover:underline" href="mailto:support@tadaoservices.com">support@tadaoservices.com</a>.
+                  For any questions, contact us at <a className="text-orange-500 hover:underline" href="mailto:support@tadaomarket.com">support@tadaomarket.com</a>.
                 </p>
               </div>
             </div>

@@ -84,21 +84,21 @@ const AdvertiserSubscriptions = ({ handleOpenChatId, subscriptionsExpirely }: Pr
                     <td className="border px-4 py-2">{user.expiryDate}</td>
                     <td className="border px-4 py-2">
                       {user.isExpired ? (
-                        <div className="rounded-sm bg-red-600 p-2 text-white text-xs text-center">Expired</div>
+                        <div className="rounded-sm bg-red-100 p-2 text-red-600 text-xs text-center">Expired</div>
                       ) : (
-                        <div className="rounded-sm bg-green-600 p-2 text-white text-xs text-center">Active</div>
+                        <div className="rounded-sm bg-green-100 p-2 text-green-600 text-xs text-center">Active</div>
                       )}
                     </td>
                     <td className="border px-4 py-2 text-center">
-                       <span onClick={() => handleOpenContact(user.buyerDetails)} className="relative cursor-pointer inline-block w-6 h-6">
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                              <QuestionAnswerOutlinedIcon />
-                                            </div>
-                                            <div className="absolute top-0 right-0">
-                                              <UnreadByAdmin userId={user.buyerDetails._id} />
-                                            </div>
-                                          </span>
-                     
+                      <span onClick={() => handleOpenContact(user.buyerDetails)} className="relative cursor-pointer inline-block w-6 h-6">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <QuestionAnswerOutlinedIcon />
+                        </div>
+                        <div className="absolute top-0 right-0">
+                          <UnreadByAdmin userId={user.buyerDetails._id} />
+                        </div>
+                      </span>
+
                     </td>
                   </tr>
                 ))}

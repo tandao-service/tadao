@@ -67,7 +67,7 @@ import Head from "next/head";
 import ChatButton from "./ChatButton";
 import ShareAd from "./ShareAd";
 import { useToast } from "../ui/use-toast";
-import SellerProfileCard from "./SellerProfileCard";
+
 import { updateabused, updateview } from "@/lib/actions/dynamicAd.actions";
 import DescriptionComponent from "./DescriptionComponent";
 import StreetmapOfice from "./StreetmapOffice";
@@ -90,6 +90,7 @@ import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
 import { RequestFinancing } from "./RequestFinancing";
 import Bidding from "./Bidding";
+import SellerProfileCard from "./SellerProfileCard";
 
 // Correct import
 type CardProps = {
@@ -104,7 +105,7 @@ type CardProps = {
   handleOpenShop: (value: any) => void;
   handlePay: (id: string) => void;
   handleOpenPlan: () => void;
-  handleOpenSell: () => void;
+  handleOpenSell: (category?: string, subcategory?: string) => void;
   handleOpenSafety: () => void;
 
 };
@@ -308,7 +309,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
     <>
       <div className="text-sm p-0 hidden lg:inline">
         <div className="flex">
-          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 shadow border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
             <div
               onClick={() => {
                 //setIsOpenP(true);
@@ -321,7 +322,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </div>
             </div>
           </div>
-          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 shadow border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 dark:text-gray-400 bg-white py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
@@ -337,7 +338,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               )}
             </div>
           </div>
-          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] dark:hover:text-gray-300 bg-white dark:text-gray-400 py-1 px-2 rounded-full mr-2">
+          <div className="mt-4 border hover:text-orange-600 dark:hover:bg-[#3E454A] dark:bg-[#2D3236] shadow dark:hover:text-gray-300 bg-white dark:text-gray-400 py-1 px-2 rounded-full mr-2">
             <div className="flex items-center">
               {ad && (
                 <div
@@ -353,7 +354,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               )}
             </div>
           </div>
-          <div className="mt-4 border text-gray-700 dark:bg-[#2D3236] dark:text-gray-300 bg-white py-1 px-2 rounded-full">
+          <div className="mt-4 shadow border text-gray-700 dark:bg-[#2D3236] dark:text-gray-300 bg-white py-1 px-2 rounded-full">
             <div className="flex items-center">
 
               {ad && <p className="text-xs lg:text-sm">{ad.data.title}</p>}
@@ -363,16 +364,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
       </div>
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
-          className="mt-1 lg:mt-2 border-t-50 border-orange-700 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-t-xl lg:p-1"
-        //style={
-        //  ad.plan.name !== "Free"
-        //    ? {
-        //       borderTop: "8px",
-        //       borderColor: ad.plan.color, // Border color for non-free plans
-        //    }
-        // : undefined
-        //}
-        >
+          className="mt-1 lg:mt-2 shadow bg-white border-t-50 border-orange-700 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-xl lg:p-1">
           {ad.plan.name !== "Free" && (
             <div
               style={{
@@ -391,47 +383,6 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </div>
             </div>
           )}
-
-          {/*<div className="grid grid-cols-3 mb-0 flex gap-1">
-  <button
-    title="Ad Pictures"
-    onClick={() => setInputMode("Images")}
-    className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs rounded-tl-xl ${
-      inputMode === "Images"
-        ? "text-white bg-[#131B1E] dark:text-white"
-        : "bg-orange-600 text-white"
-    }`}
-  >
-    <LocalSeeOutlinedIcon sx={{ fontSize: 16 }} /> Pictures
-  </button>
- 
-  <button
-    title="Ad Video"
-    onClick={() => setInputMode("Video")}
-    className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs ${
-      inputMode === "Video"
-        ? "text-white bg-[#131B1E] dark:text-white"
-        : "bg-orange-600 text-white"
-    }`}
-  >
-    <YouTubeIcon sx={{ fontSize: 16 }} /> Video
-  </button>
-  <button
-    title="Ad 3D Virtual"
-    onClick={() => setInputMode("Virtual")}
-    className={`p-3 flex gap-2 justify-center items-center text-[10px] lg:text-xs rounded-tr-xl ${
-      inputMode === "Virtual"
-        ? "text-white bg-[#131B1E] dark:text-white"
-        : "bg-orange-600 text-white"
-    }`}
-  >
-    <ThreeDRotationOutlinedIcon sx={{ fontSize: 16 }} />3D Virtual Tour
-  </button>
-</div>
-*/}
-
-
-
           <div
             className={`rounded-0 lg:p-2 flex flex-col bg-[#131B1E] lg:rounded-xl`}
           >
@@ -531,7 +482,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
 
                 {ad.organizer.verified &&
                   ad.organizer.verified[0].accountverified === true && (
-                    <div className="hidden lg:inline absolute bg-orange-100 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                    <div className="hidden lg:inline absolute bg-green-100 top-0 right-0 text-green-700 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
                       <div className="flex gap-1 cursor-pointer">
                         <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                         Verified
@@ -689,12 +640,12 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   )}
                   <div className="flex gap-1 items-center no-underline">
                     {ad.data.contact && ad.data.contact === "contact" ? (
-                      <p className="text-lg lg:text-xl font-bold p-1 dark:text-orange-500 text-[#BD7A4F]">
+                      <p className="text-lg lg:text-xl font-bold p-1 dark:text-orange-500 text-black">
                         Contact for price
                       </p>
                     ) : (
                       <>
-                        {ad.data.price > 0 && (<span className="flex text-lg lg:text-xl font-bold rounded-full p-1 dark:text-orange-500 text-[#BD7A4F]">
+                        {ad.data.price > 0 && (<span className="flex text-lg lg:text-xl font-bold rounded-full p-1 dark:text-black text-black">
                           Ksh {ad.data.price.toLocaleString()}
                         </span>)}
 
@@ -715,7 +666,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                         {ad.data.period}
                       </div>
                     )}
-                    {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-orange-500 text-[#BD7A4F] font-bold">
+                    {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-black text-black font-bold">
                       <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
                       <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
                     </div>)}
@@ -726,7 +677,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                     <Accordion type="single" collapsible>
                       <AccordionItem value="item-1" className="border-0">
                         <AccordionTrigger>
-                          <div className="flex dark:text-orange-500 gap-1 items-center no-underline">
+                          <div className="flex dark:text-black gap-1 items-center no-underline">
                             <SellOutlinedIcon sx={{ fontSize: 16 }} />
                             <p className="text-sm">Bulk Price Options</p>
                           </div>
@@ -774,7 +725,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </div>
             </div>
             <div className="flex mb-2 items-center w-full">
-              <p className="text-lg lg:text-2xl font-bold dark:text-gray-300 text-[#BD7A4F]">
+              <p className="text-lg lg:text-2xl font-bold dark:text-gray-300 text-black">
                 {ad.data.title}
               </p>
             </div>
@@ -802,7 +753,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                 </>) : (
                   <>
                     <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                    <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
+                    <p className="mt-5 font-bold dark:text-gray-400 text-black">
                       Ad Video
                     </p>
                     <YouTubePlayer videoUrl={ad.data["youtube-link"]} />
@@ -846,7 +797,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                       key !== "youtube-link" && (
                         <>
                           <div key={key} className="mb-2 md:flex-row">
-                            <div className="dark:text-gray-300 text-[#BD7A4F] text-sm">
+                            <div className="dark:text-gray-300 text-black text-sm">
                               {key === 'Maximum Amount' || key === 'Minimum Amount' ? Number(value).toLocaleString() : value}
                             </div>
                             <div className="dark:text-gray-500 text-gray-600 text-xs">
@@ -863,7 +814,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
             {ad.data.facilities && ad.data.facilities.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
+                <p className="mt-5 font-bold dark:text-gray-400 text-black">
                   Facilities
                 </p>
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
@@ -880,7 +831,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
             {ad.data.amenities && ad.data.amenities.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
+                <p className="mt-5 font-bold dark:text-gray-400 text-black">
                   Amenities
                 </p>
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
@@ -897,7 +848,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
             {ad.data.features && ad.data.features.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-                <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
+                <p className="mt-5 font-bold dark:text-gray-400 text-black">
                   Key Features
                 </p>
                 <div className="grid grid-cols-3 lg:grid-cols-5 w-full gap-1 mt-1">
@@ -912,10 +863,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </>
             )}
             <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
-            <p className="mt-5 font-bold dark:text-gray-400 text-[#BD7A4F]">
+            <p className="mt-5 font-bold dark:text-gray-400 text-black">
               Description
             </p>
-            {/* <p className="my-1 text-text-[#BD7A4F]">{ad.data.description}</p>*/}
+            {/* <p className="my-1 text-text-orange-500">{ad.data.description}</p>*/}
             <DescriptionComponent description={ad.data.description} />
 
 
@@ -928,7 +879,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                 <Accordion type="single" collapsible>
                   <AccordionItem value="item-1" className="border-0">
                     <AccordionTrigger>
-                      <div className="mt-5 flex text-[#BD7A4F] dark:text-gray-400 gap-1 items-center font-bold no-underline">
+                      <div className="mt-5 flex text-black dark:text-gray-400 gap-1 items-center font-bold no-underline">
                         <LocalShippingOutlinedIcon />
                         <div className="font-bold">Delivery Options</div>
                       </div>
@@ -1032,7 +983,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   >
                     <AccordionItem value="item-2" className="border-0">
                       <AccordionTrigger className="border-0">
-                        <div className="mt-0 flex text-[#BD7A4F] dark:text-gray-400 gap-1 items-center font-bold no-underline">
+                        <div className="mt-0 flex text-orange-500 dark:text-gray-400 gap-1 items-center font-bold no-underline">
                           <HelpOutlineOutlinedIcon />
                           <div className="font-bold">About Seller</div>
                         </div>
@@ -1352,7 +1303,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   <SignedIn>
                     <button
                       onClick={handleOpenPopupLoan}
-                      className="flex rounded-sm w-full py-3 px-2 text-lg text-white bg-[#BD7A4F] hover:bg-orange-700 justify-center items-center gap-1"
+                      className="flex rounded-sm w-full py-3 px-2 text-lg text-white bg-orange-500 hover:bg-orange-700 justify-center items-center gap-1"
                     >
                       <SellOutlinedIcon />
                       Request Financing for This Property
@@ -1365,7 +1316,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                         setIsOpenP(true);
                         router.push("/sign-in");
                       }}
-                      className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-[#BD7A4F] hover:bg-orange-700 items-center"
+                      className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-orange-500 hover:bg-orange-700 items-center"
                     >
                       <SellOutlinedIcon />
                       Request Financing for This Property
@@ -1387,72 +1338,21 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
         {/* Right panel */}
         <div
           className={`p-1 lg:w-[32%]`}>
-          {/* Right panel 
-        {ad.data.propertyarea?.location && ad.data.propertyarea?.location.length !== 0 && (
-          <>
-            <div className="text-l mb-2 rounded-lg">
-              <div className="w-full">
-                <div className="justify-between flex p-1 items-center">
-                <p className="lg:mt-5 dark:text-gray-400 font-bold">Property Google Mapping</p>
-                <button
-        onClick={() => setShowGuide(!showGuide)}
-        className="hidden lg:inline px-3 text-xs py-1 text-gray-600 border border-gray-600 bg-white rounded-lg shadow-md hover:bg-gray-600 hover:text-white"
-      >
-        Map Hint?
-      </button>
-      </div>
-      {showGuide && (
-        <div className="absolute z-20 right-1 lg:right-20 mt-2 w-80 bg-gray-100 rounded-lg shadow-md text-gray-700 p-3">
-          <ul className="list-disc text-xs list-inside space-y-1">
-          
-           <li>📏 <span className="font-medium">Property Land Size</span> - Click the drawn area to view estimate area in square meters (m²), acres, or hectares.</li>
-                 <li>📍 <span className="font-medium">Calculate Distance</span> - Find distance from key places like your workplace or shopping centers.</li>
-                 <li>🛣️ <span className="font-medium">Find the Nearest Route</span> - Get directions from your location to the property.</li>
-                 <li>👥 <span className="font-medium">Analyze Population</span> - View demographic insights of the property&apos;s surroundings.</li>
-                 <li>🚗 <span className="font-medium">Check Road Accessibility</span> - See the distance to the nearest tarmac road.</li>
-                 <li>🚏 <span className="font-medium">Locate Public Transport</span> -  Find the closest bus station and distance.</li>
-                 <li>🏫 <span className="font-medium">Nearby Schools</span> - View the number of schools around.</li>
-                 <li>🏥 <span className="font-medium">Healthcare Facilities</span> -  Check hospitals and clinics in the area.</li>
-                 <li>🛍️ <span className="font-medium">Shopping Options</span> - See available shopping malls nearby.</li>
-                 <li>⏳ <span className="font-medium">Saves Time for Both Buyers & Sellers</span> - Only visit the site after you&apos;re satisfied with the property&apos;s location.</li>
-           
-           
-          </ul>
-          <button
-            onClick={() => setShowGuide(false)}
-            className="mt-3 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-          >
-            Close
-          </button>
-      
-        </div>
-      )}
-              
-                <MappingAds
-                  id={ad.data._id}
-                  title={ad.data.title}
-                  price={ad.data.price}
-                  imageUrls={ad.data.imageUrls}
-                  propertyarea={ad.data.propertyarea}
-                
-                />
-              </div>
-            </div>
-            </>
-          )}*/}
+
 
           <div className="hidden lg:inline">
 
 
-            <div className="dark:bg-[#2D3236] dark:text-gray-300 bg-white p-5 border rounded-lg overflow-hidden flex flex-col items-center">
+            <div className="dark:bg-[#2D3236] shadow border-t-8 border-black dark:text-gray-300 bg-white p-5 rounded-lg overflow-hidden flex flex-col items-center">
+
               <div className="flex gap-1 items-center no-underline">
                 {ad.data.contact && ad.data.contact === "contact" ? (
-                  <p className="flex text-2xl font-bold dark:text-orange-500 text-[#BD7A4F]">
+                  <p className="flex text-2xl font-bold dark:text-black text-black">
                     Contact for price
                   </p>
                 ) : (
                   <>
-                    {ad.data.price > 0 && (<span className="flex gap-1 text-2xl font-bold rounded-full px-4 py-1 dark:text-orange-500 text-[#BD7A4F]">
+                    {ad.data.price > 0 && (<span className="flex gap-1 text-2xl font-bold rounded-full px-4 py-1 dark:text-black text-black">
                       Ksh {ad.data.price.toLocaleString()}
                     </span>)}
 
@@ -1469,7 +1369,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                     {ad.data.period}
                   </div>
                 )}
-                {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-orange-500 text-[#BD7A4F] font-bold">
+                {ad.data["Maximum Amount"] && ad.data["Minimum Amount"] && (<div className="flex flex-col dark:text-black text-black font-bold">
                   <p>Min: Ksh {Number(ad.data["Minimum Amount"]).toLocaleString()} </p>
                   <p>Max: Ksh {Number(ad.data["Maximum Amount"]).toLocaleString()}</p>
                 </div>)}
@@ -1520,7 +1420,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   <Accordion type="single" collapsible>
                     <AccordionItem value="item-1" className="border-0">
                       <AccordionTrigger>
-                        <div className="flex dark:text-orange-500 gap-1 items-center no-underline">
+                        <div className="flex dark:text-black gap-1 items-center no-underline">
                           <SellOutlinedIcon sx={{ fontSize: 16 }} />
                           <p className="text-sm">Bulk Price Options</p>
                         </div>
@@ -1566,7 +1466,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
             </div>
 
             <span className="hidden m-0">
-              <div className="justify-between flex w-full  gap-1">
+              <div className="justify-between flex w-full gap-1">
                 <SignedIn>
                   <button
                     className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
@@ -1656,61 +1556,15 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   userName={userName}
                   handleOpenReview={handleOpenReview}
                   handleOpenShop={handleOpenShop}
-                  handlePay={handlePay} />
+                  handlePay={handlePay}
+                  titleId={"Ad"} />
               </div>
             </div>
 
           </div>
-          <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
-            <div className="flex justify-between">
 
 
-              <SignedIn>
-
-                <Button onClick={() => {
-
-                  // setIsOpenP(true);
-                  handleOpenReview(ad.organizer)
-                  //  router.push(`/reviews/${ad.organizer._id}`);
-
-                }} variant="default" className="flex w-full items-center gap-2">
-                  😃
-                  Leave Feedback?
-                </Button>
-
-              </SignedIn>
-
-              <SignedOut>
-
-                <Button onClick={() => {
-                  setIsOpenP(true);
-                  router.push("/sign-in");
-                }} variant="default" className="flex w-full items-center gap-2">
-                  😃
-                  Leave Feedback?
-                </Button>
-
-
-              </SignedOut>
-
-
-
-
-            </div>
-          </div>
-
-
-          <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
-            <div className="flex justify-between">
-
-              < CopyShareAdLink _id={ad._id} titleId={"Ad"} />
-
-
-            </div>
-          </div>
-
-
-          <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
+          <div className="mt-3 shadow border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
             <div className="flex justify-between">
               <SignedIn>
                 <Button onClick={handleOpenPopupAv} variant="outline" className="flex text-blue-600 items-center gap-1">
@@ -1758,7 +1612,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
           </div>
 
 
-          <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
+          <div className="mt-3 border shadow dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
             <div className="font-bold text-lg text-center">Safety tips</div>
 
             <ol>
@@ -1804,7 +1658,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </li>
 
               <li>
-                <div className="mt-2 transition-colors font-bold text-orange-600 hover:text-[#BD7A4F] hover:cursor-pointer">
+                <div className="mt-2 transition-colors font-bold text-orange-600 hover:text-orange-500 hover:cursor-pointer">
                   <div
                     onClick={() => {
                       handleOpenSafety();
@@ -1820,13 +1674,13 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
           </div>
 
 
-          <div className="mt-3 border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
+          <div className="mt-3 border shadow dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
             <div className="flex justify-between">
 
               <SignedIn>
                 <Button onClick={() => {
 
-                  handleOpenSell();
+                  handleOpenSell(ad.data.category, ad.data.subcategory);
                   // router.push("/ads/create");
 
                 }} variant="default" className="flex w-full items-center gap-2">

@@ -5,7 +5,7 @@ import { getGraphSales } from "@/lib/actions/transactions.actions";
 const SalesLineGraph: React.FC = () => {
   const [timeFrame, setTimeFrame] = useState<string>("day");
   const [chartData, setChartData] = useState<any>([]);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,11 +76,10 @@ const SalesLineGraph: React.FC = () => {
 
   return (
     <div
-      className={`p-2 w-full rounded-xl ${
-        isDarkMode
-          ? "dark:bg-[#2D3236] dark:text-gray-300"
-          : "bg-gray-100 text-gray-800"
-      }`}
+      className={`p-2 w-full rounded-xl ${isDarkMode
+        ? "dark:bg-[#2D3236] dark:text-gray-300"
+        : "bg-gray-100 text-gray-800"
+        }`}
     >
       <h2 className="title font-bold m-2">Subscription Line Graph</h2>
 

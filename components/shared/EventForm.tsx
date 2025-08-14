@@ -23,6 +23,7 @@ import { Multiselect } from "./Multiselect";
 import AutoComplete from "./AutoComplete";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { BellIcon } from "lucide-react";
+
 import {
   CircularProgress,
   FormControl,
@@ -64,6 +65,7 @@ import "react-quill/dist/quill.snow.css";
 import { updateUserPhone } from "@/lib/actions/user.actions";
 import { createLoan } from "@/lib/actions/loan.actions";
 import PhoneVerification from "./PhoneVerification";
+import BiddingCheckbox from "./BiddingCheckbox";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
   loading: () => (
@@ -189,8 +191,9 @@ type AdFormProps = {
   //expirationDate: Date;
   handleOpenShop: (shopId: any) => void;
   handleAdView?: (ad: any) => void;
-  handlePay?: (id: string) => void;
+  handlePay: (id: string) => void;
   handleOpenTerms: () => void;
+
 };
 
 const AdForm = ({
@@ -549,7 +552,7 @@ const AdForm = ({
     setFormErrors({});
     setFiles([]);
 
-    if (user.user.phone && type === "Create") {
+    if (user?.user?.phone && type === "Create") {
       const cleanNumber = user.user.phone.startsWith('+') ? user.user.phone.slice(1) : user.user.phone;
       const countryCode = cleanNumber.slice(0, 3);
       const localNumber = cleanNumber.slice(3);
@@ -713,7 +716,7 @@ const AdForm = ({
               title: "Submitted",
               description: "Loan request submitted successfully.",
               duration: 5000,
-              className: "bg-[#BD7A4F] text-white",
+              className: "bg-orange-500 text-white",
             });
 
             return;
@@ -756,7 +759,7 @@ const AdForm = ({
           periodPack: periodInput,
           path: "/create",
         });
-        if (!user.user.phone) {
+        if (!user?.user?.phone) {
           await updateUserPhone(userId, phone);
         }
         setFormData(defaults);
@@ -768,7 +771,7 @@ const AdForm = ({
           title: "Submitted",
           description: "Ad submitted successfully.",
           duration: 5000,
-          className: "bg-[#BD7A4F] text-white",
+          className: "bg-orange-500 text-white",
         });
 
         if (newAd) {
@@ -822,7 +825,7 @@ const AdForm = ({
           title: "Updated",
           description: "Ad updated successfully.",
           duration: 5000,
-          className: "bg-[#BD7A4F] text-white",
+          className: "bg-orange-500 text-white",
         });
         if (updatedAd && handleAdView) {
           handleAdView(updatedAd);
@@ -1152,7 +1155,7 @@ const AdForm = ({
                     InputLabelProps={{
                       classes: {
                         root: "text-gray-500 dark:text-gray-400",
-                        focused: "text-[#BD7A4F] dark:text-orange-400",
+                        focused: "text-orange-500 dark:text-orange-400",
                       },
                     }}
                     className="w-full"
@@ -1179,7 +1182,7 @@ const AdForm = ({
                     InputLabelProps={{
                       classes: {
                         root: "text-gray-500 dark:text-gray-400",
-                        focused: "text-[#BD7A4F] dark:text-orange-400",
+                        focused: "text-orange-500 dark:text-orange-400",
                       },
                     }}
                     className="w-full"
@@ -1206,7 +1209,7 @@ const AdForm = ({
                     InputLabelProps={{
                       classes: {
                         root: "text-gray-500 dark:text-gray-400",
-                        focused: "text-[#BD7A4F] dark:text-orange-400",
+                        focused: "text-orange-500 dark:text-orange-400",
                       },
                     }}
                     className="w-full"
@@ -1236,7 +1239,7 @@ const AdForm = ({
                       InputLabelProps={{
                         classes: {
                           root: "text-gray-500 dark:text-gray-400",
-                          focused: "text-[#BD7A4F] dark:text-orange-400",
+                          focused: "text-orange-500 dark:text-orange-400",
                         },
                       }}
                       className="w-full"
@@ -1268,11 +1271,11 @@ const AdForm = ({
                               }}
                               className="hidden peer"
                             />
-                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-[#BD7A4F] peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
+                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
                               {(formData["negotiable"]
                                 ? formData["negotiable"] === option.toLowerCase()
                                 : option.toLowerCase() === "not sure") && (
-                                  <div className="w-2.5 h-2.5 bg-[#BD7A4F] rounded-full"></div>
+                                  <div className="w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
                                 )}
                             </div>
                             <span
@@ -1283,7 +1286,7 @@ const AdForm = ({
                                     option.toLowerCase()
                                     : option.toLowerCase() === "not sure"
                                 )
-                                  ? "text-[#BD7A4F] font-medium"
+                                  ? "text-orange-500 font-medium"
                                   : "text-gray-600 dark:text-gray-400"
                               }
                             >
@@ -1319,7 +1322,7 @@ const AdForm = ({
                         InputLabelProps={{
                           classes: {
                             root: "text-gray-500 dark:text-gray-400",
-                            focused: "text-[#BD7A4F] dark:text-orange-400",
+                            focused: "text-orange-500 dark:text-orange-400",
                           },
                         }}
                         className="w-full"
@@ -1368,11 +1371,11 @@ const AdForm = ({
                               }}
                               className="hidden peer"
                             />
-                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-[#BD7A4F] peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
+                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
                               {(formData["negotiable"]
                                 ? formData["negotiable"] === option.toLowerCase()
                                 : option.toLowerCase() === "not sure") && (
-                                  <div className="w-2.5 h-2.5 bg-[#BD7A4F] rounded-full"></div>
+                                  <div className="w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
                                 )}
                             </div>
                             <span
@@ -1383,7 +1386,7 @@ const AdForm = ({
                                     option.toLowerCase()
                                     : option.toLowerCase() === "not sure"
                                 )
-                                  ? "text-[#BD7A4F] font-medium"
+                                  ? "text-orange-500 font-medium"
                                   : "text-gray-600 dark:text-gray-400"
                               }
                             >
@@ -1419,7 +1422,7 @@ const AdForm = ({
                         InputLabelProps={{
                           classes: {
                             root: "text-gray-500 dark:text-gray-400",
-                            focused: "text-[#BD7A4F] dark:text-orange-400",
+                            focused: "text-orange-500 dark:text-orange-400",
                           },
                         }}
                         className="w-full"
@@ -1467,11 +1470,11 @@ const AdForm = ({
                               }}
                               className="hidden peer"
                             />
-                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-[#BD7A4F] peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
+                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
                               {(formData["negotiable"]
                                 ? formData["negotiable"] === option.toLowerCase()
                                 : option.toLowerCase() === "not sure") && (
-                                  <div className="w-2.5 h-2.5 bg-[#BD7A4F] rounded-full"></div>
+                                  <div className="w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
                                 )}
                             </div>
                             <span
@@ -1482,7 +1485,7 @@ const AdForm = ({
                                     option.toLowerCase()
                                     : option.toLowerCase() === "not sure"
                                 )
-                                  ? "text-[#BD7A4F] font-medium"
+                                  ? "text-orange-500 font-medium"
                                   : "text-gray-600 dark:text-gray-400"
                               }
                             >
@@ -1518,7 +1521,7 @@ const AdForm = ({
                         InputLabelProps={{
                           classes: {
                             root: "text-gray-500 dark:text-gray-400",
-                            focused: "text-[#BD7A4F] dark:text-orange-400",
+                            focused: "text-orange-500 dark:text-orange-400",
                           },
                         }}
                         className="w-full"
@@ -1526,7 +1529,7 @@ const AdForm = ({
 
                       <button
                         onClick={handleOpenPopupBulk}
-                        className="py-3 text-sm lg:text-base w-[200px] px-1 rounded-sm bg-[#BD7A4F] text-white hover:bg-orange-700">
+                        className="py-3 text-sm lg:text-base w-[200px] px-1 rounded-sm border border-orange-500 text-orange-500 hover:bg-orange-100">
                         <AddOutlinedIcon /> Add Bulk Price
                       </button>
 
@@ -1569,11 +1572,11 @@ const AdForm = ({
                               }}
                               className="hidden peer"
                             />
-                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-[#BD7A4F] peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
+                            <div className="w-5 h-5 border-2 border-gray-400 rounded-full peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-400 flex items-center justify-center">
                               {(formData["negotiable"]
                                 ? formData["negotiable"] === option.toLowerCase()
                                 : option.toLowerCase() === "not sure") && (
-                                  <div className="w-2.5 h-2.5 bg-[#BD7A4F] rounded-full"></div>
+                                  <div className="w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
                                 )}
                             </div>
                             <span
@@ -1584,7 +1587,7 @@ const AdForm = ({
                                     option.toLowerCase()
                                     : option.toLowerCase() === "not sure"
                                 )
-                                  ? "text-[#BD7A4F] font-medium"
+                                  ? "text-orange-500 font-medium"
                                   : "text-gray-600 dark:text-gray-400"
                               }
                             >
@@ -1630,7 +1633,7 @@ const AdForm = ({
                       InputLabelProps={{
                         classes: {
                           root: "text-gray-500 dark:text-gray-400",
-                          focused: "text-[#BD7A4F] dark:text-orange-400",
+                          focused: "text-orange-500 dark:text-orange-400",
                         },
                       }}
                       className="w-full"
@@ -1659,7 +1662,7 @@ const AdForm = ({
                       InputLabelProps={{
                         classes: {
                           root: "text-gray-500 dark:text-gray-400",
-                          focused: "text-[#BD7A4F] dark:text-orange-400",
+                          focused: "text-orange-500 dark:text-orange-400",
                         },
                       }}
                       className="w-full"
@@ -1804,7 +1807,7 @@ const AdForm = ({
                   <div className="flex w-full flex-col">
                     <div className="flex w-full gap-1">
 
-                      {user.user.phone ? (<>
+                      {user?.user?.phone ? (<>
 
                         <TextField
                           required={field.required}
@@ -1812,12 +1815,12 @@ const AdForm = ({
                           disabled // ⛔ Prevent editing
                           label={`${capitalizeFirstLetter(field.name)} (Verified)`} // ✅ Optional: Indicate it's verified
                           type="tel"
-                          value={`${user.user.phone}`}
+                          value={`${user?.user?.phone || ''}`}
                           variant="outlined"
                           InputProps={{
                             readOnly: true,
                             classes: {
-                              root: "bg-gray-100 dark:bg-[#2D3236] dark:text-gray-100",
+                              root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
                               notchedOutline: "border-green-500",
                               focused: "",
                             },
@@ -1830,7 +1833,7 @@ const AdForm = ({
                           }}
                           className="w-full"
                         />
-                        <p className="flex text-green-600 text-sm mt-1">✅ Phone verified</p>
+                        <p className="flex lg:w-[150px] text-green-600 text-sm mt-1">✅ Phone verified</p>
 
                       </>) : (<>
                         <div className="p-0">
@@ -1845,7 +1848,7 @@ const AdForm = ({
                   <div className="flex flex-col w-full gap-1">
                     <button
                       onClick={handleOpenPopup}
-                      className="py-3 w-full px-1 rounded-sm bg-[#BD7A4F] text-white hover:bg-orange-700">
+                      className="py-3 w-full px-1 rounded-sm border border-orange-500 text-orange-500 hover:bg-orange-100">
                       <AddOutlinedIcon /> Add Delivery Option
                     </button>
 
@@ -1864,33 +1867,10 @@ const AdForm = ({
                   </div>
                 )}
 
-                {field.type === "propertyarea" && (
-                  <div className="flex flex-col w-full gap-1">
-                    <button
-                      onClick={handleOpenPopupArea}
-                      className="py-3 w-full px-1 rounded-sm bg-[#BD7A4F] text-white hover:bg-orange-700">
-                      🗺️ Advanced Property Mapping
-                    </button>
 
-
-                    {showPopupArea && (
-                      <div className="fixed inset-0 flex items-center justify-center bg-gray-200 z-50">
-
-                        <GoogleMapping name={"propertyarea"}
-                          onChange={handleInputOnChange}
-                          selected={formData["propertyarea"] || []}
-                          onSave={handleSaveArea} />
-                      </div>
-
-
-
-                    )}
-                  </div>
-
-                )}
 
                 {field.type === "notify" && (
-                  <label className="flex items-center mt-2 mb-2 gap-2 dark:text-gray-400 text-[#BD7A4F] text-sm">
+                  <label className="flex items-center mt-2 mb-2 gap-2 dark:text-gray-400 text-orange-500 text-sm">
                     <BellIcon className="w-4 h-4" />
                     {field.options}
                   </label>
@@ -1900,23 +1880,14 @@ const AdForm = ({
                 )}
               </div>
             ))}
-            {Array.isArray(user.user?.verified) &&
-              user.user?.verified[0]?.accountverified === true &&
-              selectedSubCategory &&
-              !["Services", "Jobs", "Repair & Construction", "Buyer Requests", "Seeking Work CVs", "Donations"].includes(selectedCategory) && (
+            {selectedSubCategory &&
+              !["Services", "Jobs", "Repair & Construction", "Buyer Requests", "Seeking Work CVs", "Donations", "Lost and Found"].includes(selectedCategory) && (
                 <div className="mb-4 mt-2">
-                  <label className="font-semibold text-sm">Enable Bidding?</label>
-                  <input
-                    type="checkbox"
-                    checked={formData.biddingEnabled}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        biddingEnabled: e.target.checked,
-                      }))
-                    }
-                    className="ml-2"
-                  />
+                  <div className="flex gap-2 items-center">
+                    <label className="font-semibold text-sm">Enable Bidding?</label>
+                    <BiddingCheckbox handlePayNow={handlePay} formData={formData} setFormData={setFormData} user={user} />
+
+                  </div>
 
                   {formData.biddingEnabled && (
                     <div className="mt-4 space-y-4">
@@ -1978,7 +1949,7 @@ const AdForm = ({
                 </div>
               )}
 
-            {type === "Create" && selectedCategory !== "Donations" && selectedCategory !== "Buyer Requests" && selectedSubCategory && (
+            {type === "Create" && selectedCategory !== "Donations" && selectedCategory !== "Lost and Found" && selectedCategory !== "Buyer Requests" && selectedSubCategory && (
               <>
                 <div className="rounded-lg mt-4 p-0">
 
@@ -2053,7 +2024,7 @@ const AdForm = ({
                                     <div className="flex gap-2 text-sm">
                                       {daysRemaining > 0 && pack.name === Plan ? (
                                         <>
-                                          <div className="p-1 flex-block rounded-full bg-[#BD7A4F]">
+                                          <div className="p-1 flex-block rounded-full bg-orange-500">
                                             <p className="text-white text-xs">Active</p>
                                           </div>
                                         </>
@@ -2079,7 +2050,7 @@ const AdForm = ({
                                             pack.name === "Free" &&
                                             remainingAds > 0 && (
                                               <>
-                                                {/* <div className="p-1 w-full items-center justify-center flex rounded-full bg-[#BD7A4F]">
+                                                {/* <div className="p-1 w-full items-center justify-center flex rounded-full bg-orange-500">
                                               <p className="text-white text-xs">Active</p>
                                             </div>*/}
                                               </>
@@ -2104,7 +2075,7 @@ const AdForm = ({
                                               >
                                                 <p
                                                   className={`font-semibold ${activePackage === pack
-                                                    ? "text-[#BD7A4F]"
+                                                    ? "text-orange-500"
                                                     : "text-gray-800 dark:text-gray-400"
                                                     }`}
                                                 >
@@ -2125,8 +2096,8 @@ const AdForm = ({
                                   <div className="flex flex-wrap justify-end items-center p-2">
                                     <button
                                       className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
-                                        ? "bg-gradient-to-b from-orange-600 to-[#BD7A4F] text-white p-2 rounded-full"
-                                        : "border border-[#BD7A4F] text-[#BD7A4F] rounded-full p-2"
+                                        ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                        : "border border-orange-500 text-orange-500 rounded-full p-2"
                                         }`}
                                       onClick={() => handleButtonClick(0, "1 week")}
                                     >
@@ -2134,8 +2105,8 @@ const AdForm = ({
                                     </button>
                                     <button
                                       className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
-                                        ? "bg-gradient-to-b from-orange-600 to-[#BD7A4F] text-white p-2 rounded-full"
-                                        : "border border-[#BD7A4F] text-[#BD7A4F] rounded-full p-2"
+                                        ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                        : "border border-orange-500 text-orange-500 rounded-full p-2"
                                         }`}
                                       onClick={() => handleButtonClick(1, "1 month")}
                                     >
@@ -2159,9 +2130,9 @@ const AdForm = ({
             <button
               disabled={loading}
               onClick={handleSubmit}
-              className="py-3 w-full px-1 mt-2 items-center justify-center rounded-sm hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white">
+              className="py-3 w-full px-1 mt-2 items-center justify-center rounded-sm hover:bg-gray-900 bg-black text-white">
               <div className="flex w-full justify-center gap-1 items-center">
-                {loading && <CircularProgressWithLabel value={uploadProgress} />}
+                {loading && <CircularProgress />}
 
                 {loading ? "Submitting..." : `${type} Ad `}
               </div>
@@ -2169,7 +2140,7 @@ const AdForm = ({
 
             <p className="mt-2 text-xs text-gray-600 dark:text-gray-500 text-center">
               By clicking on Create Ad, you accept the{" "}
-              <span onClick={() => handleOpenTerms()} className="text-[#BD7A4F] cursor-pointer underline">
+              <span onClick={() => handleOpenTerms()} className="text-orange-500 cursor-pointer underline">
                 Terms of Use
               </span>
             </p>

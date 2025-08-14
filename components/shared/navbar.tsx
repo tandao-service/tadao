@@ -78,7 +78,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
     setIsOpenP(false);
   };
   return (
-    <div className="h-[60px] bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90% items-center flex p-2 lg:p-3 gap-1 w-full">
+    <div className="h-[60px] bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% items-center flex p-2 lg:p-3 gap-1 w-full">
 
       <div className="flex-1 mt-1">
         <div className="flex items-center">
@@ -117,7 +117,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
 
             <SignedIn>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   handleOpenBook();
@@ -126,7 +126,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                      <BookmarkIcon />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Bookmark</p>
@@ -137,7 +137,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
             </SignedIn>
             <SignedOut>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   setIsOpenP(true);
@@ -147,7 +147,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                      <BookmarkIcon />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Bookmark</p>
@@ -162,7 +162,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
 
             <SignedIn>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   handleOpenChat();
@@ -172,7 +172,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="relative flex items-center justify-center">
-                        <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                        <MessageIcon className="absolute" />
                         <div className="absolute z-10">
                           <Unreadmessages userId={userId} />
                         </div>
@@ -195,7 +195,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
             </SignedIn>
             <SignedOut>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-[#8C4B2C] bg-[#BD7A4F] tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   setIsOpenP(true);
@@ -205,7 +205,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <MessageIcon sx={{ fontSize: 16 }} className="absolute" />
+                      <MessageIcon className="absolute" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Message</p>
@@ -217,7 +217,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
           </>)}
 
           {popup !== "plan" && (<div
-            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-orange-400 bg-orange-500 text-white hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
             onClick={() => {
               handleOpenPlan();
@@ -226,7 +226,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <DiamondIcon sx={{ fontSize: 16 }} />
+                  <DiamondIcon />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Premium Services</p>
@@ -243,9 +243,9 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                   handleOpenSell();
 
                 }}
-                className={`w-[100px] dark:bg-[#131B1E] text-white dark:hover:bg-[#2D3236] dark:text-gray-300 hover:bg-[#8C4B2C] bg-[#BD7A4F] text-black p-1 rounded-full`}
+                className={`w-[100px] dark:bg-[#131B1E] bg-white dark:hover:bg-[#2D3236] dark:text-gray-300 text-gray-500 hover:text-gray-900 p-1 rounded-full`}
               >
-                <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+                <SellOutlinedIcon /> SELL
               </button>
 
             </SignedIn>
@@ -256,9 +256,9 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
                   setIsOpenP(true);
                   router.push("/sign-in");
                 }}
-                className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white dark:text-gray-300 hover:bg-[#8C4B2C] bg-[#BD7A4F] text-black p-1 rounded-full`}
+                className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white dark:text-gray-300 text-gray-500 hover:text-gray-900 p-1 rounded-full`}
               >
-                <SellOutlinedIcon sx={{ fontSize: 16 }} /> SELL
+                <SellOutlinedIcon /> SELL
               </button>
 
 
@@ -269,7 +269,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
         </div>
       </div>
       <SignedIn>
-        <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-[#8C4B2C] tooltip tooltip-bottom hover:cursor-pointer">
+        <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
           <UserButton afterSignOutUrl="/" />
         </div>
       </SignedIn>

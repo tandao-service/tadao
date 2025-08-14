@@ -80,7 +80,7 @@ const ChatComponent = ({ senderId, senderName, senderImage, user, onClose, handl
   if (isDarkMode === null) return null; // Avoid flickering before state is set
 
   return (
-    <div className="h-[100vh] bg-white lg:bg-[#FAE6DA] dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+    <div className="h-[100vh] bg-white lg:bg-gray-100 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
 
       <div className="z-10 top-0 fixed w-full">
         <Navbar user={user} userstatus={user.status} userId={senderId} onClose={onClose}

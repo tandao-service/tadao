@@ -338,12 +338,12 @@ const HomeDashboard = ({
                     <li
                       key={link.route}
                       className={`${activeTab === link.label &&
-                        "dark:bg-[#BD7A4F] dark:text-white bg-[#BD7A4F] text-white rounded-xl"
+                        "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-xl"
                         } dark:bg-gray-800 dark:text-gray-300 dark:rounded-xl p-medium-16 whitespace-nowrap`}
                     >
                       <div
                         onClick={() => handle(link.label)}
-                        className="flex hover:bg-[#FAE6DA] hover:text-[#BD7A4F] hover:rounded-xl p-3 mb-1 hover:cursor-pointer"
+                        className="flex hover:bg-gray-100 hover:text-orange-500 hover:rounded-xl p-3 mb-1 hover:cursor-pointer"
                       >
                         <span className="text-right my-auto">
                           {link.label === "Home" && (
@@ -366,11 +366,7 @@ const HomeDashboard = ({
                               <ChecklistOutlinedIcon className="w-10 p-1" />
                             </span>
                           )}
-                          {link.label === "Payments" && (
-                            <span>
-                              <MonetizationOnOutlinedIcon className="w-10 p-1" />
-                            </span>
-                          )}
+
                           {link.label === "Loan Requests" && (
                             <span>
                               <AccountBalanceOutlinedIcon className="w-10 p-1" />
@@ -426,8 +422,8 @@ const HomeDashboard = ({
                         <div
                           onClick={() => handle(link.label)}
                           className={`${activeTab === link.label
-                            ? "items-center p-3 flex gap-1 bg-[#BD7A4F] text-white rounded-xl hover:cursor-pointers"
-                            : "items-center p-3 flex gap-1 border rounded-xl dark:bg-gray-800 dark:text-gray-300 bg-white text-black hover:text-[#BD7A4F] hover:cursor-pointer hover:bg-[#FAE6DA]"
+                            ? "items-center p-3 flex gap-1 bg-orange-500 text-white rounded-xl hover:cursor-pointers"
+                            : "items-center p-3 flex gap-1 border rounded-xl dark:bg-gray-800 dark:text-gray-300 bg-white text-black hover:text-orange-500 hover:cursor-pointer hover:bg-gray-100"
                             }`}
                         >
                           <span className="text-right my-auto">
@@ -451,11 +447,7 @@ const HomeDashboard = ({
                                 <ChecklistOutlinedIcon className="w-10 p-1" />
                               </span>
                             )}
-                            {link.label === "Payments" && (
-                              <span>
-                                <MonetizationOnOutlinedIcon className="w-10 p-1" />
-                              </span>
-                            )}
+
                             {link.label === "Loan Requests" && (
                               <span>
                                 <AccountBalanceOutlinedIcon className="w-10 p-1" />
@@ -574,7 +566,7 @@ const HomeDashboard = ({
                       <button
                         onClick={handleOpenCategory}
                         className={`flex text-xs gap-1 items-center p-2 rounded-lg 
-    bg-black text-white hover:bg-[#BD7A4F] 
+    bg-black text-white hover:bg-orange-500 
     hover:dark:bg-emerald-700 dark:bg-emerald-800`}
                       >
                         <AddOutlinedIcon /> Add Category
@@ -641,8 +633,8 @@ const HomeDashboard = ({
                         <Image
                           src="/assets/icons/loading.gif"
                           alt="edit"
-                          width={60}
-                          height={60}
+                          width={40}
+                          height={40}
                         />
                         Loading packages...
                       </div></>) : (<> <Menulistpackages packagesList={packList} /></>)}

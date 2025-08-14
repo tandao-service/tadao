@@ -33,14 +33,14 @@ export async function broadcastMessage(type: string, message: string, recipient?
 
 
         const mailOptions = {
-          from: '"Tadao" <support@tadaoservices.com>',
+          from: '"Tadao" <support@tadaomarket.com>',
           to: recipient.email,
           subject: `You've got a message from Tadao`,
           html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
                 <div style="text-align: center; margin-bottom: 30px;">
                   <span style="display: inline-flex; align-items: center; gap: 8px;">
-                    <img src="https://tadaoservices.com/logo.png" alt="Tadao Logo" style="height: 30px; width: auto;" />
+                    <img src="https://tadaomarket.com/logo.png" alt="Tadao Logo" style="height: 30px; width: auto;" />
                     <span style="font-size: 18px; font-weight: bold; color: #FF914C;">Tadao</span>
                   </span>
                 </div>
@@ -52,7 +52,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
                 </div>
         
                 <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
-                <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
+                <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaomarket.com" style="color: #999;">tadaomarket.com</a>).</p>
               </div>
             `,
         };
@@ -78,8 +78,8 @@ export async function broadcastMessage(type: string, message: string, recipient?
               notification: {
                 title: "You've got a message from Tadao",
                 body: message,
-                icon: "https://tadaoservices.com/logo_green.png",
-                click_action: `https://tadaoservices.com/?action=chat`,
+                icon: "https://tadaomarket.com/logo.png",
+                click_action: `https://tadaomarket.com/?action=chat`,
               },
             }),
           });
@@ -122,14 +122,14 @@ export async function broadcastMessage(type: string, message: string, recipient?
 
         const emailPromises = recipients.map((email) => {
           const mailOptions = {
-            from: '"Tadao" <support@tadaoservices.com>',
+            from: '"Tadao" <support@tadaomarket.com>',
             to: email,
             subject: `You've got a message from Tadao`,
             html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f7f7f7; border-radius: 8px; color: #333;">
               <div style="text-align: center; margin-bottom: 30px;">
                 <span style="display: inline-flex; align-items: center; gap: 8px;">
-                  <img src="https://tadaoservices.com/logo_green.png" alt="Tadao Logo" style="height: 30px; width: auto;" />
+                  <img src="https://tadaomarket.com/logo.png" alt="Tadao Logo" style="height: 30px; width: auto;" />
                   <span style="font-size: 18px; font-weight: bold; color: #FF914C;">Tadao</span>
                 </span>
               </div>
@@ -141,7 +141,7 @@ export async function broadcastMessage(type: string, message: string, recipient?
               </div>
       
               <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;" />
-              <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaoservices.com" style="color: #999;">tadaoservices.com</a>).</p>
+              <p style="font-size: 12px; color: #999;">This email was sent by Tadao (<a href="https://tadaomarket.com" style="color: #999;">tadaomarket.com</a>).</p>
             </div>
           `,
           };
@@ -174,8 +174,8 @@ export async function broadcastMessage(type: string, message: string, recipient?
               notification: {
                 title: "💬 New Message",
                 body: message,
-                icon: "https://tadaoservices.com/logo_green.png",
-                click_action: `https://tadaoservices.com/?action=chat`,
+                icon: "https://tadaomarket.com/logo.png",
+                click_action: `https://tadaomarket.com/?action=chat`,
               },
             }),
           })

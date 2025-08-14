@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
         },
         webpush: {
             notification: {
-                icon: notification.icon || "https://tadaoservices.com/logo.png",
-                click_action: notification.click_action || "https://tadaoservices.com/?action=chat",
+                icon: notification.icon || "https://tadaomarket.com.com/logo.png",
+                click_action: notification.click_action || "https://tadaomarket.com.com/?action=chat",
             },
         },
         data: data || {},

@@ -72,7 +72,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       // Fullscreen Popover for Mobile
       <div className="fixed h-screen inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-0 flex flex-col">
         <div className="h-screen flex flex-col">
-          <div className="h-[50px] bg-gradient-to-r from-[#BD7A4F] to-[#BD7A4F] text-white p-2 rounded-t-lg">
+          <div className="h-[50px] bg-gradient-to-r from-orange-500 to-orange-500 text-white p-2 rounded-t-lg">
             <div className="flex justify-between w-full">
               <h3 className="font-semibold text-white">{title !== "Home" && (<>{title}</>)}</h3>
               <div onClick={onClose} className="cursor-pointer text-white">
@@ -83,7 +83,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           <div className="flex-1 w-full">
             {activeTab === 0 && (
               <>
-                <div className="bg-gradient-to-b from-[#BD7A4F] to-[#BD7A4F] h-full w-full flex flex-col p-0 mt-0">
+                <div className=" bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% h-full w-full flex flex-col p-0 mt-0">
                   <div className="mt-5 w-full">
                     <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
                       <div className="w-24 h-24">
@@ -98,7 +98,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
                     </div>
                     <div className="gap-2 justify-center flex w-full items-center">
-                      <h3 className="font-bold text-[#FAE6DA] text-sm lg:text-lg">
+                      <h3 className="font-bold text-black text-sm lg:text-lg">
                         Hi {senderName}
                       </h3>
                       <div className="h-10 w-10">
@@ -173,7 +173,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             )}
             {activeTab === 3 && (
               <>
-                <div className="bg-gradient-to-b from-[#BD7A4F] to-[#BD7A4F] h-full w-full flex flex-col p-0 mt-0">
+                <div className=" bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% h-full w-full flex flex-col p-0 mt-0">
                   <div className="mt-5 w-full">
                     <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
                       <div className="w-24 h-24">
@@ -188,7 +188,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
                     </div>
                     <div className="gap-2 justify-center flex w-full items-center">
-                      <h3 className="font-semibold text-2xl lg:text-lg text-[#FAE6DA] mb-4">
+                      <h3 className="font-semibold text-2xl lg:text-lg text-black mb-4">
                         Call Support
                       </h3>
 
@@ -209,7 +209,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             {tab.map((tab, index) => (
               <button
                 key={index}
-                className={`flex-1 text-sm py-2 rounded-t-lg text-center ${activeTab === index ? "text-[#BD7A4F] font-bold" : "text-gray-700"
+                className={`flex-1 text-sm py-2 rounded-t-lg text-center ${activeTab === index ? "text-orange-500 font-bold" : "text-gray-700"
                   }`}
                 onClick={() => handle(index)}
               >
@@ -226,9 +226,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
       </div>
     ) : (
-      <div className="fixed h-[500px] bottom-20 right-5 bg-[#BD7A4F] rounded-lg shadow-xl w-[460px] z-30">
+      <div className="fixed h-[500px] bottom-20 right-5 bg-orange-500 rounded-lg shadow-xl w-[460px] z-30">
         {/* Header */}
-        <div className="h-[50px] bg-[#BD7A4F] text-white p-2 rounded-t-lg flex justify-between items-center">
+        <div className="h-[50px]  bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% text-white p-2 rounded-t-lg flex justify-between items-center">
           <h3 className="font-semibold text-white">{title}</h3>
           <div onClick={onClose} className="cursor-pointer text-white">
             <CloseOutlinedIcon />
@@ -238,7 +238,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* Content */}
         <div className="flex-1 w-full overflow-y-auto">
           {activeTab === 0 && (
-            <div className="bg-gradient-to-b from-[#BD7A4F] to-[#BD7A4F] h-[400px] flex flex-col items-center justify-center p-0">
+            <div className=" bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% h-[400px] flex flex-col items-center justify-center p-0">
               <div className="w-24 h-24">
                 <Image
                   className="w-full h-full object-cover rounded-full"
@@ -248,14 +248,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   height={120}
                 />
               </div>
-              <h3 className="font-bold text-[#FAE6DA] text-lg mt-3">Hi {senderName}</h3>
+              <h3 className="font-bold text-black text-lg mt-3">Hi {senderName}</h3>
               <Image src="/hello.png" alt="logo" width={40} height={40} />
               <h3 className="font-semibold text-2xl text-white mt-2">How can we help?</h3>
             </div>
           )}
 
           {activeTab === 1 && (
-            <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-[#BD7A4F] to-[#BD7A4F] flex flex-col p-1">
+            <div className="rounded-t-sm h-[400px]  bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% flex flex-col p-1">
               <div className="flex-1 w-full">
                 <ChatBoxSupport
                   displayName={senderName}
@@ -289,7 +289,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           )}
 
           {activeTab === 2 && (
-            <div className="rounded-t-sm h-[400px] bg-gradient-to-b from-[#BD7A4F] to-[#BD7A4F] flex flex-col p-1">
+            <div className="rounded-t-sm h-[400px]  bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% flex flex-col p-1">
               <HelpBox
                 displayName={senderName}
                 uid={senderId}
@@ -308,7 +308,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           )}
           {activeTab === 3 && (
             <>
-              <div className="bg-gradient-to-b from-[#BD7A4F] to-[#BD7A4F] h-[400px] w-full flex flex-col p-0 mt-0">
+              <div className="bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% h-[400px] w-full flex flex-col p-0 mt-0">
                 <div className="mt-5 w-full">
                   <div className="flex items-center justify-center w-full gap-1 mt-5 mb-5">
                     <div className="w-24 h-24">
@@ -323,7 +323,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
                   </div>
                   <div className="gap-2 justify-center flex w-full items-center">
-                    <h3 className="font-semibold text-2xl lg:text-lg text-[#FAE6DA] mb-4">
+                    <h3 className="font-semibold text-2xl lg:text-lg text-black mb-4">
                       Call Support
                     </h3>
 
@@ -344,7 +344,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           {tab.map((tab, index) => (
             <button
               key={index}
-              className={`flex-1 text-sm py-2 rounded-t-lg text-center ${activeTab === index ? "text-[#BD7A4F] font-bold" : "text-gray-700"
+              className={`flex-1 text-sm py-2 rounded-t-lg text-center ${activeTab === index ? "text-orange-500 font-bold" : "text-gray-700"
                 }`}
               onClick={() => handle(index)}
             >

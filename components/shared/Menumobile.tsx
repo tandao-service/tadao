@@ -40,7 +40,7 @@ export default function Menumobile({ categoryList }: MobileProps) {
         <SignedIn>
           <div
             onClick={() => router.push("/ads/create")}
-            className="lg:hidden h-[100px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600 "
+            className="lg:hidden h-[100px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-orange-500 "
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">
@@ -55,7 +55,7 @@ export default function Menumobile({ categoryList }: MobileProps) {
         <SignedOut>
           <div
             onClick={() => router.push("/sign-in")}
-            className="lg:hidden h-[100px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-emerald-600 "
+            className="lg:hidden h-[100px] bg-emerald-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-emerald-300 hover:bg-orange-500 "
           >
             <div className="flex flex-col items-center text-center justify-center">
               <div className="h-12 w-12 rounded-full p-2">

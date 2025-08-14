@@ -24,7 +24,7 @@ export default function Bidding({ ad, userId, user }: adProps) {
     const router = useRouter();
 
     const highest = bids.length ? Math.max(...bids.map((b: any) => b.amount)) : 0;
-    const minBid = highest + ad.data.bidIncrement;
+    const minBid = Number(highest) + Number(ad.data.bidIncrement);
     const isOwner = userId === user._id;
 
     const handleCloseP = () => setIsOpenP(false);
@@ -39,36 +39,6 @@ export default function Bidding({ ad, userId, user }: adProps) {
             return;
         }
 
-        // if (!user.phone) {
-        //   if (!phone || phone.length < 9) {
-        //       toast({
-        //          variant: 'destructive',
-        //          title: 'Phone Required',
-        //         description: 'Enter a valid phone number before bidding.',
-        //    });
-        //     return;
-        // }
-
-        //try {
-        //    const update = await updateUserPhone(userId, phone);
-        //   if (!update.success) {
-        //      toast({
-        //          variant: 'destructive',
-        //          title: 'Failed to Save Phone',
-        //          description: update.message,
-        //         });
-        //         return;
-        //     }
-        //       user.phone = phone;
-        //  } catch (err) {
-        //      toast({
-        //          variant: 'destructive',
-        //          title: 'Error',
-        //           description: 'Phone update failed.',
-        //       });
-        //       return;
-        //    }
-        // }
 
 
         if (!phone) {
@@ -143,12 +113,12 @@ export default function Bidding({ ad, userId, user }: adProps) {
         // return null; // use this if you want to completely hide
     }
     return (
-        <div className="bg-gradient-to-r from-[#ffffff] from-10% via-[#FAE6DA] via-40% to-[#FAE6DA] to-90% shadow rounded-xl p-4 mt-6 mb-4 border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Bidding Section</h2>
+        <div className="bg-gradient-to-r from-orange-500 from-10% via-orange-400 via-40% to-orange-500 to-90% shadow rounded-xl p-4 mt-6 mb-4 border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-100 border-b mb-2">Bidding Section</h2>
 
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-100 mb-4">
                 Current Highest Bid:{' '}
-                <span className="font-bold text-[#BD7A4F]">Ksh {highest.toLocaleString()}</span>
+                <span className="font-bold text-white">Ksh {highest.toLocaleString()}</span>
             </p>
 
             {!userId ? (
@@ -157,12 +127,12 @@ export default function Bidding({ ad, userId, user }: adProps) {
                         setIsOpenP(true);
                         router.push('/sign-in');
                     }}
-                    className="text-sm text-red-600 hover:underline"
+                    className="text-sm text-red-600 rounded-full p-2 bg-white shadow hover:underline"
                 >
                     Please login to place a bid.
                 </button>
             ) : isOwner ? (
-                <p className="text-yellow-600 text-sm font-medium">You can&apos;t bid on your own item.</p>
+                <p className="text-gray-600 text-sm font-medium">You can&apos;t bid on your own item.</p>
             ) : (
                 <div className="space-y-3">
                     {!phone && (<>
@@ -170,13 +140,7 @@ export default function Bidding({ ad, userId, user }: adProps) {
                             <h1 className="text-xl font-bold mb-4">Enter your phone number</h1>
                             <PhoneVerification onVerified={handleVerified} />
                         </div>
-                        {/*  <input
-                            type="tel"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="Enter your phone number"
-                            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-[#BD7A4F]/40"
-                        />*/}
+
                     </>)}
                     <input
                         type="number"
@@ -184,14 +148,14 @@ export default function Bidding({ ad, userId, user }: adProps) {
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         placeholder={`Enter at least Ksh ${minBid}`}
-                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-[#BD7A4F]/40"
+                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-orange-500/40"
                     />
                     <button
                         onClick={submitBid}
                         disabled={loading}
                         className={`w-full py-2 text-white text-sm rounded ${loading
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-[#8C4B2C] via-[#BD7A4F] to-[#F5CBA7] hover:opacity-90'
+                            ? 'bg-gray-600 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 hover:opacity-90'
                             }`}
                     >
                         {loading ? 'Placing...' : 'Place Bid'}
@@ -205,9 +169,10 @@ export default function Bidding({ ad, userId, user }: adProps) {
                 {bids.length === 0 ? (
                     <p className="text-gray-500 text-sm italic">No bids yet.</p>
                 ) : (
-                    <ul className="space-y-2 max-h-40 overflow-y-auto border rounded p-2 bg-gray-50">
+                    <ul className="space-y-2 max-h-40 overflow-y-auto border rounded p-2 bg-gray-100">
                         {bids
                             .slice()
+                            .reverse()
                             .sort((a: any, b: any) => b.timestamp - a.timestamp)
                             .map((bid: any, idx: number) => (
                                 <li key={idx} className="text-sm text-gray-700">

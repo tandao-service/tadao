@@ -42,6 +42,7 @@ interface WindowProps {
   handleOpenSettings: () => void;
   handleOpenShop: (shopId: any) => void;
   handleCategory: (value: string) => void;
+  handlePay: (value: string) => void;
   type: string;
   userId: string;
   userName: string;
@@ -55,7 +56,7 @@ interface WindowProps {
 }
 
 const PopupAdEdit = ({ isOpen, category, subcategory, type, user, userId, userImage, userName, subcategoryList, packagesList, ad, handleOpenPerfomance,
-  handleOpenSettings,
+  handleOpenSettings, handlePay,
   handleOpenShop, handleCategory, onClose, handleAdView, handleOpenBook, handleOpenChat, handleOpenPlan, handleOpenSell, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: WindowProps) => {
   useEffect(() => {
     if (isOpen) {
@@ -100,7 +101,8 @@ const PopupAdEdit = ({ isOpen, category, subcategory, type, user, userId, userIm
           handleOpenSettings={handleOpenSettings}
           handleCategory={handleCategory}
           userImage={userImage}
-          category={category} subcategory={subcategory} />
+          category={category} subcategory={subcategory}
+          handlePay={handlePay} />
         <Toaster />
       </div>
     </div>

@@ -33,6 +33,7 @@ type MobileProps = {
   handleHoverCategory: (value: string) => void;
   handleSubCategory: (category: string, subcategory: string) => void;
   handleDrawer: (category: string, subcategory: string) => void;
+  setisNav: (value: boolean) => void;
 
 };
 const CategoryMenu = ({
@@ -44,6 +45,7 @@ const CategoryMenu = ({
   handleCategory,
   handleSubCategory,
   handleHoverCategory,
+  setisNav,
   loans,
 }: MobileProps) => {
   //const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -69,8 +71,17 @@ const CategoryMenu = ({
       const footerTop = footer.getBoundingClientRect().top + window.scrollY;
       if (scrollPosition > 200 && scrollPosition + windowHeight < footerTop) {
         setIsSticky(true);
+
       } else {
         setIsSticky(false);
+
+      }
+      if (scrollPosition > 200) {
+
+        setisNav(true);
+      } else {
+
+        setisNav(false);
       }
     };
 
@@ -84,42 +95,55 @@ const CategoryMenu = ({
   const searchParams = useSearchParams();
   const { toast } = useToast()
 
-  const handleCategoryy = (query: string) => {
-    let newUrl = "";
-    if (query) {
-      newUrl = formUrlQuery({
-        params: searchParams.toString(),
-        key: "category",
-        value: query,
-      });
-    } else {
-      newUrl = removeKeysFromQuery({
-        params: searchParams.toString(),
-        keysToRemove: ["category"],
-      });
-    }
-    setIsOpenP(true);
-    router.push("/category/" + newUrl, { scroll: false });
-  };
-  const handleSubCategoryy = (category: string, subcategory: string) => {
-    let newUrl = "";
-    if (category && subcategory) {
-      newUrl = formUrlQuerymultiple({
-        params: "",
-        updates: {
-          category: category.toString(),
-          subcategory: subcategory.toString(),
-        },
-      });
-    } else {
-      newUrl = removeKeysFromQuery({
-        params: searchParams.toString(),
-        keysToRemove: ["subcategory"],
-      });
-    }
-    setIsOpenP(true);
-    router.push("/category/" + newUrl, { scroll: false });
-  };
+
+  function useScrollButtons(deps: any[] = []) {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [showScrollUp, setShowScrollUp] = useState(false);
+    const [showScrollDown, setShowScrollDown] = useState(true);
+
+    const handleScroll = () => {
+      if (!scrollRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+
+      setShowScrollUp(scrollTop > 0);
+
+      // Add tolerance so bottom button hides properly
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+      setShowScrollDown(!atBottom);
+    };
+    const scrollToTop = () => {
+      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    useEffect(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+
+      el.addEventListener("scroll", handleScroll);
+      handleScroll(); // initialize state
+
+      return () => el.removeEventListener("scroll", handleScroll);
+    }, deps); // 👈 run whenever deps change (like hoveredCategory)
+
+    return {
+      scrollRef,
+      showScrollUp,
+      showScrollDown,
+      scrollToTop,
+      scrollToBottom,
+    };
+  }
+  const categoryScroll = useScrollButtons(); // always rendered
+  const subcategoryScroll = useScrollButtons([hoveredCategory]); // reattach on change
   return (
     <div className="relative flex">
       <div className="w-64 p-0">
@@ -127,18 +151,53 @@ const CategoryMenu = ({
           className={`flex flex-col items-center transition-all duration-300 ${isSticky ? "fixed top-[70px] z-10" : "relative"
             }`}
         >
-          <div className="w-64 dark:bg-[#2D3236] bg-white p-1 shadow-lg">
-            {/*    <div className="p-1 border-b dark:border-gray-600">
+          <div className="w-64 dark:bg-[#2D3236] bg-white p-1 shadow-lg relative">
+            <style jsx>{`
+  
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+  `}</style>
+            {/* Scroll Up Button */}
+            {/* Scroll to Top Button (floating) */}
+            {categoryScroll.showScrollUp && (<button
+              onClick={categoryScroll.scrollToTop}
+              className="absolute top-1 rounded-full left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-gradient-to-l from-orange-400 to-orange-500 text-white shadow-lg hover:from-orange-500 hover:to-orange-400"
+            >
+              ↑ Top
+            </button>)}
+
+            {/* Scroll to Bottom Button (floating) */}
+            {categoryScroll.showScrollDown && (<button
+              onClick={categoryScroll.scrollToBottom}
+              className="absolute bottom-1 rounded-full left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-gradient-to-l from-orange-400 to-orange-500 text-white shadow-lg hover:from-orange-500 hover:to-orange-400"
+            >
+              ↓ Bottom
+            </button>)}
+
+            <div className="p-1 border-b dark:border-gray-600">
               <h2 className="text-lg font-semibold">Categories</h2>
-            </div>*/}
-            <ScrollArea ref={listRef} className="h-[450px] w-full">
+            </div>
+
+            {/* Scroll Area with hidden scrollbar */}
+            <div
+              ref={categoryScroll.scrollRef}
+              className="h-[450px] w-full overflow-y-auto scrollbar-none"
+              style={{ scrollBehavior: "smooth" }}
+            >
 
               {categoryList.map((category: any, index: number) => (
                 <div
                   key={index}
                   onClick={() => {
-                    if (category.toString().trim() === "Donations" || category.name.toString().trim() === "Buyer Requests" ? (category.adCount + loans.adCount) > 0 : category.adCount > 0) {
-                      if (category.toString().trim() === "Donations" || category.name.toString().trim() !== "Buyer Requests") {
+                    if (category.toString().trim() === "Lost and Found" ||
+                      category.toString().trim() === "Donations" || category.name.toString().trim() === "Buyer Requests" ? (category.adCount + loans.adCount) > 0 : category.adCount > 0) {
+                      if (category.toString().trim() === "Lost and Found" || category.toString().trim() === "Donations" || category.name.toString().trim() !== "Buyer Requests") {
                         handleCategory(category.name);
                       }
 
@@ -155,8 +214,8 @@ const CategoryMenu = ({
                     }
                   }}
                   onMouseEnter={() => handleHoverCategory(category.name)}
-                  className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-[#FAE6DA] ${hoveredCategory === category.name
-                    ? "bg-[#FAE6DA] dark:bg-[#131B1E]"
+                  className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-gray-100 ${hoveredCategory === category.name
+                    ? "bg-gray-100 dark:bg-[#131B1E]"
                     : "dark:bg-[#2D3236] bg-white"
                     } `}
                 >
@@ -201,7 +260,9 @@ const CategoryMenu = ({
 
                 </div>
               ))}
-            </ScrollArea>
+            </div>
+
+
           </div>
         </div>
       </div>
@@ -214,22 +275,55 @@ const CategoryMenu = ({
           onMouseEnter={() => handleHoverCategory(hoveredCategory)}
           onMouseLeave={() => handleHoverCategory('')}
         >
-          {/* <div className="p-1 border-b dark:border-gray-600">
+          <div className="p-1 border-b dark:border-gray-600">
             <h2 className="text-lg font-semibold">Subcategories</h2>
-          </div> */}
-          <ScrollArea className="h-[450px] w-full">
+          </div>
+          {subcategoryScroll.showScrollUp && (<button
+            onClick={subcategoryScroll.scrollToTop}
+            className="absolute top-1 rounded-full left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-gradient-to-l from-orange-400 to-orange-500 text-white shadow-lg hover:from-orange-500 hover:to-orange-400"
+          >
+            ↑ Top
+          </button>)}
+
+          {/* Scroll to Bottom Button (floating) */}
+          {subcategoryScroll.showScrollDown && (<button
+            onClick={subcategoryScroll.scrollToBottom}
+            className="absolute bottom-1 rounded-full left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-gradient-to-l from-orange-400 to-orange-500 text-white shadow-lg hover:from-orange-500 hover:to-orange-400"
+          >
+            ↓ Bottom
+          </button>)}
+
+
+
+          {/* Scroll Area with hidden scrollbar */}
+          <div
+            ref={subcategoryScroll.scrollRef}
+            className="h-[450px] w-full overflow-y-auto scrollbar-none"
+            style={{ scrollBehavior: "smooth" }}
+          >
+            <style jsx>{`
+  
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+  `}</style>
             {subcategoryList
               .filter((cat: any) => cat.category.name === hoveredCategory)
               .map((sub: any, index: number) => (
                 <div
                   key={index}
-                  className="relative dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:hover:dark:bg-[#131B1E] hover:bg-[#FAE6DA] border-b dark:border-gray-600"
+                  className="relative dark:bg-[#2D3236] text-black dark:text-[#F1F3F3] bg-white flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:hover:dark:bg-[#131B1E] hover:bg-gray-100 border-b dark:border-gray-600"
 
                   onClick={() => {
-                    if (hoveredCategory.toString().trim() === "Donations" || hoveredCategory.toString().trim() === "Buyer Requests" ? (sub.adCount + loans.adCount + 1) > 0 : sub.adCount > 0) {
+                    if (hoveredCategory.toString().trim() === "Lost and Found" || hoveredCategory.toString().trim() === "Donations" || hoveredCategory.toString().trim() === "Buyer Requests" ? (sub.adCount + loans.adCount + 1) > 0 : sub.adCount > 0) {
 
 
-                      if (hoveredCategory.toString().trim() === "Donations" || hoveredCategory.toString().toString().trim() === "Buyer Requests") {
+                      if (hoveredCategory.toString().trim() === "Lost and Found" || hoveredCategory.toString().trim() === "Donations" || hoveredCategory.toString().toString().trim() === "Buyer Requests") {
                         // setWantedcategory(hoveredCategory);
                         // setWantedsubcategory(sub.subcategory);
                         // setShowWantedPopup(true); // Show the popup instead
@@ -278,16 +372,10 @@ const CategoryMenu = ({
                       </div>
                     </span>
                   </div>
-                  {/* <div
-                    className={`absolute h-full w-full ${
-                      sub.adCount > 0
-                        ? ""
-                        : "bg-white bg-opacity-50 dark:bg-[#2D3236] dark:bg-opacity-40"
-                    } `}
-                  ></div>*/}
+
                 </div>
               ))}
-          </ScrollArea>
+          </div>
         </div>
       )}
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />

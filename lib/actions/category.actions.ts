@@ -89,16 +89,19 @@ export const getAllCategories = async () => {
         $project: {
           dynamicads: 0 // Exclude the dynamicAds field from the output
         }
+      },
+      {
+        $sort: { _id: 1 } // Sort by creation order (oldest first)
       }
     ]);
 
-    //console.log(categories);
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
     console.error("Error fetching categories:", error);
     handleError(error);
   }
 };
+
 
 export const getselectedCategories = async () => {
   try {

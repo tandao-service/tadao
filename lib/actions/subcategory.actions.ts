@@ -70,7 +70,7 @@ export const getallcategories = async () => {
     await connectToDatabase();
 
 
-    const category = await populateAd(Subcategory.find());
+    const category = await populateAd(Subcategory.find().sort({ _id: 1 }));
 
     if (!category) throw new Error('category not found')
     //console.log(category)
@@ -97,7 +97,7 @@ export const getAllSubCategories = async () => {
     await connectToDatabase();
 
     // Step 1: Get all subcategories with their categories populated
-    const subcategories = await Subcategory.find({}).populate({
+    const subcategories = await Subcategory.find({}).sort({ _id: 1 }).populate({
       path: "category",
       model: Category,
       select: "name imageUrl"

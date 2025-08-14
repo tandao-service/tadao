@@ -116,7 +116,7 @@ const DashboardMyads = ({
   onClose, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenSell, handleAdEdit, handleAdView, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety,
 }: // Accept the onSortChange prop
   CollectionProps) => {
-  const [activeButton, setActiveButton] = useState(0);
+  //  const [activeButton, setActiveButton] = useState(0);
   const [isVertical, setisVertical] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -126,36 +126,10 @@ const DashboardMyads = ({
   const currentTime = new Date();
   const remainingTime = expiryDate.getTime() - currentTime.getTime();
   const daysRemaining = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
-  const color = user.currentpack.color;
-  const planPackage = user.currentpack.name;
+  //const color = user.currentpack.color;
+  //  const planPackage = user.currentpack.name;
   const isAdCreator = userId === shopAcc._id;
-  const handleButtonClick = (index: number) => {
-    setActiveButton(index);
-    if (index === 0) {
-      setisVertical(true);
-    } else {
-      setisVertical(false);
-    }
-  };
 
-  const [query, setQuery] = useState("");
-  const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
-
-
-  const handleSortChange = (selectedOption: string) => {
-    //let newUrl = "";
-    if (selectedOption) {
-
-      setNewqueryObject({
-        ...queryObject, // Preserve existing properties
-        sortby: selectedOption,
-      });
-
-      setActiveButton(1);
-
-    }
-
-  };
 
 
 
@@ -181,8 +155,8 @@ const DashboardMyads = ({
 
   return (
     <>
-      <div className="h-[100vh] bg-[#FAE6DA] p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-        <div className="h-full overflow-y-auto bg-[#FAE6DA] border">
+      <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+        <div className="h-full overflow-y-auto bg-gray-100 border">
           <style jsx>{`
     @media (max-width: 1024px) {
       div::-webkit-scrollbar {

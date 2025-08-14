@@ -177,7 +177,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                   <h2 className="font-semibold">
                     Editing {category.subcategory}
                     {"("}
-                    {category.category.name}-{category._id}
+                    {category.category.name}
                     {")"}
                   </h2>
                   <div className="mb-4">
@@ -227,12 +227,12 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                           </option>
                           <option value="delivery">Delivery Option</option>
                           <option value="youtube-link">YouTube link</option>
-                           <option value="notify">notify</option>
+                          <option value="notify">notify</option>
                           <option value="related-autocompletes">
                             Related-autocompletes
                           </option>
                         </select>
-                      {/*   {(field.type === "select" ||
+                        {/*   {(field.type === "select" ||
                           field.type === "radio" ||
                           field.type === "checkbox" ||
                           field.type === "autocomplete" ||
@@ -256,16 +256,16 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                           </div>
                         )}*/}
                         {(field.type === "select" ||
-  field.type === "multi-select" ||
-  field.type === "radio" ||
-  field.type === "notify" ||
-  field.type === "autocomplete" ||
-  field.type === "checkbox") && (
-  <input
-    type="text"
-    placeholder={field.type === "notify" ? "Notification" : "Comma-separated options"}
-    value={field.options.join(",")}
-    onChange={(e) =>
+                          field.type === "multi-select" ||
+                          field.type === "radio" ||
+                          field.type === "notify" ||
+                          field.type === "autocomplete" ||
+                          field.type === "checkbox") && (
+                            <input
+                              type="text"
+                              placeholder={field.type === "notify" ? "Notification" : "Comma-separated options"}
+                              value={field.options.join(",")}
+                              onChange={(e) =>
                                 handleEditFieldChange(
                                   index,
                                   "options",
@@ -274,9 +274,9 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                                     .map((option) => option.trim())
                                 )
                               }
-    className="border rounded-lg p-2 flex-1 dark:text-gray-300 dark:bg-[#2D3236] bg-white"
-  />
-)}
+                              className="border rounded-lg p-2 flex-1 dark:text-gray-300 dark:bg-[#2D3236] bg-white"
+                            />
+                          )}
 
                         {field.type === "related-autocompletes" && (
                           <TextareaAutosize
@@ -418,18 +418,18 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                               <span className="text-red-500"> *Required</span>
                             )}
                             {(field.type === "select" ||
-                             field.type === "notify" ||
+                              field.type === "notify" ||
                               field.type === "autocomplete" ||
                               field.type === "multi-select") && (
-                              <div className="ml-4 dark:text-gray-400 text-sm text-gray-600">
-                                Options: {field.options.join(", ")}{" "}
-                                {field.multiSelect && (
-                                  <span className="dark:text-gray-300 text-blue-500">
-                                    (Multi-Select)
-                                  </span>
-                                )}
-                              </div>
-                            )}
+                                <div className="ml-4 dark:text-gray-400 text-sm text-gray-600">
+                                  Options: {field.options.join(", ")}{" "}
+                                  {field.multiSelect && (
+                                    <span className="dark:text-gray-300 text-blue-500">
+                                      (Multi-Select)
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                           </li>
                         ))}
                       </ul>

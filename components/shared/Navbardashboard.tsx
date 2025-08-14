@@ -78,8 +78,8 @@ export default function Navbardashboard({
     setIsOpenP(false);
   };
   return (
-    <div className="w-full bg-gray-200">
-      <div className="fixed bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90% border-b z-10 flex p-3 w-full">
+    <div className="w-full bg-gray-100">
+      <div className="fixed bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% border-b z-10 flex p-3 w-full">
         <div className="flex-1">
           <div className="flex items-center">
 

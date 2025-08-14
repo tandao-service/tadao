@@ -115,7 +115,7 @@ const SearchNow = ({
           <div>
             <button
               onClick={handleSearch}
-              className="flex justify-center items-center h-12 w-12 hover:bg-[#FF914C] bg-gradient-to-l  hover:from-[#BD7A4F] from-[#8C4B2C] to-[#BD7A4F] text-white rounded-sm"
+              className="flex justify-center items-center h-12 w-12 bg-gradient-to-l  hover:from-orange-500 hover:to-orange-500 from-orange-400 to-orange-500 text-white rounded-sm"
             >
               <SearchOutlinedIcon />
             </button>
@@ -187,7 +187,7 @@ const SearchNow = ({
           <div>
             <button
               onClick={handleOpenSearchByTitle}
-              className="flex justify-center items-center h-12 w-12 bg-gradient-to-l hover:from-[#BD7A4F] from-[#FF914C] to-[#BD7A4F] text-white rounded-sm"
+              className="flex justify-center items-center h-12 w-12 bg-gradient-to-l hover:from-orange-500 from-orange-500 to-orange-400 text-white rounded-sm"
             >
               <SearchOutlinedIcon />
             </button>

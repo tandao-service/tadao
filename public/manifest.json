@@ -1,11 +1,11 @@
 {
-    "name": "Tadao Services",
+    "name": "Tadao",
     "short_name": "Tadao",
     "start_url": "/?source=pwa",
     "scope": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#BD7A4F",
+    "theme_color": "#f97316",
     "orientation": "portrait",
     "icons": [
         {

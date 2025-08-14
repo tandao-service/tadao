@@ -78,10 +78,10 @@ const Verification: React.FC<SettingsProp> = ({
   }
 
   const verifiedContent = (
-    <div className="flex justify-between dark:bg-[#233338] dark:text-gray-300 bg-white">
+    <div className="flex justify-between dark:bg-[#233338] dark:text-gray-300 bg-green-100">
       <VerifiedUserOutlinedIcon
         sx={{ fontSize: 24 }}
-        className="text-emerald-600"
+        className="text-green-600"
       />
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-emerald-600">
@@ -142,7 +142,7 @@ const Verification: React.FC<SettingsProp> = ({
       {user.verified && user?.verified[0]?.accountverified === true ? (
         <ShowPopup
           trigger={
-            <p className="text-white p-1 bg-[#30AF5B] rounded-sm text-sm cursor-pointer hover:underline">
+            <p className="text-green-700 p-1 bg-green-100 rounded-sm text-sm cursor-pointer hover:underline">
               <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
               Verified Seller
             </p>

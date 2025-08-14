@@ -1,31 +1,26 @@
+// middleware.ts
+import { NextResponse } from 'next/server';
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-//export default clerkMiddleware()
-const isProtectedRoute = createRouteMatcher([
-  '/shop(.*)',
-  '/chat(.*)',
-  '/plan(.*)',
-  '/pay(.*)',
-  '/bookmark(.*)',
-  '/reviews(.*)',
-  '/settings(.*)',
-  '/location(.*)',
-  // '/privacy(.*)',
-  // '/safety(.*)',
-  '/performance(.*)',
-  // '/about(.*)',
-  '/faq(.*)',
-  '/home(.*)',
-  '/categories(.*)',
-  '/packages(.*)',
-
-]);
+const isProtectedRoute = createRouteMatcher(['/home(.*)']);
 
 export default clerkMiddleware((auth, req) => {
+  const ua = req.headers.get('user-agent') || '';
+  const isBot = /(googlebot|bingbot|yandex|duckduckbot|slurp|baiduspider|facebookexternalhit|twitterbot|applebot)/i.test(ua);
+
+  if (isBot && req.nextUrl.pathname === '/') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/google-home';
+    return NextResponse.redirect(url);
+  }
+
   if (isProtectedRoute(req)) auth().protect();
 });
+
 export const config = {
-  // The following matcher runs middleware on all routes
-  // except static assets.
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!.+\\.[\\w]+$|_next).*)',
+    '/',
+    '/(api|trpc|property)(.*)',
+  ],
 };
