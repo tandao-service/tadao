@@ -30,14 +30,14 @@ export default function Header({ handleFilter, handleOpenSearchByTitle, AdsCount
   };
   return (
     <div
-      className="relative flex bg-cover bg-center h-[350px]"
+      className="relative flex bg-cover bg-center h-auto lg:h-[350px]"
       style={{
         backgroundImage: "url('/assets/header-bg.png')", // your new image path
       }}
     >
       <div className="lg:mb-10 mx-auto md:my-auto py-2 lg:py-10 md:py-0 w-[90%] md:w-[40%] text-center">
-        <div className="mt-[40px] lg:mt-10">
-          <div className="text-3xl mb-5 text-white"
+        <div className="mt-[60px] lg:mt-10">
+          <div className="text-base lg:text-3xl mb-2 lg:mb-5 text-white"
             style={{
               animation: "fadeSlideUp 0.8s ease-out forwards",
               animationDelay: "0.2s",
