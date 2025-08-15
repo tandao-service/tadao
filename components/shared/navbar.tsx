@@ -78,7 +78,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
     setIsOpenP(false);
   };
   return (
-    <div className="h-[60px] bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% items-center flex p-2 lg:p-3 gap-1 w-full">
+    <div className="h-[60px] bg-gradient-to-r from-orange-500 from-10% via-orange-500 via-40% to-orange-500 to-90% items-center flex p-2 lg:p-3 gap-1 w-full">
 
       <div className="flex-1 mt-1">
         <div className="flex items-center">
@@ -117,7 +117,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
 
             <SignedIn>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   handleOpenBook();
@@ -137,7 +137,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
             </SignedIn>
             <SignedOut>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   setIsOpenP(true);
@@ -162,7 +162,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
 
             <SignedIn>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   handleOpenChat();
@@ -195,7 +195,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
             </SignedIn>
             <SignedOut>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 bg-orange-500 tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   setIsOpenP(true);
@@ -217,7 +217,7 @@ export default function Navbar({ userstatus, user, userId, onClose, popup, handl
           </>)}
 
           {popup !== "plan" && (<div
-            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-orange-400 bg-orange-500 text-white hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-orange-400 text-white hover:bg-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
             data-tip="Messages"
             onClick={() => {
               handleOpenPlan();

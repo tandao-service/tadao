@@ -105,12 +105,12 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
   //isnav
   return (
     <div
-      className={`w-full bg-gradient-to-r from-orange-300  from-10% via-orange-400 via-40% to-orange-500 to-90% ${isnav ? "lg:from-orange-400  lg:via-orange-400 lg:to-orange-500" : "lg:from-transparent  lg:via-transparent lg:to-transparent"
+      className={`w-full bg-gradient-to-r from-orange-500 from-10% via-orange-500 via-40% to-orange-500 to-90% ${isnav ? "lg:from-orange-500  lg:via-orange-400 lg:to-orange-500" : "lg:from-transparent  lg:via-transparent lg:to-transparent"
         }`}
     >
       <div
 
-        className={`fixed z-10 flex p-3 w-full bg-gradient-to-r from-orange-300 from-10% via-orange-400 via-40% to-orange-500 to-90% ${isnav ? "lg:from-orange-400  lg:via-orange-400 lg:to-orange-500" : "lg:from-transparent  lg:via-transparent lg:to-transparent"
+        className={`fixed z-10 flex p-3 w-full bg-gradient-to-r from-orange-500 from-10% via-orange-500 via-40% to-orange-500 to-90% ${isnav ? "lg:from-orange-500  lg:via-orange-400 lg:to-orange-500" : "lg:from-transparent  lg:via-transparent lg:to-transparent"
           }`}
       >
         <div className="flex-1">

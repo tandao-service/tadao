@@ -79,7 +79,7 @@ export default function Navbardashboard({
   };
   return (
     <div className="w-full bg-gray-100">
-      <div className="fixed bg-gradient-to-r from-orange-400 from-10% via-orange-500 via-40% to-orange-500 to-90% border-b z-10 flex p-3 w-full">
+      <div className="fixed bg-gradient-to-r from-orange-500 from-10% via-orange-400 via-40% to-orange-500 to-90% border-b z-10 flex p-3 w-full">
         <div className="flex-1">
           <div className="flex items-center">
 

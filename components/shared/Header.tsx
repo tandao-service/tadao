@@ -32,7 +32,7 @@ export default function Header({ handleFilter, handleOpenSearchByTitle, AdsCount
     <div
       className="relative flex bg-cover bg-center h-auto lg:h-[350px]"
       style={{
-        backgroundImage: "url('/assets/header-bg.png')", // your new image path
+        backgroundImage: "url('/assets/header-bg.jpg')", // your new image path
       }}
     >
       <div className="lg:mb-10 mx-auto md:my-auto py-2 lg:py-10 md:py-0 w-[90%] md:w-[40%] text-center">
