@@ -58,6 +58,7 @@ export default function PhoneVerification({
 
     setLoading(true);
     try {
+    
       const result = await signInWithPhoneNumber(
         auth,
         fullPhone,

@@ -6,32 +6,16 @@ importScripts("https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-com
 
 // Initialize Firebase
 firebase.initializeApp({
-  apiKey: "Bm1FGVUv38Bd7h8p7pj65bc_yrrezQ5aU",
-  authDomain: "pocketshop-f7bde.firebaseapp.com",
-  projectId: "pocketshop-f7bde",
-  storageBucket: "pocketshop-f7bde.firebasestorage.app",
-  messagingSenderId: "619841698415",
-  appId: "1:619841698415:web:7cfdeab0b8d55cfc246b9a"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGE_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
 });
 
 // Initialize messaging
 const messaging = firebase.messaging();
-
-// Handle background messages
-//messaging.onBackgroundMessage(function (payload) {
-//  console.log('Received background message ', payload);
-
-// const notificationTitle = payload.notification.title;
-// const notificationOptions = {
-//   body: payload.notification.body,
-//   icon: payload.notification.icon || '/logo_green.png',
-//   data: {
-//     url: payload.data?.url || 'https://pocketshop.co.ke'
-//   }
-//  };
-
-// self.registration.showNotification(notificationTitle, notificationOptions);
-//});
 messaging.onBackgroundMessage(async function (payload) {
   console.log('Received background message ', payload);
 
@@ -44,7 +28,7 @@ messaging.onBackgroundMessage(async function (payload) {
 
   for (const client of allClients) {
     // Check if at least one window is focused and open on your app domain
-    if (client.url.includes('pocketshop.co.ke') && 'focus' in client) {
+    if (client.url.includes('tadaomarket.com') && 'focus' in client) {
       isAppOpen = true;
       break;
     }
@@ -54,9 +38,9 @@ messaging.onBackgroundMessage(async function (payload) {
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
       body: payload.notification.body,
-      icon: payload.notification.icon || '/logo_green.png',
+      icon: payload.notification.icon || '/logo.png',
       data: {
-        url: payload.data?.url || 'https://pocketshop.co.ke',
+        url: payload.data?.url || 'https://tadaomarket.com',
       },
     };
 
