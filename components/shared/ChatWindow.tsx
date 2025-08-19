@@ -72,7 +72,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       // Fullscreen Popover for Mobile
       <div className="fixed h-screen inset-0 z-50 bg-white dark:bg-[#222528] dark:text-gray-100 p-0 flex flex-col">
         <div className="h-screen flex flex-col">
-          <div className="h-[50px] bg-gradient-to-r from-orange-500 to-orange-500 text-white p-2 rounded-t-lg">
+          <div className="h-[50px] bg-gradient-to-r from-orange-500 to-orange-500 text-white p-2">
             <div className="flex justify-between w-full">
               <h3 className="font-semibold text-white">{title !== "Home" && (<>{title}</>)}</h3>
               <div onClick={onClose} className="cursor-pointer text-white">
@@ -89,7 +89,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       <div className="w-24 h-24">
                         <Image
                           className="w-full h-full object-cover"
-                          src={"/support.webp"}
+                          src={"/support.png"}
                           alt="Profile Image"
                           width={120}
                           height={120}
@@ -179,7 +179,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       <div className="w-24 h-24">
                         <Image
                           className="w-full h-full object-cover"
-                          src={"/support.webp"}
+                          src={"/support.png"}
                           alt="Profile Image"
                           width={120}
                           height={120}
@@ -242,7 +242,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <div className="w-24 h-24">
                 <Image
                   className="w-full h-full object-cover rounded-full"
-                  src="/support.webp"
+                  src="/support.png"
                   alt="Profile Image"
                   width={120}
                   height={120}
@@ -314,7 +314,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     <div className="w-24 h-24">
                       <Image
                         className="w-full h-full object-cover"
-                        src={"/support.webp"}
+                        src={"/support.png"}
                         alt="Profile Image"
                         width={120}
                         height={120}
