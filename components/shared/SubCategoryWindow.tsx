@@ -83,7 +83,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
 
   const handleQuery = (query: string) => {
     if (query) {
-      if (category.toString() === "Buyer Requests" || category.toString() === "Donations") {
+      if (category.toString().trim() === "Lost and Found" || category.toString() === "Buyer Requests" || category.toString() === "Donations") {
         setQuery(query);
         setShowWantedPopup(true); // Show the popup instead
       } else {
@@ -138,7 +138,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                         key={index}
                         className="relative p-0 mb-0 cursor-pointer"
                         onSelect={() => {
-                          if (category.toString() === "Donations" || category.toString() === "Buyer Requests" ? (sub.adCount + loans.adCount + 1) > 0 : sub.adCount > 0) {
+                          if (category.toString().trim() === "Lost and Found" || category.toString() === "Donations" || category.toString() === "Buyer Requests" ? (sub.adCount + loans.adCount + 1) > 0 : sub.adCount > 0) {
                             handleQuery(sub.subcategory);
                           } else {
                             toast({
