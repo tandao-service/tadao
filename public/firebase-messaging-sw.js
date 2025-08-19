@@ -6,12 +6,12 @@ importScripts("https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-com
 
 // Initialize Firebase
 firebase.initializeApp({
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGE_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
+  apiKey: "AIzaSyCkciuEMV1h8MsJH6O0S6IU8hcsRsZUOVU",
+  authDomain: "tadao-6679b.firebaseapp.com",
+  projectId: "tadao-6679b",
+  storageBucket: "tadao-6679b.firebasestorage.app",
+  messagingSenderId: "1033579054775",
+  appId: "1:1033579054775:web:f24135b221d3922611af32"
 });
 
 // Initialize messaging
