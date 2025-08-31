@@ -292,6 +292,7 @@ const CollectionInfinite = ({
     setIsOpenCategory(false);
     setCategorySelect(value);
     setIsOpenSearchTab(true);
+    history.pushState({ popup: true }, "");
   };
   const handleCloseSearchTab = () => {
     setIsOpenSearchTab(false);
@@ -343,6 +344,7 @@ const CollectionInfinite = ({
   const handleOpenSettings = () => {
     handleClose();
     setIsOpenSettings(true);
+    history.pushState({ popup: true }, "");
   };
 
   const handleCloseChatId = () => {
@@ -361,6 +363,7 @@ const CollectionInfinite = ({
   };
   const handleOpenChatId = (value: string) => {
     // handleClose();
+    history.pushState({ popup: true }, "");
     setrecipientUid(value)
     setIsOpenChatId(true);
 
@@ -386,6 +389,7 @@ const CollectionInfinite = ({
     handleClose();
     setshopId(shopId)
     setIsOpenShop(true);
+    history.pushState({ popup: true }, "");
   };
   const handleCloseReview = () => {
     const params = new URLSearchParams(window.location.search);
@@ -405,6 +409,7 @@ const CollectionInfinite = ({
     handleClose();
     setrecipient(value)
     setIsOpenReview(true);
+    history.pushState({ popup: true }, "");
   };
 
   const handleCloseChat = () => {
@@ -423,6 +428,7 @@ const CollectionInfinite = ({
   const handleOpenChat = () => {
     handleClose();
     setIsOpenChat(true);
+    history.pushState({ popup: true }, "");
   };
 
   const handleClosePlan = () => {
@@ -442,6 +448,7 @@ const CollectionInfinite = ({
   const handleOpenPlan = () => {
     handleClose();
     setIsOpenPlan(true);
+    history.pushState({ popup: true }, "");
   };
   const handleCloseBook = () => {
     const params = new URLSearchParams(window.location.search);
@@ -460,6 +467,7 @@ const CollectionInfinite = ({
   const handleOpenBook = () => {
     handleClose();
     setIsOpenBook(true);
+    history.pushState({ popup: true }, "");
   };
 
   const handleCloseTerms = () => {
@@ -478,6 +486,7 @@ const CollectionInfinite = ({
   const handleOpenTerms = () => {
     handleClose();
     setIsOpenTerms(true);
+    history.pushState({ popup: true }, "");
   };
   const handleClosePrivacy = () => {
     const params = new URLSearchParams(window.location.search);
@@ -495,10 +504,12 @@ const CollectionInfinite = ({
   const handleOpenPrivacy = () => {
     handleClose();
     setIsOpenPrivacy(true);
+    history.pushState({ popup: true }, "");
   };
   const handleOpenFaq = () => {
     handleClose();
     setIsOpenFaq(true);
+    history.pushState({ popup: true }, "");
   };
 
   const handleCloseFaq = () => {
@@ -533,6 +544,7 @@ const CollectionInfinite = ({
   const handleOpenSafety = () => {
     handleClose();
     setIsOpenSafety(true);
+    history.pushState({ popup: true }, "");
   };
   const handleCloseAbout = () => {
     const params = new URLSearchParams(window.location.search);
@@ -551,6 +563,7 @@ const CollectionInfinite = ({
   const handleOpenAbout = () => {
     handleClose();
     setIsOpenAbout(true);
+    history.pushState({ popup: true }, "");
   };
 
   const handlePay = (id: string) => {
@@ -595,7 +608,7 @@ const CollectionInfinite = ({
 
     handleClose();
     setIsOpenProfile(true);
-
+    history.pushState({ popup: true }, "");
 
   };
   const handleCloseProfile = () => {
@@ -673,6 +686,7 @@ const CollectionInfinite = ({
 
     setTimeout(() => {
       setIsOpenSell(true);
+      history.pushState({ popup: true }, "");
     }, 500); // Delay in milliseconds (adjust as needed)
   };
 
@@ -810,6 +824,7 @@ const CollectionInfinite = ({
   const [isOpenP, setIsOpenP] = useState(false);
   const handleOpenP = () => {
     setIsOpenP(true);
+
   };
   const onLoading = () => {
     setIsOpenP(true);

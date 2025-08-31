@@ -27,7 +27,7 @@ public class LauncherActivity
     
 
     
-
+ private long backPressedTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,7 @@ public class LauncherActivity
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
+    
 
     @Override
     protected Uri getLaunchingUrl() {

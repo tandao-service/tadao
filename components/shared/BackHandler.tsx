@@ -10,7 +10,8 @@ export default function BackHandler() {
         const handleBack = () => {
             if (window.location.pathname === "/") {
                 if (!exitPromptShown.current) {
-                    //  alert("Press back again to exit"); // Replace with toast/snackbar
+                    alert("MAIN Press back again to exit"); // Replace with toast/snackbar
+
                     toast({
                         title: "Exit App",
                         description: "Press back again to exit",
@@ -23,7 +24,8 @@ export default function BackHandler() {
                         exitPromptShown.current = false;
                     }, 2000);
                 } else {
-                    window.close(); // Works inside TWA
+                    //  window.close(); // Works inside TWA
+                    alert("window closed"); // Replace with toast/snackbar
                 }
             }
         };
