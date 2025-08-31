@@ -1,56 +1,59 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image"; // Import Image component from Next.js
-import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { getsourceCookie, setsourceCookie } from "./cookies";
+
 type CardProps = {
   onClose: () => void;
 };
+
 const AppPopup = ({ onClose }: CardProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const searchParams = useSearchParams();
   let backPressedOnce = false;
-  let closepopup = true;
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
-    // Check if accessing from mobile (iOS/Android)
     const isMobile = /android|iphone|ipad|ipod/i.test(userAgent);
+
     const source = searchParams.get("source");
-    // Show popup if not accessing from AutoyardApp and using a mobile device
     const sourceCookie = getsourceCookie();
+
     if (source) {
       setsourceCookie(source);
     }
-    // Check if the referrer is available in the document
+
     if (!sourceCookie && !source && isMobile) {
       setShowPopup(true);
     }
 
-    // Listen for messages from the TWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener("message", event => {
-        if (event.data === "back") {
-          if (closepopup) {
-            onClose();
-            closepopup = false;
-            alert("Close Popups"); // Replace with toast
-            //  window.history.back();
-          } else {
-            if (backPressedOnce) {
-              alert("Close App"); // Replace with toast
-              window.close(); // Will close TWA
-            } else {
-              backPressedOnce = true;
-              alert("Press back again to exit"); // Replace with toast
-              setTimeout(() => (backPressedOnce = false), 2000);
-            }
-          }
-        }
-      });
-    }
+    // ✅ Handle back button navigation inside PWA
+    const handlePopState = () => {
+      console.log("Back button pressed");
 
-  }, []);
+      if (showPopup) {
+        // Close popup instead of leaving app
+        alert("close popups"); // replace with toast
+        onClose();
+      } else {
+        if (backPressedOnce) {
+          alert("Exit app"); // replace with toast
+          window.close(); // Will attempt to close TWA
+        } else {
+          backPressedOnce = true;
+          alert("Press back again to exit");
+          setTimeout(() => (backPressedOnce = false), 2000);
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [showPopup]);
 
   if (!showPopup) return null;
 
@@ -70,13 +73,12 @@ const AppPopup = ({ onClose }: CardProps) => {
           rel="noopener noreferrer"
           className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors duration-300 inline-block mb-4 flex items-center justify-center"
         >
-          {/* Google Play Store Icon */}
           <Image
-            src="/google-play-badge.png" // Ensure the image is placed in the public folder
+            src="/google-play-badge.png"
             alt="Google Play Store"
-            width={24} // Width of the image in pixels
-            height={24} // Height of the image in pixels
-            className="mr-2" // Add margin to the right for spacing
+            width={24}
+            height={24}
+            className="mr-2"
           />
           Install from Google Play
         </a>
