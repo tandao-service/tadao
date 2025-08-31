@@ -31,18 +31,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
   const [oldurl, setOldurl] = useState("");
   const { startUpload } = useUploadThing("imageUploader");
   const { toast } = useToast();
-  //useEffect(() => {
-  //  fetchCategories();
-  //}, []);
 
-  //const fetchCategories = async () => {
-  //  try {
-  //   const response = await getallcategories();
-  //  setCategories(response);
-  //} catch (error) {
-  //  console.error("Error fetching categories:", error);
-  // }
-  //};
   const uploadFiles = async () => {
     const uploadedUrls: string[] = [];
     let i = 0;
@@ -430,6 +419,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                                   )}
                                 </div>
                               )}
+
                           </li>
                         ))}
                       </ul>

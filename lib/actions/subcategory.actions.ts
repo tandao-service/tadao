@@ -83,7 +83,7 @@ export const getselectedsubcategories = async (categoryId: string) => {
   try {
     await connectToDatabase();
     const conditions = categoryId ? { category: categoryId } : {};
-    const category = await populateAd(Subcategory.find(conditions));
+    const category = await populateAd(Subcategory.find(conditions).sort({ _id: 1 }));
 
     if (!category) throw new Error('category not found')
     // console.log(category)
@@ -172,7 +172,7 @@ export const getcategory = async (name: string, subcategory: string) => {
     await connectToDatabase();
     const conditions = { $and: [{ name: name }, { subcategory: subcategory }] };
 
-    const category = await Subcategory.find(conditions);
+    const category = await Subcategory.find(conditions).sort({ _id: 1 });
     if (!category) throw new Error('category not found')
 
     return JSON.parse(JSON.stringify(category))

@@ -56,18 +56,6 @@ const CollectionSearch = ({
   const router = useRouter();
   const observer = useRef<IntersectionObserver | null>(null);
 
-
-  //const [newqueryObject, setNewqueryObject] = useState<any>(queryObject);
-  // const handleFilter = (value:any) => {
-  // setNewqueryObject({
-  // ...queryObject, // Preserve existing properties
-  //location: lat+"/"+lng,
-  //  value,
-  // });
-  // setAds([]);
-  // };
-
-
   let Ads: any = [];
   const fetchAds = async () => {
     setLoading(true);

@@ -9,11 +9,8 @@ import CollectionInfinite from "@/components/shared/CollectionInfinite";
 import { checkExpiredLatestSubscriptionsPerUser } from "@/lib/actions/transactions.actions";
 import { getallPendingLaons, getByUserIdLaons } from "@/lib/actions/loan.actions";
 import { getAllPackages } from "@/lib/actions/packages.actions";
+import { getAdsCountAllRegionCached, getAllCategoriesCached, getAllPackagesCached, getAllSubCategoriesCached } from "@/lib/actions/cached.actions";
 export default async function Home({ searchParams }: SearchParamProps) {
-  const { sessionClaims } = auth();
-  const userId = sessionClaims?.userId as string;
-  const userName = sessionClaims?.userName as string;
-  const userImage = sessionClaims?.userImage as string;
 
   const queryObject = searchParams
     ? Object.fromEntries(
@@ -23,19 +20,38 @@ export default async function Home({ searchParams }: SearchParamProps) {
 
   let user: any = [];
   let myloans: any = [];
-  if (userId) {
-    user = await getUserById(userId);
-    myloans = await getByUserIdLaons(userId);
+  let userId = "";
+  let userName = "";
+  let userImage = "";
+
+  try {
+    const sessionClaims = auth().sessionClaims;
+    userId = sessionClaims?.userId as string;
+    userName = sessionClaims?.userName as string;
+    userImage = sessionClaims?.userImage as string;
+
+    [user, myloans] = await Promise.all([
+      getUserById(userId),
+      getByUserIdLaons(userId)
+    ]);
+  } catch (error) {
+    console.error("Auth/user fetch failed:", error);
   }
-  const categoryList = await getAllCategories();
-  const subcategoryList = await getAllSubCategories();
-  const AdsCountPerRegion = await getAdsCountAllRegion();
-  const packagesList = await getAllPackages();
-  const loans = await getallPendingLaons();
-  //const categoryList:any = [];
-  //const subcategoryList:any = [];
-  //const AdsCountPerRegion:any = [];
-  //console.log(user)
+
+  const [
+    categoryList,
+    subcategoryList,
+    packagesList,
+    AdsCountPerRegion,
+    loans
+  ] = await Promise.all([
+    getAllCategoriesCached(),
+    getAllSubCategoriesCached(),
+    getAllPackagesCached(),
+    getAdsCountAllRegionCached(),
+    getallPendingLaons()
+  ]);
+
   return (
     <main>
 

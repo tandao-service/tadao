@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image"; // Import Image component from Next.js
 import { useRouter, useSearchParams } from "next/navigation";
 import { getsourceCookie, setsourceCookie } from "./cookies";
-const AppPopup = () => {
+type CardProps = {
+  onClose: () => void;
+};
+const AppPopup = ({ onClose }: CardProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const searchParams = useSearchParams();
+  let backPressedOnce = false;
+  let closepopup = true;
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
-    // Check if accessing from Android custom tab with your app user-agent
-    //const isAutoyardApp = userAgent.includes("AutoyardApp");
-
     // Check if accessing from mobile (iOS/Android)
     const isMobile = /android|iphone|ipad|ipod/i.test(userAgent);
     const source = searchParams.get("source");
@@ -24,6 +26,30 @@ const AppPopup = () => {
     if (!sourceCookie && !source && isMobile) {
       setShowPopup(true);
     }
+
+    // Listen for messages from the TWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener("message", event => {
+        if (event.data === "back") {
+          if (closepopup) {
+            onClose();
+            closepopup = false;
+            alert("Close Popups"); // Replace with toast
+            //  window.history.back();
+          } else {
+            if (backPressedOnce) {
+              alert("Close App"); // Replace with toast
+              window.close(); // Will close TWA
+            } else {
+              backPressedOnce = true;
+              alert("Press back again to exit"); // Replace with toast
+              setTimeout(() => (backPressedOnce = false), 2000);
+            }
+          }
+        }
+      });
+    }
+
   }, []);
 
   if (!showPopup) return null;

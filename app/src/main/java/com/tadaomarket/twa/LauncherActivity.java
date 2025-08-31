@@ -41,7 +41,15 @@ public class LauncherActivity
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
-
+ @Override
+    public void onBackPressed() {
+        // Send a message to the web app instead of closing
+        if (mSession != null) {
+            mSession.postMessage("back", null);
+        } else {
+            super.onBackPressed(); // fallback if no session
+        }
+    }
     @Override
     protected Uri getLaunchingUrl() {
         // Get the original launch Url.

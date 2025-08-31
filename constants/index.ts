@@ -1,5 +1,36 @@
 
+export const makeIcons: Record<string, string> = {
+  Toyota: "/makes/toyota.png",
+  Nissan: "/makes/nissan.png",
+  Honda: "/makes/honda.png",
+  BMW: "/makes/bmw.png",
+  "Mercedes-Benz": "/makes/mercedes.png",
+  Aprilia: "/makes/aprilia.png",
+  Ford: "/makes/ford.png",
+  Mazda: "/makes/mazda.png",
+  Subaru: "/makes/subaru.png",
+  Suzuki: "/makes/suzuki.png",
+  Isuzu: "/makes/isuzu.png",
+  Mitsubishi: "/makes/mitsubishi.png",
+  "Ashok Leyland": "/makes/ashok-leyland.png",
+  Daihatsu: "/makes/daihatsu.png",
+  "Mini Truck": "/makes/minitruck.png",
+  "Heavy-Duty Trucks": "/makes/heavyduty.png",
+  "Rigid Trucks": "/makes/rigidtrucks.png",
+  "Food Trucks": "/makes/food-truck.png",
+  "Dump Trucks": "/makes/dump-truck.png",
+  "Crane Trucks": "/makes/crane-truck.png",
+  "Garbage Compactors": "/makes/recycling-truck.png",
+  Tractors: "/makes/tractor.png",
+  Crushers: "/makes/crusher.png",
+  Excavators: "/makes/excuvator.png",
+  Forklifts: "/makes/forklifts.png",
+  "Wheel Loaders": "/makes/wheel-loaders.png",
+  "Backhoe Loaders": "/makes/backhoe-loaders.png",
+  "Boom Lifts": "/makes/boom-lifts.png",
 
+
+};
 export const VerificationPackId = "67d035e5df07d0d2f45521ac";
 export const FreePackId = "677a7b97d24cd2414b1260b7";
 export const AdminId = "675c20f3cffc0c90a79fae60";

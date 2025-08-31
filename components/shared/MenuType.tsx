@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { equipmentTypes } from "@/constants";
+import { equipmentTypes, makeIcons } from "@/constants";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -76,8 +76,7 @@ export default function MenuType({
     if (filteredFields.length > 0) {
       setField(filteredFields[0].name); // Set the first matching field
       setType(filteredFields[0].options || []);
-      // console.log(filteredFields[0].name);
-      // console.log(filteredFields[0].options);
+
     } else {
       setField(""); // If no match, set field to empty
       setType([]); // Clear options
@@ -90,22 +89,9 @@ export default function MenuType({
     if (query) {
       setQuery(query);
       handleFilter({ category: category, subcategory: subcategory, ...{ [field]: query } });
-      // console.log({category:category, subcategory:subcategory, ...{ [field]: query }})
-      // newUrl = formUrlQuery({
-      //   params: searchParams.toString(),
-      //  key: field,
-      //  value: query,
-      //});
+
     }
-    //else {
-    //  newUrl = removeKeysFromQuery({
-    //   params: searchParams.toString(),
-    //   keysToRemove: [field],
-    // });
-    // }
-    // onLoading();
-    // router.push(newUrl, { scroll: false });
-    //subcategory === "Cars, Vans & Pickups"
+
   };
 
   return (
@@ -117,30 +103,43 @@ export default function MenuType({
           </>
         ) : (
           <>
-            {type.slice(0, 7).map((option: any) => (
-              <div
-                onClick={(e) => onSearch(option)}
-                key={option} // Always good to have a unique key prop
-                className={`flex h-[80px] flex-col items-center justify-center cursor-pointer rounded-sm p-1 border ${option === query
-                  ? "text-orange-500 border bg-white border-orange-500"
-                  : "dark:bg-[#131B1E] bg-white hover:bg-orange-100"
-                  }`}
-              >
+
+            {type.slice(0, 7).map((option: any) => {
+              const iconurl = makeIcons[option.trim()] || ""; // normalize string
+              return (
                 <div
-                  className="flex flex-col text-center items-center"
-
+                  onClick={(e) => onSearch(option)}
+                  key={option} // Always good to have a unique key prop
+                  className={`flex h-[80px] flex-col items-center justify-center cursor-pointer rounded-sm p-1 border ${option === query
+                    ? "text-orange-500 border bg-white border-orange-500"
+                    : "dark:bg-[#131B1E] bg-white hover:bg-orange-100"
+                    }`}
                 >
-                  <div>
-                    <InitialAvatar name={option} color={` ${option === query
-                      ? "#f97316"
-                      : "#2D3236"
-                      }`} />
-                  </div>
+                  <div
+                    className="flex flex-col text-center items-center"
 
-                  <h2 className="text-[10px]">{option}</h2>
+                  >
+                    <div>
+                      {iconurl ? (
+                        <img
+                          src={iconurl}
+                          alt={option}
+                          className="w-10 h-10 object-contain"
+                        />
+                      ) : (
+                        <InitialAvatar
+                          name={option}
+                          color={option === query ? "#f97316" : "#2D3236"}
+                        />
+                      )}
+                    </div>
+
+                    <h2 className="text-[10px]">{option}</h2>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+
           </>
         )}
       </div>

@@ -135,13 +135,14 @@ export default function Bidding({ ad, userId, user }: adProps) {
                 <p className="text-gray-600 text-sm font-medium">You can&apos;t bid on your own item.</p>
             ) : (
                 <div className="space-y-3">
-                    {!phone && (<>
-                        <div className="p-4">
-                            <h1 className="text-xl font-bold mb-4">Enter your phone number</h1>
-                            <PhoneVerification onVerified={handleVerified} />
-                        </div>
+                    <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="Enter your phone number"
+                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-orange-500/40"
+                    />
 
-                    </>)}
                     <input
                         type="number"
                         min={minBid}

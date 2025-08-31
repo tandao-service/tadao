@@ -223,7 +223,7 @@ const CategoryMenu = ({
                     <span>
                       <div className="rounded-full dark:bg-[#131B1E] bg-gray-100 p-1">
                         <Image
-                          className="w-6 h-6 object-cover"
+                          className="w-8 h-8 object-cover"
                           src={category.imageUrl[0]}
                           alt={category.name}
                           width={60}
@@ -348,7 +348,7 @@ const CategoryMenu = ({
                     <span>
                       <div className="rounded-full dark:bg-[#131B1E] bg-gray-100 p-2">
                         <Image
-                          className="h-6 w-6 object-cover"
+                          className="h-8 w-8 object-cover"
                           src={sub.imageUrl[0] || ""}
                           alt={sub.subcategory}
                           width={60}
