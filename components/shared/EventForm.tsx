@@ -250,6 +250,7 @@ const AdForm = ({
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [defaults, setDefualts] = useState<any>([]);
+  const [anayze, setAnalyze] = useState("");
   const [negotiable, setNegotiable] = useState<"yes" | "no" | "not sure">(
     "not sure"
   );
@@ -1107,7 +1108,8 @@ const AdForm = ({
                     setFiles={setFiles}
                     adId={adId || ""}
                     userName={userName}
-                    category={selectedCategory} />
+                    category={selectedCategory}
+                    anayze={anayze} />
                   {formErrors["imageUrls"] && (
                     <p className="text-red-500 text-sm">
                       {formErrors["imageUrls"]}
