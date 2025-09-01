@@ -1,36 +1,229 @@
 
 export const makeIcons: Record<string, string> = {
-  Toyota: "/makes/toyota.png",
-  Nissan: "/makes/nissan.png",
-  Honda: "/makes/honda.png",
-  BMW: "/makes/bmw.png",
-  "Mercedes-Benz": "/makes/mercedes.png",
-  Aprilia: "/makes/aprilia.png",
-  Ford: "/makes/ford.png",
-  Mazda: "/makes/mazda.png",
-  Subaru: "/makes/subaru.png",
-  Suzuki: "/makes/suzuki.png",
-  Isuzu: "/makes/isuzu.png",
-  Mitsubishi: "/makes/mitsubishi.png",
-  "Ashok Leyland": "/makes/ashok-leyland.png",
-  Daihatsu: "/makes/daihatsu.png",
-  "Mini Truck": "/makes/minitruck.png",
-  "Heavy-Duty Trucks": "/makes/heavyduty.png",
-  "Rigid Trucks": "/makes/rigidtrucks.png",
-  "Food Trucks": "/makes/food-truck.png",
-  "Dump Trucks": "/makes/dump-truck.png",
-  "Crane Trucks": "/makes/crane-truck.png",
-  "Garbage Compactors": "/makes/recycling-truck.png",
-  Tractors: "/makes/tractor.png",
-  Crushers: "/makes/crusher.png",
-  Excavators: "/makes/excuvator.png",
-  Forklifts: "/makes/forklifts.png",
-  "Wheel Loaders": "/makes/wheel-loaders.png",
-  "Backhoe Loaders": "/makes/backhoe-loaders.png",
-  "Boom Lifts": "/makes/boom-lifts.png",
+  "Mini Truck": "🛻",            // pickup-style emoji
+  "Heavy-Duty Trucks": "🚛",     // articulated lorry
+  "Rigid Trucks": "🚚",          // delivery/box truck
+  "Food Trucks": "🍔🚚",         // truck + food
+  "Dump Trucks": "🚚🪨",         // truck + rock for dump load
+  "Crane Trucks": "🏗️",         // construction crane
+  "Garbage Compactors": "🚛🗑️",  // lorry + trash bin
+  Tractors: "🚜",                // perfect match
+  Crushers: "🪨⚙️",              // rock + gear
+  Excavators: "🚜⛏️",             // tractor + pickaxe
+  Forklifts: "🏭📦",              // factory + box
+  "Wheel Loaders": "🚜⚒️",        // tractor + tool
+  "Backhoe Loaders": "🚧🚜",       // construction + tractor
+  "Boom Lifts": "🏗️⬆️",           // crane + up arrow
+  "Banana Boats": "🍌🚤",       // banana + speedboat
+  "Bass Boat": "🎣🚤",          // fishing + speedboat
+  "Bow Rider Boats": "🚤",      // speedboat
+  "Canoe": "🛶",               // canoe emoji exists
+  "Cargo Ships": "🚢",         // large ship
+  "Catamaran Boats": "⛵",      // sailboat (closest match)
+  "Centre Console Boats": "⚓🚤", // anchor + speedboat
+  // 🔧 Car Parts & Accessories
+  "Audio Parts": "🎵🔊",                 // music + speaker
+  "Brakes": "🛑🛞",                      // stop sign + wheel
+  "Suspension & Steering": "🛞⚙️",       // wheel + gear
+  "Car Care": "🧽🚗",                    // sponge + car
+  "Engine & Drivetrain": "⚙️🔧",         // gear + wrench
+  "Exterior Accessories": "🚙✨",         // SUV + sparkle
+  "Headlights & Lighting": "💡🚘",       // lightbulb + car
+  Apartment: "🏢",           // office building, best match for apartments
+  Bedsitter: "🛏️🏠",        // bed + house (single room concept)
+  Bungalow: "🏠",           // small house
+  House: "🏡",              // generic house with garden
+  Maisonette: "🏘️",        // house cluster / multiple connected houses
+  "Block of Flats": "🏙️",   // cityscape, tall flats
+  Chalet: "🏔️🏠",          // mountain + house (alpine chalet feel)
+  // 🌍 Land & Property
+  "Commercial Land": "🏢🌍",     // building + earth
+  Farmland: "🌾🚜",              // crops + tractor
+  "Industrial Land": "🏭🌍",     // factory + earth
+  "Mixed-Use Land": "🏘️🏢",     // houses + building
+  Quarry: "🪨⛏️",               // rock + pickaxe
+  "Residential Land": "🏡🌳",    // house + tree
+  // Open Spaces
+  "Open Space": "🌳",
+  "Church Space": "⛪",
+  Complex: "🏢🏢",
+  "Filling Station": "⛽",
+  Garage: "🚗🔧",
+  Hall: "🏟️",
+  // Commercial Properties
+  "Club Hall": "🎉",
+  "Conference Center": "🎤",
+  "Coworking Space": "💻",
+  "Gallery": "🖼️",
+  "Gardens": "🌺",
+  "Private Office": "📂",
+  "Restaurant": "🍽️",
 
+  Apartments: "🏠",       // generic apartment/house building      // small house (same as apartment emoji)
+  "Duplex House": "🏘️",  // cluster of houses = duplex
+  Flat: "🏡",             // house with garden            // same as above
+  "Mini Flat": "🛏️🏠",   // bed + small house
 
 };
+export const Icons: Record<string, string> = {
+  Toyota: "/makes/toyota.svg",
+  Nissan: "/makes/nissan.svg",
+  Honda: "/makes/honda.svg",
+  BMW: "/makes/bmw.svg",
+  "Mercedes-Benz": "/makes/mercedes.svg",
+  Aprilia: "/makes/aprilia.svg",
+  Ford: "/makes/ford.svg",
+  Mazda: "/makes/mazda.svg",
+  Subaru: "/makes/subaru.svg",
+  Suzuki: "/makes/suzuki.svg",
+  Isuzu: "/makes/isuzu.svg",
+  Mitsubishi: "/makes/mitsubishi.svg",
+  "Ashok Leyland": "/makes/Ashok.svg",
+  Daihatsu: "/makes/Daihatsu.svg",
+  Piaggio: "/makes/Piaggio.svg",
+  Bajaj: "/makes/bajaj-logo.png",
+  TVS: "/makes/TVS-logo.png",
+  Captain: "/makes/captain-logo.png",
+  Benelli: "/makes/benelli-logo.png",
+  "Mini Truck": "🛻",            // pickup-style emoji
+  "Heavy-Duty Trucks": "🚛",     // articulated lorry
+  "Rigid Trucks": "🚚",          // delivery/box truck
+  "Food Trucks": "🍔🚚",         // truck + food
+  "Dump Trucks": "🚚🪨",         // truck + rock for dump load
+  "Crane Trucks": "🏗️",         // construction crane
+  "Garbage Compactors": "🚛🗑️",  // lorry + trash bin
+  Tractors: "🚜",                // perfect match
+  Crushers: "🪨⚙️",              // rock + gear
+  Excavators: "🚜⛏️",             // tractor + pickaxe
+  Forklifts: "🏭📦",              // factory + box
+  "Wheel Loaders": "🚜⚒️",        // tractor + tool
+  "Backhoe Loaders": "🚧🚜",       // construction + tractor
+  "Boom Lifts": "🏗️⬆️",           // crane + up arrow
+  "Banana Boats": "🍌🚤",       // banana + speedboat
+  "Bass Boat": "🎣🚤",          // fishing + speedboat
+  "Bow Rider Boats": "🚤",      // speedboat
+  "Canoe": "🛶",               // canoe emoji exists
+  "Cargo Ships": "🚢",         // large ship
+  "Catamaran Boats": "⛵",      // sailboat (closest match)
+  "Centre Console Boats": "⚓🚤", // anchor + speedboat
+  // 🔧 Car Parts & Accessories
+  "Audio Parts": "🎵🔊",                 // music + speaker
+  "Brakes": "🛑🛞",                      // stop sign + wheel
+  "Suspension & Steering": "🛞🔩",       // wheel + gear
+  "Car Care": "🧽🚗",                    // sponge + car
+  "Engine & Drivetrain": "⚙️🔧",         // gear + wrench
+  "Exterior Accessories": "🚙✨",         // SUV + sparkle
+  "Headlights & Lighting": "💡🚘",       // lightbulb + car
+  Apartment: "🏢",           // office building, best match for apartments
+  Bedsitter: "🛏️🏠",        // bed + house (single room concept)
+  Bungalow: "🏠",           // small house
+  House: "🏡",              // generic house with garden
+  Maisonette: "🏘️",        // house cluster / multiple connected houses
+  "Block of Flats": "🏙️",   // cityscape, tall flats
+  Chalet: "🏔️🏠",          // mountain + house (alpine chalet feel)
+  // 🌍 Land & Property
+  "Commercial Land": "🏢🌍",     // building + earth
+  Farmland: "🌾🚜",              // crops + tractor
+  "Industrial Land": "🏭🌍",     // factory + earth
+  "Mixed-Use Land": "🏘️🏢",     // houses + building
+  Quarry: "🪨⛏️",               // rock + pickaxe
+  "Residential Land": "🏡🌳",    // house + tree
+  // Open Spaces
+  "Open Space": "🌳",
+  "Church Space": "⛪",
+  Complex: "🏢🏢",
+  "Filling Station": "⛽",
+  Garage: "🚗🔧",
+  Hall: "🏟️",
+  // Commercial Properties
+  "Club Hall": "🎉",
+  "Conference Center": "🎤",
+  "Coworking Space": "💻",
+  "Gallery": "🖼️",
+  "Gardens": "🌺",
+  "Private Office": "📂",
+  "Restaurant": "🍽️",
+
+  Apartments: "🏢",       // generic apartment/house building      // small house (same as apartment emoji)
+  "Duplex House": "🏘️",  // cluster of houses = duplex
+  Flat: "🏬",             // house with garden            // same as above
+  "Mini Flat": "🛏️🏠",   // bed + small house
+  "Desktop Computer": "🖥️",  // desktop monitor
+  Laptop: "💻",               // laptop
+  Server: "🗄️",
+  HP: "/makes/HP.svg",       // general laptop/PC for HP
+  Dell: "/makes/Dell.svg",     // same, generic laptop/PC
+  Lenovo: "/makes/Lenovo.svg",   // generic laptop
+  Samsung: "/makes/Samsung.svg",  // smartphone/tablet for Samsung
+  BenQ: "/makes/BenQ.svg",     // monitor / display
+  Acer: "/makes/Acer.svg",   // laptop
+  Alienware: "👽", // alien + laptop for Alienware
+  Apple: "/makes/Apple.svg",
+  Xiaomi: "/makes/Xiaomi.svg",
+  Tecno: "/makes/Tecno.png",
+  Oppo: "/makes/Oppo.svg",
+  afrione: "/makes/Afrione.png",
+  OPPO: "/makes/Oppo.svg",
+  Oraimo: "/makes/oraimo.png",
+  Modio: "/makes/modio.png",
+  Amazon: "/makes/Amazon.png",
+  ADSPEC: "/makes/adspec.jpg",
+  Logitech: "/makes/Logitech.png",
+  Sandisk: "/makes/Sandisk.jpg",
+  "4K": "/makes/4k.png",
+  "4K Ultrahd": "/makes/4KUltrahd.png",
+  Chairs: "🪑",          // chair
+  Tables: "🍽️",         // table setting
+  "Beds & Bed Frames": "🛏️", // bed
+  Sofas: "🛋️",          // couch and lamp
+  Mattresses: "🛌",      // person in bed
+  Armchairs: "🪑🛋️",    // combo: chair + sofa
+  "Bag Racks": "🎒🪧",   // bag + stand (closest match)
+  "Artificial Grass": "🌱",    // small grass/plant emoji  
+  "Artificial Plants": "🪴",   // potted plant  
+  "Lawn Mowers": "🚜",         // tractor = mower substitute  
+  "Pressure Washers": "💦",    // water spray  
+  "Garden Lighting": "💡🌳",  // light + tree = garden lights  
+  "Bird Houses": "🐦🏠",      // bird + house  
+  "Canopies": "⛺",           // tent/canopy style  
+  "Rugs": "🪞🧶",           // fabric/carpet vibe (rug substitute)  
+  "Lighting": "💡",         // light bulb  
+  "Curtains": "🪟",         // window (for curtains)  
+  "Drapes & Shades": "🪟🪢", // window + tie/rope (drapes/shades)  
+  "Bedding": "🛏️",         // bed  
+  "Wallpaper": "🖼️",        // framed picture = wall decor  
+  "3D Wall Panels": "🧩🪵", // puzzle/wood block look = panels  
+  "Washing Machines": "🧺",    // laundry basket (closest to washing)  
+  "Fans": "🌀",                // swirling fan motion  
+  "Room Heaters": "🔥",        // heat  
+  "Vacuum Cleaners": "🧹",     // broom (closest to vacuum/cleaning)  
+  "Landline Phones": "☎️",     // classic telephone  
+  "Air Conditioners": "❄️",   // cold air / snowflake  
+  "Air Coolers": "💨",         // wind / cooling breeze  
+  "Cookers": "🍳",          // frying pan = cooking  
+  "Refrigerators": "🧊",    // ice cube = fridge/freezing  
+  "Water Dispensers": "🚰", // potable water symbol  
+  "Blenders": "🥤",         // smoothie/drink = blender  
+  "Microwaves": "📡",       // wave symbol (closest to microwave)  
+  "Air Fryers": "🍟",       // fries = air fryer vibe  
+  "Bread Makers": "🍞",     // bread loaf  
+  "Stain Removers": "🧽",        // sponge = scrubbing stains  
+  "Laundry Detergents": "👕",    // shirt = laundry  
+  "Rust Cleaners": "🛠️",        // wrench = metal/rust context  
+  "Sink & Drain Cleaners": "🚰", // faucet = sink  
+  "Disinfectants": "🦠",         // germ = disinfecting  
+  "Bathroom Cleaners": "🚿",     // shower = bathroom  
+  "Bleach": "🧴",
+  "Pots & Pans": "🍳",       // frying pan = cooking
+  "Dinner Sets": "🍽️",      // plate with utensils
+  "Flasks": "🥤",           // tumbler/cup with straw
+  "Kitchen Racks": "🗄️",   // cabinet = racks/storage
+  "Mugs": "☕",             // coffee mug
+  "Airfryer Liners": "🍟",  // fries = airfryer context
+  "Aprons": "👩‍🍳",         // chef = apron/cooking
+};
+
+
 export const VerificationPackId = "67d035e5df07d0d2f45521ac";
 export const FreePackId = "677a7b97d24cd2414b1260b7";
 export const AdminId = "675c20f3cffc0c90a79fae60";

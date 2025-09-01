@@ -5,7 +5,7 @@ import AutoComplete from "./AutoComplete";
 import InitialAvatar from "./InitialAvatar";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
-import { makeIcons } from "@/constants";
+import { Icons } from "@/constants";
 type dataProps = {
   plainTextData: any;
   clearQuery: boolean;
@@ -22,7 +22,7 @@ const parsePlainTextToData = (text: string) => {
       .replace("Models: ", "")
       .split(",")
       .map((model) => model.trim());
-    return { make, models, iconUrl: makeIcons[make] || "" };
+    return { make, models, iconUrl: Icons[make] || "" };
   });
 };
 

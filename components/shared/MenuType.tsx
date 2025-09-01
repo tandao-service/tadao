@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { equipmentTypes, makeIcons } from "@/constants";
+import { equipmentTypes, Icons } from "@/constants";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -105,7 +105,7 @@ export default function MenuType({
           <>
 
             {type.slice(0, 7).map((option: any) => {
-              const iconurl = makeIcons[option.trim()] || ""; // normalize string
+              const iconurl = Icons[option.trim()] || ""; // normalize string
               return (
                 <div
                   onClick={(e) => onSearch(option)}
@@ -120,12 +120,15 @@ export default function MenuType({
 
                   >
                     <div>
-                      {iconurl ? (
-                        <img
+                      {iconurl ? (<>
+                        {iconurl.startsWith("/") ? (<img
                           src={iconurl}
                           alt={option}
                           className="w-10 h-10 object-contain"
-                        />
+                        />) : (<span className="text-2xl">{iconurl}</span>)}
+
+                      </>
+
                       ) : (
                         <InitialAvatar
                           name={option}

@@ -19,6 +19,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import androidx.appcompat.app.AlertDialog;
 
 
 
@@ -26,8 +27,6 @@ public class LauncherActivity
         extends com.google.androidbrowserhelper.trusted.LauncherActivity {
     
 
-    
- private long backPressedTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +39,19 @@ public class LauncherActivity
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
+        
     }
     
+@Override
+public void onBackPressed() {
+    // At this point, Chrome inside TWA already tried to go back in history.
+    // If there’s no history left, we’re at the root.
+    new AlertDialog.Builder(this)
+        .setMessage("Do you really want to exit?")
+        .setPositiveButton("Yes", (dialog, id) -> super.onBackPressed())
+        .setNegativeButton("No", null)
+        .show();
+}
 
     @Override
     protected Uri getLaunchingUrl() {
