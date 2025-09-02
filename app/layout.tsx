@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 import AppDeepLinkHandler from "@/components/shared/AppDeepLinkHandler";
+import { Capacitor } from "@capacitor/core";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,8 +25,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Detect platform
+  const isNative = Capacitor.isNativePlatform();
+
+  const redirectUri = isNative
+    ? "tadaomarket://callback"
+    : process.env.NEXT_PUBLIC_CLERK_REDIRECT_URI || "https://tadaomarket.com";
+
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl={redirectUri}   // ✅ new API
+      signUpFallbackRedirectUrl={redirectUri}   // ✅ new API
+    >
       <html lang="en">
         <body className={poppins.variable}>
           <AppDeepLinkHandler />
