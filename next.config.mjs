@@ -13,6 +13,7 @@ const nextConfig = {
       }
     ]
   },
+
   // Add additional PWA configuration if needed
   // You can pass options here too, like register, skipWaiting, etc.
 };

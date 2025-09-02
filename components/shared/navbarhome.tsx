@@ -298,7 +298,7 @@ export default function Navbarhome({ userstatus, user, userId, AdsCountPerRegion
         <Header handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle} AdsCountPerRegion={AdsCountPerRegion}
 
         />
-        <AppPopup onClose={onClose} />
+        {/**<AppPopup onClose={onClose} />*/}
         <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
       </div>
     </div>
