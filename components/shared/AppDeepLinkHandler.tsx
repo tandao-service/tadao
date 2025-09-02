@@ -1,6 +1,7 @@
+"use client";
 import { App } from "@capacitor/app";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 
 export default function AppDeepLinkHandler() {
     const router = useRouter();
