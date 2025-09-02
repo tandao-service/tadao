@@ -1,11 +1,20 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.tadaomarket.app",
   appName: "Tadao Market",
-  webDir: "out",        // still needed, can be a small placeholder build
+  webDir: "out", // placeholder build
   server: {
-    url: "https://tadaomarket.com", // your hosted Next.js app
+    url: "https://tadaomarket.com",
+    androidScheme: "https", // for web access
+    hostname: "tadaomarket.com",
+  },
+  plugins: {
+    // 👇 Enable app URL schemes
+    DeepLinks: {
+      scheme: "tadaomarket",
+      host: "tadaomarket.com",
+    },
   },
 };
 
