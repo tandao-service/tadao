@@ -10,7 +10,6 @@ import { checkExpiredLatestSubscriptionsPerUser } from "@/lib/actions/transactio
 import { getallPendingLaons, getByUserIdLaons } from "@/lib/actions/loan.actions";
 import { getAllPackages } from "@/lib/actions/packages.actions";
 import { getAdsCountAllRegionCached, getAllCategoriesCached, getAllPackagesCached, getAllSubCategoriesCached } from "@/lib/actions/cached.actions";
-import BackHandler from "@/components/shared/BackHandler";
 export default async function Home({ searchParams }: SearchParamProps) {
 
   const queryObject = searchParams
