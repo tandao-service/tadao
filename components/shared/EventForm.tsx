@@ -1808,7 +1808,7 @@ const AdForm = ({
                 )}
 
 
-                {field.type === "phone" && (
+              {/**  {field.type === "phone" && (
                   <div className="flex w-full gap-1">
                     <select
                       className="border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
@@ -1901,9 +1901,9 @@ const AdForm = ({
                     />
                   </div>
                 )}
+ */}
 
-
-                {/* {field.type === "phone" && (
+                {field.type === "phone" && (
                   <div className="flex w-full flex-col">
                     <div className="flex w-full gap-1">
 
@@ -1942,7 +1942,7 @@ const AdForm = ({
                         </div>
                       </>)}
                     </div>
-                  </div>)} */}
+                  </div>)} 
 
                 {field.type === "delivery" && (
                   <div className="flex flex-col w-full gap-1">
