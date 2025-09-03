@@ -20,6 +20,15 @@ const config: CapacitorConfig & {
       backgroundColor: "#f97316",
       androidSpinnerStyle: "large",
     },
+    App: {
+      deepLinks: [
+        {
+          scheme: "tadaomarket",
+          host: "oauth",
+          path: "/callback",
+        },
+      ],
+    },
   },
   assets: {
     icon: {

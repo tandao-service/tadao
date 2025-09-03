@@ -7,17 +7,18 @@ export default function AppDeepLinkHandler() {
     const router = useRouter();
 
     useEffect(() => {
-        App.addListener("appUrlOpen", (data: any) => {
-            const url = data.url; // e.g. tadaomarket://ad/123
-            console.log("Deep link opened:", url);
+        const listener = App.addListener("appUrlOpen", (data: any) => {
+            console.log("Deep link opened:", data.url);
 
-            try {
-                const path = new URL(url).pathname; // "/ad/123"
-                router.push(path); // Navigate inside Next.js
-            } catch (err) {
-                console.error("Error parsing deep link:", err);
+            if (data.url.startsWith("https://tadaomarket.com/oauth/callback")) {
+                const url = new URL(data.url);
+                router.push(`/oauth/callback${url.search}`);
             }
         });
+
+        return () => {
+            listener.then((l) => l.remove());
+        };
     }, []);
 
     return null;
