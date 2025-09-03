@@ -175,40 +175,6 @@ const CollectionInfinite = ({
 
 
 
-  // const lastScrollTop = useRef(0);
-  // const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
-  // const SCROLL_THRESHOLD = 150; // pixels
-  // useEffect(() => {
-  //const timer = setTimeout(() => {
-  // const el = scrollRefB.current;
-  // alert("enter")
-  // if (el) {
-  //  alert("load")
-  // const handleScroll = () => {
-  //   alert("x")
-  //  const currentScrollTop = el.scrollTop;
-  //  const scrollDiff = currentScrollTop - lastScrollTop.current;
-
-  // Ignore small scrolls
-  // if (Math.abs(scrollDiff) < SCROLL_THRESHOLD) return;
-
-  //  if (scrollDiff > 0) {
-  // Scrolling down
-  //    setShowBottomNav(false);
-  //    } else {
-  // Scrolling up
-  //    setShowBottomNav(true);
-  //     }
-
-  //    lastScrollTop.current = currentScrollTop;
-  //    };
-  //  window.addEventListener('scroll', handleScroll);
-  //     }
-  //    }, 0);
-  //    return () => clearTimeout(timer);
-  //  }, []);
-
-
 
 
   const handleHoverCategory = (value: string) => {
@@ -241,6 +207,61 @@ const CollectionInfinite = ({
     setIsOpenOrderView(false);
     router.replace("/", { scroll: false });
   };
+  // ✅ Check if ANY popup is open
+  const isAnyPopupOpen = () => {
+    return (
+      isOpenCategory ||
+      isOpenSell ||
+      isOpenAdView ||
+      isOpenAdEdit ||
+      isOpenPay ||
+      isOpenAbout ||
+      isOpenTerms ||
+      isOpenPrivacy ||
+      isOpenSafety ||
+      isOpenFaq ||
+      isOpenBook ||
+      isOpenPlan ||
+      isOpenChat ||
+      isOpenChatId ||
+      isOpenReview ||
+      isOpenShop ||
+      isOpenOrderView ||
+      isOpenSettings ||
+      isOpenProfile ||
+      isOpenPerfomance ||
+      isOpenSearchTab ||
+      isOpenSearchByTitle ||
+      showWantedPopup
+    );
+  };
+  const [showExitModal, setShowExitModal] = useState(false);
+  let closepopup = true;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+        if (canGoBack) {
+          window.history.back();
+
+        } else {
+          if (isAnyPopupOpen()) {
+            closepopup = false;
+            setIsOpenCategory(false);
+            handleClose();
+
+          } else {
+            setShowExitModal(true);
+          }
+
+        }
+      });
+    }
+
+    // Cleanup listener when component unmounts
+    return () => {
+      CapacitorApp.removeAllListeners();
+    };
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       const params = new URLSearchParams(window.location.search);
@@ -834,33 +855,7 @@ const CollectionInfinite = ({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
-  const [showExitModal, setShowExitModal] = useState(false);
-  let closepopup = true;
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-        if (canGoBack) {
-          window.history.back();
 
-        } else {
-          alert("closing")
-          if (closepopup) {
-            closepopup = false;
-            handleClose();
-
-          } else {
-            setShowExitModal(true);
-          }
-
-        }
-      });
-    }
-
-    // Cleanup listener when component unmounts
-    return () => {
-      CapacitorApp.removeAllListeners();
-    };
-  }, []);
 
 
   const [isnav, setisNav] = useState(false);

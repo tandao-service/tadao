@@ -82,11 +82,11 @@ const AutoComplete = ({
                   placeholder={`Search or enter ${capitalizeFirstLetter(name.replace("-", " "))}`}
                   value={inputValue}
                   onValueChange={setInputValue}
-                 // onKeyDown={(e) => {
-                 //   if (e.key === "Enter") {
-                  //    handleConfirm();
-                 //   }
-                 // }}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //    handleConfirm();
+                //   }
+                // }}
                 />
               </div>
 
@@ -95,7 +95,7 @@ const AutoComplete = ({
                 <CommandGroup>
                   {data.map((option) => (
                     <CommandItem
-                    className="p-3 text-base cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
+                      className="p-3 text-base cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
                       key={option}
                       onSelect={() => {
                         onChange(name, option);
@@ -134,11 +134,11 @@ const AutoComplete = ({
                 placeholder={`Search or enter ${capitalizeFirstLetter(name.replace("-", " "))}`}
                 value={inputValue}
                 onValueChange={setInputValue}
-               // onKeyDown={(e) => {
-               //   if (e.key === "Enter") {
-                //    handleConfirm();
-                //  }
-               // }}
+              // onKeyDown={(e) => {
+              //   if (e.key === "Enter") {
+              //    handleConfirm();
+              //  }
+              // }}
               />
             </div>
 
