@@ -14,7 +14,7 @@ export default function Page() {
     if (isNative) {
       // Open Clerk OAuth Google strategy in system browser
       await Browser.open({
-        url: `https://clerk.tadaomarket.com/v1/sign-in?strategy=oauth_google&redirect_url=${encodeURIComponent(
+        url: `https://clerk.tadaomarket.com/v1/oauth/native/google?redirect_url=${encodeURIComponent(
           redirectUri
         )}`,
       });
