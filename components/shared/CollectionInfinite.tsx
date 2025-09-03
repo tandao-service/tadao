@@ -58,6 +58,7 @@ import PopupAccount from "./PopupAccount";
 import { DrawerDemo } from "./DrawerDemo";
 import PopupOrder from "./PopupOrder";
 import { updateTransaction } from "@/lib/actions/transactions.actions";
+import { App as CapacitorApp } from "@capacitor/app";
 // Correct import
 type CollectionProps = {
   limit: number;
@@ -833,7 +834,24 @@ const CollectionInfinite = ({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
+  const [showExitModal, setShowExitModal] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+        if (canGoBack) {
+          window.history.back();
+          handleClose();
+        } else {
+          setShowExitModal(true);
+        }
+      });
+    }
 
+    // Cleanup listener when component unmounts
+    return () => {
+      CapacitorApp.removeAllListeners();
+    };
+  }, []);
 
   const [isnav, setisNav] = useState(false);
   const footerRef = useRef<HTMLDivElement | null>(null);
@@ -1373,6 +1391,29 @@ const CollectionInfinite = ({
             />
           </div>
         </footer>
+        {showExitModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+              <p className="mb-4 text-lg font-medium">
+                Do you want to exit the app?
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  className="px-4 py-2 rounded-xl bg-gray-200"
+                  onClick={() => setShowExitModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 rounded-xl bg-red-500 text-white"
+                  onClick={() => CapacitorApp.exitApp()}
+                >
+                  Exit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
