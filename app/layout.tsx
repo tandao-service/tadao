@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import AppDeepLinkHandler from "@/components/shared/AppDeepLinkHandler";
 import SplashHandler from "@/components/shared/SplashHandler";
+import OAuthCallbackPage from "@/components/shared/OAuthCallbackPage";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,9 +33,8 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={poppins.variable}>
-
           <SplashHandler />
-          <AppDeepLinkHandler />
+          <OAuthCallbackPage />
           {children}
         </body>
       </html>

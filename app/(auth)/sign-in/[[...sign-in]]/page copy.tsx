@@ -1,17 +1,18 @@
 import { Capacitor } from "@capacitor/core";
-import { SignUp } from "@clerk/nextjs";
+import { SignIn } from "@clerk/nextjs";
 
 export default function Page() {
-
   const isNative = Capacitor.isNativePlatform();
   const redirectUri = isNative
     ? "https://tadaomarket.com/oauth/callback"
     : "https://tadaomarket.com";
 
-  return <SignUp
-    routing="path"
-    path="/SignUp"
-    fallbackRedirectUrl={redirectUri}     // ✅ replaces redirectUrl
+  return (
+    <SignIn
+      routing="path"
+      path="/sign-in"
+      fallbackRedirectUrl={redirectUri}     // ✅ replaces redirectUrl
 
-  />
+    />
+  );
 }
