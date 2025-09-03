@@ -244,7 +244,7 @@ const CollectionInfinite = ({
           window.history.back();
 
         } else {
-          if (isAnyPopupOpen()) {
+          if (closepopup) {
             closepopup = false;
             setIsOpenCategory(false);
             handleClose();
