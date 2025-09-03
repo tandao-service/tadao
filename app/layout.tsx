@@ -34,7 +34,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={poppins.variable}>
           <SplashHandler />
-          <OAuthCallbackPage />
+          {/*<OAuthCallbackPage />*/}
           {children}
         </body>
       </html>
