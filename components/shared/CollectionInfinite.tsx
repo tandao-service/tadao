@@ -835,7 +835,7 @@ const CollectionInfinite = ({
     setIsOpenP(false);
   };
   const [showExitModal, setShowExitModal] = useState(false);
-  const [closepopup, setClosepopup] = useState(true);
+  let closepopup = true;
   useEffect(() => {
     if (typeof window !== "undefined") {
       CapacitorApp.addListener("backButton", ({ canGoBack }) => {
@@ -843,9 +843,11 @@ const CollectionInfinite = ({
           window.history.back();
 
         } else {
+          alert("closing")
           if (closepopup) {
+            closepopup = false;
             handleClose();
-            setClosepopup(false);
+
           } else {
             setShowExitModal(true);
           }

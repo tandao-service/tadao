@@ -55,7 +55,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
 
   return (
     <main>
-      <BackHandler />  {/* 👈 back press handler here */}
+      {/* 👈 <BackHandler />   back press handler here */}
       <CollectionInfinite
         emptyTitle="No Ads Found"
         emptyStateSubtext="Come back later"
