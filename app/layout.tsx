@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import AppDeepLinkHandler from "@/components/shared/AppDeepLinkHandler";
 import SplashHandler from "@/components/shared/SplashHandler";
+import AppStatusBar from "@/components/shared/AppStatusBar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={poppins.variable}>
+          <AppStatusBar />
           <SplashHandler />
           <AppDeepLinkHandler />
           {children}
