@@ -835,14 +835,21 @@ const CollectionInfinite = ({
     setIsOpenP(false);
   };
   const [showExitModal, setShowExitModal] = useState(false);
+  const [closepopup, setClosepopup] = useState(true);
   useEffect(() => {
     if (typeof window !== "undefined") {
       CapacitorApp.addListener("backButton", ({ canGoBack }) => {
         if (canGoBack) {
           window.history.back();
-          handleClose();
+
         } else {
-          setShowExitModal(true);
+          if (closepopup) {
+            handleClose();
+            setClosepopup(false);
+          } else {
+            setShowExitModal(true);
+          }
+
         }
       });
     }
@@ -852,6 +859,7 @@ const CollectionInfinite = ({
       CapacitorApp.removeAllListeners();
     };
   }, []);
+
 
   const [isnav, setisNav] = useState(false);
   const footerRef = useRef<HTMLDivElement | null>(null);

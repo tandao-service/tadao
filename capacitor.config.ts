@@ -1,19 +1,32 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
-const config: CapacitorConfig = {
+const config: CapacitorConfig & {
+  assets?: {
+    icon: { sources: string[] };
+    splash: { sources: string[] };
+  };
+} = {
   appId: "com.tadaomarket.app",
   appName: "Tadao Market",
-  webDir: "out", // placeholder build
+  webDir: "out",
   server: {
     url: "https://tadaomarket.com",
-    androidScheme: "https", // for web access
+    androidScheme: "https",
     hostname: "tadaomarket.com",
   },
   plugins: {
-    // 👇 Enable app URL schemes
-    DeepLinks: {
-      scheme: "tadaomarket",
-      host: "tadaomarket.com",
+    SplashScreen: {
+      launchAutoHide: false,
+      backgroundColor: "#f97316",
+      androidSpinnerStyle: "large",
+    },
+  },
+  assets: {
+    icon: {
+      sources: ["public/assets/icon.png"],
+    },
+    splash: {
+      sources: ["public/assets/splash.png"],
     },
   },
 };
