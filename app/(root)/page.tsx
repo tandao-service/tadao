@@ -1,6 +1,7 @@
 // app/page.tsx
 
 import MainClient from "@/components/shared/MainClient";
+import SplashHandler from "@/components/shared/SplashHandler";
 import {
   getAllCategoriesCached,
   getAllSubCategoriesCached,
@@ -24,7 +25,8 @@ export default async function Home({ searchParams }: SearchParamProps) {
     getAdsCountAllRegionCached(),
   ]);
 
-  return (
+  return (<>
+    <SplashHandler />
     <MainClient
       categoryList={categories}
       subcategoryList={subcategories}
@@ -32,5 +34,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
       AdsCountPerRegion={adsCount}
       queryObject={queryObject}
     />
+  </>
+
   );
 }
