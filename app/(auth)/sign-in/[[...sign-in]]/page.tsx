@@ -1,23 +1,16 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { SignIn } from "@clerk/nextjs";
 
-export default function SignInPage() {
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+export default function Page() {
+  //const isNative = Capacitor.isNativePlatform();
+  //const redirectUri = isNative
+  // ? "https://tadaomarket.com/oauth/callback"
+  // : "https://tadaomarket.com";
 
-  useEffect(() => {
-    async function getRedirectUrl() {
-      const res = await fetch("/api/auth/redirect");
-      const data = await res.json();
-      setRedirectUrl(data.redirectUrl);
-    }
-    getRedirectUrl();
-  }, []);
+  return (
+    <SignIn
+      forceRedirectUrl="https://tadaomarket.com/oauth/callback"
 
-  if (!redirectUrl) {
-    return <p>Loading sign-in…</p>;
-  }
-
-  return <SignIn forceRedirectUrl={redirectUrl} />;
+    />
+  );
 }
