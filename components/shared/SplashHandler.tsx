@@ -2,24 +2,23 @@
 
 import { useEffect } from "react";
 import { SplashScreen } from "@capacitor/splash-screen";
+import { Capacitor } from "@capacitor/core";
 
 export default function SplashHandler() {
     useEffect(() => {
         const hideSplash = async () => {
-            try {
-                await SplashScreen.hide();
-            } catch (err) {
-                console.warn("Splash hide failed:", err);
+            if (Capacitor.isNativePlatform()) {
+                try {
+                    await SplashScreen.hide();
+                } catch (err) {
+                    console.warn("Splash hide failed:", err);
+                }
             }
         };
 
-        if (document.readyState === "complete") {
-            hideSplash();
-        } else {
-            window.addEventListener("load", hideSplash);
-            return () => window.removeEventListener("load", hideSplash);
-        }
+        // Hide splash when React mounts (means UI is ready)
+        hideSplash();
     }, []);
 
-    return null; // nothing to render
+    return null;
 }

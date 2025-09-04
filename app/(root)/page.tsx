@@ -26,7 +26,6 @@ export default async function Home({ searchParams }: SearchParamProps) {
   ]);
 
   return (<>
-    <SplashHandler />
     <MainClient
       categoryList={categories}
       subcategoryList={subcategories}
