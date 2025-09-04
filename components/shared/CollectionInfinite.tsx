@@ -142,7 +142,7 @@ const CollectionInfinite = ({
   const [showWantedPopup, setShowWantedPopup] = useState(false);
   const [wantedcategory, setWantedcategory] = useState('');
   const [showBottomNav, setShowBottomNav] = useState(true);
-
+  let closepopup = false;
   const scrollRefB = useRef<HTMLDivElement>(null);
 
   const [scrollDir, setScrollDir] = useState<"up" | "down" | null>(null);
@@ -203,6 +203,7 @@ const CollectionInfinite = ({
     // setIsOpenCategory(false);
     setIsOpenProfile(false);
     setIsOpenOrderView(false);
+    closepopup = false;
     router.replace("/", { scroll: false });
   };
   // ✅ Check if ANY popup is open
@@ -234,7 +235,7 @@ const CollectionInfinite = ({
     );
   };
   const [showExitModal, setShowExitModal] = useState(false);
-  let closepopup = true;
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       CapacitorApp.addListener("backButton", ({ canGoBack }) => {
@@ -243,7 +244,6 @@ const CollectionInfinite = ({
 
         } else {
           if (closepopup) {
-            closepopup = false;
             setIsOpenCategory(false);
             handleClose();
 
@@ -309,6 +309,7 @@ const CollectionInfinite = ({
   };
   const handleOpenSearchTab = (value: string) => {
     handleClose();
+    closepopup = true;
     setIsOpenCategory(false);
     setCategorySelect(value);
     setIsOpenSearchTab(true);
@@ -344,6 +345,7 @@ const CollectionInfinite = ({
   };
   const handleOpenPerfomance = () => {
     handleClose();
+    closepopup = true;
     setIsOpenPerfomance(true);
   };
 
@@ -363,6 +365,7 @@ const CollectionInfinite = ({
   };
   const handleOpenSettings = () => {
     handleClose();
+    closepopup = true;
     setIsOpenSettings(true);
     history.pushState({ popup: true }, "");
   };
@@ -383,6 +386,7 @@ const CollectionInfinite = ({
   };
   const handleOpenChatId = (value: string) => {
     // handleClose();
+    closepopup = true;
     history.pushState({ popup: true }, "");
     setrecipientUid(value)
     setIsOpenChatId(true);
@@ -407,6 +411,7 @@ const CollectionInfinite = ({
 
   const handleOpenShop = (shopId: any) => {
     handleClose();
+    closepopup = true;
     setshopId(shopId)
     setIsOpenShop(true);
     history.pushState({ popup: true }, "");
@@ -427,6 +432,7 @@ const CollectionInfinite = ({
   };
   const handleOpenReview = (value: any) => {
     handleClose();
+    closepopup = true;
     setrecipient(value)
     setIsOpenReview(true);
     history.pushState({ popup: true }, "");
@@ -447,6 +453,7 @@ const CollectionInfinite = ({
   };
   const handleOpenChat = () => {
     handleClose();
+    closepopup = true;
     setIsOpenChat(true);
     history.pushState({ popup: true }, "");
   };
@@ -467,6 +474,7 @@ const CollectionInfinite = ({
   };
   const handleOpenPlan = () => {
     handleClose();
+    closepopup = true;
     setIsOpenPlan(true);
     history.pushState({ popup: true }, "");
   };
@@ -486,6 +494,7 @@ const CollectionInfinite = ({
   };
   const handleOpenBook = () => {
     handleClose();
+    closepopup = true;
     setIsOpenBook(true);
     history.pushState({ popup: true }, "");
   };
@@ -505,6 +514,7 @@ const CollectionInfinite = ({
   };
   const handleOpenTerms = () => {
     handleClose();
+    closepopup = true;
     setIsOpenTerms(true);
     history.pushState({ popup: true }, "");
   };
@@ -523,11 +533,13 @@ const CollectionInfinite = ({
   };
   const handleOpenPrivacy = () => {
     handleClose();
+    closepopup = true;
     setIsOpenPrivacy(true);
     history.pushState({ popup: true }, "");
   };
   const handleOpenFaq = () => {
     handleClose();
+    closepopup = true;
     setIsOpenFaq(true);
     history.pushState({ popup: true }, "");
   };
@@ -563,6 +575,7 @@ const CollectionInfinite = ({
   };
   const handleOpenSafety = () => {
     handleClose();
+    closepopup = true;
     setIsOpenSafety(true);
     history.pushState({ popup: true }, "");
   };
@@ -582,12 +595,14 @@ const CollectionInfinite = ({
   };
   const handleOpenAbout = () => {
     handleClose();
+    closepopup = true;
     setIsOpenAbout(true);
     history.pushState({ popup: true }, "");
   };
 
   const handlePay = (id: string) => {
     handleClose();
+    closepopup = true;
     setTxtId(id);
 
     setTimeout(() => {
@@ -627,6 +642,7 @@ const CollectionInfinite = ({
   const handleOpenProfile = () => {
 
     handleClose();
+    closepopup = true;
     setIsOpenProfile(true);
     history.pushState({ popup: true }, "");
 
@@ -653,6 +669,7 @@ const CollectionInfinite = ({
 
   const handleAdEdit = (ad: any) => {
     handleClose();
+    closepopup = true;
     setadId(ad);
     setIsOpenAdEdit(true);
   };
@@ -685,6 +702,7 @@ const CollectionInfinite = ({
 
   const handleDrawer = (category: string, subcategory: string) => {
     handleClose();
+    closepopup = true;
     if (category && subcategory) {
       setWantedcategory(category);
       setWantedsubcategory(subcategory);
@@ -698,7 +716,7 @@ const CollectionInfinite = ({
 
   const handleOpenSell = (category?: string, subcategory?: string) => {
     handleClose();
-
+    closepopup = true;
     if (category && subcategory) {
       setWantedcategory(category);
       setWantedsubcategory(subcategory);
@@ -726,6 +744,7 @@ const CollectionInfinite = ({
   };
   const handleAdView = (ad: any) => {
     handleClose();
+    closepopup = true;
     setadId(ad);
     setIsOpenAdView(true);
   };
@@ -749,6 +768,7 @@ const CollectionInfinite = ({
       });
       setHoveredCategory(null);
       setIsOpenCategory(true);
+      closepopup = true;
       //setIsOpenAdView(false);
       //setIsOpenSell(false);
 
@@ -765,6 +785,7 @@ const CollectionInfinite = ({
       });
       setHoveredCategory(null);
       setIsOpenCategory(true);
+      closepopup = true;
       setIsOpenAdView(false);
       setIsOpenSell(false);
     } else {
