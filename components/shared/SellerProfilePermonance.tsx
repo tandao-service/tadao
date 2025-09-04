@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import CallIcon from "@mui/icons-material/Call";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -62,9 +61,9 @@ type chatProps = {
   userName: string;
   userImage: string;
   user: any;
-  handleOpenShop:(shopId:any) => void;
-  handleOpenReview:(value:any) => void;
-  handlePay: (id:string) => void;
+  handleOpenShop: (shopId: any) => void;
+  handleOpenReview: (value: any) => void;
+  handlePay: (id: string) => void;
 };
 const SellerProfilePermonance = ({
   userId,
@@ -116,11 +115,11 @@ const SellerProfilePermonance = ({
             <p className="ml-2 font-bold">{userName}</p>
           </div>
 
-          <Verification user={user} fee={user.fee} userId={userId} isAdCreator={true} handlePayNow={handlePay}/>
+          <Verification user={user} fee={user.fee} userId={userId} isAdCreator={true} handlePayNow={handlePay} />
           <Ratingsmobile user={user} recipientUid={userId} handleOpenReview={handleOpenReview} />
         </div>
       </div>
-   
+
     </div>
   );
 };

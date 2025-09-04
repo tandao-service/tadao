@@ -4,26 +4,24 @@ import { headerLinks } from "@/constants";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Separator } from "../ui/separator";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
-import AddCardOutlinedIcon from "@mui/icons-material/AddCardOutlined";
-import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
-import StackedLineChartOutlinedIcon from "@mui/icons-material/StackedLineChartOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import DiamondIcon from "@mui/icons-material/Diamond";
-import SettingsIcon from "@mui/icons-material/Settings";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import HomeIcon from "@mui/icons-material/Home";
-import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { ArrowForwardIos as ArrowForwardIosIcon } from "@mui/icons-material";
+import {
+  Home as HomeIcon,
+  SellOutlined as SellOutlinedIcon,
+  FormatListBulletedOutlined as FormatListBulletedOutlinedIcon,
+  CommentOutlined as CommentOutlinedIcon,
+  StackedLineChartOutlined as StackedLineChartOutlinedIcon,
+  Bookmark as BookmarkIcon,
+  Diamond as DiamondIcon,
+  PersonOutlineOutlined as PersonOutlineOutlinedIcon,
+  ManageAccountsOutlined as ManageAccountsOutlinedIcon,
+  ShareOutlined as ShareOutlinedIcon,
+} from "@mui/icons-material";
 import ProgressPopup from "./ProgressPopup";
+
+import StyledBrandName from "./StyledBrandName";
+import { useAuth } from "@/app/hooks/useAuth";
+
 type NavItemsProps = {
   userstatus: string;
   userId: string;
@@ -39,17 +37,34 @@ type NavItemsProps = {
   handleOpenSettings: () => void;
   handleclicklink: () => void;
 };
-const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, handleOpenSettings, handleOpenPlan, handleOpenBook, handleOpenPerfomance, handleOpenChat, handleOpenSell, handleOpenShop }: NavItemsProps) => {
+
+export default function NavItems({
+  userstatus,
+  userId,
+  user,
+  popup,
+  onClose,
+  handleclicklink,
+  handleOpenSettings,
+  handleOpenPlan,
+  handleOpenBook,
+  handleOpenPerfomance,
+  handleOpenChat,
+  handleOpenSell,
+  handleOpenShop,
+}: NavItemsProps) {
   const pathname = usePathname();
-  const [isOpenP, setIsOpenP] = useState(false);
   const router = useRouter();
-  const handleCloseP = () => {
-    setIsOpenP(false);
-  };
-  function capitalizeFirstLetter(str: string): string {
+  const [isOpenP, setIsOpenP] = useState(false);
+  const handleCloseP = () => setIsOpenP(false);
+
+  const { user: currentUser } = useAuth(); // Firebase user
+
+  function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  const shareUrl = "https://tadaoservices.com"; // Replace with the URL you want to share
+
+  const shareUrl = "https://tadaomarket.com"; // Replace with your share URL
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -59,16 +74,14 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
           text: "I found this amazing online marketing site!",
           url: shareUrl,
         });
-        console.log("Share was successful.");
       } catch (error) {
         console.error("Sharing failed:", error);
       }
     } else {
-      // Fallback for browsers that do not support the Web Share API
       console.log("Share not supported on this browser.");
-      // You can also show a modal or a tooltip with the URL or instructions here.
     }
   };
+
   return (
     <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white w-full">
       <ul>
@@ -76,275 +89,132 @@ const NavItems = ({ userstatus, userId, user, popup, onClose, handleclicklink, h
           .filter((link) => !(userstatus === "User" && link.label === "Admin"))
           .map((link) => {
             const isActive = capitalizeFirstLetter(popup) === link.label;
-            let linki = link.route;
-            //  if (link.label === "My Shop") {
-            //    linki = link.route + "/" + userId;
-            //  }
 
-            return (
-              <>
-                <SignedIn>
-                  <li key={link.route}>
-                    <div>
-
-                      {link.label === "Home" && (<div
-                        onClick={() => { onClose(); handleclicklink(); }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-                          <HomeIcon className="w-10 p-1" />
-                        </span>
-                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1" />
-                        </span></div>
-                      )}
-                      {link.label === "Sell" && (<div
-                        onClick={() => { handleOpenSell(); handleclicklink() }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-                          <SellOutlinedIcon className="w-10 p-1" />
-
-                        </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1" />
-
-
-                        </span>
-                      </div>
-                      )}
-                      {link.label === "My Shop" && (
-                        <div
-                          onClick={() => { handleOpenShop(user); handleclicklink(); }}
-                          className={`${isActive &&
-                            "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                            } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                        > <span>
-                            <FormatListBulletedOutlinedIcon className="w-10 p-1" />
-                          </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                            {link.label}
-                          </span>
-                          <span className="text-right my-auto">
-                            <ArrowForwardIosIcon className="w-10 p-1" />
-
-                          </span>
-                        </div>
-                      )}
-                      {link.label === "Chat" && (<div
-                        onClick={() => { handleOpenChat(); handleclicklink(); }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-
-                          <CommentOutlinedIcon className="w-10 p-1 " />
-                        </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                      </div>
-                      )}
-                      {link.label === "Performance" && (<div
-                        onClick={() => { handleOpenPerfomance(); handleclicklink(); }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-                          <StackedLineChartOutlinedIcon className="w-10 p-1 " />
-                        </span>
-                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                      </div>)}
-                      {link.label === "Bookmark" && (<div
-                        onClick={() => { handleOpenBook(); handleclicklink(); }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-                          <BookmarkIcon className="w-10 p-1 " />
-                        </span> <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-
-                      </div>
-                      )}
-                      {link.label === "Plan" && (<div
-                        onClick={() => { handleOpenPlan(); handleclicklink(); }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-                          <DiamondIcon className="w-10 p-1 " />
-                        </span>
-                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                      </div>
-                      )}
-                      {link.label === "Profile" && (<div
-                        onClick={() => { handleOpenSettings(); handleclicklink(); }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-
-                        <span>
-                          <PersonOutlineOutlinedIcon className="w-10 p-1 " />
-                        </span>
-                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                      </div>)}
-
-                      {link.label === "Admin" && (<div
-                        onClick={() => {
+            // If user is logged in
+            if (currentUser) {
+              return (
+                <li key={link.route}>
+                  <div
+                    onClick={() => {
+                      switch (link.label) {
+                        case "Home":
+                          onClose();
+                          handleclicklink();
+                          break;
+                        case "Sell":
+                          handleOpenSell();
+                          handleclicklink();
+                          break;
+                        case "My Shop":
+                          handleOpenShop(user);
+                          handleclicklink();
+                          break;
+                        case "Chat":
+                          handleOpenChat();
+                          handleclicklink();
+                          break;
+                        case "Performance":
+                          handleOpenPerfomance();
+                          handleclicklink();
+                          break;
+                        case "Bookmark":
+                          handleOpenBook();
+                          handleclicklink();
+                          break;
+                        case "Plan":
+                          handleOpenPlan();
+                          handleclicklink();
+                          break;
+                        case "Profile":
+                          handleOpenSettings();
+                          handleclicklink();
+                          break;
+                        case "Admin":
                           setIsOpenP(true);
-                          //handleclicklink();
                           router.push("/home");
-                        }}
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        <span>
-                          <ManageAccountsOutlinedIcon className="w-10 p-1 " />
-                        </span>
-                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                      </div>)}
+                          break;
+                        default:
+                          break;
+                      }
+                    }}
+                    className={`${isActive
+                      ? "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                      : "dark:bg-[#2D3236] dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500"
+                      } flex p-3 mb-1 hover:cursor-pointer`}
+                  >
+                    <span className="w-10 p-1">
+                      {{
+                        Home: <HomeIcon />,
+                        Sell: <SellOutlinedIcon />,
+                        "My Shop": <FormatListBulletedOutlinedIcon />,
+                        Chat: <CommentOutlinedIcon />,
+                        Performance: <StackedLineChartOutlinedIcon />,
+                        Bookmark: <BookmarkIcon />,
+                        Plan: <DiamondIcon />,
+                        Profile: <PersonOutlineOutlinedIcon />,
+                        Admin: <ManageAccountsOutlinedIcon />,
+                      }[link.label]}
+                    </span>
+                    <span className="flex-1 text-sm mr-5 my-auto">{link.label}</span>
+                    <span className="text-right my-auto">
+                      <ArrowForwardIosIcon className="w-10 p-1" />
+                    </span>
+                  </div>
+                </li>
+              );
+            }
 
-
-                    </div>
-                  </li>
-                </SignedIn>
-
-                <SignedOut>
-                  <li key={link.route}>
-                    <div
-                      onClick={() => {
-                        //if (!isActive) {
-                        setIsOpenP(true);
-                        // handleclicklink();
-                        router.push("/sign-in");
-                        // } else {
-                        //  onClose();
-                        //}
-                      }}
-                    >
-                      <div
-                        className={`${isActive &&
-                          "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
-                          } flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}
-                      >
-                        {link.label === "Home" && (
-                          <span>
-                            <HomeIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "Sell" && (
-                          <span>
-                            <SellOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "My Shop" && (
-                          <span>
-                            <FormatListBulletedOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "Chat" && (
-                          <span>
-                            <CommentOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "Performance" && (
-                          <span>
-                            <StackedLineChartOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "Bookmark" && (
-                          <span>
-                            <BookmarkIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "Plan" && (
-                          <span>
-                            <DiamondIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        {link.label === "Profile" && (
-                          <span>
-                            <PersonOutlineOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-
-                        {link.label === "Admin" && (
-                          <span>
-                            <ManageAccountsOutlinedIcon className="w-10 p-1 " />
-                          </span>
-                        )}
-                        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-                          {link.label}
-                        </span>
-                        <span className="text-right my-auto">
-                          <ArrowForwardIosIcon className="w-10 p-1 " />
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                </SignedOut>
-
-              </>
+            // If user is not logged in
+            return (
+              <li key={link.route}>
+                <div
+                  onClick={() => {
+                    setIsOpenP(true);
+                    router.push("/auth"); // Firebase login page
+                  }}
+                  className={`${isActive
+                    ? "dark:bg-orange-500 dark:text-white bg-orange-500 text-white rounded-full"
+                    : "dark:bg-[#2D3236] dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500"
+                    } flex p-3 mb-1 hover:cursor-pointer`}
+                >
+                  <span className="w-10 p-1">
+                    {{
+                      Home: <HomeIcon />,
+                      Sell: <SellOutlinedIcon />,
+                      "My Shop": <FormatListBulletedOutlinedIcon />,
+                      Chat: <CommentOutlinedIcon />,
+                      Performance: <StackedLineChartOutlinedIcon />,
+                      Bookmark: <BookmarkIcon />,
+                      Plan: <DiamondIcon />,
+                      Profile: <PersonOutlineOutlinedIcon />,
+                      Admin: <ManageAccountsOutlinedIcon />,
+                    }[link.label]}
+                  </span>
+                  <span className="flex-1 text-sm mr-5 my-auto">{link.label}</span>
+                  <span className="text-right my-auto">
+                    <ArrowForwardIosIcon className="w-10 p-1" />
+                  </span>
+                </div>
+              </li>
             );
           })}
       </ul>
+
+      {/* Share button */}
       <div
         onClick={handleShare}
-        className={`flex dark:bg-[#2D3236]  dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer`}>
-        <span>
-          <ShareOutlinedIcon className="w-10 p-1 " />
+        className="flex dark:bg-[#2D3236] dark:hover:bg-gray-800 hover:bg-gray-100 rounded-sm hover:text-orange-500 p-3 mb-1 hover:cursor-pointer"
+      >
+        <span className="w-10 p-1">
+          <ShareOutlinedIcon />
         </span>
-        <span className="flex-1 text-sm mr-5 hover:no-underline my-auto">
-          Share
-        </span>
+        <span className="flex-1 text-sm mr-5 my-auto">Share</span>
         <span className="text-right my-auto">
           <ArrowForwardIosIcon className="w-10 p-1" />
         </span>
       </div>
+
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
   );
-};
-
-export default NavItems;
+}

@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import CallIcon from "@mui/icons-material/Call";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -56,20 +55,22 @@ import ProgressPopup from "./ProgressPopup";
 import CopyShareAdLink from "./CopyShareAdLink";
 import { Email } from "@mui/icons-material";
 import { Button } from "../ui/button";
+import { useAuth } from "@/app/hooks/useAuth";
 
 type CollectionProps = {
   userId: string;
   loggedId: string;
   user: any;
-  handleOpenReview: (value:any) => void;
-  handleOpenChatId: (value:string) => void;
+  handleOpenReview: (value: any) => void;
+  handleOpenChatId: (value: string) => void;
   handleOpenSettings: () => void;
-  handlePay: (id:string) => void;
+  handlePay: (id: string) => void;
 };
 
 const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings }: CollectionProps) => {
   const [activationfee, setactivationfee] = useState(500);
   const [showphone, setshowphone] = useState(false);
+  const { user: currentUser } = useAuth();
   const pathname = usePathname();
   const isActive = pathname === "/shop/" + userId;
   const isActiveReviews = pathname === "/reviews/" + userId;
@@ -81,7 +82,7 @@ const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenRev
   };
   // console.log(user);
   const handlewhatsappClick = () => {
-     
+
     window.location.href = `https://wa.me/${user.whatsapp}/`;
   };
 
@@ -111,150 +112,136 @@ const SellerProfileReviews = ({ userId, loggedId, user, handlePay, handleOpenRev
     // Handle error when formatting date
   }
   const [isLoading, setIsLoading] = useState(true);
- 
+
   return (
     <div className="flex flex-col m-0 dark:text-gray-100 items-center w-full lg:w-[350px]">
-     
-     <div className="flex flex-col dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
-      <div className="flex gap-4 dark:bg-[#2D3236] dark:text-gray-100 bg-white  items-center p-1 w-full rounded-lg">
-        <div className="flex flex-col w-full items-center w-full">
-          <div className="w-24 h-24 rounded-full bg-white relative">
-            <Zoom>
-              <Image
-                className="w-full h-full rounded-full object-cover"
-                src={user.photo ?? "/avator.png"}
-                alt="Avator"
-                width={200}
-                height={200}
+
+      <div className="flex flex-col dark:bg-[#2D3236] dark:text-gray-100 border bg-white justify-between items-center p-1 w-full rounded-lg">
+        <div className="flex gap-4 dark:bg-[#2D3236] dark:text-gray-100 bg-white  items-center p-1 w-full rounded-lg">
+          <div className="flex flex-col w-full items-center w-full">
+            <div className="w-24 h-24 rounded-full bg-white relative">
+              <Zoom>
+                <Image
+                  className="w-full h-full rounded-full object-cover"
+                  src={user.photo ?? "/avator.png"}
+                  alt="Avator"
+                  width={200}
+                  height={200}
+                />
+              </Zoom>
+              {/* Verified Icon */}
+              {user.verified && user?.verified[0]?.accountverified === true ? (
+                <>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-white bottom-0 right-0 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full p-1">
+                          <VerifiedUserOutlinedIcon />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-emerald-500">Verified Seller</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </>
+              ) : (
+                <>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-gray-100 bottom-0 right-0 bg-gradient-to-b from-gray-500 to-gray-600 rounded-full p-1">
+                          <ShieldOutlinedIcon />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-red-500">Unverified Seller</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </>
+              )}
+            </div>
+
+            <div className="ml-2 text-xl font-bold">
+              {user.firstName} {user.lastName}
+            </div>
+            <div className="m-1">
+              <Verification
+                fee={user.fee}
+                user={user}
+                userId={userId}
+                isAdCreator={isAdCreator}
+                handlePayNow={handlePay}
               />
-            </Zoom>
-            {/* Verified Icon */}
-            {user.verified && user?.verified[0]?.accountverified === true ? (
-              <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-white bottom-0 right-0 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full p-1">
-                        <VerifiedUserOutlinedIcon />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-emerald-500">Verified Seller</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </>
-            ) : (
-              <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-gray-100 bottom-0 right-0 bg-gradient-to-b from-gray-500 to-gray-600 rounded-full p-1">
-                        <ShieldOutlinedIcon />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-red-500">Unverified Seller</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </>
-            )}
+            </div>
+
           </div>
 
-          <div className="ml-2 text-xl font-bold">
-            {user.firstName} {user.lastName}
-          </div>
-          <div className="m-1">
-            <Verification
-              fee={user.fee}
-              user={user}
-              userId={userId}
-              isAdCreator={isAdCreator}
-              handlePayNow={handlePay}
-            />
-          </div>
-          
         </div>
-       
+        <div className="flex flex-col gap-1 items-center w-full">
+          {currentUser ? (<>
+            <Button onClick={handleShowPhoneClick} variant="default" className="w-full">
+              <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
+            </Button></>) : (<> <Button onClick={() => {
+              // handleOpenP();
+              router.push(`/auth`);
+            }} variant="default" className="w-full">
+              <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
+            </Button></>)}
+
+
+
+          {userId !== loggedId && (<>
+            {currentUser ? (
+              <Button onClick={() => {
+
+                handleOpenChatId(userId);
+
+              }}
+                variant="default" className="w-full">
+                <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+                <div>Message</div>
+              </Button>
+            ) : (<Button onClick={() => {
+              // handleOpenP();
+              router.push(`/auth`);
+            }}
+              variant="default" className="w-full">
+              <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+              <div>Message</div>
+            </Button>)}
+
+
+          </>)}
+          {user.whatsapp && (
+            <div className="w-full">
+              {currentUser ? (
+                <Button
+                  onClick={handlewhatsappClick}
+                  variant="default" className="w-full">
+                  <WhatsAppIcon sx={{ fontSize: 18 }} />
+
+                  <div>WhatsApp</div>
+                </Button>
+
+              ) : (<Button onClick={() => {
+                // handleOpenP();
+                router.push(`/auth`);
+              }}
+                variant="default" className="w-full">
+                <WhatsAppIcon sx={{ fontSize: 18 }} />
+
+                <div >WhatsApp</div>
+              </Button>)}
+
+
+            </div>
+          )}
+        </div>
       </div>
-       <div className="flex flex-col gap-1 items-center w-full">
-                        <SignedIn>
-                        <Button onClick={handleShowPhoneClick} variant="default" className="w-full">
-                        <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
-                       </Button>
-                          
-                        </SignedIn>
-                       
-                        <SignedOut>
-                        <Button onClick={() => {
-                             // handleOpenP();
-                              router.push(`/sign-in`);
-                            }} variant="default" className="w-full">
-                        <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
-                       </Button>
-                         
-                        </SignedOut>
-                        {userId !== loggedId && (<>
-                        <SignedIn>
-                        <Button onClick={() => {
-                                 
-                                   handleOpenChatId(userId);
-                                   
-                                  }}
-                             variant="default" className="w-full">
-                        <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
-                        <div>Message</div>
-                       </Button>
-                        </SignedIn>
-                        <SignedOut>
-                        <Button onClick={() => {
-                             // handleOpenP();
-                              router.push(`/sign-in`);
-                            }}
-                             variant="default" className="w-full">
-                        <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
-                        <div>Message</div>
-                       </Button>
-            
-                         
-                        </SignedOut>
-                        </>)}
-                        {user.whatsapp && (
-                          <div className="w-full">
-                            <SignedIn>
-                          
-                            <Button 
-                            onClick={handlewhatsappClick}
-                             variant="default" className="w-full">
-                        <WhatsAppIcon sx={{ fontSize: 18 }} />
-            
-                       <div>WhatsApp</div>
-                       </Button>
-                               
-                           
-            
-                              
-                            </SignedIn>
-                            <SignedOut>
-                            <Button  onClick={() => {
-                                 // handleOpenP();
-                                  router.push(`/sign-in`);
-                                }}
-                             variant="default" className="w-full">
-                       <WhatsAppIcon sx={{ fontSize: 18 }} />
-            
-            <div >WhatsApp</div>
-                       </Button>
-            
-                             
-                            </SignedOut>
-                          </div>
-                        )}
-                      </div>
-     </div>
-     
-  
+
+
     </div>
   );
 };

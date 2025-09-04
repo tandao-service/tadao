@@ -22,7 +22,6 @@ import {
 } from "react-icons/fa";
 import Ratingsmobile from "./ratingsmobile";
 import Verification from "./Verification";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import ProgressPopup from "./ProgressPopup";
 import { VerificationPackId } from "@/constants";
 import { createTransaction } from "@/lib/actions/transactions.actions";

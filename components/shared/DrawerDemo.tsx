@@ -18,9 +18,9 @@ import { createTransaction } from "@/lib/actions/transactions.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "../ui/use-toast";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import ProgressPopup from "./ProgressPopup";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 
 // import { Checkbox } from "../ui/checkbox"; // Unused
 type Package = {
@@ -61,7 +61,7 @@ export function DrawerDemo({
   const [showVerify, setShowVerify] = useState(true);
   const [showPackages, setShowPackages] = useState(true);
   const [isSending, setIsSending] = useState(false);
-
+  const { user: currentUser } = useAuth();
   const handlePostRequest = () => {
 
     handleOpenSell(category, subcategory);
@@ -127,8 +127,8 @@ export function DrawerDemo({
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [activeButton, setActiveButton] = useState(0);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
-  const createdAt = new Date(user.transaction?.createdAt || new Date());
-  const periodInDays = parseInt(user.transaction?.period) || 0;
+  const createdAt = new Date(user?.transaction?.createdAt || new Date());
+  const periodInDays = parseInt(user?.transaction?.period) || 0;
   const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
   const currentTime = new Date();
   const remainingTime = expiryDate.getTime() - currentTime.getTime();
@@ -153,12 +153,12 @@ export function DrawerDemo({
     setShowVerify(true);
     setShowPackages(true);
     setadstatus("Pending");
-    setActivePackage(packagesList[1]);
-    setplanId(packagesList[1]._id);
-    setplan(packagesList[1].name);
-    setpriority(packagesList[1].priority);
+    setActivePackage(packagesList[1] || "Free");
+    setplanId(packagesList[1]?._id || FreePackId);
+    setplan(packagesList[1]?.name || "Free");
+    setpriority(packagesList[1]?.priority || 1);
     setexpirationDate(expirationDate);
-    packagesList[1].price.forEach((price: any, index: number) => {
+    packagesList[1]?.price.forEach((price: any, index: number) => {
       if (index === activeButton) {
         setPriceInput(price.amount);
         setPeriodInput(price.period);
@@ -252,13 +252,12 @@ export function DrawerDemo({
               </DrawerHeader>
               <div className="flex flex-col gap-4 w-full items-center">
 
-                <SignedIn>
-                  <button
-                    onClick={handlePostRequest}
-                    className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
-                  >
-                    Post {subcategory}
-                  </button>
+                {currentUser ? (<> <button
+                  onClick={handlePostRequest}
+                  className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
+                >
+                  Post {subcategory}
+                </button>
                   <button
                     onClick={handleViewRequests}
                     disabled={isSending}
@@ -266,10 +265,8 @@ export function DrawerDemo({
                   >
                     {isSending ? "Checking..." : `View Posted ${subcategory}`}
 
-                  </button>
-                </SignedIn>
-                <SignedOut>
-                  <button
+                  </button></>) : (
+                  <> <button
                     onClick={() => {
                       setIsOpenP(true);
                       router.push("/sign-in");
@@ -278,19 +275,20 @@ export function DrawerDemo({
                   >
                     Post {subcategory}
                   </button>
-                  <button
-                    onClick={() => {
-                      setIsOpenP(true);
-                      router.push("/sign-in");
-                    }}
-                    disabled={isSending}
-                    className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
-                  >
-                    {isSending ? "Checking..." : `View Posted ${subcategory}`}
+                    <button
+                      onClick={() => {
+                        setIsOpenP(true);
+                        router.push("/sign-in");
+                      }}
+                      disabled={isSending}
+                      className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
+                    >
+                      {isSending ? "Checking..." : `View Posted ${subcategory}`}
 
-                  </button>
-                  <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
-                </SignedOut>
+                    </button>
+                    <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} /></>
+                )}
+
 
               </div>
 

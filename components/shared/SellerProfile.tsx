@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import CallIcon from "@mui/icons-material/Call";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -61,6 +60,7 @@ import { Email } from "@mui/icons-material";
 import { Button } from "../ui/button";
 import { updatewhatsapp } from "@/lib/actions/dynamicAd.actions";
 import Ratingsmobile from "./ratingsmobile";
+import { useAuth } from "@/app/hooks/useAuth";
 type CollectionProps = {
   userId: string;
   loggedId: string;
@@ -74,6 +74,7 @@ type CollectionProps = {
 const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings }: CollectionProps) => {
   const [activationfee, setactivationfee] = useState(500);
   const [showphone, setshowphone] = useState(false);
+  const { user: currentUser } = useAuth();
   const pathname = usePathname();
   const isActive = pathname === "/shop/" + userId;
   const isActiveReviews = pathname === "/reviews/" + userId;
@@ -215,7 +216,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
 
         {/* Contact Buttons */}
         {userId !== loggedId && (<div className="flex items-center justify-center w-full gap-2 mt-4">
-          <SignedIn>
+          {currentUser ? (<>
             <button onClick={handleShowPhoneClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Phone className="w-5 h-5" /> Call
             </button>
@@ -228,29 +229,25 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
 
             {user.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
-            </button></>)}
-          </SignedIn>
-          <SignedOut>
-            <button onClick={() => {
+            </button></>)}</>) : (<>  <button onClick={() => {
               setIsOpenP(true);
               router.push(`/sign-in`);
             }} className="flex text-sm gap-1 items-center justify-center items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Phone className="w-5 h-5" /> Call
             </button>
-            <button onClick={() => {
-              setIsOpenP(true);
-              router.push(`/sign-in`);
-            }} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
-              <Mail className="w-5 h-5" /> Message
-            </button>
-            <button onClick={() => {
-              setIsOpenP(true);
-              router.push(`/sign-in`);
-            }}
-              className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
-              <MessageCircle className="w-5 h-5" /> WhatsApp
-            </button>
-          </SignedOut>
+              <button onClick={() => {
+                setIsOpenP(true);
+                router.push(`/sign-in`);
+              }} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+                <Mail className="w-5 h-5" /> Message
+              </button>
+              <button onClick={() => {
+                setIsOpenP(true);
+                router.push(`/sign-in`);
+              }}
+                className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+                <MessageCircle className="w-5 h-5" /> WhatsApp
+              </button></>)}
 
 
         </div>)}

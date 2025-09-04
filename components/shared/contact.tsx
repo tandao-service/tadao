@@ -1,6 +1,5 @@
 "use client";
 import { IAd } from "@/lib/database/models/ad.model";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import React, { useState } from "react";
 import ChatButton from "./ChatButton";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
@@ -16,6 +15,7 @@ import Ratingsmobile from "./ratingsmobile";
 import { updatecalls, updatewhatsapp } from "@/lib/actions/ad.actions";
 import ChatButtonBottom from "./ChatButtonBottom";
 import ProgressPopup from "./ProgressPopup";
+import { useAuth } from "@/app/hooks/useAuth";
 type chatProps = {
   userId: string;
   userName: string;
@@ -32,6 +32,7 @@ type chatProps = {
 };
 const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, handlePay, handleOpenReview, handleOpenChatId, handleOpenSettings, handleOpenShop }: chatProps) => {
   const [showphone, setshowphone] = useState(false);
+  const { user: currentUser } = useAuth();
   const router = useRouter();
   const [isOpenP, setIsOpenP] = useState(false);
   const handleOpenP = () => {
@@ -91,7 +92,8 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
             userImage={userImage} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handleOpenShop={handleOpenShop} />
         </div>
         <div className="flex items-center gap-2 p-1 lg:bottom-[10px] lg:mr-20">
-          <SignedIn>
+          {currentUser ? (<>
+
             <button
               className="bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow"
               onClick={handleShowPhoneClick}
@@ -100,22 +102,6 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
 
               {/* <div className="hidden lg:inline">Call</div> */}
             </button>
-          </SignedIn>
-          <SignedOut>
-            <div
-              onClick={() => {
-                setIsOpenP(true);
-                router.push("/sign-in");
-              }}
-            >
-              <button className="cursor-pointer bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow">
-                <CallIcon sx={{ fontSize: 24 }} />
-                {/*  <div className="hidden lg:inline">Call</div>*/}
-              </button>
-            </div>
-          </SignedOut>
-
-          <SignedIn>
             <button
               className="bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow"
               onClick={() => handleOpenEnquire()}
@@ -123,9 +109,17 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
               <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
               {/*<div className="hidden lg:inline"> Enquire</div>*/}
             </button>
-
-          </SignedIn>
-          <SignedOut>
+          </>) : (<> <div
+            onClick={() => {
+              setIsOpenP(true);
+              router.push("/auth");
+            }}
+          >
+            <button className="cursor-pointer bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow">
+              <CallIcon sx={{ fontSize: 24 }} />
+              {/*  <div className="hidden lg:inline">Call</div>*/}
+            </button>
+          </div>
             <div
               onClick={() => {
                 setIsOpenP(true);
@@ -136,12 +130,16 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
                 <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
                 {/*<div className="hidden lg:inline">Message</div>*/}
               </button>
-            </div>
-          </SignedOut>
+            </div></>)}
+
+
+
+
+
 
           {ad.organizer.whatsapp && (
             <>
-              <SignedIn>
+              {currentUser ? (
                 <button
                   onClick={handlewhatsappClick}
                   className="bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow"
@@ -150,8 +148,7 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
 
                   {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
                 </button>
-              </SignedIn>
-              <SignedOut>
+              ) : (
                 <div
                   onClick={() => {
                     setIsOpenP(true);
@@ -164,7 +161,10 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
                     {/*  <div className="hidden lg:inline">WhatsApp</div>*/}
                   </button>
                 </div>
-              </SignedOut>
+              )}
+
+
+
             </>
           )}
         </div>

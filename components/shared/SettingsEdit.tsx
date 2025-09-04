@@ -28,11 +28,12 @@ import { UserFormSchema } from "@/lib/validator";
 import { updateUserFromSettings, updateUserPhone } from "@/lib/actions/user.actions";
 import { useToast } from "@/components/ui/use-toast";
 import { TextField } from "@mui/material";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+
 import { useUploadThing } from "@/lib/uploadthing";
 import { FileuploaderBusiness } from "./FileuploaderBusiness";
 import { verificationStatus } from "@/lib/actions/verificationstatus";
 import PhoneVerification from "./PhoneVerification";
+import { useAuth } from "@/app/hooks/useAuth";
 
 type setingsProp = {
   type: "Create" | "Update";
@@ -50,6 +51,7 @@ type Businesshours = {
 const SettingsEdit = ({ user, type, userId }: setingsProp) => {
   //const initialValues = user;
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -317,9 +319,15 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
               <div className="rounded-[20px] p-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-1">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <SignedIn>
-                      <UserButton afterSignOutUrl="/" />
-                    </SignedIn>
+                    {currentUser && (
+                      <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
+                        <img
+                          src={currentUser.photoURL || "/default-user.png"}
+                          alt="User"
+                          className="w-8 h-8 rounded-full"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-5 mb-5 md:flex-row gap-1">

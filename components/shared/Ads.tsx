@@ -32,7 +32,6 @@ import Image from "next/image";
 import EmblaCarousel from "embla-carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import FloatingChatIcon from "./FloatingChatIcon";
 import ChatWindow from "./ChatWindow";
 import Card from "@mui/material/Card";
@@ -91,6 +90,7 @@ import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct 
 import { RequestFinancing } from "./RequestFinancing";
 import Bidding from "./Bidding";
 import SellerProfileCard from "./SellerProfileCard";
+import { useAuth } from "@/app/hooks/useAuth";
 
 // Correct import
 type CardProps = {
@@ -128,6 +128,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
   const hideAddVideo = userId === ad.organizer._id;
   const [showGuide, setShowGuide] = useState(false);
   const [showphone, setshowphone] = useState(false);
+  const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const handleShowPhoneClick = (e: any) => {
     setshowphone(true);
@@ -614,28 +615,25 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   </div>
                   {ad.data.contact && ad.data.contact === "contact" && (
                     <div>
-                      <SignedIn>
-                        <button
-                          className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg"
-                          onClick={handleShowPhoneClick}
-                        >
+                      {currentUser ? (<button
+                        className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg"
+                        onClick={handleShowPhoneClick}
+                      >
+                        <CallIcon sx={{ marginRight: "5px" }} />
+                        Ask the Price?
+                      </button>) : (<div
+                        onClick={() => {
+                          setIsOpenP(true);
+                          router.push("/auth");
+                        }}
+                      >
+                        <button className="bg-orange-100 cursor-pointer hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg">
                           <CallIcon sx={{ marginRight: "5px" }} />
                           Ask the Price?
                         </button>
-                      </SignedIn>
-                      <SignedOut>
-                        <div
-                          onClick={() => {
-                            setIsOpenP(true);
-                            router.push("/sign-in");
-                          }}
-                        >
-                          <button className="bg-orange-100 cursor-pointer hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg">
-                            <CallIcon sx={{ marginRight: "5px" }} />
-                            Ask the Price?
-                          </button>
-                        </div>
-                      </SignedOut>
+                      </div>)}
+
+
                     </div>
                   )}
                   <div className="flex gap-1 items-center no-underline">
@@ -1300,7 +1298,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
             {(ad.data && !ad.data.biddingEnabled && (ad.data.category === 'Property' || ad.data.category === 'Vehicle')) && (
               <>
                 <div className="flex w-full items-center">
-                  <SignedIn>
+                  {currentUser ? (
                     <button
                       onClick={handleOpenPopupLoan}
                       className="flex rounded-sm w-full py-3 px-2 text-lg text-white bg-orange-500 hover:bg-orange-700 justify-center items-center gap-1"
@@ -1308,20 +1306,18 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                       <SellOutlinedIcon />
                       Request Financing for This Property
                     </button>
-                  </SignedIn>
+                  ) : (<button
+                    onClick={() => {
+                      setIsOpenP(true);
+                      router.push("/auth");
+                    }}
+                    className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-orange-500 hover:bg-orange-700 items-center"
+                  >
+                    <SellOutlinedIcon />
+                    Request Financing for This Property
+                  </button>)}
 
-                  <SignedOut>
-                    <button
-                      onClick={() => {
-                        setIsOpenP(true);
-                        router.push("/sign-in");
-                      }}
-                      className="flex text-white justify-center rounded-sm w-full py-3 px-2 text-lg bg-orange-500 hover:bg-orange-700 items-center"
-                    >
-                      <SellOutlinedIcon />
-                      Request Financing for This Property
-                    </button>
-                  </SignedOut>
+
                 </div>
               </>
             )}
@@ -1376,7 +1372,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </div>
               {ad.data.contact && ad.data.contact === "contact" && (
                 <div>
-                  <SignedIn>
+                  {currentUser ? (
                     <button
                       className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg"
                       onClick={handleShowPhoneClick}
@@ -1384,20 +1380,19 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                       <CallIcon sx={{ marginRight: "5px" }} />
                       Ask the Price?
                     </button>
-                  </SignedIn>
-                  <SignedOut>
-                    <div
-                      onClick={() => {
-                        setIsOpenP(true);
-                        router.push("/sign-in");
-                      }}
-                    >
-                      <button className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg">
-                        <CallIcon sx={{ marginRight: "5px" }} />
-                        Ask the Price?
-                      </button>
-                    </div>
-                  </SignedOut>
+                  ) : (<div
+                    onClick={() => {
+                      setIsOpenP(true);
+                      router.push("/auth");
+                    }}
+                  >
+                    <button className="bg-orange-100 hover:bg-[#000000] text-orange-700 text-xs border border-orange-700 p-2 rounded-lg">
+                      <CallIcon sx={{ marginRight: "5px" }} />
+                      Ask the Price?
+                    </button>
+                  </div>)}
+
+
                 </div>
               )}
 
@@ -1467,7 +1462,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
 
             <span className="hidden m-0">
               <div className="justify-between flex w-full gap-1">
-                <SignedIn>
+                {currentUser ? (<>
                   <button
                     className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
                     onClick={handleShowPhoneClick}
@@ -1475,34 +1470,27 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                     <CallIcon sx={{ marginRight: "5px" }} />
                     {showphone ? <>{ad.data.phone}</> : <> Call</>}
                   </button>
-                </SignedIn>
-                <SignedOut>
-                  <div
-                    onClick={() => {
-                      setIsOpenP(true);
-                      router.push("/sign-in");
-                    }}
-                  >
-                    <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
-                      <CallIcon sx={{ marginRight: "5px" }} />
-                      Call
-                    </button>
-                  </div>
-                </SignedOut>
-
-                <SignedIn>
                   <ChatButton
                     ad={ad}
                     userId={userId}
                     userImage={userImage}
                     userName={userName}
                   />
-                </SignedIn>
-                <SignedOut>
+                </>) : (<><div
+                  onClick={() => {
+                    setIsOpenP(true);
+                    router.push("/auth");
+                  }}
+                >
+                  <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
+                    <CallIcon sx={{ marginRight: "5px" }} />
+                    Call
+                  </button>
+                </div>
                   <div
                     onClick={() => {
                       setIsOpenP(true);
-                      router.push("/sign-in");
+                      router.push("/auth");
                     }}
                   >
                     <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
@@ -1512,37 +1500,36 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                       Message
                     </button>
                   </div>
-                </SignedOut>
+                </>)}
+
+
 
                 {ad.organizer.whatsapp && (
                   <>
-                    <SignedIn>
+                    {currentUser ? (
                       <a href={`https://wa.me/${ad.organizer.whatsapp}/`}>
                         <button className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow">
                           <WhatsAppIcon sx={{ marginRight: "5px" }} />
                           WhatsApp
                         </button>
                       </a>
-                    </SignedIn>
-                    <SignedOut>
-                      <div
-                        onClick={() => {
-                          setIsOpenP(true);
-                          router.push("/sign-in");
-                        }}
-                      >
-                        <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
-                          <WhatsAppIcon sx={{ marginRight: "5px" }} />
-                          WhatsApp
-                        </button>
-                      </div>
-                    </SignedOut>
+                    ) : (<div
+                      onClick={() => {
+                        setIsOpenP(true);
+                        router.push("/auth");
+                      }}
+                    >
+                      <button className="hover:bg-orange-700 bg-[#000000] cursor-pointer text-white text-xs mt-2 p-2 rounded-lg shadow">
+                        <WhatsAppIcon sx={{ marginRight: "5px" }} />
+                        WhatsApp
+                      </button>
+                    </div>)}
+
                   </>
                 )}
               </div>
             </span>
           </div>
-
 
 
           <div className="hidden lg:inline">
@@ -1566,46 +1553,32 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
 
           <div className="mt-3 shadow border dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
             <div className="flex justify-between">
-              <SignedIn>
+              {currentUser ? (<>
                 <Button onClick={handleOpenPopupAv} variant="outline" className="flex text-blue-600 items-center gap-1">
                   <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
                   Ad Unavailable?
                 </Button>
-
-              </SignedIn>
-
-              <SignedOut>
+                <Button onClick={handleOpenPopup} variant="outline" className="flex text-red-600 items-center gap-1">
+                  <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
+                  Report Abuse
+                </Button>
+              </>) : (<>
                 <Button onClick={() => {
                   setIsOpenP(true);
-                  router.push("/sign-in");
+                  router.push("/auth");
                 }}
                   variant="outline" className="flex text-blue-600 items-center gap-1">
                   <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
                   Ad Unavailable?
                 </Button>
-
-              </SignedOut>
-
-
-
-              <SignedIn>
-                <Button onClick={handleOpenPopup} variant="outline" className="flex text-red-600 items-center gap-1">
-                  <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
-                  Report Abuse
-                </Button>
-
-              </SignedIn>
-
-              <SignedOut>
                 <Button onClick={() => {
 
-                  router.push("/sign-in");
+                  router.push("/auth");
                 }} variant="outline" className="flex text-red-600 items-center gap-1">
                   <AssistantPhotoOutlinedIcon sx={{ fontSize: 14 }} />
                   Report Abuse
                 </Button>
-
-              </SignedOut>
+              </>)}
 
 
             </div>
@@ -1677,7 +1650,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
           <div className="mt-3 border shadow dark:bg-[#2D3236] dark:text-gray-300  bg-white p-5 text-sm rounded-lg overflow-hidden">
             <div className="flex justify-between">
 
-              <SignedIn>
+              {currentUser ? (
                 <Button onClick={() => {
 
                   handleOpenSell(ad.data.category, ad.data.subcategory);
@@ -1687,26 +1660,22 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                   <SellOutlinedIcon sx={{ fontSize: 16 }} />
                   Post Ad like this?
                 </Button>
-
-              </SignedIn>
-
-              <SignedOut>
+              ) : (
                 <Button onClick={() => {
 
-                  router.push("/sign-in");
+                  router.push("/auth");
                 }} variant="default" className="flex w-full items-center gap-2">
                   <SellOutlinedIcon sx={{ fontSize: 16 }} />
                   Post Ad like this?
                 </Button>
-
-              </SignedOut>
+              )}
 
 
             </div>
           </div>
 
         </div>
-      </div>
+      </div >
 
     </>
   );

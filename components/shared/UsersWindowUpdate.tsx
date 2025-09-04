@@ -7,10 +7,7 @@ import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
 import { ScrollArea } from "../ui/scroll-area";
-//import { ProductForm } from "./ProductForm";
-//import { IProduct } from "@/lib/database/models/product.model";
 import SettingsEdit from "./SettingsEdit";
 
 interface ChatWindowProps {

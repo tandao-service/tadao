@@ -2,7 +2,6 @@
 import { IAd } from "@/lib/database/models/ad.model";
 import { useState, useEffect, useRef } from "react";
 import Pagination from "./Pagination";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import FloatingChatIcon from "./FloatingChatIcon";
 import ChatWindow from "./ChatWindow";
 import Image from "next/image";
@@ -29,7 +28,6 @@ import { checkUserOnlineStatus } from "./checkUserOnlineStatus";
 import Chatt from "./ReceiveChat";
 import NotificationButton from "./NotificationButton";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import PropertyMap from "./PropertyMap";
 import PopupCategory from "./PopupCategory";
 import PopupShop from "./PopupShop";
 import PopupSell from "./PopupSell";

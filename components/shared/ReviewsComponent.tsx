@@ -11,7 +11,6 @@ import { Toaster } from "@/components/ui/toaster";
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SellerProfile from "@/components/shared/SellerProfile";
-import { auth } from "@clerk/nextjs/server";
 import dynamic from "next/dynamic";
 import Skeleton from "@mui/material/Skeleton";
 import Sidebar from "@/components/shared/Sidebar";
@@ -20,7 +19,6 @@ import Footersub from "@/components/shared/Footersub";
 import BottomNavigation from "@/components/shared/BottomNavigation";
 import Sidebarmain from "@/components/shared/Sidebarmain";
 import { mode } from "@/constants";
-import SellerProfileReviews from "./SellerProfileReviews";
 import { IUser } from "@/lib/database/models/user.model";
 import SidebarmainReviews from "./SidebarmainReviews";
 import StarIcon from "@mui/icons-material/Star";
@@ -30,7 +28,7 @@ import { db } from "@/lib/firebase";
 import Ratingsmobile from "./ratingsmobile";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuth } from "@/app/hooks/useAuth";
 interface AdsProps {
   displayName: string;
   uid: string;
@@ -61,6 +59,7 @@ const ReviewsComponent = ({ displayName, uid, photoURL, user, recipient, onClose
   const [showForm, setShowForm] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const router = useRouter();
+  const { user: currentUser } = useAuth();
   // console.log(senderId);
   const [newReview, setNewReview] = useState({
     comment: "",
@@ -199,25 +198,22 @@ const ReviewsComponent = ({ displayName, uid, photoURL, user, recipient, onClose
                 </div>
 
                 {/* Leave a Review Button (Fixed) */}
-                <SignedIn>
-                  <button
-                    className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
-                    onClick={() => setShowForm(true)}
-                  >
-                    Leave a Review
-                  </button>
-                </SignedIn>
-                <SignedOut>
-                  <button
-                    className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
-                    onClick={() => {
+                {currentUser ? (<button
+                  className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
+                  onClick={() => setShowForm(true)}
+                >
+                  Leave a Review
+                </button>) : (<button
+                  className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
+                  onClick={() => {
 
-                      router.push("/sign-in");
-                    }}
-                  >
-                    Leave a Review
-                  </button>
-                </SignedOut>
+                    router.push("/sign-in");
+                  }}
+                >
+                  Leave a Review
+                </button>)}
+
+
 
                 {/* Review Form Popup */}
                 {showForm && (

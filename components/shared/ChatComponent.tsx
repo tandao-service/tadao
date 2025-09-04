@@ -11,7 +11,6 @@ import { Toaster } from "@/components/ui/toaster";
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SellerProfile from "@/components/shared/SellerProfile";
-import { auth } from "@clerk/nextjs/server";
 import dynamic from "next/dynamic";
 import Skeleton from "@mui/material/Skeleton";
 import Sidebar from "@/components/shared/Sidebar";
@@ -20,8 +19,6 @@ import Footersub from "@/components/shared/Footersub";
 import BottomNavigation from "@/components/shared/BottomNavigation";
 import Sidebarmain from "@/components/shared/Sidebarmain";
 import { mode } from "@/constants";
-import SellerProfileReviews from "./SellerProfileReviews";
-import SellerProfileChat from "./SellerProfileChat";
 import ProgressPopup from "./ProgressPopup";
 interface AdsProps {
   senderId: string;

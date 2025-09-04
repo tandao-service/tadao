@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 import AppDeepLinkHandler from "@/components/shared/AppDeepLinkHandler";
 import SplashHandler from "@/components/shared/SplashHandler";
-import OAuthCallbackPage from "@/components/shared/OAuthCallbackPage";
+import { AuthProvider } from "./hooks/useAuth";
+
+// Firebase Auth Provider
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,18 +27,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Detect platform
-
   return (
-    <ClerkProvider
-    >
-      <html lang="en">
-        <body className={poppins.variable}>
-          <SplashHandler />
-          {/*<OAuthCallbackPage />*/}
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={poppins.variable}>
+        <SplashHandler />
+        <AppDeepLinkHandler />
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
   );
 }

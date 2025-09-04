@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { useAuth } from "@clerk/nextjs"; // Ensure you have Clerk installed
 import { subscribeToNotifications } from "@/lib/actions/usePushNotifications";
 
 let socket: Socket;
@@ -11,12 +10,12 @@ export default function ReceiveChat({
 }: {
   userId: string;
 }) {
- 
+
   const [messages, setMessages] = useState<{ senderName: string; message: string }[]>([]);
 
   useEffect(() => {
     if (!userId) return; // Wait until user is authenticated
-   
+
     socket = io(process.env.NEXT_PUBLIC_SERVER_URL); // Change to your backend URL
     socket.emit("user-online", userId);
     subscribeToNotifications(userId);

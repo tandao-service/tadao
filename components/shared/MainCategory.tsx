@@ -83,13 +83,11 @@ import SidebarSearchMain from "./SidebarSearchMain";
 import CategoryFilterSearch from "./CategoryFilterSearch";
 import HeaderMain from "./HeaderMain";
 import Unreadmessages from "./Unreadmessages";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import MobileNav from "./MobileNav";
 import CollectionSearch from "./CollectionSearch";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import FloatingChatIcon from "./FloatingChatIcon";
 import ChatWindow from "./ChatWindow";
-import PropertyMapSearch from "./PropertyMapSearch";
 import { getAdsCount, getAdsCountPerRegion, getAdsCountPerVerifiedFalse, getAdsCountPerVerifiedTrue } from "@/lib/actions/dynamicAd.actions";
 import { useMediaQuery } from "react-responsive"; // Detect mobile screens
 import FilterSkeleton from "./FilterSkeleton";

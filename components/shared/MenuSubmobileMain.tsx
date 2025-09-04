@@ -8,11 +8,11 @@ import {
 } from "@/lib/utils";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import Image from "next/image";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import SubCategoryWindow from "./SubCategoryWindow";
 import { useState } from "react";
 import ProgressPopup from "./ProgressPopup";
+import { useAuth } from "@/app/hooks/useAuth";
 
 type Subcategory = {
   title: string;
@@ -60,6 +60,7 @@ export default function MenuSubmobileMain({
 }: MobileProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user: currentUser } = useAuth();
 
 
   const [isOpen, setIsOpen] = useState(false);
@@ -84,38 +85,32 @@ export default function MenuSubmobileMain({
   return (
     <div className="mx-auto">
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-0 gap-1">
-        <SignedIn>
-          <div
-            onClick={() => {
-              handleOpenSell();
-            }}
-            className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
-          >
-            <div className="flex flex-col items-center text-center justify-center">
-              <div className="h-12 w-12 rounded-full p-2">
-                <SellOutlinedIcon />
-              </div>
-              <h2 className="text-lg font-bold">SELL</h2>
+        {currentUser ? (<>  <div
+          onClick={() => {
+            handleOpenSell();
+          }}
+          className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
+        >
+          <div className="flex flex-col items-center text-center justify-center">
+            <div className="h-12 w-12 rounded-full p-2">
+              <SellOutlinedIcon />
             </div>
+            <h2 className="text-lg font-bold">SELL</h2>
           </div>
-        </SignedIn>
-
-        <SignedOut>
-          <div
-            onClick={() => {
-              setIsOpenP(true);
-              router.push("/sign-in");
-            }}
-            className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
-          >
-            <div className="flex flex-col items-center text-center justify-center">
-              <div className="h-12 w-12 rounded-full p-2">
-                <SellOutlinedIcon />
-              </div>
-              <h2 className="text-lg font-bold">SELL</h2>
+        </div></>) : (<><div
+          onClick={() => {
+            setIsOpenP(true);
+            router.push("/auth");
+          }}
+          className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
+        >
+          <div className="flex flex-col items-center text-center justify-center">
+            <div className="h-12 w-12 rounded-full p-2">
+              <SellOutlinedIcon />
             </div>
+            <h2 className="text-lg font-bold">SELL</h2>
           </div>
-        </SignedOut>
+        </div></>)}
 
         {categoryList.map((category, index) => (
           <div

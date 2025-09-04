@@ -5,7 +5,6 @@ import { getData } from "@/lib/actions/transactions.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import Navbar from "@/components/shared/navbar";
 import { Toaster } from "@/components/ui/toaster";
-import { auth } from "@clerk/nextjs/server";
 import Listpackages from "@/components/shared/listpackages";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";

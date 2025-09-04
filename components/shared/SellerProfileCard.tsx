@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import CallIcon from "@mui/icons-material/Call";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -83,6 +82,7 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import ProgressPopup from "./ProgressPopup";
 import { Button } from "../ui/button";
 import { Phone, MessageCircle, MessageSquare, Mail } from 'lucide-react';
+import { useAuth } from "@/app/hooks/useAuth";
 type chatProps = {
   userId: string;
   ad: any;
@@ -96,6 +96,7 @@ type chatProps = {
 };
 const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, handlePay, handleOpenReview, handleOpenShop, }: chatProps) => {
   const pathname = usePathname();
+  const { user: currentUser } = useAuth();
 
   const isAdCreator = userId === ad.organizer._id;
   const isAds = pathname === "/ads/" + ad._id;
@@ -246,7 +247,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
         {/* Contact Buttons */}
         <div className="grid grid-cols-3 gap-2 mt-4">
 
-          <SignedIn>
+          {currentUser ? (<>
             <button onClick={handleShowPhoneClick} className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
               <FaPhoneAlt /> {showCallDisclaimer ? (<p className="text-xs">{ad.data?.phone}</p>) : (<>Call</>)}
             </button>
@@ -258,29 +259,26 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
             />
             {ad.organizer.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
-            </button></>)}
-          </SignedIn>
-          <SignedOut>
-            <button onClick={() => {
-              setIsOpenP(true);
-              router.push(`/sign-in`);
-            }} className="flex gap-1 items-center justify-center items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
-              <FaPhoneAlt /> Call
-            </button>
-            <button onClick={() => {
-              setIsOpenP(true);
-              router.push(`/sign-in`);
-            }} className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
-              <FaEnvelope /> Enquire
-            </button>
-            <button onClick={() => {
-              setIsOpenP(true);
-              router.push(`/sign-in`);
-            }}
-              className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
-              <FaWhatsapp /> WhatsApp
-            </button>
-          </SignedOut>
+            </button></>)}</>) : (<>
+              <button onClick={() => {
+                setIsOpenP(true);
+                router.push(`/sign-in`);
+              }} className="flex gap-1 items-center justify-center items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                <FaPhoneAlt /> Call
+              </button>
+              <button onClick={() => {
+                setIsOpenP(true);
+                router.push(`/sign-in`);
+              }} className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                <FaEnvelope /> Enquire
+              </button>
+              <button onClick={() => {
+                setIsOpenP(true);
+                router.push(`/sign-in`);
+              }}
+                className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                <FaWhatsapp /> WhatsApp
+              </button></>)}
 
 
         </div>

@@ -9,25 +9,11 @@ const config: CapacitorConfig & {
   appId: "com.tadaomarket.app",
   appName: "Tadao Market",
   webDir: "out",
-  server: {
-    url: "https://tadaomarket.com",
-    androidScheme: "https",
-    hostname: "tadaomarket.com",
-  },
   plugins: {
     SplashScreen: {
       launchAutoHide: false,
       backgroundColor: "#f97316",
       androidSpinnerStyle: "large",
-    },
-    App: {
-      deepLinks: [
-        {
-          scheme: "tadaomarket",
-          host: "oauth",
-          path: "/callback",
-        },
-      ],
     },
   },
   assets: {

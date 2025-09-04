@@ -9,11 +9,12 @@ import {
 } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+
 import { v4 as uuidv4 } from "uuid"; // Import UUID function
 import { IUser } from "@/lib/database/models/user.model";
 import { createTransaction } from "@/lib/actions/transactions.actions";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 type Package = {
   imageUrl: string;
   name: string;
@@ -39,6 +40,7 @@ export default function Listpackages({
   user,
   handlePayNow,
 }: PackProps) {
+  const { user: currentUser } = useAuth();
   const [activeButton, setActiveButton] = useState(1);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
   const router = useRouter();
@@ -280,27 +282,23 @@ export default function Listpackages({
             disabled
             className="p-1 w-[150px] dark:text-white lg:w-[200px] font-bold rounded-md "
           />
-          <SignedIn>
-            <Button
-              type="submit"
-              onClick={() =>
-                handlepay(packIdInput, packNameInput, periodInput, priceInput)
-              }
-              role="link"
-              className="w-[100px] rounded-full hover:dark:bg-emerald-800 dark:bg-emerald-700 text-white  bg-cover"
-            >
-              Buy Now
-            </Button>
-          </SignedIn>
-          <SignedOut>
-            <Button
-              asChild
-              className="rounded-full w-[100px] hover:dark:bg-emerald-800 dark:bg-emerald-700 text-white"
-              size="lg"
-            >
-              <Link href="/sign-in">Pay Now</Link>
-            </Button>
-          </SignedOut>
+          {currentUser ? (<Button
+            type="submit"
+            onClick={() =>
+              handlepay(packIdInput, packNameInput, periodInput, priceInput)
+            }
+            role="link"
+            className="w-[100px] rounded-full hover:dark:bg-emerald-800 dark:bg-emerald-700 text-white  bg-cover"
+          >
+            Buy Now
+          </Button>) : (<Button
+            asChild
+            className="rounded-full w-[100px] hover:dark:bg-emerald-800 dark:bg-emerald-700 text-white"
+            size="lg"
+          >
+            <Link href="/auth">Pay Now</Link>
+          </Button>)}
+
         </div>
       </div>
     </div>

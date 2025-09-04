@@ -25,11 +25,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { createBookmark, deleteBookmark } from "@/lib/actions/bookmark.actions";
 import { updatebookmarked } from "@/lib/actions/ad.actions";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import sanitizeHtml from "sanitize-html";
 import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
+import { useAuth } from "@/app/hooks/useAuth";
 // Correct import
 type CardProps = {
   userId: string;
@@ -51,6 +52,7 @@ const HorizontalCardPublic = ({
 }: CardProps) => {
   const pathname = usePathname();
   const isbookmark = pathname === "/bookmark";
+  const { user: currentUser } = useAuth();
 
   const { toast } = useToast();
   const truncateTitle = (title: string, maxLength: number) => {
@@ -411,9 +413,9 @@ const HorizontalCardPublic = ({
             </div>
             {!isAdCreator && !isbookmark && (
               <div className="">
-                <SignedIn>
+                   {currentUser ? (<>
                   <div
-                    className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                     data-tip="Bookmark"
                     onClick={() => handle(ad._id)}
                   >
@@ -427,19 +429,15 @@ const HorizontalCardPublic = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  </div>
-                </SignedIn>
-
-                <SignedOut>
-                  <div
+                  </div></>) : (<> <div
                     onClick={() => {
-                      // handleOpenP();
-                      router.push(`/sign-in`);
+                      //handleOpenP();
+                      router.push(`/auth`);
                     }}
                     className="cursor-pointer"
                   >
                     <div
-                      className="w-8 h-8 p-1 shadow-[0px_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-center rounded-full bg-white text-[#BD7A4F] tooltip tooltip-bottom hover:text-[#2BBF4E] hover:cursor-pointer"
+                      className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                       data-tip="Bookmark"
                     >
                       <TooltipProvider>
@@ -453,8 +451,7 @@ const HorizontalCardPublic = ({
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                  </div>
-                </SignedOut>
+                  </div></>)}
               </div>
             )}
           </div>

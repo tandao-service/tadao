@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import CallIcon from "@mui/icons-material/Call";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -105,24 +104,24 @@ const SellerProfileMobile = ({
   } catch {
     // Handle error when formatting date
   }
- const getInitials = (firstName?: string, lastName?: string) => {
-        const first = firstName?.[0]?.toUpperCase() || '';
-        const last = lastName?.[0]?.toUpperCase() || '';
-        return `${first}${last}`;
-    };
-    function isDefaultClerkAvatar(imageUrl: string): boolean {
-        try {
-            const base64 = imageUrl.split("/").pop();
-            if (!base64) return false;
+  const getInitials = (firstName?: string, lastName?: string) => {
+    const first = firstName?.[0]?.toUpperCase() || '';
+    const last = lastName?.[0]?.toUpperCase() || '';
+    return `${first}${last}`;
+  };
+  function isDefaultClerkAvatar(imageUrl: string): boolean {
+    try {
+      const base64 = imageUrl.split("/").pop();
+      if (!base64) return false;
 
-            const json = atob(base64); // decode Base64
-            const data = JSON.parse(json);
+      const json = atob(base64); // decode Base64
+      const data = JSON.parse(json);
 
-            return data.type === "default";
-        } catch (e) {
-            return false;
-        }
+      return data.type === "default";
+    } catch (e) {
+      return false;
     }
+  }
   return (
     <div className="flex gap-1 items-center">
       <div className="lg:hidden flex gap-1 items-center p-1 w-full">

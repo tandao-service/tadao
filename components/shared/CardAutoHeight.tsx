@@ -25,18 +25,20 @@ import { createBookmark, deleteBookmark } from "@/lib/actions/bookmark.actions";
 import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { updatebookmarked } from "@/lib/actions/ad.actions";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Icon } from "@iconify/react";
 import threeDotsMove from "@iconify-icons/svg-spinners/3-dots-move"; // Correct import
 import { Email, Phone } from '@mui/icons-material'; // Or from 'react-icons/md'
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import sanitizeHtml from "sanitize-html";
 // Correct import
+
 import ProgressPopup from "./ProgressPopup";
 import { formatDistanceToNow, isBefore, subWeeks } from "date-fns";
 import { updateCreatedAt } from "@/lib/actions/dynamicAd.actions";
+import { useAuth } from "@/app/hooks/useAuth";
 
 const shouldShowRenewButton = (updatedAt: Date, priority: number) => {
+
   const twoWeeksAgo = subWeeks(new Date(), 1);
   return priority === 1 && isBefore(new Date(updatedAt), twoWeeksAgo);
 };
@@ -65,7 +67,7 @@ const CardAutoHeight = ({
   const { toast } = useToast();
   const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
-
+  const { user: currentUser } = useAuth();
   const isAdCreator = userId === ad.organizer._id.toString();
   const truncateTitle = (title: string, maxLength: number) => {
     if (title.length > maxLength) {
@@ -387,7 +389,7 @@ const CardAutoHeight = ({
 
             </div>
             <div className="w-full flex justify-end absolute bottom-[-19px] left-1/2 transform -translate-x-1/2 p-1 rounded-full">
-              <SignedIn>
+              {currentUser ? (
                 <div
                   className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                   data-tip="Bookmark"
@@ -404,33 +406,31 @@ const CardAutoHeight = ({
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-              </SignedIn>
-
-              <SignedOut>
+              ) : (<div
+                onClick={() => {
+                  //handleOpenP();
+                  router.push(`/sign-in`);
+                }}
+                className="cursor-pointer"
+              >
                 <div
-                  onClick={() => {
-                    //handleOpenP();
-                    router.push(`/sign-in`);
-                  }}
-                  className="cursor-pointer"
+                  className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
+                  data-tip="Bookmark"
                 >
-                  <div
-                    className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
-                    data-tip="Bookmark"
-                  >
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <BookmarkAddedOutlinedIcon sx={{ fontSize: 20 }} />
-                        </TooltipTrigger>
-                        <TooltipContent side="left">
-                          <p className="text-sm"> Save Ad</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <BookmarkAddedOutlinedIcon sx={{ fontSize: 20 }} />
+                      </TooltipTrigger>
+                      <TooltipContent side="left">
+                        <p className="text-sm"> Save Ad</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              </SignedOut>
+              </div>)}
+
+
             </div>
           </div>
 

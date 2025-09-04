@@ -25,7 +25,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { createBookmark, deleteBookmark } from "@/lib/actions/bookmark.actions";
 import { updatebookmarked } from "@/lib/actions/ad.actions";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import CircularProgress from "@mui/material/CircularProgress";
 import sanitizeHtml from "sanitize-html";
 import { Icon } from "@iconify/react";
@@ -34,6 +33,7 @@ import { Email, Phone } from '@mui/icons-material'; // Or from 'react-icons/md'
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import { formatDistanceToNow, isBefore, subWeeks } from "date-fns";
 import { updateCreatedAt } from "@/lib/actions/dynamicAd.actions";
+import { useAuth } from "@/app/hooks/useAuth";
 
 const shouldShowRenewButton = (updatedAt: Date, priority: number) => {
   const twoWeeksAgo = subWeeks(new Date(), 1);
@@ -60,6 +60,7 @@ const HorizontalCard = ({
   handleOpenChatId,
   popup,
 }: CardProps) => {
+  const { user: currentUser } = useAuth();
   const pathname = usePathname();
   const isbookmark = pathname === "/bookmark";
   const [isDeleted, setIsDeleted] = useState(false);
@@ -599,7 +600,7 @@ const HorizontalCard = ({
             </div>
             {!isAdCreator && !isbookmark && (
               <div className="">
-                <SignedIn>
+                {currentUser ? (<>
                   <div
                     className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                     data-tip="Bookmark"
@@ -615,14 +616,10 @@ const HorizontalCard = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  </div>
-                </SignedIn>
-
-                <SignedOut>
-                  <div
+                  </div></>) : (<> <div
                     onClick={() => {
                       //handleOpenP();
-                      router.push(`/sign-in`);
+                      router.push(`/auth`);
                     }}
                     className="cursor-pointer"
                   >
@@ -641,8 +638,9 @@ const HorizontalCard = ({
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                  </div>
-                </SignedOut>
+                  </div></>)}
+
+
               </div>
             )}
           </div>

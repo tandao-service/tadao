@@ -10,13 +10,14 @@ import { getAllAd, getListingsNearLocation } from "@/lib/actions/ad.actions";
 import { getAlldynamicAd } from "@/lib/actions/dynamicAd.actions";
 import Masonry from "react-masonry-css";
 import ProgressPopup from "./ProgressPopup";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+
 import { Button } from "../ui/button";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useRouter } from "next/navigation";
 //import Skeleton from "@mui/material/Skeleton";
 import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
+import { useAuth } from "@/app/hooks/useAuth";
 // Correct import
 type CollectionProps = {
   userId: string;
@@ -55,7 +56,7 @@ const CollectionSearch = ({
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
   const observer = useRef<IntersectionObserver | null>(null);
-
+  const { user: currentUser } = useAuth();
   let Ads: any = [];
   const fetchAds = async () => {
     setLoading(true);
@@ -227,25 +228,24 @@ const CollectionSearch = ({
                 {emptyTitle}
               </h3>
               <p className="text-sm lg:p-regular-14">{emptyStateSubtext}</p>
-              <SignedIn>
-
+              {currentUser ? (<>
                 <Button onClick={() => {
                   handleOpenSell();
                   //router.push("/ads/create");
                 }} variant="default" className="flex items-center gap-2">
                   <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
                 </Button>
+              </>) : (<>  <Button onClick={() => {
+                // setIsOpenP(true);
+                router.push("/auth");
+              }} variant="outline" className="flex items-center gap-2">
+                <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
+              </Button></>)}
 
-              </SignedIn>
 
-              <SignedOut>
-                <Button onClick={() => {
-                  // setIsOpenP(true);
-                  router.push("/sign-in");
-                }} variant="outline" className="flex items-center gap-2">
-                  <AddOutlinedIcon sx={{ fontSize: 16 }} /> Create Ad
-                </Button>
-              </SignedOut>
+
+
+
             </div>
           </>
         )

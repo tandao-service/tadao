@@ -7,7 +7,6 @@ import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
 import SendMessageSupport from "./SendMessageSupport";
 import HelpBox from "./HelpBox";
 import { useMediaQuery } from "react-responsive"; // Detect mobile screens

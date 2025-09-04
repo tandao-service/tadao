@@ -18,10 +18,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { DeleteReview } from "./DeleteReview";
+import { useAuth } from "@/app/hooks/useAuth";
 interface Revieww {
   id: number;
   name: string;
@@ -36,10 +36,10 @@ type sidebarProps = {
   recipientUid: string;
   photoURL: string;
   recipient: IUser;
-  handleOpenReview: (value:string) => void;
-  handleOpenChatId: (value:string) => void;
+  handleOpenReview: (value: string) => void;
+  handleOpenChatId: (value: string) => void;
   handleOpenSettings: () => void;
-  handlePay: (id:string) => void;
+  handlePay: (id: string) => void;
 };
 interface Review {
   text: string;
@@ -51,20 +51,21 @@ interface Review {
   starClicked: boolean[];
 }
 const ReviewSection = ({
-    uid,
-    photoURL,
-    displayName,
-    recipientUid,
-    recipient,
-    handleOpenReview,
-                      handleOpenChatId,
-                      handleOpenSettings,
-                      handlePay,
-  }: sidebarProps) => {
+  uid,
+  photoURL,
+  displayName,
+  recipientUid,
+  recipient,
+  handleOpenReview,
+  handleOpenChatId,
+  handleOpenSettings,
+  handlePay,
+}: sidebarProps) => {
 
-const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
-   const [isSending, setIsSending] = useState(false); 
+  const [isSending, setIsSending] = useState(false);
+  const { user: currentUser } = useAuth();
   //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -114,24 +115,24 @@ const messagesEndRef = useRef<HTMLDivElement>(null);
     scrollToBottom();
   }, [messages]);
 
-    
+
   //const [reviews, setReviews] = useState<Review[]>([
-   // {
-     // id: 1,
+  // {
+  // id: 1,
   //    name: "John Doe",
-   //   avatar: "/avatar1.png",
+  //   avatar: "/avatar1.png",
   //    rating: 4,
   //    comment: "Great seller! The product was as described.",
-   //   date: "March 15, 2024",
-   // },
+  //   date: "March 15, 2024",
+  // },
   //  {
-     // id: 2,
-   //   name: "Jane Smith",
-   //   avatar: "/avatar2.png",
-   //   rating: 5,
-   //   comment: "Excellent service, highly recommended!",
-   //   date: "March 18, 2024",
-    //},
+  // id: 2,
+  //   name: "Jane Smith",
+  //   avatar: "/avatar2.png",
+  //   rating: 5,
+  //   comment: "Excellent service, highly recommended!",
+  //   date: "March 18, 2024",
+  //},
   //]);
 
   const [newReview, setNewReview] = useState({
@@ -139,8 +140,8 @@ const messagesEndRef = useRef<HTMLDivElement>(null);
     rating: 0,
   });
 
-const [showForm, setShowForm] = useState(false);
-const [starClicked, setStarClicked] = useState([
+  const [showForm, setShowForm] = useState(false);
+  const [starClicked, setStarClicked] = useState([
     false,
     false,
     false,
@@ -149,12 +150,12 @@ const [starClicked, setStarClicked] = useState([
   ]);
 
   // Function to handle click on a star
-   const router = useRouter();
-   const [showphone, setshowphone] = useState(false);
-    const handleShowPhoneClick = (e: any) => {
-      setshowphone(true);
-      window.location.href = `tel:${recipient.phone}`;
-    };
+  const router = useRouter();
+  const [showphone, setshowphone] = useState(false);
+  const handleShowPhoneClick = (e: any) => {
+    setshowphone(true);
+    window.location.href = `tel:${recipient.phone}`;
+  };
   const handleStarClick = (index: number) => {
     const updatedStarClicked = [...starClicked];
     updatedStarClicked[index] = !updatedStarClicked[index];
@@ -164,22 +165,22 @@ const [starClicked, setStarClicked] = useState([
 
   //const handleReviewSubmit = () => {
   //  if (newReview.name && newReview.comment && newReview.rating) {
-    //  setReviews([
-     //   ...reviews,
-     //   {
-//id: reviews.length + 1,
-     //     name: newReview.name,
-      //    avatar: "/default-avatar.png",
-//rating: newReview.rating,
-     //     comment: newReview.comment,
-    //      date: new Date().toLocaleDateString(),
-    //    },
-    //  ]);
-    //  setNewReview({ name: "", comment: "", rating: 0 });
-    //  setShowForm(false);
-//}
+  //  setReviews([
+  //   ...reviews,
+  //   {
+  //id: reviews.length + 1,
+  //     name: newReview.name,
+  //    avatar: "/default-avatar.png",
+  //rating: newReview.rating,
+  //     comment: newReview.comment,
+  //      date: new Date().toLocaleDateString(),
+  //    },
+  //  ]);
+  //  setNewReview({ name: "", comment: "", rating: 0 });
+  //  setShowForm(false);
+  //}
   //};
-const handleReviewSubmit = async () => {
+  const handleReviewSubmit = async () => {
 
     if (newReview.comment && newReview.rating) {
       //  alert("Enter review!");
@@ -187,8 +188,8 @@ const handleReviewSubmit = async () => {
       //  variant: "destructive",
       //  title: "Failed!",
       //  description: "Write your review and send again!",
-       // duration: 5000,
-     // });
+      // duration: 5000,
+      // });
       return;
     }
 
@@ -208,10 +209,10 @@ const handleReviewSubmit = async () => {
         // A review already exists for the sender and recipient combination
         // You can display a message to the user indicating that they have already submitted a review
         //alert("You have already submitted a review for this Seller.");
-      //  toast({
+        //  toast({
         //  variant: "destructive",
         //  title: "Failed!",
-         // description: "You have already submitted a review for this Seller.",
+        // description: "You have already submitted a review for this Seller.",
         //  duration: 5000,
         //});
         await addDoc(collection(db, "reviews"), {
@@ -245,217 +246,210 @@ const handleReviewSubmit = async () => {
     setNewReview({ comment: "", rating: 0 });
     setShowForm(false);
     //setValue("");
-   // setStarClicked([false, false, false, false, false]);
+    // setStarClicked([false, false, false, false, false]);
   };
   return (<>
 
-     <div className="gap-2 hidden lg:inline w-[350px]  sidebar left-0 top-0 lg:p-4">
-                    {/* Seller Profile Section */}
-                    <div className="border rounded-lg flex w-full">
-                <SellerProfileReviews
-                      user={recipient}
-                      loggedId={uid}
-                      userId={uid}
-                      handleOpenReview={handleOpenReview} 
-                      handleOpenChatId={handleOpenChatId} 
-                      handleOpenSettings={handleOpenSettings}
-                      handlePay={handlePay}
-                      />
-              </div>
-                  </div>
-         
-                  <div className="w-full lg:w-3/4 chat overflow-y-auto">
-                    <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
-                      {/* Seller Profile Section */}
-                      <div className="lg:hidden">
-                         {/* Seller Profile Section */}
-      <div className="p-4 flex items-center rounded-lg bg-gray-50">
-        <Image
-         src={recipient.photo ?? "/avator.png"}
-          alt="Seller"
-          width={60}
-          height={60}
-          className="rounded-full"
+    <div className="gap-2 hidden lg:inline w-[350px]  sidebar left-0 top-0 lg:p-4">
+      {/* Seller Profile Section */}
+      <div className="border rounded-lg flex w-full">
+        <SellerProfileReviews
+          user={recipient}
+          loggedId={uid}
+          userId={uid}
+          handleOpenReview={handleOpenReview}
+          handleOpenChatId={handleOpenChatId}
+          handleOpenSettings={handleOpenSettings}
+          handlePay={handlePay}
         />
-        <div className="ml-4">
-          <h2 className="text-lg font-semibold text-gray-800">{recipient.firstName} {recipient.lastName}</h2>
-          <div className="flex items-center gap-1 text-green-600">
-            {recipient.verified && recipient?.verified[0]?.accountverified === true ? (
-                         <>
-                           <TooltipProvider>
-                             <Tooltip>
-                               <TooltipTrigger asChild>
-                                 <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-white bottom-0 right-0 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full p-1">
-                                   <VerifiedUserOutlinedIcon />
-                                 </div>
-                               </TooltipTrigger>
-                               <TooltipContent>
-                                 <p className="text-emerald-500">Verified Seller</p>
-                               </TooltipContent>
-                             </Tooltip>
-                           </TooltipProvider>
-                         </>
-                       ) : (
-                         <>
-                           <TooltipProvider>
-                             <Tooltip>
-                               <TooltipTrigger asChild>
-                                 <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-gray-100 bottom-0 right-0 bg-gradient-to-b from-gray-500 to-gray-600 rounded-full p-1">
-                                   <ShieldOutlinedIcon />
-                                 </div>
-                               </TooltipTrigger>
-                               <TooltipContent>
-                                 <p className="text-red-500">Unverified Seller</p>
-                               </TooltipContent>
-                             </Tooltip>
-                           </TooltipProvider>
-                         </>
-                       )}
-          </div>
-          <div className="flex gap-4 text-gray-600 mt-1">
-            <div className="flex items-center gap-1">
-             
-               <SignedIn>
-
-               <div onClick={handleShowPhoneClick} className="flex items-center gap-1">
-              <Phone size={16} />
-              <span className="text-sm">Call</span>
-            </div>
-                        
-                           
-                         </SignedIn>
-                         <SignedOut>
-
-                          
-               <div onClick={() => {
-                              // handleOpenP();
-                               router.push(`/sign-in`);
-                             }} className="flex items-center gap-1">
-              <Phone size={16} />
-              <span className="text-sm">Call</span>
-            </div>
-          </SignedOut>
-            </div>
-            <a href={`mailto:${recipient.email}`} className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
-  <Mail size={16} />
-  <span className="text-sm">Email</span>
-</a>
-          </div>
-        </div>
       </div>
+    </div>
 
-{/* <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/> */}
-            </div>
-                    </div>
-<ScrollArea className="h-[70vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border lg:p-2">
-                      
- {/* Reviews List (Scrollable) */}
- <div className="flex-1 overflow-y-auto space-y-2 w-full">
-        {messages .slice()
-              .reverse().map((review:any, index:number) => (
-          <div
-            key={index}
-            className="p-1 border rounded-lg flex gap-3 items-start dark:bg-[#222528] bg-gray-50"
-          >
+    <div className="w-full lg:w-3/4 chat overflow-y-auto">
+      <div className="lg:hidden w-full sidebar lg:fixed mb-2 rounded-lg">
+        {/* Seller Profile Section */}
+        <div className="lg:hidden">
+          {/* Seller Profile Section */}
+          <div className="p-4 flex items-center rounded-lg bg-gray-50">
             <Image
-              src={review.avatar}
-              alt={review.name}
-              width={40}
-              height={40}
+              src={recipient.photo ?? "/avator.png"}
+              alt="Seller"
+              width={60}
+              height={60}
               className="rounded-full"
             />
-            <div className="flex-1">
-              <div className="flex justify-between">
-                <h4 className="font-medium text-gray-800">{review.name}</h4>
-                <div className="flex flex-col gap-1 justify-center items-center">
-                <span className="text-gray-500 text-sm">  {review.createdAt?.seconds
-    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
-    : "Date not available"}</span>
-      {uid === review.uid && (
-                <div className="bg-red-100 shadow rounded-lg pt-1 pl-1 pr-1">
-                  <DeleteReview messageId={review.id} />
+            <div className="ml-4">
+              <h2 className="text-lg font-semibold text-gray-800">{recipient.firstName} {recipient.lastName}</h2>
+              <div className="flex items-center gap-1 text-green-600">
+                {recipient.verified && recipient?.verified[0]?.accountverified === true ? (
+                  <>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-white bottom-0 right-0 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full p-1">
+                            <VerifiedUserOutlinedIcon />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-emerald-500">Verified Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </>
+                ) : (
+                  <>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="shadow-[0px_4px_20px_rgba(0,0,0,0.3)] absolute text-gray-100 bottom-0 right-0 bg-gradient-to-b from-gray-500 to-gray-600 rounded-full p-1">
+                            <ShieldOutlinedIcon />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-red-500">Unverified Seller</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </>
+                )}
+              </div>
+              <div className="flex gap-4 text-gray-600 mt-1">
+                <div className="flex items-center gap-1">
+
+                  {currentUser ? (
+                    <div onClick={handleShowPhoneClick} className="flex items-center gap-1">
+                      <Phone size={16} />
+                      <span className="text-sm">Call</span>
+                    </div>
+                  ) : (<div onClick={() => {
+                    // handleOpenP();
+                    router.push(`/sign-in`);
+                  }} className="flex items-center gap-1">
+                    <Phone size={16} />
+                    <span className="text-sm">Call</span>
+                  </div>)}
+
                 </div>
-              )}
-</div>
-
-
+                <a href={`mailto:${recipient.email}`} className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
+                  <Mail size={16} />
+                  <span className="text-sm">Email</span>
+                </a>
               </div>
-              <div className="flex gap-1 text-yellow-500">
-
-                {review.starClicked && 
-                review.starClicked.map((clicked: boolean, index: any) => (
-                                  <StarIcon
-                                    key={index}
-                                    sx={{ fontSize: 24, color: clicked ? "gold" : "gray" }}
-                                  />
-                ))}
-
-              
-              </div>
-              <p className="text-gray-700 text-sm">{review.text}</p>
             </div>
           </div>
-        ))}
+
+          {/* <SellerProfileReviews user={recipient} loggedId={uid} userId={uid} handleOpenReview={handleOpenReview} handleOpenChatId={handleOpenChatId} handleOpenSettings={handleOpenSettings} handlePay={handlePay}/> */}
+        </div>
       </div>
+      <ScrollArea className="h-[70vh] lg:h-[88vh] w-full dark:bg-[#2D3236] rounded-md border lg:p-2">
 
-      {/* Leave a Review Button (Fixed) */}
-      <button
-        className="fixed bottom-4 right-5 transform -translate-x-1/2 bg-green-600 text-white px-5 py-2 rounded-full shadow-lg"
-        onClick={() => setShowForm(true)}
-      >
-        Leave a Review
-      </button>
+        {/* Reviews List (Scrollable) */}
+        <div className="flex-1 overflow-y-auto space-y-2 w-full">
+          {messages.slice()
+            .reverse().map((review: any, index: number) => (
+              <div
+                key={index}
+                className="p-1 border rounded-lg flex gap-3 items-start dark:bg-[#222528] bg-gray-50"
+              >
+                <Image
+                  src={review.avatar}
+                  alt={review.name}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <h4 className="font-medium text-gray-800">{review.name}</h4>
+                    <div className="flex flex-col gap-1 justify-center items-center">
+                      <span className="text-gray-500 text-sm">  {review.createdAt?.seconds
+                        ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
+                        : "Date not available"}</span>
+                      {uid === review.uid && (
+                        <div className="bg-red-100 shadow rounded-lg pt-1 pl-1 pr-1">
+                          <DeleteReview messageId={review.id} />
+                        </div>
+                      )}
+                    </div>
 
-      {/* Review Form Popup */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium dark:text-gray-300 text-gray-700">
-                Leave a Review
-              </h3>
-              <button onClick={() => setShowForm(false)}>
-                <X size={20} />
+
+                  </div>
+                  <div className="flex gap-1 text-yellow-500">
+
+                    {review.starClicked &&
+                      review.starClicked.map((clicked: boolean, index: any) => (
+                        <StarIcon
+                          key={index}
+                          sx={{ fontSize: 24, color: clicked ? "gold" : "gray" }}
+                        />
+                      ))}
+
+
+                  </div>
+                  <p className="text-gray-700 text-sm">{review.text}</p>
+                </div>
+              </div>
+            ))}
+        </div>
+
+        {/* Leave a Review Button (Fixed) */}
+        <button
+          className="fixed bottom-4 right-5 transform -translate-x-1/2 bg-green-600 text-white px-5 py-2 rounded-full shadow-lg"
+          onClick={() => setShowForm(true)}
+        >
+          Leave a Review
+        </button>
+
+        {/* Review Form Popup */}
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium dark:text-gray-300 text-gray-700">
+                  Leave a Review
+                </h3>
+                <button onClick={() => setShowForm(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <textarea
+                placeholder="Write a review..."
+                className="w-full p-2 border rounded-md mb-2 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white"
+                value={newReview.comment}
+                onChange={(e) =>
+                  setNewReview({ ...newReview, comment: e.target.value })}
+              />
+              <div className="flex gap-2 items-center">
+                <span className="dark:text-gray-300 text-gray-700">Rating:</span>
+
+                {starClicked.map((clicked, index) => (
+                  <StarIcon
+                    key={index}
+                    sx={{ fontSize: 36, color: clicked ? "gold" : "gray" }} // Change color based on clicked state
+                    onClick={() => handleStarClick(index)} // Call handleStarClick function on click
+                    className="ml-1 lg:ml-0 cursor-pointer mb-1"
+                  />
+                ))}
+              </div>
+              <button
+                disabled={isSending}
+                className="w-full mt-3 bg-green-600 text-white p-2 rounded-lg flex items-center justify-center gap-2"
+                onClick={() => handleReviewSubmit()}
+              >
+                {isSending && (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                )}
+                {isSending ? " Submitting..." : " Submit"}
+                <Send size={16} />
               </button>
             </div>
-
-            <textarea
-              placeholder="Write a review..."
-              className="w-full p-2 border rounded-md mb-2 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white"
-              value={newReview.comment}
-              onChange={(e) =>
-                setNewReview({ ...newReview, comment: e.target.value })}
-            />
-            <div className="flex gap-2 items-center">
-              <span className="dark:text-gray-300 text-gray-700">Rating:</span>
-
-                 {starClicked.map((clicked, index) => (
-                    <StarIcon
-                      key={index}
-                      sx={{ fontSize: 36, color: clicked ? "gold" : "gray" }} // Change color based on clicked state
-                      onClick={() => handleStarClick(index)} // Call handleStarClick function on click
-                      className="ml-1 lg:ml-0 cursor-pointer mb-1"
-                    />
-                  ))}
-            </div>
-            <button
-              disabled={isSending}
-              className="w-full mt-3 bg-green-600 text-white p-2 rounded-lg flex items-center justify-center gap-2"
-              onClick={() => handleReviewSubmit()}
-            >
-                {isSending && (
-                                  <CircularProgress sx={{ color: "white" }} size={30} />
-                                )}
-                                {isSending ? " Submitting..." : " Submit"}
-              <Send size={16} />
-            </button>
           </div>
-        </div>
-      )}
+        )}
       </ScrollArea>
-                  </div>
- 
-    </> );
+    </div>
+
+  </>);
 };
 
 export default ReviewSection;

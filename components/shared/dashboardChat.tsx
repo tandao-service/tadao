@@ -9,7 +9,6 @@ import Navbar from "@/components/shared/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { auth } from "@clerk/nextjs/server";
 import dynamic from "next/dynamic";
 import Skeleton from "@mui/material/Skeleton";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";

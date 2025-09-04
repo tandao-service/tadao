@@ -1,31 +1,28 @@
 import { db } from "@/lib/firebase";
-import {
-  collection,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
 type UnreadProp = {
-  userId: string;
+  userId?: string; // mark optional to be safe
 };
 
-const Unreadmessages = ({ userId}: UnreadProp) => {
+const Unreadmessages = ({ userId }: UnreadProp) => {
   const [unreadCount, setUnreadCount] = useState<number>(0);
 
   useEffect(() => {
+    if (!userId) return; // <-- skip query if userId is undefined
+
     const messagesQuery = query(
       collection(db, "messages"),
       where("recipientUid", "==", userId),
-      where("read", "==", "1") // Assuming "1" means unread
+      where("read", "==", 1) // use number if your field is number
     );
 
     const unsubscribe = onSnapshot(messagesQuery, (querySnapshot) => {
-      setUnreadCount(querySnapshot.size); // Realtime count
+      setUnreadCount(querySnapshot.size);
     });
 
-    return () => unsubscribe(); // Clean up listener
+    return () => unsubscribe();
   }, [userId]);
 
   return (
