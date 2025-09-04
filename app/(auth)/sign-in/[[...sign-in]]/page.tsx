@@ -1,18 +1,23 @@
-import { Capacitor } from "@capacitor/core";
+"use client";
+
+import { useEffect, useState } from "react";
 import { SignIn } from "@clerk/nextjs";
 
-export default function Page() {
-  //const isNative = Capacitor.isNativePlatform();
-  //const redirectUri = isNative
-  // ? "https://tadaomarket.com/oauth/callback"
-  // : "https://tadaomarket.com";
+export default function SignInPage() {
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 
-  return (
-    <SignIn
-    //  routing="path"
-    //  path="/sign-in"
-    //fallbackRedirectUrl={redirectUri}     // ✅ replaces redirectUrl
+  useEffect(() => {
+    async function getRedirectUrl() {
+      const res = await fetch("/api/auth/redirect");
+      const data = await res.json();
+      setRedirectUrl(data.redirectUrl);
+    }
+    getRedirectUrl();
+  }, []);
 
-    />
-  );
+  if (!redirectUrl) {
+    return <p>Loading sign-in…</p>;
+  }
+
+  return <SignIn forceRedirectUrl={redirectUrl} />;
 }
