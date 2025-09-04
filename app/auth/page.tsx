@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import {
@@ -8,7 +8,7 @@ import {
     signInWithEmailAndPassword,
     signInWithPopup,
 } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
 import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
@@ -21,7 +21,16 @@ export default function AuthPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false); // <-- loading state
+    const [loading, setLoading] = useState(false);
+
+    // ✅ load auth + provider on client
+    const [authBundle, setAuthBundle] = useState<any>(null);
+    useEffect(() => {
+        (async () => {
+            const bundle = await getAuthSafe();
+            setAuthBundle(bundle);
+        })();
+    }, []);
 
     const toggleMode = () => setIsSignUp(!isSignUp);
 
@@ -44,6 +53,9 @@ export default function AuthPage() {
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!authBundle) return;
+        const { auth } = authBundle;
+
         setError("");
         setLoading(true);
         try {
@@ -63,7 +75,6 @@ export default function AuthPage() {
             router.push("/");
         } catch (err: any) {
             console.error(err);
-            console.log(err);
             setError(getFriendlyError(err.code));
         } finally {
             setLoading(false);
@@ -72,6 +83,9 @@ export default function AuthPage() {
 
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!authBundle) return;
+        const { auth } = authBundle;
+
         setError("");
         setLoading(true);
         try {
@@ -86,16 +100,17 @@ export default function AuthPage() {
     };
 
     const handleGoogleSignIn = async () => {
+        if (!authBundle) return;
+        const { auth, googleProvider } = authBundle;
+
         setError("");
         setLoading(true);
-
         try {
             if (Capacitor.isNativePlatform()) {
-                // Android/iOS: open your web login page
+                // ✅ Mobile: open in external browser
                 await Browser.open({ url: "https://tadaomarket.com/auth" });
-                // The /auth page handles the login in the browser and saves user info to Firebase
             } else {
-                // Web: normal popup
+                // ✅ Web: normal popup
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
 
@@ -106,7 +121,6 @@ export default function AuthPage() {
                 };
 
                 await updateUser(user.uid, userdata);
-
                 router.push("/");
             }
         } catch (err: any) {
@@ -116,7 +130,6 @@ export default function AuthPage() {
             setLoading(false);
         }
     };
-
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -177,7 +190,7 @@ export default function AuthPage() {
                         type="submit"
                         className="w-full p-2 font-bold text-white rounded hover:opacity-90 flex justify-center items-center gap-2"
                         style={{ backgroundColor: "#f97316" }}
-                        disabled={loading} // disable button while loading
+                        disabled={loading || !authBundle}
                     >
                         {loading ? (
                             <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
@@ -191,7 +204,7 @@ export default function AuthPage() {
                     <button
                         onClick={handleGoogleSignIn}
                         className="flex items-center justify-center gap-2 w-full p-2 font-semibold text-gray-700 border rounded hover:bg-gray-100 transition"
-                        disabled={loading} // disable Google sign-in while loading
+                        disabled={loading || !authBundle}
                     >
                         {loading ? (
                             <span className="animate-spin border-2 border-gray-700 border-t-transparent rounded-full w-5 h-5"></span>

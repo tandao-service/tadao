@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase";
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "firebase/auth";
+import { getAuthSafe } from "@/lib/firebase";
 
 declare global {
   interface Window {
@@ -22,27 +22,43 @@ export default function PhoneVerification({
   const [countryCode, setCountryCode] = useState("+254");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
-  const [confirmResult, setConfirmResult] = useState<ConfirmationResult | null>(null);
+  const [confirmResult, setConfirmResult] =
+    useState<ConfirmationResult | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authInstance, setAuthInstance] = useState<any>(null);
 
+  // ✅ Setup RecaptchaVerifier only after auth is loaded
   useEffect(() => {
-    if (typeof window !== "undefined" && !window.recaptchaVerifier) {
-      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-        callback: () => { },
-        "expired-callback": () => {
-          console.warn("reCAPTCHA expired");
-        },
-      });
+    (async () => {
+      const authData = await getAuthSafe();
+      if (!authData) return;
 
-      verifier.render().then(() => {
-        window.recaptchaVerifier = verifier;
-      });
-    }
+      const { auth } = authData;
+      setAuthInstance(auth);
+
+      if (typeof window !== "undefined" && !window.recaptchaVerifier) {
+        const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+          size: "invisible",
+          callback: () => { },
+          "expired-callback": () => {
+            console.warn("reCAPTCHA expired");
+          },
+        });
+
+        verifier.render().then(() => {
+          window.recaptchaVerifier = verifier;
+        });
+      }
+    })();
   }, []);
 
   const sendOtp = async () => {
+    if (!authInstance) {
+      setError("Auth not ready. Try again.");
+      return;
+    }
+
     setError("");
     const fullPhone = `${countryCode}${phone.trim()}`;
 
@@ -58,15 +74,14 @@ export default function PhoneVerification({
 
     setLoading(true);
     try {
-    
       const result = await signInWithPhoneNumber(
-        auth,
+        authInstance,
         fullPhone,
         window.recaptchaVerifier
       );
       setConfirmResult(result);
     } catch (err: any) {
-      console.log(err);
+      console.error(err);
       setError("Failed to send OTP. Try again later.");
     } finally {
       setLoading(false);
@@ -106,14 +121,10 @@ export default function PhoneVerification({
             <option value="+257">Burundi (+257)</option>
             <option value="+237">Cameroon (+237)</option>
             <option value="+238">Cape Verde (+238)</option>
-            <option value="+236">
-              Central African Republic (+236)
-            </option>
+            <option value="+236">Central African Republic (+236)</option>
             <option value="+235">Chad (+235)</option>
             <option value="+269">Comoros (+269)</option>
-            <option value="+243">
-              Democratic Republic of the Congo (+243)
-            </option>
+            <option value="+243">Democratic Republic of the Congo (+243)</option>
             <option value="+253">Djibouti (+253)</option>
             <option value="+20">Egypt (+20)</option>
             <option value="+240">Equatorial Guinea (+240)</option>
