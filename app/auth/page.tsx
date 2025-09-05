@@ -33,8 +33,11 @@ export default function AuthPage() {
 
         (async () => {
             try {
+                alert("Back")
                 const result = await getRedirectResult(auth);
+                console.log(result)
                 if (result?.user) {
+                    alert(result?.user.uid)
                     const user = result.user;
 
                     const userdata: any = {
@@ -132,30 +135,13 @@ export default function AuthPage() {
 
         setError("");
         setLoading(true);
+
         try {
-            if (Capacitor.isNativePlatform()) {
-                // ✅ Mobile: open in external browser
-                //  await Browser.open({ url: "https://tadaomarket.com/auth" });
-                await signInWithRedirect(auth, googleProvider);
-            } else {
-                // ✅ Web: normal popup
-                const result = await signInWithPopup(auth, googleProvider);
-                const user = result.user;
-
-                const userdata: any = {
-                    firstName: user.displayName?.split(" ")[0],
-                    lastName: user.displayName?.split(" ")[1],
-                    photo: user.photoURL,
-                };
-
-                await updateUser(user.uid, userdata);
-                router.push("/");
-            }
+            // ✅ Works for both Web and Native (Capacitor)
+            await signInWithRedirect(auth, googleProvider);
         } catch (err: any) {
-
             console.error(err);
             setError(getFriendlyError(err.code));
-        } finally {
             setLoading(false);
         }
     };
