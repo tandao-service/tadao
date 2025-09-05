@@ -243,7 +243,7 @@ const CollectionInfinite = ({
           window.history.back();
 
         } else {
-          if (closepopup) {
+          if (isAnyPopupOpen()) {
             setIsOpenCategory(false);
             handleClose();
 

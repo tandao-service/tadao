@@ -35,6 +35,41 @@ export default function AuthPage() {
         })();
     }, []);
 
+    useEffect(() => {
+        if (!authBundle) return;
+        const { auth } = authBundle;
+        (async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                alert(result?.user.uid)
+                if (result) {
+                    await processUser(result);
+                }
+            } catch (err) {
+                console.error("Redirect error:", err);
+            }
+        })();
+    }, [authBundle]);
+
+    // Helper to create/update user after Google login
+    const processUser = async (result: any) => {
+        const user = result.user;
+        const isNewUser = result?._tokenResponse?.isNewUser;
+
+        if (isNewUser) {
+            await createUserInDB({
+                clerkId: user.uid,
+                email: user.email || "",
+                firstName: user.displayName?.split(" ")[0] || "",
+                lastName: user.displayName?.split(" ")[1] || "",
+                photo: user.photoURL || "",
+                status: "User",
+                verified: [{ accountverified: false, verifieddate: new Date() }],
+            });
+        }
+
+        router.push("/");
+    };
     const toggleMode = () => setIsSignUp(!isSignUp);
 
     const getFriendlyError = (code: string) => {
@@ -110,25 +145,13 @@ export default function AuthPage() {
         setLoading(true);
 
         try {
-            const result: any = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-            // Check if this is a new user
-            const isNewUser = result?._tokenResponse?.isNewUser;
-
-            if (isNewUser) {
-                // Create new record in your DB
-                await createUserInDB({
-                    clerkId: user.uid,
-                    email: user.email || "",
-                    firstName: user.displayName?.split(" ")[0] || "",
-                    lastName: user.displayName?.split(" ")[1] || "",
-                    photo: user.photoURL || "",
-                    status: "User",
-                    verified: [{ accountverified: false, verifieddate: new Date() }],
-                });
+            if (Capacitor.isNativePlatform()) {
+                // ✅ Use redirect flow on Android/iOS
+                await signInWithRedirect(auth, googleProvider);
+            } else {
+                const result: any = await signInWithPopup(auth, googleProvider);
+                await processUser(result);
             }
-
-            router.push("/");
         } catch (err: any) {
             console.error(err);
             setError(getFriendlyError(err.code));
