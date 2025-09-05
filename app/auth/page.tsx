@@ -6,8 +6,6 @@ import { FcGoogle } from "react-icons/fc";
 import {
     createUserWithEmailAndPassword,
     getRedirectResult,
-    GoogleAuthProvider,
-    signInWithCredential,
     signInWithEmailAndPassword,
     signInWithPopup,
     signInWithRedirect,
@@ -15,7 +13,8 @@ import {
 import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
 import { Capacitor } from "@capacitor/core";
-import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+import { Browser } from "@capacitor/browser";
+import { useAuth } from "../hooks/useAuth";
 
 export default function AuthPage() {
     const router = useRouter();
@@ -35,6 +34,7 @@ export default function AuthPage() {
             setAuthBundle(bundle);
         })();
     }, []);
+
 
 
     // Helper to create/update user after Google login
@@ -133,10 +133,12 @@ export default function AuthPage() {
         try {
             if (Capacitor.isNativePlatform()) {
                 // ✅ Use redirect flow on Android/iOS
-                const googleUser = await GoogleAuth.signIn();
-                const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
-                const result = await signInWithCredential(auth, credential);
-                await processUser(result);
+                const signInUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+                    `client_id=1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com&` +
+                    `redirect_uri=com.tadaomarket.app://callback&` +
+                    `response_type=token&scope=profile email`;
+
+                await Browser.open({ url: signInUrl });
             } else {
                 const result: any = await signInWithPopup(auth, googleProvider);
                 await processUser(result);

@@ -19,11 +19,6 @@ const config: CapacitorConfig & {
       backgroundColor: "#f97316",
       androidSpinnerStyle: "large",
     },
-    GoogleAuth: {
-      scopes: ["profile", "email"],
-      serverClientId: "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com", // from Firebase console
-      forceCodeForRefreshToken: true,
-    },
   },
   assets: {
     icon: {
