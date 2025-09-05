@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import {
     createUserWithEmailAndPassword,
+    getRedirectResult,
     signInWithEmailAndPassword,
     signInWithPopup,
+    signInWithRedirect,
 } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
@@ -25,6 +27,31 @@ export default function AuthPage() {
 
     // ✅ load auth + provider on client
     const [authBundle, setAuthBundle] = useState<any>(null);
+    useEffect(() => {
+        if (!authBundle) return;
+        const { auth } = authBundle;
+
+        (async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (result?.user) {
+                    const user = result.user;
+
+                    const userdata: any = {
+                        firstName: user.displayName?.split(" ")[0],
+                        lastName: user.displayName?.split(" ")[1],
+                        photo: user.photoURL,
+                    };
+
+                    await updateUser(user.uid, userdata);
+                    router.push("/");
+                }
+            } catch (err) {
+                console.error("Redirect error:", err);
+            }
+        })();
+    }, [authBundle]);
+
     useEffect(() => {
         (async () => {
             const bundle = await getAuthSafe();
@@ -108,7 +135,8 @@ export default function AuthPage() {
         try {
             if (Capacitor.isNativePlatform()) {
                 // ✅ Mobile: open in external browser
-                await Browser.open({ url: "https://tadaomarket.com/auth" });
+                //  await Browser.open({ url: "https://tadaomarket.com/auth" });
+                await signInWithRedirect(auth, googleProvider);
             } else {
                 // ✅ Web: normal popup
                 const result = await signInWithPopup(auth, googleProvider);
@@ -124,6 +152,7 @@ export default function AuthPage() {
                 router.push("/");
             }
         } catch (err: any) {
+
             console.error(err);
             setError(getFriendlyError(err.code));
         } finally {

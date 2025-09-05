@@ -10,7 +10,7 @@ const MobileSkeleton = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="flex items-center  bg-orange-100 px-4 py-4 space-x-2">
+            <div className="flex items-center  bg-orange-100 px-4 py-8 space-x-2">
                 <div className="h-10 w-24 bg-gray-300 rounded"></div>
                 <div className="flex-1 h-10 bg-gray-300 rounded"></div>
                 <div className="h-10 w-10 bg-gray-300 rounded"></div>
