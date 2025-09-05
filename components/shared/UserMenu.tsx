@@ -24,25 +24,25 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
     };
 
     return (
-        <div className="relative">
-            {userdata && currentUser ? (
+        <div className="relative mr-2 ml-2">
+            {userdata || currentUser ? (
                 <>
                     {/* Avatar / Initials */}
                     <div
                         className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer"
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
-                        {userdata.photo ? (
+                        {userdata?.photo ? (
                             <img
-                                src={userdata.photo}
+                                src={userdata?.photo}
                                 alt="User"
                                 className="w-8 h-8 rounded-full"
                             />
                         ) : (
                             <div className="w-8 h-8 bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold rounded-full">
                                 {getInitials(
-                                    userdata.firstName,
-                                    userdata.lastName
+                                    userdata?.firstName,
+                                    userdata?.lastName
                                 )}
                             </div>
                         )}

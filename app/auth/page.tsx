@@ -14,6 +14,7 @@ import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
 import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
+import { useAuth } from "../hooks/useAuth";
 
 export default function AuthPage() {
     const router = useRouter();
@@ -24,36 +25,8 @@ export default function AuthPage() {
     const [lastName, setLastName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-
     // ✅ load auth + provider on client
     const [authBundle, setAuthBundle] = useState<any>(null);
-    useEffect(() => {
-        if (!authBundle) return;
-        const { auth } = authBundle;
-
-        (async () => {
-            try {
-                alert("Back")
-                const result = await getRedirectResult(auth);
-                console.log(result)
-                if (result?.user) {
-                    alert(result?.user.uid)
-                    const user = result.user;
-
-                    const userdata: any = {
-                        firstName: user.displayName?.split(" ")[0],
-                        lastName: user.displayName?.split(" ")[1],
-                        photo: user.photoURL,
-                    };
-
-                    await updateUser(user.uid, userdata);
-                    router.push("/");
-                }
-            } catch (err) {
-                console.error("Redirect error:", err);
-            }
-        })();
-    }, [authBundle]);
 
     useEffect(() => {
         (async () => {
@@ -137,14 +110,33 @@ export default function AuthPage() {
         setLoading(true);
 
         try {
-            // ✅ Works for both Web and Native (Capacitor)
-            await signInWithRedirect(auth, googleProvider);
+            const result: any = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            // Check if this is a new user
+            const isNewUser = result?._tokenResponse?.isNewUser;
+
+            if (isNewUser) {
+                // Create new record in your DB
+                await createUserInDB({
+                    clerkId: user.uid,
+                    email: user.email || "",
+                    firstName: user.displayName?.split(" ")[0] || "",
+                    lastName: user.displayName?.split(" ")[1] || "",
+                    photo: user.photoURL || "",
+                    status: "User",
+                    verified: [{ accountverified: false, verifieddate: new Date() }],
+                });
+            }
+
+            router.push("/");
         } catch (err: any) {
             console.error(err);
             setError(getFriendlyError(err.code));
+        } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
