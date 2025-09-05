@@ -9,20 +9,13 @@ import FCMTokenProvider from "@/components/shared/FCMTokenProvider";
 import HomeSkeleton from "@/components/shared/HomeSkeleton";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useGlobalData } from "@/public/context/GlobalDataContext";
+import MobileSkeleton from "./MobileSkeleton";
+import { Capacitor } from "@capacitor/core";
 
-export default function MainClient({
-  categoryList,
-  subcategoryList,
-  packagesList,
-  AdsCountPerRegion,
-  queryObject,
-}: {
-  categoryList: any[];
-  subcategoryList: any[];
-  packagesList: any[];
-  AdsCountPerRegion: any[];
-  queryObject: Record<string, any>;
-}) {
+export default function MainClient({ queryObject }: { queryObject: any }) {
+  const { categories, subcategories, packages, adsCount } = useGlobalData();
+
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +33,7 @@ export default function MainClient({
 
     const fetchUserData = async () => {
       try {
-        setLoading(true);
+        setLoading(false);
         const fetchedUser: any = await getUserByClerkId(user.uid);
         const fetchedMyLoans = await getByUserIdLaons(fetchedUser._id);
 
@@ -60,7 +53,7 @@ export default function MainClient({
   }, [user]);
 
   if (authLoading || loading) {
-    return <HomeSkeleton />;
+    return (<>{Capacitor.isNativePlatform() ? (<MobileSkeleton />) : (<HomeSkeleton />)}</>);
   }
 
   return (
@@ -81,10 +74,10 @@ export default function MainClient({
         userName={userName}
         userImage={userImage}
         queryObject={queryObject}
-        categoryList={categoryList}
-        subcategoryList={subcategoryList}
-        AdsCountPerRegion={AdsCountPerRegion}
-        packagesList={packagesList}
+        categoryList={categories}
+        subcategoryList={subcategories}
+        AdsCountPerRegion={adsCount}
+        packagesList={packages}
         loans={[]} // if you still need "loans", fetch them server-side like others
         myloans={myloans}
       />

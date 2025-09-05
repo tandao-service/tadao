@@ -8,6 +8,7 @@ import {
   getAllPackagesCached,
   getAdsCountAllRegionCached,
 } from "@/lib/actions/cached.actions";
+import { GlobalDataProvider } from "@/public/context/GlobalDataContext";
 import { SearchParamProps } from "@/types";
 
 export default async function Home({ searchParams }: SearchParamProps) {
@@ -26,13 +27,18 @@ export default async function Home({ searchParams }: SearchParamProps) {
   ]);
 
   return (<>
-    <MainClient
-      categoryList={categories}
-      subcategoryList={subcategories}
-      packagesList={packages}
-      AdsCountPerRegion={adsCount}
-      queryObject={queryObject}
-    />
+   <GlobalDataProvider
+      initialData={{
+        categories,
+        subcategories,
+        packages,
+        adsCount,
+      }}
+    >
+      <MainClient
+        queryObject={queryObject}
+      />
+    </GlobalDataProvider>
   </>
 
   );
