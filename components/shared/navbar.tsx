@@ -192,10 +192,10 @@ export default function Navbar({
             </div>
           )}
 
-          <UserMenu userdata={user} handleOpenShop={handleOpenShop} handleOpenSettings={handleOpenSettings} />
 
         </div>
       </div>
+      <UserMenu userdata={user} handleOpenShop={handleOpenShop} handleOpenSettings={handleOpenSettings} />
 
       <MobileNav
         user={user}
