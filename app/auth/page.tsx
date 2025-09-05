@@ -9,10 +9,11 @@ import {
     signInWithEmailAndPassword,
     signInWithPopup,
     signInWithRedirect,
+    GoogleAuthProvider,
+    signInWithCredential,
 } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
-import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import { useAuth } from "../hooks/useAuth";
 
@@ -35,7 +36,15 @@ export default function AuthPage() {
         })();
     }, []);
 
-
+    // Helper to initialize Google Auth for the web
+    useEffect(() => {
+        if (typeof window !== 'undefined' && (window as any).GoogleAuth) {
+            (window as any).GoogleAuth.initialize({
+                clientId: "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com",
+                scopes: ['profile', 'email']
+            });
+        }
+    }, []);
 
     // Helper to create/update user after Google login
     const processUser = async (result: any) => {
@@ -131,15 +140,21 @@ export default function AuthPage() {
         setLoading(true);
 
         try {
-            if (Capacitor.isNativePlatform()) {
-                // ✅ Use redirect flow on Android/iOS
-                const signInUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-                    `client_id=1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com&` +
-                    `redirect_uri=com.tadaomarket.app://callback&` +
-                    `response_type=token&scope=profile email`;
+            // Check for the global Capacitor object to determine the platform
+            const isNative = typeof window !== 'undefined' && (window as any).Capacitor && (window as any).Capacitor.isNativePlatform();
 
-                await Browser.open({ url: signInUrl });
+            if (isNative) {
+                // ✅ Best practice: use the plugin's signIn method for native apps
+                const GoogleAuth = (window as any).GoogleAuth;
+                const googleResult = await GoogleAuth.signIn();
+
+                // Get the ID token and use it to sign in with Firebase
+                const credential = GoogleAuthProvider.credential(googleResult.authentication.idToken);
+                const result = await signInWithCredential(auth, credential);
+
+                await processUser(result);
             } else {
+                // ✅ Correctly use signInWithPopup for web/PWA
                 const result: any = await signInWithPopup(auth, googleProvider);
                 await processUser(result);
             }
