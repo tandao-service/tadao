@@ -6,6 +6,8 @@ import { FcGoogle } from "react-icons/fc";
 import {
     createUserWithEmailAndPassword,
     getRedirectResult,
+    GoogleAuthProvider,
+    signInWithCredential,
     signInWithEmailAndPassword,
     signInWithPopup,
     signInWithRedirect,
@@ -13,8 +15,7 @@ import {
 import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
 import { Capacitor } from "@capacitor/core";
-import { Browser } from "@capacitor/browser";
-import { useAuth } from "../hooks/useAuth";
+import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 
 export default function AuthPage() {
     const router = useRouter();
@@ -35,21 +36,6 @@ export default function AuthPage() {
         })();
     }, []);
 
-    useEffect(() => {
-        if (!authBundle) return;
-        const { auth } = authBundle;
-        (async () => {
-            try {
-                const result = await getRedirectResult(auth);
-                alert(result?.user.uid)
-                if (result) {
-                    await processUser(result);
-                }
-            } catch (err) {
-                console.error("Redirect error:", err);
-            }
-        })();
-    }, [authBundle]);
 
     // Helper to create/update user after Google login
     const processUser = async (result: any) => {
@@ -147,7 +133,10 @@ export default function AuthPage() {
         try {
             if (Capacitor.isNativePlatform()) {
                 // ✅ Use redirect flow on Android/iOS
-                await signInWithRedirect(auth, googleProvider);
+                const googleUser = await GoogleAuth.signIn();
+                const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
+                const result = await signInWithCredential(auth, credential);
+                await processUser(result);
             } else {
                 const result: any = await signInWithPopup(auth, googleProvider);
                 await processUser(result);

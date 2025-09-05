@@ -8,7 +8,7 @@ export async function sendEmailNotification(
 
   let transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST, // Your SMTP host
-    port: 587, // Use 587 for TLS
+    port: 587, // Use 587 for TLS9
     secure: false, // True if using port 465
     auth: {
       user: process.env.SMTP_USER, // Your SMTP user

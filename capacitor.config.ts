@@ -16,9 +16,13 @@ const config: CapacitorConfig & {
   plugins: {
     SplashScreen: {
       launchAutoHide: false,
-      // launchShowDuration: 3000,
       backgroundColor: "#f97316",
       androidSpinnerStyle: "large",
+    },
+    GoogleAuth: {
+      scopes: ["profile", "email"],
+      serverClientId: "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com", // from Firebase console
+      forceCodeForRefreshToken: true,
     },
   },
   assets: {
