@@ -16,7 +16,8 @@ import { getAuthSafe } from "@/lib/firebase"; // ✅ import the safe loader
 import { createUser as createUserInDB, updateUser } from "@/lib/actions/user.actions";
 import { Browser } from "@capacitor/browser";
 import { useAuth } from "../hooks/useAuth";
-
+import { Capacitor } from '@capacitor/core';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 export default function AuthPage() {
     const router = useRouter();
     const [isSignUp, setIsSignUp] = useState(false);
@@ -37,14 +38,6 @@ export default function AuthPage() {
     }, []);
 
     // Helper to initialize Google Auth for the web
-    useEffect(() => {
-        if (typeof window !== 'undefined' && (window as any).GoogleAuth) {
-            (window as any).GoogleAuth.initialize({
-                clientId: "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com",
-                scopes: ['profile', 'email']
-            });
-        }
-    }, []);
 
     // Helper to create/update user after Google login
     const processUser = async (result: any) => {
@@ -141,17 +134,17 @@ export default function AuthPage() {
 
         try {
             // Check for the global Capacitor object to determine the platform
-            const isNative = typeof window !== 'undefined' && (window as any).Capacitor && (window as any).Capacitor.isNativePlatform();
-
+             const isNative = Capacitor.isNativePlatform();
             if (isNative) {
                 // ✅ Best practice: use the plugin's signIn method for native apps
-                const GoogleAuth = (window as any).GoogleAuth;
+                alert("native");
+                
                 const googleResult = await GoogleAuth.signIn();
-
+     
                 // Get the ID token and use it to sign in with Firebase
                 const credential = GoogleAuthProvider.credential(googleResult.authentication.idToken);
                 const result = await signInWithCredential(auth, credential);
-
+                alert(result.user.uid);
                 await processUser(result);
             } else {
                 // ✅ Correctly use signInWithPopup for web/PWA
@@ -159,7 +152,9 @@ export default function AuthPage() {
                 await processUser(result);
             }
         } catch (err: any) {
+            alert(JSON.stringify(err, null, 2));
             console.error(err);
+            alert(err.code)
             setError(getFriendlyError(err.code));
         } finally {
             setLoading(false);
