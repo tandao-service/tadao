@@ -31,7 +31,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.variable}>
         <SplashHandler />
-        <AppDeepLinkHandler />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
