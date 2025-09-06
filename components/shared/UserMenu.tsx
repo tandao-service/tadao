@@ -25,7 +25,7 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
 
     return (
         <div className="relative mr-2 ml-2">
-            {userdata || currentUser?.uid ? (
+            {userdata || currentUser ? (
                 <>
                     {/* Avatar / Initials */}
                     <div
@@ -86,7 +86,7 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
                     )}
                 </>
             ) : (<>
-                {!currentUser?.uid && (<button
+                {!currentUser && (<button
                     onClick={() => {
                         router.push("/auth");
 
