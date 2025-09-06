@@ -34,6 +34,7 @@ import { FileuploaderBusiness } from "./FileuploaderBusiness";
 import { verificationStatus } from "@/lib/actions/verificationstatus";
 import PhoneVerification from "./PhoneVerification";
 import { useAuth } from "@/app/hooks/useAuth";
+import imageCompression from "browser-image-compression";
 
 type setingsProp = {
   type: "Create" | "Update";
@@ -307,6 +308,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     // You can now save the verified phone to your database
   };
   const [uploading, setUploading] = useState(false);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
     setUploading(true);
@@ -319,7 +321,15 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
         await Promise.all(
           files.map(async (file: File) => {
             try {
-              const uploadedImages = await startUpload([file]);
+              // ✅ compress before upload
+              const compressedFile = await imageCompression(file, {
+                maxSizeMB: 1,           // keep under ~1MB
+                maxWidthOrHeight: 1024, // resize big images
+                useWebWorker: true,     // speed up
+              });
+
+              // Upload compressed file
+              const uploadedImages = await startUpload([compressedFile]);
               if (uploadedImages && uploadedImages.length > 0) {
                 uploadedImageUrl = uploadedImages[0].url;
               }
@@ -330,15 +340,13 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
         );
       }
 
-      // Update local state immediately
-      // setformData((prev) => ({ ...prev, photo: uploadedImageUrl }));
-
       // Persist to MongoDB
       const photo = uploadedImageUrl;
       const olderphoto = user?.photo || "";
       const _id = userId || "";
       await updateUserPhoto(_id, photo, olderphoto);
       user.photo = photo;
+
       alert("Profile picture updated ✅");
     } catch (err) {
       console.error("Error in handleImageUpload:", err);
@@ -347,6 +355,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
       setUploading(false);
     }
   };
+
 
 
   const handleDelete = async () => {
@@ -379,19 +388,43 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     {/* Profile Image */}
                     <div className="flex items-center space-x-4">
+                      {/* Avatar */}
                       {user?.photo ? (
-                        <img src={user?.photo} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
+                        <img
+                          src={user.photo}
+                          alt="Profile"
+                          className="w-20 h-20 rounded-full object-cover border border-gray-300 shadow-sm"
+                        />
                       ) : (
-                        <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">No Image</div>
+                        <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-500">
+                          <span>👤</span>
+                        </div>
                       )}
-                      <input type="file" accept="image/*" onChange={handleImageUpload} />
-                      {uploading && (<><CircularProgress sx={{ color: "white" }} size={30} /> Uploading...</>
 
+                      {/* Upload button */}
+                      <label className="cursor-pointer flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white text-sm rounded-lg shadow hover:bg-orange-600 transition">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                        <span>Upload Photo</span>
+                      </label>
+
+                      {/* Uploading state */}
+                      {uploading && (
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CircularProgress sx={{ color: "orange" }} size={20} />
+                          <span>Uploading...</span>
+                        </div>
                       )}
                     </div>
+
                   </div>
 
                   <div className="flex flex-col gap-5 mb-5 md:flex-row gap-1">
+
                     <FormField
                       control={form.control}
                       name="firstName"
@@ -498,6 +531,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
             <AccordionContent>
               <div className="rounded-[20px] p-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-1">
+                  {/**
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
                       control={form.control}
@@ -515,7 +549,8 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                         </FormItem>
                       )}
                     />
-                  </div>
+                  </div> */}
+
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                     <FormField
                       control={form.control}
@@ -1200,12 +1235,12 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between gap-5 mt-6">
           <Button
             type="submit"
             size="lg"
             disabled={form.formState.isSubmitting}
-            className="button col-span-2 w-full"
+            className="button flex-1 w-full"
           >
             <div className="flex gap-1 items-center">
               {form.formState.isSubmitting && (

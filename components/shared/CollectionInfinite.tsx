@@ -241,13 +241,36 @@ const CollectionInfinite = ({
       CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 
         // 1. If popup open → just close it
-        if (isAnyPopupOpen()) {
+        if (isOpenCategory ||
+          isOpenSell ||
+          isOpenAdView ||
+          isOpenAdEdit ||
+          isOpenPay ||
+          isOpenAbout ||
+          isOpenTerms ||
+          isOpenPrivacy ||
+          isOpenSafety ||
+          isOpenFaq ||
+          isOpenBook ||
+          isOpenPlan ||
+          isOpenChat ||
+          isOpenChatId ||
+          isOpenReview ||
+          isOpenShop ||
+          isOpenOrderView ||
+          isOpenSettings ||
+          isOpenProfile ||
+          isOpenPerfomance ||
+          isOpenSearchTab ||
+          isOpenSearchByTitle ||
+          showWantedPopup) {
+          alert("POP CLOSED")
           setIsOpenCategory(false);
           handleClose();
 
           return;
         }
-
+        alert("NO POPUP")
         // 2. If can go back → navigate back
         if (canGoBack) {
           window.history.back();
@@ -1077,6 +1100,7 @@ const CollectionInfinite = ({
                   <h2 className="font-bold p-2 text-[30px]">Trending Ads</h2>
                   <div className="bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90%"></div>
 
+
                 </div>
                 {data.length > 0 ? (
 
@@ -1171,7 +1195,7 @@ const CollectionInfinite = ({
                       </div>
                     )}
                   </div>
-                )}
+                )}8
                 <PopupCategory isOpen={isOpenCategory} onClose={handleCloseCategory} userId={userId} userName={userName} userImage={userImage} queryObject={newqueryObject} handleOpenSell={handleOpenSell} handleAdView={handleAdView} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                   handleOpenShop={handleOpenShop}
                   handleOpenPerfomance={handleOpenPerfomance}
@@ -1239,7 +1263,7 @@ const CollectionInfinite = ({
                   handleOpenSettings={handleOpenSettings}
                   handlePay={handlePay}
                   handleOpenReview={handleOpenReview}
-                  user={user} />
+                  user={user?.user ?? []} />
 
                 <PopupPlan isOpen={isOpenPlan} onClose={handleClosePlan} userId={userId} handleOpenPlan={handleOpenPlan} handleOpenBook={handleOpenBook} handleOpenSell={handleOpenSell} handleOpenChat={handleOpenChat}
                   handleOpenPerfomance={handleOpenPerfomance}
@@ -1251,7 +1275,7 @@ const CollectionInfinite = ({
                   handleOpenTerms={handleOpenTerms}
                   handleOpenPrivacy={handleOpenPrivacy}
                   handleOpenSafety={handleOpenSafety}
-                  user={user}
+                  user={user?.user ?? []}
                   packagesList={packagesList} />
 
                 <PopupChat isOpen={isOpenChat} onClose={handleCloseChat} handleOpenChatId={handleOpenChatId} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} handleOpenSettings={handleOpenSettings} handleCategory={handleCategory} handleOpenReview={handleOpenReview}

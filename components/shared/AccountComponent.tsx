@@ -355,11 +355,8 @@ const AccountComponent = ({ userId, user, userName,
                       className="w-10 h-10 rounded-full"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-gray-800 text-white flex items-center justify-center text-sm font-bold rounded-full">
-                      {getInitials(
-                        user?.firstName,
-                        user?.lastName
-                      )}
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-500">
+                      <span>👤</span>
                     </div>
                   )}
 
