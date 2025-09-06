@@ -1,86 +1,67 @@
 // components/FCMTokenProvider.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { updateUserToken } from "@/lib/actions/user.actions";
+import { Capacitor } from "@capacitor/core";
+import { PushNotifications } from "@capacitor/push-notifications";
 import { getMessaging, getToken } from "firebase/messaging";
 
 export default function FCMTokenProvider({ userId }: { userId: string }) {
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Register the service worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
-        .then((registration) => {
-          console.log("✅ Service Worker registered", registration);
-        })
-        .catch((err) => {
-          console.error("❌ Service Worker registration failed", err);
-        });
-        navigator.serviceWorker.ready.then((registration) => {
-          registration.getNotifications().then((notifications) => {
-            notifications.forEach((notification) => notification.close());
-          });
-        });
+  async function registerPush(userId: string) {
+    const permStatus = await PushNotifications.checkPermissions();
+    if (permStatus.receive !== "granted") {
+      await PushNotifications.requestPermissions();
     }
-   
-  }, []);
+    await PushNotifications.register();
+
+    PushNotifications.addListener("registration", async (token) => {
+      console.log("🎯 Native FCM Token:", token.value);
+      await updateUserToken(userId, token.value);
+    });
+
+    PushNotifications.addListener(
+      "pushNotificationActionPerformed",
+      (notification) => {
+        console.log("🔔 Notification action:", notification.notification);
+      }
+    );
+  }
+
+  async function getFCMTokenWeb(userId: string) {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      console.warn("❌ Notification permission denied");
+      return;
+    }
+
+    const messaging = getMessaging();
+    const token = await getToken(messaging, {
+      vapidKey: "YOUR_VAPBJbDtovlED9aJ4PCTCqVQFcLe605aWgL9yFW9DilBhG77qF-ySJ8RS1pFa9VyeXL81l732Cnwv8PAs6jm1wKhRMID_KEY_HERE",
+    });
+
+    if (token) {
+      console.log("🎯 Web FCM Token:", token);
+      await updateUserToken(userId, token);
+    } else {
+      console.log("No registration token available");
+    }
+  }
 
   useEffect(() => {
     if (!userId) return;
 
-    const getFCMToken = async () => {
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") {
-          console.warn("❌ Notification permission not granted");
-          return;
-        }
-
-       // Get registration token. Initially this makes a network call, once retrieved
-       // subsequent calls to getToken will return from cache.
-       const messaging = getMessaging();
-       getToken(messaging, { vapidKey: 'BJbDtovlED9aJ4PCTCqVQFcLe605aWgL9yFW9DilBhG77qF-ySJ8RS1pFa9VyeXL81l732Cnwv8PAs6jm1wKhRM'}).then(async (currentToken) => {
-         if (currentToken) {
-           // Send the token to your server and update the UI if necessary
-           console.log("🎯 FCM Token:", currentToken);
-           setToken(currentToken);
- 
-           // Store token in the database
-           await updateUserToken(userId, currentToken);
-
-           //const res = await fetch("/api/send-push", {
-          //  method: "POST",
-            //headers: {
-            //"Content-Type": "application/json",
-            //    },
-            //    body: JSON.stringify({
-            //token: currentToken,
-             //title: "New Message",
-            //     body: "You've got a new notification!",
-           //   }),
-           // });
-        
-         // const data = await res.json();
-         // console.log("Push Response:", data);
-         } else {
-           // Show permission request UI
-           console.log('No registration token available. Request permission to generate one.');
-           // ...
-         }
-       }).catch((err) => {
-         console.log('An error occurred while retrieving token. ', err);
-         // ...
-       });
-
-      } catch (error) {
-        console.error("❌ Error getting FCM token PAUL:", error);
+    if (Capacitor.isNativePlatform()) {
+      registerPush(userId);
+    } else {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/firebase-messaging-sw.js")
+          .then((reg) => console.log("SW registered", reg))
+          .catch((err) => console.error("SW failed", err));
       }
-    };
-
-    getFCMToken();
+      getFCMTokenWeb(userId);
+    }
   }, [userId]);
 
   return null;
