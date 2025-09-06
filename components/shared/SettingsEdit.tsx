@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { IUser } from "@/lib/database/models/user.model";
 import { UserDefaultValues } from "@/constants";
 import { UserFormSchema } from "@/lib/validator";
-import { updateUserFromSettings, updateUserPhone } from "@/lib/actions/user.actions";
+import { deleteUser, updateUserFromSettings, updateUserPhone, updateUserPhoto } from "@/lib/actions/user.actions";
 import { useToast } from "@/components/ui/use-toast";
 import { TextField } from "@mui/material";
 
@@ -37,7 +37,7 @@ import { useAuth } from "@/app/hooks/useAuth";
 
 type setingsProp = {
   type: "Create" | "Update";
-  user?: IUser;
+  user?: any;
   userId?: string;
 };
 
@@ -51,7 +51,7 @@ type Businesshours = {
 const SettingsEdit = ({ user, type, userId }: setingsProp) => {
   //const initialValues = user;
   const { toast } = useToast();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, signOutUser } = useAuth();
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -306,6 +306,63 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     setChangePhone(false)
     // You can now save the verified phone to your database
   };
+  const [uploading, setUploading] = useState(false);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setUploading(true);
+
+    try {
+      let uploadedImageUrl = ""; // fallback to existing photo
+      const files = Array.from(e.target.files);
+
+      if (files.length > 0) {
+        await Promise.all(
+          files.map(async (file: File) => {
+            try {
+              const uploadedImages = await startUpload([file]);
+              if (uploadedImages && uploadedImages.length > 0) {
+                uploadedImageUrl = uploadedImages[0].url;
+              }
+            } catch (error) {
+              console.error("Error uploading file:", error);
+            }
+          })
+        );
+      }
+
+      // Update local state immediately
+      // setformData((prev) => ({ ...prev, photo: uploadedImageUrl }));
+
+      // Persist to MongoDB
+      const photo = uploadedImageUrl;
+      const olderphoto = user?.photo || "";
+      const _id = userId || "";
+      await updateUserPhoto(_id, photo, olderphoto);
+      user.photo = photo;
+      alert("Profile picture updated ✅");
+    } catch (err) {
+      console.error("Error in handleImageUpload:", err);
+      alert("Image upload failed ❌");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete your account? This action is irreversible.")) return;
+
+    try {
+      await deleteUser(user.clerkId); // remove from MongoDB
+      if (currentUser) await firebaseDeleteUser(currentUser); // remove from Firebase
+      await signOutUser();
+      router.push("/auth");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete account ❌");
+    }
+  };
+
   return (
     <Form {...form}>
       <form
@@ -319,15 +376,18 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
               <div className="rounded-[20px] p-1 dark:bg-[#131B1E] bg-white">
                 <div className="m-1">
                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    {currentUser && (
-                      <div className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] bg-white tooltip tooltip-bottom hover:cursor-pointer">
-                        <img
-                          src={currentUser.photoURL || "/default-user.png"}
-                          alt="User"
-                          className="w-8 h-8 rounded-full"
-                        />
-                      </div>
-                    )}
+                    {/* Profile Image */}
+                    <div className="flex items-center space-x-4">
+                      {user?.photo ? (
+                        <img src={user?.photo} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">No Image</div>
+                      )}
+                      <input type="file" accept="image/*" onChange={handleImageUpload} />
+                      {uploading && (<><CircularProgress sx={{ color: "white" }} size={30} /> Uploading...</>
+
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-5 mb-5 md:flex-row gap-1">
@@ -1139,23 +1199,32 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+        <div className="flex justify-between mt-6">
+          <Button
+            type="submit"
+            size="lg"
+            disabled={form.formState.isSubmitting}
+            className="button col-span-2 w-full"
+          >
+            <div className="flex gap-1 items-center">
+              {form.formState.isSubmitting && (
+                <CircularProgress sx={{ color: "white" }} size={30} />
+              )}
+              {form.formState.isSubmitting ? "Submitting..." : `${type} User `}
+            </div>
+          </Button>
 
-        <Button
-          type="submit"
-          size="lg"
-          disabled={form.formState.isSubmitting}
-          className="button col-span-2 w-full"
-        >
-          <div className="flex gap-1 items-center">
-            {form.formState.isSubmitting && (
-              <CircularProgress sx={{ color: "white" }} size={30} />
-            )}
-            {form.formState.isSubmitting ? "Submitting..." : `${type} User `}
-          </div>
-        </Button>
+          <Button type="button" variant="destructive" onClick={handleDelete}>
+            Delete Account
+          </Button>
+        </div>
       </form>
     </Form>
   );
 };
 
 export default SettingsEdit;
+function firebaseDeleteUser(currentUser: any) {
+  throw new Error("Function not implemented.");
+}
+

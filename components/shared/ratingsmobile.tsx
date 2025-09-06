@@ -14,8 +14,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 type Ratingsprop = {
   recipientUid: string;
-  user:any;
-  handleOpenReview: (value:any) => void;
+  user: any;
+  handleOpenReview: (value: any) => void;
 };
 
 interface Review {
@@ -29,13 +29,14 @@ interface Review {
   starClicked: boolean[];
 }
 
-const Ratingsmobile = ({ recipientUid,user, handleOpenReview }: Ratingsprop) => {
+const Ratingsmobile = ({ recipientUid, user, handleOpenReview }: Ratingsprop) => {
   const [clickedStarsCount, setClickedStarsCount] = useState<number>(0);
   const [messagesCount, setMessagesCount] = useState<number>(0);
   const [averangestar, setaverangestar] = useState<number>(0);
 
   useEffect(() => {
     const fetchMessages = () => {
+      if (!recipientUid) return; // don't run if undefined
       const messagesQuery = query(
         collection(db, "reviews"),
         where("recipientUid", "==", recipientUid),
@@ -50,7 +51,7 @@ const Ratingsmobile = ({ recipientUid,user, handleOpenReview }: Ratingsprop) => 
 
           totalClickedStars += reviewData.starClicked
             ? reviewData.starClicked.filter((clicked: boolean) => clicked)
-                .length
+              .length
             : 0;
         });
 
@@ -165,8 +166,8 @@ const Ratingsmobile = ({ recipientUid,user, handleOpenReview }: Ratingsprop) => 
 
       <div
         onClick={() => {
-         // openLoading();
-         handleOpenReview(user);
+          // openLoading();
+          handleOpenReview(user);
           //router.push(`/reviews/${recipientUid}`);
         }}
         className="cursor-pointer dark:text-gray-400 text-gray-600 text-sm underline font-bold m-1"

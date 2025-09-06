@@ -107,12 +107,13 @@ export default function AuthPage() {
 
         try {
             await sendPasswordResetEmail(auth, email);
-            toast({
-                title: "Alert",
-                description: "Password reset link sent! Please check your email.",
-                duration: 5000,
-                className: "bg-[#000000] text-white",
-            });
+            setError("Password reset link sent! Please check your email.");
+            // toast({
+            //     title: "Alert",
+            //      description: "Password reset link sent! Please check your email.",
+            //     duration: 5000,
+            //       className: "bg-[#000000] text-white",
+            //  });
 
         } catch (err: any) {
             console.error(err);
@@ -289,6 +290,14 @@ export default function AuthPage() {
                             <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
                         )}
                         {isSignUp ? "Sign Up" : "Sign In"}
+                    </button>
+                    {/* Cancel button */}
+                    <button
+                        type="button" // ✅ so it doesn't submit the form
+                        onClick={() => router.push("/")}
+                        className="w-full p-2 font-bold rounded border border-gray-300 text-gray-700 hover:bg-gray-100 mt-2"
+                    >
+                        Cancel
                     </button>
                 </form>
 

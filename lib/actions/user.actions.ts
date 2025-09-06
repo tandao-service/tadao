@@ -16,6 +16,7 @@ import DynamicAd from '../database/models/dynamicAd.model'
 import { FreePackId } from '@/constants'
 import mongoose from 'mongoose'
 import Transaction from '../database/models/transaction.model'
+import { UTApi } from 'uploadthing/server'
 
 
 
@@ -247,6 +248,31 @@ export async function updateUserStatus(_id: string, status: string) {
 
     // Revalidate the path (assuming it's a separate function)
     // revalidatePath(path);
+
+    // Return the updated category
+    return JSON.parse(JSON.stringify(updateAdabused));
+  } catch (error) {
+    handleError(error);
+    // Handle error appropriately (e.g., throw or return error response)
+    throw error;
+  }
+}
+export async function updateUserPhoto(_id: string, photo: string, olderphoto: string) {
+  try {
+
+    if (olderphoto) {
+      try {
+        const utapi = new UTApi();
+        await utapi.deleteFiles(olderphoto);
+      } catch (error: any) { }
+    }
+    await connectToDatabase();
+    // Find the category by its ID and update the name field only
+    const updateAdabused = await User.findByIdAndUpdate(
+      _id,
+      { photo }, // Update only the name field
+      { new: true }
+    );
 
     // Return the updated category
     return JSON.parse(JSON.stringify(updateAdabused));
