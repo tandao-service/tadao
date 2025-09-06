@@ -221,7 +221,7 @@ export default function AuthPage() {
             <div className="w-full max-w-md p-8 space-y-6 bg-white rounded lg:shadow">
                 <div className="flex flex-col items-center mb-4">
                     <img
-                        src="/logo.png"
+                        src="/logo.jpg"
                         alt="Tadao Market"
                         className="w-20 h-20 mb-2"
                     />

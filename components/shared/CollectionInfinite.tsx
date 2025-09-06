@@ -241,42 +241,20 @@ const CollectionInfinite = ({
       CapacitorApp.addListener("backButton", ({ canGoBack }) => {
 
         // 1. If popup open → just close it
-        if (isOpenCategory ||
-          isOpenSell ||
-          isOpenAdView ||
-          isOpenAdEdit ||
-          isOpenPay ||
-          isOpenAbout ||
-          isOpenTerms ||
-          isOpenPrivacy ||
-          isOpenSafety ||
-          isOpenFaq ||
-          isOpenBook ||
-          isOpenPlan ||
-          isOpenChat ||
-          isOpenChatId ||
-          isOpenReview ||
-          isOpenShop ||
-          isOpenOrderView ||
-          isOpenSettings ||
-          isOpenProfile ||
-          isOpenPerfomance ||
-          isOpenSearchTab ||
-          isOpenSearchByTitle ||
-          showWantedPopup) {
-          alert("POP CLOSED")
-          setIsOpenCategory(false);
-          handleClose();
 
-          return;
-        }
-        alert("NO POPUP")
         // 2. If can go back → navigate back
         if (canGoBack) {
           window.history.back();
           return;
         }
-
+        if (closepopup) {
+          closepopup = false;
+          setIsOpenCategory(false);
+          handleClose();
+          return;
+        }
+        setIsOpenCategory(false);
+        handleClose();
         // 3. Otherwise → show exit modal
         setShowExitModal(true);
       });
