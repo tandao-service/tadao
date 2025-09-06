@@ -18,7 +18,7 @@ const MobileSkeleton = () => {
 
             {/* Categories Grid */}
             <div className="grid grid-cols-3 gap-4 px-4 mt-4">
-                {Array.from({ length: 12 }).map((_, idx) => (
+                {Array.from({ length: 15 }).map((_, idx) => (
                     <div key={idx} className="flex flex-col items-center">
                         <div className="h-16 w-16 bg-gray-300 rounded-full"></div>
                         <div className="h-3 w-16 bg-gray-300 rounded mt-2"></div>
