@@ -353,7 +353,8 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     if (!confirm("Are you sure you want to delete your account? This action is irreversible.")) return;
 
     try {
-      await deleteUser(user.clerkId); // remove from MongoDB
+      const olderphoto = user?.photo || ""
+      await deleteUser(user.clerkId, olderphoto); // remove from MongoDB
       if (currentUser) await firebaseDeleteUser(currentUser); // remove from Firebase
       await signOutUser();
       router.push("/auth");

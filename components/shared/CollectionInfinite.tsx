@@ -239,27 +239,32 @@ const CollectionInfinite = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+
+        // 1. If popup open → just close it
+        if (isAnyPopupOpen()) {
+          setIsOpenCategory(false);
+          handleClose();
+
+          return;
+        }
+
+        // 2. If can go back → navigate back
         if (canGoBack) {
           window.history.back();
-
-        } else {
-          if (isAnyPopupOpen()) {
-            setIsOpenCategory(false);
-            handleClose();
-
-          } else {
-            setShowExitModal(true);
-          }
-
+          return;
         }
+
+        // 3. Otherwise → show exit modal
+        setShowExitModal(true);
       });
     }
 
-    // Cleanup listener when component unmounts
     return () => {
       CapacitorApp.removeAllListeners();
     };
   }, []);
+
+
   useEffect(() => {
     const fetchData = async () => {
       const params = new URLSearchParams(window.location.search);

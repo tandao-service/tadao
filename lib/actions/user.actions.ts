@@ -343,7 +343,7 @@ export async function updateUserFromSettings({ user, path }: UpdateUserSetingsPa
   }
 }
 
-export async function deleteUser(clerkId: string) {
+export async function deleteUser(clerkId: string, olderphoto: string) {
   try {
     await connectToDatabase()
 
@@ -353,7 +353,12 @@ export async function deleteUser(clerkId: string) {
     if (!userToDelete) {
       throw new Error('User not found')
     }
-
+    if (olderphoto) {
+      try {
+        const utapi = new UTApi();
+        await utapi.deleteFiles(olderphoto);
+      } catch (error: any) { }
+    }
     // Unlink relationships
     await Promise.all([
       // Update the 'events' collection to remove references to the user
