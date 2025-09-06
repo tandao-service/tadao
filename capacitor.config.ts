@@ -19,10 +19,12 @@ const config: CapacitorConfig & {
       backgroundColor: "#f97316",
       androidSpinnerStyle: "large",
     },
-    GoogleAuth: {
-    scopes: ["profile", "email"],
-    serverClientId: "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com",
-  },
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "androidClientId": "1033579054775-r208cpmoc90vusdpsdmh505ie0qc5773.apps.googleusercontent.com",
+      "serverClientId": "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    },
   },
   assets: {
     icon: {
