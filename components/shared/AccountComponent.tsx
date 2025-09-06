@@ -252,7 +252,9 @@ const AccountComponent = ({ userId, user, userName,
     }
   }, [userId]);
 
-
+  const getInitials = (firstName?: string, lastName?: string) => {
+    return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+  };
   const [loadingReview, setLoadingReview] = useState(true);
   const [reviewCount, setReviewCount] = useState(0); // Add this
   const [messages, setMessages] = useState<Review[]>([]);
@@ -345,18 +347,24 @@ const AccountComponent = ({ userId, user, userName,
             <div className="w-full bg-white lg:max-w-6xl lg:mx-auto lg:mb-3  rounded-xl p-1 lg:p-3 mb-20 justify-center">
               <div className="flex items-center justify-between p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="bg-gray-700 rounded-full h-10 w-10 flex items-center justify-center">
-                    {/* Placeholder avatar */}
 
-                    <Image
-                      className="w-full h-full rounded-full object-cover"
-                      src={user.photo ?? "/avator.png"}
-                      alt="Avator"
-                      width={100}
-                      height={100}
+                  {user?.photo ? (
+                    <img
+                      src={user?.photo}
+                      alt="User"
+                      className="w-10 h-10 rounded-full"
                     />
+                  ) : (
+                    <div className="w-10 h-10 bg-gray-800 text-white flex items-center justify-center text-sm font-bold rounded-full">
+                      {getInitials(
+                        user?.firstName,
+                        user?.lastName
+                      )}
+                    </div>
+                  )}
 
-                  </div>
+
+
                   <div className="flex flex-col">
                     <span className="ml-2 font-semibold text-lg">{user.firstName} {user.lastName}</span>
                     <div className="flex">

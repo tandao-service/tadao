@@ -39,7 +39,7 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
                                 className="w-8 h-8 rounded-full"
                             />
                         ) : (
-                            <div className="w-8 h-8 bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold rounded-full">
+                            <div className="w-8 h-8 bg-gray-800 text-white flex items-center justify-center text-sm font-bold rounded-full">
                                 {getInitials(
                                     userdata?.firstName,
                                     userdata?.lastName
