@@ -146,7 +146,7 @@ const AdsComponent = ({
 
 
   return (
-    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
+    <div className="h-[100vh] w-full bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
       <div ref={scrollRefB} className="h-full overflow-y-auto bg-gray-100 border">
         <style jsx>{`
     @media (max-width: 1024px) {

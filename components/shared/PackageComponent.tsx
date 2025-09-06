@@ -80,7 +80,7 @@ const PackageComponent = ({ userId, user, packagesList, onClose, handlePay, hand
     }
   `}</style>
         <div className="top-0 z-10 fixed w-full">
-          <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"plan"} handleOpenPlan={handleOpenPlan} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
+          <Navbar user={user?.user ?? []} userstatus={user?.user?.status ?? ""} userId={userId} onClose={onClose} popup={"plan"} handleOpenPlan={handleOpenPlan} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenChat={handleOpenChat}
             handleOpenPerfomance={handleOpenPerfomance}
             handleOpenSettings={handleOpenSettings}
             handleOpenAbout={handleOpenAbout}

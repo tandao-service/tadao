@@ -195,7 +195,7 @@ const DashboardPerformance = ({
     }
   `}</style>
           <div className="top-0 z-10 fixed w-full">
-            <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"performance"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+            <Navbar user={user?.user ?? []} userstatus={user?.user?.status ?? ""} userId={userId} onClose={onClose} popup={"performance"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
               handleOpenPerfomance={handleOpenPerfomance}
               handleOpenSettings={handleOpenSettings}
               handleOpenAbout={handleOpenAbout}
@@ -213,7 +213,7 @@ const DashboardPerformance = ({
                       userId={userId}
                       userName={userName}
                       userImage={userImage}
-                      user={user}
+                      user={user?.user ?? []}
                       handleOpenReview={handleOpenReview}
                       handleOpenShop={handleOpenShop}
                       handlePay={handlePay}

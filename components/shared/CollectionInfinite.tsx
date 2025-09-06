@@ -1241,7 +1241,7 @@ const CollectionInfinite = ({
                   handleOpenSettings={handleOpenSettings}
                   handlePay={handlePay}
                   handleOpenReview={handleOpenReview}
-                  user={user?.user ?? []} />
+                  user={user ?? []} />
 
                 <PopupPlan isOpen={isOpenPlan} onClose={handleClosePlan} userId={userId} handleOpenPlan={handleOpenPlan} handleOpenBook={handleOpenBook} handleOpenSell={handleOpenSell} handleOpenChat={handleOpenChat}
                   handleOpenPerfomance={handleOpenPerfomance}
@@ -1253,7 +1253,7 @@ const CollectionInfinite = ({
                   handleOpenTerms={handleOpenTerms}
                   handleOpenPrivacy={handleOpenPrivacy}
                   handleOpenSafety={handleOpenSafety}
-                  user={user?.user ?? []}
+                  user={user ?? []}
                   packagesList={packagesList} />
 
                 <PopupChat isOpen={isOpenChat} onClose={handleCloseChat} handleOpenChatId={handleOpenChatId} userId={userId} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} userImage={userImage} userName={userName} handleOpenChat={handleOpenChat} handleOpenSettings={handleOpenSettings} handleCategory={handleCategory} handleOpenReview={handleOpenReview}
