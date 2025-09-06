@@ -1167,8 +1167,8 @@ const CollectionInfinite = ({
                         <Image
                           src="/assets/icons/loading.gif"
                           alt="edit"
-                          width={40}
-                          height={40}
+                          width={60}
+                          height={60}
                         />
                       </div>
                     )}

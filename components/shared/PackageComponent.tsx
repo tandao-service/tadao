@@ -37,14 +37,14 @@ const PackageComponent = ({ userId, user, packagesList, onClose, handlePay, hand
   handleOpenSettings,
   handleOpenShop, handleOpenChat, handleOpenPlan, handleOpenBook, handleOpenSell }: PackProps) => {
 
-  const createdAt = new Date(user.transaction?.createdAt || new Date());
-  const periodInDays = parseInt(user.transaction?.period) || 0;
+  const createdAt = new Date(user?.transaction?.createdAt || new Date());
+  const periodInDays = parseInt(user?.transaction?.period) || 0;
   const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
   const currentTime = new Date();
   const remainingTime = expiryDate.getTime() - currentTime.getTime();
   const daysRemaining = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
-  const planPackage = user.currentpack.name;
-  const color = user.currentpack.color;
+  const planPackage = user?.currentpack?.name || "Free";
+  const color = user?.currentpack?.color || "#000000";
 
 
 

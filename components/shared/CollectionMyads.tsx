@@ -367,8 +367,8 @@ const CollectionMyads = ({
               <Image
                 src="/assets/icons/loading.gif"
                 alt="loading"
-                width={40}
-                height={40}
+                width={60}
+                height={60}
                 unoptimized
               />
             </div>
