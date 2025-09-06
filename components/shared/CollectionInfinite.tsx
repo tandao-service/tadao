@@ -1173,7 +1173,7 @@ const CollectionInfinite = ({
                       </div>
                     )}
                   </div>
-                )}8
+                )}
                 <PopupCategory isOpen={isOpenCategory} onClose={handleCloseCategory} userId={userId} userName={userName} userImage={userImage} queryObject={newqueryObject} handleOpenSell={handleOpenSell} handleAdView={handleAdView} handleOpenAbout={handleOpenAbout} handleOpenTerms={handleOpenTerms} handleOpenPrivacy={handleOpenPrivacy} handleOpenSafety={handleOpenSafety} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
                   handleOpenShop={handleOpenShop}
                   handleOpenPerfomance={handleOpenPerfomance}
