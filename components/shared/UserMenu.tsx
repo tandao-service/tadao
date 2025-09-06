@@ -17,15 +17,15 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
     const router = useRouter();
     const { user: currentUser, signOutUser } = useAuth(); // Firebase auth
 
-    const handleLogout = () => {
-        signOutUser();
+    const handleLogout = async () => {
+        await signOutUser();
         setMenuOpen(false);
         router.push("/"); // redirect to home after logout
     };
 
     return (
         <div className="relative mr-2 ml-2">
-            {userdata || currentUser ? (
+            {userdata || currentUser?.uid ? (
                 <>
                     {/* Avatar / Initials */}
                     <div
@@ -86,7 +86,7 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
                     )}
                 </>
             ) : (<>
-                {!currentUser && (<button
+                {!currentUser?.uid && (<button
                     onClick={() => {
                         router.push("/auth");
 

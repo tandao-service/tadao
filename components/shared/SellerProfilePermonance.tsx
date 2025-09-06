@@ -95,13 +95,17 @@ const SellerProfilePermonance = ({
         >
           <div className="w-12 h-12 rounded-full bg-white">
             <Zoom>
-              <Image
-                className="w-full h-w-full rounded-full object-cover"
-                src={userImage ?? "/avator.png"}
-                alt="Avator"
-                width={200}
-                height={200}
-              />
+              {user?.photo ? (
+                <img
+                  src={user?.photo}
+                  alt="User"
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : (
+                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-500">
+                  <span>👤</span>
+                </div>
+              )}
             </Zoom>
           </div>
         </div>
@@ -112,7 +116,7 @@ const SellerProfilePermonance = ({
             }}
             className="cursor-pointer no-underline font-boldm-1"
           >
-            <p className="ml-2 font-bold">{userName}</p>
+            <p className="ml-2 font-bold">{user.firstName}{" "}{user.lastName}</p>
           </div>
 
           <Verification user={user} fee={user.fee} userId={userId} isAdCreator={true} handlePayNow={handlePay} />
