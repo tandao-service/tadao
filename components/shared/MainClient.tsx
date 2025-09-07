@@ -18,7 +18,6 @@ export default function MainClient({ queryObject }: { queryObject: any }) {
 
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
-
   const [userData, setUserData] = useState<any>(null);
   const [myloans, setMyLoans] = useState<any>([]);
   const [userId, setUserId] = useState("");
@@ -71,6 +70,7 @@ export default function MainClient({ queryObject }: { queryObject: any }) {
         limit={20}
         user={userData}
         userId={userId}
+        uid={user?.uid || ""}
         userName={userName}
         userImage={userImage}
         queryObject={queryObject}

@@ -57,6 +57,8 @@ import { DrawerDemo } from "./DrawerDemo";
 import PopupOrder from "./PopupOrder";
 import { updateTransaction } from "@/lib/actions/transactions.actions";
 import { App as CapacitorApp } from "@capacitor/app";
+import NavbarhomeSkeleton from "./navbarhomeSkeleton";
+import BottomNavigationSkeleton from "./BottomNavigationSkeleton";
 // Correct import
 type CollectionProps = {
   limit: number;
@@ -68,6 +70,7 @@ type CollectionProps = {
   user: any;
   loans: any;
   myloans: any;
+  uid: string;
   packagesList: any;
   userName: string;
   userImage: string;
@@ -93,6 +96,7 @@ const CollectionInfinite = ({
   loans,
   myloans,
   packagesList,
+  uid,
 }: CollectionProps) => {
   const [isChatOpen, setChatOpen] = useState(false);
   const toggleChat = () => {
@@ -939,7 +943,7 @@ const CollectionInfinite = ({
 
         <div className="w-full h-full">
           <div onMouseEnter={() => handleHoverCategory('')} className="sm:hidden fixed top-0 z-10 w-full">
-            {user ? (
+            {user && uid ? (
               <Navbarhome
                 user={user?.user ?? []}
                 userstatus={user?.user?.status ?? "User"}
@@ -962,14 +966,14 @@ const CollectionInfinite = ({
                 handleFilter={handleFilter}
                 handleOpenSearchByTitle={handleOpenSearchByTitle}
               />
-            ) : (
-              <Navbarhome
+            ) : (<>
+              {uid && !user ? (<><NavbarhomeSkeleton user={undefined}
                 userstatus="User"
                 userId=""
                 isnav={isnav}
                 AdsCountPerRegion={AdsCountPerRegion}
-                onClose={handleClose}
                 popup={"home"}
+                onClose={handleClose}
                 handleOpenSell={handleOpenSell}
                 handleOpenBook={handleOpenBook}
                 handleOpenPlan={handleOpenPlan}
@@ -982,12 +986,33 @@ const CollectionInfinite = ({
                 handleOpenSafety={handleOpenSafety}
                 handleOpenShop={handleOpenShop}
                 handleOpenSearchByTitle={handleOpenSearchByTitle}
-                handleFilter={handleFilter} user={undefined} />
-            )}
+                handleFilter={handleFilter} /></>) : (<>
+                  <Navbarhome
+                    userstatus="User"
+                    userId=""
+                    isnav={isnav}
+                    AdsCountPerRegion={AdsCountPerRegion}
+                    onClose={handleClose}
+                    popup={"home"}
+                    handleOpenSell={handleOpenSell}
+                    handleOpenBook={handleOpenBook}
+                    handleOpenPlan={handleOpenPlan}
+                    handleOpenChat={handleOpenChat}
+                    handleOpenPerfomance={handleOpenPerfomance}
+                    handleOpenSettings={handleOpenSettings}
+                    handleOpenAbout={handleOpenAbout}
+                    handleOpenTerms={handleOpenTerms}
+                    handleOpenPrivacy={handleOpenPrivacy}
+                    handleOpenSafety={handleOpenSafety}
+                    handleOpenShop={handleOpenShop}
+                    handleOpenSearchByTitle={handleOpenSearchByTitle}
+                    handleFilter={handleFilter} user={undefined} /></>)}
+
+            </>)}
           </div>
           <div className="hidden sm:inline">
             <div onMouseEnter={() => handleHoverCategory('')} className="w-full">
-              {user ? (
+              {user && uid ? (
                 <Navbarhome
                   user={user?.user ?? []}
                   userstatus={user?.user?.status ?? "User"}
@@ -1010,9 +1035,8 @@ const CollectionInfinite = ({
                   handleFilter={handleFilter}
                   handleOpenSearchByTitle={handleOpenSearchByTitle}
                 />
-              ) : (
-                <Navbarhome
-                  user={undefined}
+              ) : (<>
+                {uid && !user ? (<><NavbarhomeSkeleton user={undefined}
                   userstatus="User"
                   userId=""
                   isnav={isnav}
@@ -1031,7 +1055,30 @@ const CollectionInfinite = ({
                   handleOpenSafety={handleOpenSafety}
                   handleOpenShop={handleOpenShop}
                   handleOpenSearchByTitle={handleOpenSearchByTitle}
-                  handleFilter={handleFilter} />
+                  handleFilter={handleFilter} /></>) : (<>
+                    <Navbarhome
+                      user={undefined}
+                      userstatus="User"
+                      userId=""
+                      isnav={isnav}
+                      AdsCountPerRegion={AdsCountPerRegion}
+                      popup={"home"}
+                      onClose={handleClose}
+                      handleOpenSell={handleOpenSell}
+                      handleOpenBook={handleOpenBook}
+                      handleOpenPlan={handleOpenPlan}
+                      handleOpenChat={handleOpenChat}
+                      handleOpenPerfomance={handleOpenPerfomance}
+                      handleOpenSettings={handleOpenSettings}
+                      handleOpenAbout={handleOpenAbout}
+                      handleOpenTerms={handleOpenTerms}
+                      handleOpenPrivacy={handleOpenPrivacy}
+                      handleOpenSafety={handleOpenSafety}
+                      handleOpenShop={handleOpenShop}
+                      handleOpenSearchByTitle={handleOpenSearchByTitle}
+                      handleFilter={handleFilter} />
+                  </>)}
+              </>
               )}
             </div>
           </div>
@@ -1411,7 +1458,7 @@ const CollectionInfinite = ({
             className={`lg:hidden fixed bottom-0 left-0 right-0 transition-transform duration-300 ${showBottomNav ? "translate-y-0" : "translate-y-full"
               }`}
           >
-            <BottomNavigation userId={userId}
+            {user && uid ? (<BottomNavigation userId={userId}
               popup={"home"}
               onClose={handleClose}
               handleOpenSell={handleOpenSell}
@@ -1419,7 +1466,14 @@ const CollectionInfinite = ({
               handleOpenSettings={handleOpenSettings}
               handleOpenSearchTab={handleOpenSearchTab}
               handleOpenP={handleOpenP}
-            />
+            />) : (<><BottomNavigationSkeleton userId={userId}
+              popup={"home"}
+              onClose={handleClose}
+              handleOpenSell={handleOpenSell}
+              handleOpenChat={handleOpenChat}
+              handleOpenSettings={handleOpenSettings}
+              handleOpenSearchTab={handleOpenSearchTab}
+              handleOpenP={handleOpenP} /></>)}
           </div>
         </footer>
         {showExitModal && (
