@@ -1532,7 +1532,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
           </div>
 
 
-          <div className="hidden lg:inline">
+          <div>
             <div className="mt-3">
               <div className="flex flex-col">
                 <SellerProfileCard

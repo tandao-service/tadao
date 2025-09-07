@@ -204,7 +204,7 @@ const CollectionInfinite = ({
     setIsOpenAdEdit(false);
     setIsOpenPay(false);
     setIsOpenSearchTab(false);
-    // setIsOpenCategory(false);
+    setIsOpenSearchByTitle(false);
     setIsOpenProfile(false);
     setIsOpenOrderView(false);
     closepopup = false;

@@ -10,10 +10,10 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import Image from "next/image";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import SubCategoryWindow from "./SubCategoryWindow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProgressPopup from "./ProgressPopup";
 import { useAuth } from "@/app/hooks/useAuth";
-
+import { App as CapacitorApp } from "@capacitor/app";
 type Subcategory = {
   title: string;
 };
@@ -82,6 +82,18 @@ export default function MenuSubmobileMain({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+
+        setIsOpen(false);
+      });
+    }
+
+    return () => {
+      CapacitorApp.removeAllListeners();
+    };
+  }, []);
   return (
     <div className="mx-auto">
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-0 gap-1">
