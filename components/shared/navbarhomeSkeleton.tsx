@@ -17,7 +17,8 @@ import UserMenu from "./UserMenu";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Toast } from "@radix-ui/react-toast";
 import { useToast } from "../ui/use-toast";
-
+import { Icon } from "@iconify/react";
+import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
 
 type NavProps = {
   userstatus: string;
@@ -197,7 +198,7 @@ export default function NavbarhomeSkeleton({
             {/* User avatar */}
           </div>
         </div>
-        <CircularProgress sx={{ color: '#D1D5DB' }} />
+        <Icon icon={Gooeyballs} className="w-10 h-10 text-white" />
       </div>
 
       <Header handleFilter={handleFilter} handleOpenSearchByTitle={handleOpenSearchByTitle} AdsCountPerRegion={AdsCountPerRegion} />
