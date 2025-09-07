@@ -21,6 +21,8 @@ import ProgressPopup from "./ProgressPopup";
 
 import StyledBrandName from "./StyledBrandName";
 import { useAuth } from "@/app/hooks/useAuth";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
 
 type NavItemsProps = {
   userstatus: string;
@@ -66,21 +68,32 @@ export default function NavItems({
 
   const shareUrl = "https://tadaomarket.com"; // Replace with your share URL
 
+
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Check out Tadao",
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // ✅ Native share (Android/iOS)
+        await Share.share({
+          title: "Check out Tadao Market",
           text: "I found this amazing online marketing site!",
           url: shareUrl,
+          dialogTitle: "Share via",
         });
-      } catch (error) {
-        console.error("Sharing failed:", error);
+      } else if (navigator.share) {
+        // ✅ Web share (modern browsers)
+        await navigator.share({
+          title: "Check out this Profile!",
+          url: shareUrl,
+        });
+      } else {
+        // ❌ Fallback if not supported
+        alert("Sharing is not supported on this device.");
       }
-    } else {
-      console.log("Share not supported on this browser.");
+    } catch (error) {
+      console.error("Error sharing:", error);
     }
   };
+
 
   return (
     <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white w-full">

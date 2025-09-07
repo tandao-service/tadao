@@ -75,14 +75,14 @@ const PrivacyComponent = ({
           }
         `}</style>
         <Head>
-          <title>Privacy Policy | tadaomarket.com</title>
+          <title>Privacy Policy | Tadao Market</title>
           <meta name="description" content="Learn how tadaomarket.com collects, uses, and protects your personal information. Our Privacy Policy outlines your data protection rights and how we safeguard your privacy when using our website." />
           <meta property="og:title" content="Privacy Policy | tadaomarket.com" />
           <meta property="og:description" content="Read tadaomarket.com&apos;s Privacy Policy to understand how your personal information is handled. Your privacy and data protection are important to us." />
           <meta property="og:url" content="https://tadaomarket.com/privacy" />
           <meta property="og:type" content="article" />
           <meta name="keywords" content="privacy policy, tadaomarket, data protection, personal information, cookies, Kenya online marketplace" />
-          <meta name="author" content="Tadao" />
+          <meta name="author" content="Tadao Market" />
           <link rel="canonical" href="https://tadaomarket.com/privacy" />
         </Head>
 
@@ -114,7 +114,7 @@ const PrivacyComponent = ({
               <div className="privacy-policy p-6 dark:text-gray-300 text-gray-800">
                 <h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
                 <p className="mb-4">
-                  Your privacy is important to us at <strong>Tadao</strong>. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. By using our site, you agree to the terms outlined in this policy. If you do not agree with the terms, please do not use our website.
+                  Your privacy is important to us at <strong>Tadao Market</strong>. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. By using our site, you agree to the terms outlined in this policy. If you do not agree with the terms, please do not use our website.
                 </p>
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">1. Information We Collect</h2>

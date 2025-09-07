@@ -67,20 +67,20 @@ const FaqComponent = ({
           }
         `}</style>
         <Head>
-          <title>Frequently Asked Questions | tadaomarket.com</title>
+          <title>Frequently Asked Questions | Tadao Market</title>
           <meta
             name="description"
             content="Find answers to common questions about using tadaomarket.com, including how to post a product, contact sellers, and more."
           />
-          <meta name="keywords" content="Tadao, FAQ, frequently asked questions, product marketplace, post a product, contact seller" />
-          <meta property="og:title" content="Frequently Asked Questions | Tadao" />
-          <meta property="og:description" content="Get help with common questions about posting products, contacting sellers, and managing your listings on Tadao." />
+          <meta name="keywords" content="Tadao Market, FAQ, frequently asked questions, product marketplace, post a product, contact seller" />
+          <meta property="og:title" content="Frequently Asked Questions | Tadao Market" />
+          <meta property="og:description" content="Get help with common questions about posting products, contacting sellers, and managing your listings on Tadao Market." />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://www.tadaomarket.com/faq" />
           <meta property="og:image" content="https://www.tadaomarket.com/assets/images/faq-cover.jpg" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content="Frequently Asked Questions | tadaomarket.com" />
-          <meta name="twitter:description" content="Find answers to your questions about posting products and using Tadao. Learn more about our marketplace." />
+          <meta name="twitter:description" content="Find answers to your questions about posting products and using Tadao Market. Learn more about our marketplace." />
           <meta name="twitter:image" content="https://www.tadaomarket.com/assets/images/faq-cover.jpg" />
           <link rel="canonical" href="https://www.tadaomarket.com/faq" />
         </Head>
@@ -116,7 +116,7 @@ const FaqComponent = ({
               <div className="space-y-8">
                 <div>
                   <h3 className="text-xl font-semibold text-[#BD7A4F] mb-2">
-                    1. How can I list my product on Tadao?
+                    1. How can I list my product on Tadao Market?
                   </h3>
                   <p className="text-gray-700 dark:text-gray-300">
                     To list your product, sign up or log in, go to the &apos;Sell&apos; section, fill in the required information, upload clear photos, set a price, and submit your listing.

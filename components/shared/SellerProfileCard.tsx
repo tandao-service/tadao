@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ForwardToInboxOutlinedIcon from "@mui/icons-material/ForwardToInboxOutlined";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AssistantDirectionIcon from "@mui/icons-material/AssistantDirection";
+import { Capacitor } from '@capacitor/core';
+import { Share } from '@capacitor/share';
 import {
   Accordion,
   AccordionContent,
@@ -59,7 +61,7 @@ import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
-import Share from "./Share";
+//import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
 import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
@@ -167,18 +169,30 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
     });
   };
 
+
+
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // ✅ Native share (Android/iOS)
+        await Share.share({
+          title: "Check out this " + titleId + "!",
+          text: "Have a look at this",
+          url: adUrl,
+          dialogTitle: "Share via",
+        });
+      } else if (navigator.share) {
+        // ✅ Web share (modern browsers)
         await navigator.share({
           title: "Check out this " + titleId + "!",
           url: adUrl,
         });
-      } catch (error) {
-        console.error("Error sharing:", error);
+      } else {
+        // ❌ Fallback if not supported
+        alert("Sharing is not supported on this device.");
       }
-    } else {
-      alert("Sharing is not supported on this device.");
+    } catch (error) {
+      console.error("Error sharing:", error);
     }
   };
 
@@ -307,7 +321,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
               <FaLink /> {copied ? "Copied!" : "Copy Link"}
             </button>
 
-            <button onClick={handleShare} className="flex items-center gap-1 hover:text-orange-500">
+            <button onClick={() => handleShare()} className="flex items-center gap-1 hover:text-orange-500">
               <FaShareAlt /> Share
             </button>
 

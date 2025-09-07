@@ -39,7 +39,7 @@ import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
-import Share from "./Share";
+//import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
 import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";

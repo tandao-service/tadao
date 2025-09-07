@@ -16,12 +16,12 @@ export default function About() {
     return (
         <>
             <Head>
-                <title>Terms and Conditions | Tadao</title>
+                <title>Terms and Conditions | Tadao Market</title>
                 <meta
                     name="description"
                     content="Read the terms and conditions for using tadaomarket.com, our online marketplace. By accessing the site, you agree to be bound by these terms."
                 />
-                <meta name="keywords" content="tadaomarket, terms and conditions, Kenya e-commerce, Tadao policies" />
+                <meta name="keywords" content="tadaomarket, terms and conditions, Kenya e-commerce, Tadao Market policies" />
                 <meta property="og:title" content="Terms and Conditions | tadaomarket.com" />
                 <meta property="og:description" content="Understand the terms and conditions for using tadaomarket.com, your trusted marketplace in Kenya." />
                 <meta property="og:type" content="website" />
@@ -62,12 +62,12 @@ export default function About() {
                         <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto p-6">
                             <h1 className="text-2xl font-bold mb-4 dark:text-gray-400">Terms and Conditions</h1>
                             <p className="mb-4">
-                                Welcome to <strong>Tadao</strong>! By using our website, you agree to comply with and be bound by the following terms and conditions. Please review them carefully. If you do not agree to these terms, you should not use this website.
+                                Welcome to <strong>Tadao Market</strong>! By using our website, you agree to comply with and be bound by the following terms and conditions. Please review them carefully. If you do not agree to these terms, you should not use this website.
                             </p>
 
                             <h2 className="text-xl font-semibold mt-6 mb-2">1. Acceptance of Terms</h2>
                             <p className="mb-4">
-                                By accessing and using Tadao, you accept and agree to be bound by these terms. Any posted guidelines or rules applicable to our services may be updated periodically and are incorporated into these Terms of Service.
+                                By accessing and using Tadao Market, you accept and agree to be bound by these terms. Any posted guidelines or rules applicable to our services may be updated periodically and are incorporated into these Terms of Service.
                             </p>
 
                             <h2 className="text-xl font-semibold mt-6 mb-2">2. User Obligations</h2>
@@ -99,7 +99,7 @@ export default function About() {
 
                             <h2 className="text-xl font-semibold mt-6 mb-2">7. Intellectual Property</h2>
                             <p className="mb-4">
-                                All site content belongs to Tadao or its content creators. Do not reproduce or reuse any content without written permission.
+                                All site content belongs to Tadao Market or its content creators. Do not reproduce or reuse any content without written permission.
                             </p>
 
                             <h2 className="text-xl font-semibold mt-6 mb-2">8. Limitation of Liability</h2>

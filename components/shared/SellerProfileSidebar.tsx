@@ -26,6 +26,8 @@ import ProgressPopup from "./ProgressPopup";
 import { VerificationPackId } from "@/constants";
 import { createTransaction } from "@/lib/actions/transactions.actions";
 import { v4 as uuidv4 } from "uuid";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
 type CollectionProps = {
     userId: string;
     loggedId: string;
@@ -113,19 +115,30 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
     };
 
     const handleShare = async () => {
-        if (navigator.share) {
-            try {
+        try {
+            if (Capacitor.isNativePlatform()) {
+                // ✅ Native share (Android/iOS)
+                await Share.share({
+                    title: "Check out this Profile!",
+                    text: "Have a look at this Profile",
+                    url: adUrl,
+                    dialogTitle: "Share via",
+                });
+            } else if (navigator.share) {
+                // ✅ Web share (modern browsers)
                 await navigator.share({
                     title: "Check out this Profile!",
                     url: adUrl,
                 });
-            } catch (error) {
-                console.error("Error sharing:", error);
+            } else {
+                // ❌ Fallback if not supported
+                alert("Sharing is not supported on this device.");
             }
-        } else {
-            alert("Sharing is not supported on this device.");
+        } catch (error) {
+            console.error("Error sharing:", error);
         }
     };
+
 
     const getInitials = (firstName?: string, lastName?: string) => {
         const first = firstName?.[0]?.toUpperCase() || '';

@@ -49,7 +49,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
                   }}
                   className="cursor-pointer hover:text-[#BD7A4F]"
                 >
-                  About Tadao
+                  About Tadao Market
                 </div>
               </li>
 
@@ -119,7 +119,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
             <ul className="space-y-4">
               <li>
                 <Link
-                  href=" https://play.google.com/store/apps/details?id=com.tadaomarket.twa"
+                  href=" https://play.google.com/store/apps/details?id=com.tadaomarket.app"
                   className="no-underline hover:text-[#BD7A4F] "
                 >
                   <Image
@@ -167,7 +167,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
       <div className="border-t dark:border-gray-700 border-gray-300 p-2 mt-3"></div>
       <div className="flex flex-col items-center justify-center">
         <p className="text-xs dark:text-gray-400 font-bold">
-          {currentYear} Tadao. All Rights reserved.
+          {currentYear} Tadao Market. All Rights reserved.
         </p>
         <p className="text-[8px] dark:text-gray-400 lg:text-xs">
           Powered by{" "}

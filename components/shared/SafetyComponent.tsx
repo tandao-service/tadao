@@ -60,9 +60,9 @@ const SafetyComponent = ({ userId, user, handleOpenPerfomance,
           }
         `}</style>
         <Head>
-          <title>Safety Tips | Tadao</title>
+          <title>Safety Tips | Tadao Market</title>
           <meta name="description" content="Stay safe while buying or selling on tadaomarket.com. Follow our safety tips to protect yourself and ensure secure transactions." />
-          <meta name="keywords" content="Tadao, safety tips, secure buying, safe selling, online safety, marketplace safety" />
+          <meta name="keywords" content="Tadao Market, safety tips, secure buying, safe selling, online safety, marketplace safety" />
           <meta property="og:title" content="Safety Tips | tadaomarket.com" />
           <meta property="og:description" content="Follow these essential safety tips to protect yourself while using tadaomarket.com." />
           <meta property="og:type" content="website" />
@@ -83,7 +83,7 @@ const SafetyComponent = ({ userId, user, handleOpenPerfomance,
           <div className="flex-1">
             <div className="border rounded-lg dark:bg-[#2D3236] bg-white max-w-6xl mx-auto p-1">
               <div className="max-w-3xl mx-auto p-6">
-                <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Safety Tips for Tadao Users</h2>
+                <h2 className="text-2xl font-semibold dark:text-gray-400 text-gray-800 mb-4">Safety Tips for Tadao Market Users</h2>
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-xl font-semibold text-black mb-2">For Sellers:</h3>

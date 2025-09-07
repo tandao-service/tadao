@@ -42,7 +42,6 @@ import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
-import Share from "./Share";
 import { v4 as uuidv4 } from "uuid";
 import { createTransaction } from "@/lib/actions/transactions.actions";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
@@ -61,6 +60,8 @@ import { Button } from "../ui/button";
 import { updatewhatsapp } from "@/lib/actions/dynamicAd.actions";
 import Ratingsmobile from "./ratingsmobile";
 import { useAuth } from "@/app/hooks/useAuth";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
 type CollectionProps = {
   userId: string;
   loggedId: string;
@@ -144,20 +145,30 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
     });
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
+    const handleShare = async () => {
       try {
-        await navigator.share({
-          title: "Check out this Profile!",
-          url: adUrl,
-        });
+        if (Capacitor.isNativePlatform()) {
+          // ✅ Native share (Android/iOS)
+          await Share.share({
+            title: "Check out this Profile!",
+            text: "Have a look at this Profile",
+            url: adUrl,
+            dialogTitle: "Share via",
+          });
+        } else if (navigator.share) {
+          // ✅ Web share (modern browsers)
+          await navigator.share({
+            title: "Check out this Profile!",
+            url: adUrl,
+          });
+        } else {
+          // ❌ Fallback if not supported
+          alert("Sharing is not supported on this device.");
+        }
       } catch (error) {
         console.error("Error sharing:", error);
       }
-    } else {
-      alert("Sharing is not supported on this device.");
-    }
-  };
+    };
 
   const getInitials = (firstName?: string, lastName?: string) => {
     const first = firstName?.[0]?.toUpperCase() || '';

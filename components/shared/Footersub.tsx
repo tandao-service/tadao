@@ -31,7 +31,7 @@ const Footersub = ({ handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handle
       <div className="mt-4 mb-4"></div>
       <div className="flex flex-col items-center justify-center">
         <p className="text-xs font-bold">
-          {currentYear} Tadao Services. All Rights reserved.
+          {currentYear} Tadao Market. All Rights reserved.
         </p>
         <div className="flex text-xs">
           <div className="flex gap-1 w-full text-gray-600">
