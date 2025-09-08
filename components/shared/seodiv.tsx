@@ -47,9 +47,6 @@ const Seodiv: React.FC<Props> = ({ ad }) => {
                         </div>
 
                         <div className="flex items-center gap-2">
-
-                            <img src="/logo_white.png" alt="Logo" className="w-8 h-8 lg:hidden rounded-full" />
-                            <img src="/logo.png" alt="Logo" className="w-8 h-8 hidden lg:inline rounded-full" />
                             <StyledBrandName />
                         </div>
 
