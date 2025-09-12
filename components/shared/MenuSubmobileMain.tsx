@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import ProgressPopup from "./ProgressPopup";
 import { useAuth } from "@/app/hooks/useAuth";
 import { App as CapacitorApp } from "@capacitor/app";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import GavelIcon from "@mui/icons-material/Gavel";
+import SearchIcon from "@mui/icons-material/Search";
 type Subcategory = {
   title: string;
 };
@@ -31,7 +34,7 @@ type MobileProps = {
   categoryList: Category[];
   subcategoryList: any;
   handleSubCategory: (category: string, subcategory: string) => void;
-  handleOpenSell: () => void;
+  handleOpenSell: (category?: string, subcategory?: string) => void;
   userId: string;
   handleOpenChat: () => void;
   handleOpenSettings: () => void;
@@ -96,33 +99,47 @@ export default function MenuSubmobileMain({
   }, []);
   return (
     <div className="mx-auto">
+      <div className="grid grid-cols-4 grid-cols-4 m-4 gap-3">
+
+        {/* --- Custom 4 Buttons --- */}
+        {/* Post Ad */}
+        <div
+          onClick={() => (currentUser ? handleOpenSell() : router.push("/auth"))}
+          className="h-[100px] bg-orange-100 border border-orange-500 text-orange-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-orange-200"
+        >
+          <SellOutlinedIcon className="h-8 w-8" />
+          <h2 className="text-sm font-semibold mt-1">Post Ad</h2>
+        </div>
+
+        {/* Donated Items */}
+        <div
+          onClick={() => (currentUser ? handleOpenSell('Donations', 'Donated Items') : router.push("/auth"))}
+          className="h-[100px] bg-green-100 border border-green-500 text-green-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-green-200"
+        >
+          <VolunteerActivismIcon className="h-8 w-8" />
+          <h2 className="text-sm font-semibold mt-1">Donated</h2>
+        </div>
+
+        {/* Auction */}
+        <div
+          onClick={() => (currentUser ? handleOpenSell() : router.push("/auth"))}
+          className="h-[100px] text-blue-500 bg-blue-100 border border-blue-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-blue-200"
+        >
+          <GavelIcon className="h-8 w-8" />
+          <h2 className="text-sm font-semibold mt-1">Auction</h2>
+        </div>
+
+        {/* Lost & Found */}
+        <div
+          onClick={() => (currentUser ? handleOpenSell('Lost and Found', 'Lost and Found Items') : router.push("/auth"))}
+          className="h-[100px] text-purple-500 bg-purple-100 border border-purple-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-purple-200"
+        >
+          <SearchIcon className="h-8 w-8" />
+          <h2 className="text-sm font-semibold mt-1">Lost & Found</h2>
+        </div>
+      </div>
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-0 gap-1">
-        {currentUser ? (<>  <div
-          onClick={() => {
-            handleOpenSell();
-          }}
-          className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
-        >
-          <div className="flex flex-col items-center text-center justify-center">
-            <div className="h-12 w-12 rounded-full p-2">
-              <SellOutlinedIcon />
-            </div>
-            <h2 className="text-lg font-bold">SELL</h2>
-          </div>
-        </div></>) : (<><div
-          onClick={() => {
-            setIsOpenP(true);
-            router.push("/auth");
-          }}
-          className="hidden lg:inline h-[120px] bg-orange-500 text-white flex flex-col items-center justify-center cursor-pointer rounded-sm p-1 border-0 border-orange-300 hover:bg-orange-600"
-        >
-          <div className="flex flex-col items-center text-center justify-center">
-            <div className="h-12 w-12 rounded-full p-2">
-              <SellOutlinedIcon />
-            </div>
-            <h2 className="text-lg font-bold">SELL</h2>
-          </div>
-        </div></>)}
+
 
         {categoryList.map((category, index) => (
           <div

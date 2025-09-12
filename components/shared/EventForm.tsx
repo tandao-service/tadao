@@ -36,7 +36,7 @@ import {
   Select,
 } from "@mui/material";
 import CountyConstituencySelector from "./CountyConstituencySelector";
-import { FreePackId, REGIONS_WITH_AREA, REGIONS_WITH_CONSTITUENCIES } from "@/constants";
+import { BasicPackId, FreePackId, REGIONS_WITH_AREA, REGIONS_WITH_CONSTITUENCIES } from "@/constants";
 import MakeModelAutocomplete from "./MakeModelAutocomplete";
 import Image from "next/image";
 import Link from "next/link";
@@ -398,21 +398,39 @@ const AdForm = ({
   }, []);
 
   const [activePackage, setActivePackage] = useState<Package | null>(null);
-  const [activeButton, setActiveButton] = useState(0);
-  const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
+  const [activeButton, setActiveButton] = useState(1);
+  const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
   const [priceInput, setPriceInput] = useState("");
   const [periodInput, setPeriodInput] = useState("");
   const [subscription, setSubscription] = useState<any>(null);
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [remainingAds, setRemainingAds] = useState(0);
   const [listed, setListed] = useState(0);
-  const [Plan, setplan] = useState("Free");
-  const [PlanId, setplanId] = useState(FreePackId);
-  const [Priority_, setpriority] = useState(0);
+  const [Plan, setplan] = useState(subcategory === "Assets Financing" ? "Basic" : "Free");
+  const [PlanId, setplanId] = useState(subcategory === "Assets Financing" ? BasicPackId : FreePackId);
+  const [Priority_, setpriority] = useState(subcategory === "Assets Financing" ? 1 : 0);
   const [Adstatus_, setadstatus] = useState("Pending");
   const [color, setColor] = useState("#000000");
   const [loadingSub, setLoadingSub] = useState<boolean>(true);
   const [ExpirationDate_, setexpirationDate] = useState(new Date());
+
+  useEffect(() => {
+    const setpackage = async () => {
+      try {
+        const subscriptionData = user;
+        if (!subscriptionData.currentpack) {
+          setplan(selectedSubCategory === "Assets Financing" ? "Basic" : "Free");
+          setplanId(selectedSubCategory === "Assets Financing" ? BasicPackId : FreePackId);
+          setpriority(selectedSubCategory === "Assets Financing" ? 1 : 0);
+          setadstatus("Pending");
+        }
+      } catch (error) {
+
+      }
+    };
+    setpackage();
+  }, [selectedSubCategory]);
+
 
   useEffect(() => {
     if (type === "Create") {
@@ -424,7 +442,7 @@ const AdForm = ({
           const packages = packagesList;
 
           if (subscriptionData) {
-            // setSubscription(subscriptionData);
+
             const listedAds = subscriptionData.ads || 0;
             setListed(listedAds);
             if (subscriptionData.currentpack && !Array.isArray(subscriptionData.currentpack)) {
@@ -433,7 +451,7 @@ const AdForm = ({
               setColor(subscriptionData.currentpack.color);
               setplan(subscriptionData.currentpack.name);
               setplanId(subscriptionData.transaction?.planId || FreePackId);
-              // console.log(subscriptionData);
+
               const createdAtDate = new Date(subscriptionData.transaction?.createdAt || new Date());
               const periodDays = parseInt(subscriptionData.transaction?.period) || 0;
               const expiryDate = new Date(createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000);
@@ -608,24 +626,7 @@ const AdForm = ({
     // console.log(value);
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
-  const handlePackageOnChange = (
-    ExpirationDate_: Date,
-    Priority_: number,
-    Adstatus_: string,
-    PlanId: string,
-    Plan: string,
-    periodInput: string,
-    priceInput: string
-  ) => {
-    setexpirationDate(ExpirationDate_);
-    setpriority(Priority_);
-    setadstatus(Adstatus_);
-    setplanId(PlanId);
-    setplan(Plan);
-    setPriceInput(priceInput);
-    setPeriodInput(periodInput);
 
-  };
   function isValidKenyanPhoneNumber(phone: string): boolean {
     const kenyanPhoneRegex = /^(?:\+254|254|0)?(7\d{8})$/;
     return kenyanPhoneRegex.test(phone.trim());
@@ -1808,7 +1809,7 @@ const AdForm = ({
                 )}
 
 
-              {/**  {field.type === "phone" && (
+                {/**  {field.type === "phone" && (
                   <div className="flex w-full gap-1">
                     <select
                       className="border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 w-[140px] lg:w-[200px]"
@@ -1942,7 +1943,7 @@ const AdForm = ({
                         </div>
                       </>)}
                     </div>
-                  </div>)} 
+                  </div>)}
 
                 {field.type === "delivery" && (
                   <div className="flex flex-col w-full gap-1">
@@ -2194,15 +2195,17 @@ const AdForm = ({
                               {pack.name !== "Free" && activePackage === pack && (
                                 <>
                                   <div className="flex flex-wrap justify-end items-center p-2">
-                                    <button
-                                      className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
-                                        ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
-                                        : "border border-orange-500 text-orange-500 rounded-full p-2"
-                                        }`}
-                                      onClick={() => handleButtonClick(0, "1 week")}
-                                    >
-                                      1 week
-                                    </button>
+                                    {selectedSubCategory !== "Assets Financing" && (
+                                      <button
+                                        className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
+                                          ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                          : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                          }`}
+                                        onClick={() => handleButtonClick(0, "1 week")}
+                                      >
+                                        1 week
+                                      </button>
+                                    )}
                                     <button
                                       className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
                                         ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"

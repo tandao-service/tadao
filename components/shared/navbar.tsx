@@ -20,7 +20,10 @@ import ProgressPopup from "./ProgressPopup";
 import { Button } from "../ui/button";
 import { useAuth } from "@/app/hooks/useAuth";
 import UserMenu from "./UserMenu";
-
+import GavelIcon from "@mui/icons-material/Gavel";             // Auction
+import SearchIcon from "@mui/icons-material/Search";           // Lost & Found
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline"; // Alt for Lost & Found
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 type NavProps = {
   userstatus: string;
   userId: string;
@@ -28,7 +31,7 @@ type NavProps = {
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
-  handleOpenSell: () => void;
+  handleOpenSell: (category?: string, subcategory?: string) => void;
   handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
@@ -101,10 +104,44 @@ export default function Navbar({
 
       <div className="hidden lg:inline">
         <div className="flex mt-1 items-center gap-2">
+          {/* Secondary actions */}
+          {popup !== "sell" && (<>
+            {/* Post Ad (Primary CTA) */}
+            <button
+              onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
+              className="w-[120px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+            >
+              <SellOutlinedIcon /> Post Ad
+            </button>
+
+            {/* Donated Items */}
+            <button
+              onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
+              className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+            >
+              <VolunteerActivismIcon fontSize="small" /> Donated
+            </button>
+
+            {/* Auction */}
+            <button
+              onClick={() => (user?._Id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
+              className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+            >
+              <GavelIcon fontSize="small" /> Auction
+            </button>
+
+            {/* Lost & Found */}
+            <button
+              onClick={() => (user?._Id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
+              className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+            >
+              <SearchIcon fontSize="small" /> Lost & Found
+            </button>
+          </>)}
           {popup !== "bookmark" && (
             <>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-300 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Bookmark"
                 onClick={() => {
                   user ? handleOpenBook() : requireAuthRedirect();
@@ -127,7 +164,7 @@ export default function Navbar({
           {popup !== "chat" && (
             <>
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-400 tooltip tooltip-bottom hover:cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-300 tooltip tooltip-bottom hover:cursor-pointer"
                 data-tip="Messages"
                 onClick={() => {
                   user ? handleOpenChat() : requireAuthRedirect();
@@ -162,7 +199,7 @@ export default function Navbar({
 
           {popup !== "plan" && (
             <div
-              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-orange-400 text-white hover:text-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] hover:bg-orange-300 text-white hover:text-gray-300 tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Premium Services"
               onClick={handleOpenPlan}
             >
@@ -178,20 +215,6 @@ export default function Navbar({
               </TooltipProvider>
             </div>
           )}
-
-          {popup !== "sell" && (
-            <div className="flex gap-1">
-              <button
-                onClick={() => {
-                  user ? handleOpenSell() : requireAuthRedirect();
-                }}
-                className={`w-[100px] dark:bg-[#131B1E] bg-white dark:hover:bg-[#2D3236] dark:text-gray-300 text-gray-500 hover:text-gray-900 p-1 rounded-full`}
-              >
-                <SellOutlinedIcon /> SELL
-              </button>
-            </div>
-          )}
-
 
         </div>
       </div>

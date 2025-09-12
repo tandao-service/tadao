@@ -226,6 +226,7 @@ export const Icons: Record<string, string> = {
 
 export const VerificationPackId = "67d035e5df07d0d2f45521ac";
 export const FreePackId = "677a7b97d24cd2414b1260b7";
+export const BasicPackId = "67811416ae4aac313463894b";
 export const AdminId = "675c20f3cffc0c90a79fae60";
 export const mode = "light";
 export const headerLinks = [

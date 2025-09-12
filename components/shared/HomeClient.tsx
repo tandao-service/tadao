@@ -7,17 +7,17 @@ import HomeDashboard from "@/components/shared/HomeDashboard";
 import { useAuth } from "@/app/hooks/useAuth";
 
 export default function HomeClient(props: any) {
-    const { user, loading: authLoading } = useAuth();
+    //const { user, loading: authLoading } = useAuth();
     const [userId, setUserId] = useState("");
     const [userName, setUserName] = useState("");
     const [userImage, setUserImage] = useState("");
 
     useEffect(() => {
-        if (!user) return;
+        // if (!user) return;
 
         (async () => {
             try {
-                const fetchedUser: any = await getUserByClerkId(user.uid);
+                const fetchedUser: any = await getUserByClerkId('q83nf99Yk9SWCRHzPSiaaJf57qn2');
                 setUserId(fetchedUser._id);
                 setUserName(fetchedUser.firstName + " " + fetchedUser.lastName);
                 setUserImage(fetchedUser.photo || "");
@@ -25,11 +25,11 @@ export default function HomeClient(props: any) {
                 console.error("Failed to fetch user by ClerkId:", err);
             }
         })();
-    }, [user]);
+    }, []);
 
-    if (authLoading) {
-        return <div>Loading...</div>;
-    }
+    // if (authLoading) {
+    //    return <div>Loading...</div>;
+    //}
 
     return (
         <HomeDashboard

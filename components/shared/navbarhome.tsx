@@ -14,8 +14,10 @@ import ProgressPopup from "./ProgressPopup";
 import Header from "@/components/shared/Header";
 import { useAuth } from "@/app/hooks/useAuth";
 import UserMenu from "./UserMenu";
-
-
+import GavelIcon from "@mui/icons-material/Gavel";             // Auction
+import SearchIcon from "@mui/icons-material/Search";           // Lost & Found
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline"; // Alt for Lost & Found
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 type NavProps = {
   userstatus: string;
   userId: string;
@@ -25,7 +27,7 @@ type NavProps = {
   handleOpenBook: () => void;
   handleOpenPlan: () => void;
   handleOpenChat: () => void;
-  handleOpenSell: () => void;
+  handleOpenSell: (category?: string, subcategory?: string) => void;
   handleOpenShop: (shopId: string) => void;
   handleOpenPerfomance: () => void;
   handleOpenSettings: () => void;
@@ -95,7 +97,42 @@ export default function Navbarhome({
 
         <div className="hidden lg:inline">
           <div className="flex items-center gap-2">
-            {/* Bookmark */}
+
+
+            {/* Secondary actions */}
+            <div className="hidden lg:flex items-center gap-2">
+              {/* Post Ad (Primary CTA) */}
+              <button
+                onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
+                className="w-[120px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <SellOutlinedIcon /> Post Ad
+              </button>
+
+              {/* Donated Items */}
+              <button
+                onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
+                className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <VolunteerActivismIcon fontSize="small" /> Donated
+              </button>
+
+              {/* Auction */}
+              <button
+                onClick={() => (user?._Id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
+                className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <GavelIcon fontSize="small" /> Auction
+              </button>
+
+              {/* Lost & Found */}
+              <button
+                onClick={() => (user?._Id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
+                className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <SearchIcon fontSize="small" /> Lost & Found
+              </button>
+            </div>
             <div
               className="w-8 h-8 flex text-white hover:bg-orange-300 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Bookmark"
@@ -115,7 +152,7 @@ export default function Navbarhome({
 
             {/* Chat */}
             <div
-              className="w-8 h-8 flex text-white hover:bg-orange-400 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
+              className="w-8 h-8 flex text-white hover:bg-orange-300 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Messages"
               onClick={() => (user?._Id ? handleOpenChat() : requireAuthRedirect())}
             >
@@ -139,7 +176,7 @@ export default function Navbarhome({
 
             {/* Premium */}
             <div
-              className="w-8 h-8 flex text-white hover:bg-orange-400 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
+              className="w-8 h-8 flex text-white hover:bg-orange-300 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Premium Services"
               onClick={handleOpenPlan}
             >
@@ -154,15 +191,6 @@ export default function Navbarhome({
                 </Tooltip>
               </TooltipProvider>
             </div>
-
-            {/* Sell */}
-            <button
-              onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-              className={`w-[100px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white text-gray-500 hover:text-gray-900 p-1 rounded-full`}
-            >
-              <SellOutlinedIcon /> SELL
-            </button>
-
             {/* User avatar */}
           </div>
         </div>

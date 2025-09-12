@@ -153,7 +153,7 @@ const HomeDashboard = ({
     }
   };
   useEffect(() => {
-    setFee(vfee.fee);
+    setFee(users.fee);
   }, []);
 
   const [isOpenPackage, setIsOpenPackage] = useState(false);
