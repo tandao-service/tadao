@@ -244,7 +244,7 @@ const CategoryMenu = ({
                         <p
                           className={`text-xs text-gray-500 dark:text-gray-500`}
                         >
-                          {category.name.toString().trim() === "Buyer Requests" ? (category.adCount + loans.adCount) : category.adCount} ads
+                          {category.name.toString().trim() === "Buyer Requests" ? (category.adCount + loans.adCount) : category.adCount}
                         </p>
                       </div>
                     </span>

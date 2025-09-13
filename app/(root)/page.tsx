@@ -7,6 +7,7 @@ import {
   getAllSubCategoriesCached,
   getAllPackagesCached,
   getAdsCountAllRegionCached,
+  getallPendingLaonsCached,
 } from "@/lib/actions/cached.actions";
 import { GlobalDataProvider } from "@/public/context/GlobalDataContext";
 import { SearchParamProps } from "@/types";
@@ -19,20 +20,22 @@ export default async function Home({ searchParams }: SearchParamProps) {
     : {};
 
   // ✅ Fetch server-side cached/global data
-  const [categories, subcategories, packages, adsCount] = await Promise.all([
+  const [categories, subcategories, packages, adsCount, loans] = await Promise.all([
     getAllCategoriesCached(),
     getAllSubCategoriesCached(),
     getAllPackagesCached(),
     getAdsCountAllRegionCached(),
+    getallPendingLaonsCached(),
   ]);
 
   return (<>
-   <GlobalDataProvider
+    <GlobalDataProvider
       initialData={{
         categories,
         subcategories,
         packages,
         adsCount,
+        loans,
       }}
     >
       <MainClient

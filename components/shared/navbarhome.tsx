@@ -103,8 +103,9 @@ export default function Navbarhome({
             <div className="hidden lg:flex items-center gap-2">
               {/* Post Ad (Primary CTA) */}
               <button
-                onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-                className="w-[120px] dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                //onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
+                onClick={() => handleOpenSell()}
+                className="w-[120px] text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
               >
                 <SellOutlinedIcon /> Post Ad
               </button>
@@ -112,7 +113,7 @@ export default function Navbarhome({
               {/* Donated Items */}
               <button
                 onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-                className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
               >
                 <VolunteerActivismIcon fontSize="small" /> Donated
               </button>
@@ -120,7 +121,7 @@ export default function Navbarhome({
               {/* Auction */}
               <button
                 onClick={() => (user?._Id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
-                className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
               >
                 <GavelIcon fontSize="small" /> Auction
               </button>
@@ -128,7 +129,7 @@ export default function Navbarhome({
               {/* Lost & Found */}
               <button
                 onClick={() => (user?._Id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
-                className="px-3 py-1 dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
               >
                 <SearchIcon fontSize="small" /> Lost & Found
               </button>

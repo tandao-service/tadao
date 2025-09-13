@@ -8,6 +8,7 @@ type GlobalDataContextType = {
   subcategories: any[];
   packages: any[];
   adsCount: any[];
+  loans: any[];
   setGlobalData: (data: Partial<GlobalDataContextType>) => void;
 };
 
@@ -23,18 +24,21 @@ export function GlobalDataProvider({
     subcategories: any[];
     packages: any[];
     adsCount: any[];
+    loans: any;
   };
 }) {
   const [categories, setCategories] = useState(initialData.categories);
   const [subcategories, setSubcategories] = useState(initialData.subcategories);
   const [packages, setPackages] = useState(initialData.packages);
   const [adsCount, setAdsCount] = useState(initialData.adsCount);
+  const [loans, setLoans] = useState(initialData.loans);
 
   const setGlobalData = (data: Partial<GlobalDataContextType>) => {
     if (data.categories) setCategories(data.categories);
     if (data.subcategories) setSubcategories(data.subcategories);
     if (data.packages) setPackages(data.packages);
     if (data.adsCount) setAdsCount(data.adsCount);
+    if (data.loans) setLoans(data.loans);
   };
 
   return (
@@ -44,6 +48,7 @@ export function GlobalDataProvider({
         subcategories,
         packages,
         adsCount,
+        loans,
         setGlobalData,
       }}
     >

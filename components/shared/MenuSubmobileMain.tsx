@@ -99,45 +99,62 @@ export default function MenuSubmobileMain({
   }, []);
   return (
     <div className="mx-auto">
-      <div className="grid grid-cols-4 grid-cols-4 m-4 gap-3">
+      <div className="grid bg-white p-2 rounded-2xl grid-cols-4 md:grid-cols-4 gap-4 m-2">
 
-        {/* --- Custom 4 Buttons --- */}
         {/* Post Ad */}
         <div
           onClick={() => (currentUser ? handleOpenSell() : router.push("/auth"))}
-          className="h-[100px] bg-orange-100 border border-orange-500 text-orange-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-orange-200"
+          className="h-[100px] bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 
+               flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
+               hover:shadow-lg hover:scale-[1.03] transition-all"
         >
-          <SellOutlinedIcon className="h-8 w-8" />
-          <h2 className="text-sm font-semibold mt-1">Post Ad</h2>
+          <div className="p-3 rounded-full bg-orange-200 mb-2">
+            <SellOutlinedIcon className="h-6 w-6 text-orange-600" />
+          </div>
+          <h2 className="text-xs font-semibold text-orange-700">Post Ad</h2>
         </div>
 
-        {/* Donated Items */}
+        {/* Donated */}
         <div
           onClick={() => (currentUser ? handleOpenSell('Donations', 'Donated Items') : router.push("/auth"))}
-          className="h-[100px] bg-green-100 border border-green-500 text-green-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-green-200"
+          className="h-[100px] bg-gradient-to-br from-green-50 to-green-100 border border-green-200 
+               flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
+               hover:shadow-lg hover:scale-[1.03] transition-all"
         >
-          <VolunteerActivismIcon className="h-8 w-8" />
-          <h2 className="text-sm font-semibold mt-1">Donated</h2>
+          <div className="p-3 rounded-full bg-green-200 mb-2">
+            <VolunteerActivismIcon className="h-6 w-6 text-green-600" />
+          </div>
+          <h2 className="text-xs font-semibold text-green-700">Donated</h2>
         </div>
 
         {/* Auction */}
         <div
           onClick={() => (currentUser ? handleOpenSell() : router.push("/auth"))}
-          className="h-[100px] text-blue-500 bg-blue-100 border border-blue-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-blue-200"
+          className="h-[100px] bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 
+               flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
+               hover:shadow-lg hover:scale-[1.03] transition-all"
         >
-          <GavelIcon className="h-8 w-8" />
-          <h2 className="text-sm font-semibold mt-1">Auction</h2>
+          <div className="p-3 rounded-full bg-blue-200 mb-2">
+            <GavelIcon className="h-6 w-6 text-blue-600" />
+          </div>
+          <h2 className="text-xs font-semibold text-blue-700">Auction</h2>
         </div>
 
         {/* Lost & Found */}
         <div
           onClick={() => (currentUser ? handleOpenSell('Lost and Found', 'Lost and Found Items') : router.push("/auth"))}
-          className="h-[100px] text-purple-500 bg-purple-100 border border-purple-500 flex flex-col items-center justify-center cursor-pointer rounded-2xl p-2 hover:bg-purple-200"
+          className="h-[100px] bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 
+               flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
+               hover:shadow-lg hover:scale-[1.03] transition-all"
         >
-          <SearchIcon className="h-8 w-8" />
-          <h2 className="text-sm font-semibold mt-1">Lost & Found</h2>
+          <div className="p-3 rounded-full bg-purple-200 mb-2">
+            <SearchIcon className="h-6 w-6 text-purple-600" />
+          </div>
+          <h2 className="text-xs font-semibold text-purple-700">Lost & Found</h2>
         </div>
+
       </div>
+
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-7 m-0 gap-1">
 
 

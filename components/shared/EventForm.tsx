@@ -173,6 +173,7 @@ type Package = {
   features: string[];
   color: string;
   priority: number;
+  price2: string[];
 
 };
 type AdFormProps = {
@@ -417,12 +418,36 @@ const AdForm = ({
   useEffect(() => {
     const setpackage = async () => {
       try {
+
         const subscriptionData = user;
         if (!subscriptionData.currentpack) {
           setplan(selectedSubCategory === "Assets Financing" ? "Basic" : "Free");
           setplanId(selectedSubCategory === "Assets Financing" ? BasicPackId : FreePackId);
           setpriority(selectedSubCategory === "Assets Financing" ? 1 : 0);
           setadstatus("Pending");
+          setActiveButton(1);
+          setActiveButtonTitle("1 month");
+          setActivePackage(selectedSubCategory === "Assets Financing" ? packagesList[1] : packagesList[0]);
+        } else {
+          const listedAds = subscriptionData.ads || 0;
+          const createdAtDate = new Date(subscriptionData.transaction?.createdAt || new Date());
+          const periodDays = parseInt(subscriptionData.transaction?.period) || 0;
+          const expiryDate = new Date(createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000);
+          setexpirationDate(expiryDate);
+          const currentDate = new Date();
+          const remainingDays = Math.ceil((expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+          setDaysRemaining(remainingDays);
+          if ((remainingDays === 0 || (subscriptionData.currentpack.list - listedAds) === 0)) {
+
+            setplan(selectedSubCategory === "Assets Financing" ? "Basic" : "Free");
+            setplanId(selectedSubCategory === "Assets Financing" ? BasicPackId : FreePackId);
+            setpriority(selectedSubCategory === "Assets Financing" ? 1 : 0);
+            setadstatus("Pending");
+            setActiveButton(1);
+            setActiveButtonTitle("1 month");
+            setActivePackage(selectedSubCategory === "Assets Financing" ? packagesList[1] : packagesList[0]);
+          }
+
         }
       } catch (error) {
 
@@ -961,12 +986,15 @@ const AdForm = ({
     setActiveButton(index);
     setActiveButtonTitle(title);
 
-    activePackage?.price.forEach((price: any, indexx: number) => {
-      if (indexx === index) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
+    const prices: any = selectedSubCategory.toLowerCase() === "assets financing"
+      ? activePackage?.price2
+      : activePackage?.price;
+
+    if (prices && prices[index]) {
+      setPriceInput(prices[index]?.amount);
+      setPeriodInput(prices[index]?.period);
+    }
+
   };
   const handleClick = (pack: Package) => {
     const currDate = new Date();
@@ -983,12 +1011,16 @@ const AdForm = ({
     setplan(pack.name);
     setpriority(pack.priority);
     setexpirationDate(expirationDate);
-    pack.price.forEach((price: any, index: number) => {
-      if (index === activeButton) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
+
+    const prices: any = selectedSubCategory.toLowerCase() === "assets financing"
+      ? pack?.price2
+      : pack?.price;
+
+    if (prices && prices[activeButton]) {
+      setPriceInput(prices[activeButton]?.amount);
+      setPeriodInput(prices[activeButton]?.period);
+    }
+
   };
   const handleVerified = async (phone: string) => {
 
@@ -2068,75 +2100,63 @@ const AdForm = ({
                     {/* No Promo */}
                     <div className="w-full">
                       {packagesList.length > 0 &&
-                        packagesList.map((pack: any, index: any) => {
-                          // const check = packname == pack.name != "Free";
-                          const issamepackage = Plan === pack.name;
-                          return (
-                            <div
-                              key={index}
-                              className={`mb-2 dark:bg-[#2D3236] border bg-white rounded-lg cursor-pointer ${activePackage === pack
-                                ? "bg-[#F2FFF2] border-orange-600 border-2"
-                                : ""
-                                }`}
-                            >
-                              {/*  <div
-                                className={`text-lg font-bold rounded-t-md text-white py-2 px-4 mb-4 flex flex-col items-center justify-center`}
-                                  style={{
-                                 backgroundColor:
-                                     activePackage === pack ? "#4DCE7A" : pack.color,
-                                  }}
-              
-                              ></div>*/}
+                        packagesList
+                          .filter((pack: any) => !(selectedSubCategory.toLowerCase() === "assets financing" && pack.name === "Free"))
+                          .map((pack: any, index: any) => {
+                            // const check = packname == pack.name != "Free";
+                            const issamepackage = Plan === pack.name;
+                            return (
                               <div
-                                onClick={() =>
-                                  (!issamepackage && pack.name === "Free") ||
-                                    (issamepackage && pack.name === "Free" && remainingAds === 0)
-                                    ? handleClick(pack)
-                                    : handleClick(pack)
-                                }
-                                className="flex justify-between items-center w-full"
+                                key={index}
+                                className={`mb-2 dark:bg-[#2D3236] border bg-white rounded-lg cursor-pointer ${activePackage === pack
+                                  ? "bg-[#F2FFF2] border-orange-600 border-2"
+                                  : ""
+                                  }`}
                               >
-                                <div className="p-3">
-                                  <p className="text-gray-700 font-semibold dark:text-gray-300">
-                                    {pack.name}
-                                  </p>
-                                  <ul className="flex flex-col gap-1 p-1">
-                                    {pack.features
-                                      .slice(0, 1)
-                                      .map((feature: any, index: number) => (
-                                        <li key={index} className="flex items-center gap-1">
-                                          {/*  <Image
-                                          src={`/assets/icons/${
-                                            feature.checked ? "check" : "cross"
-                                          }.svg`}
-                                          alt={feature.checked ? "check" : "cross"}
-                                          width={24}
-                                          height={24}
-                                        />*/}
-                                          <DoneOutlinedIcon />
-                                          <p className="text-sm">{feature.title}</p>
-                                        </li>
-                                      ))}
-                                  </ul>
-                                </div>
 
-                                <div className="p-3">
-                                  <div className="text-gray-600 mb-1">
-                                    <div className="flex gap-2 text-sm">
-                                      {daysRemaining > 0 && pack.name === Plan ? (
-                                        <>
-                                          <div className="p-1 flex-block rounded-full bg-orange-500">
-                                            <p className="text-white text-xs">Active</p>
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <>
-                                          {(!issamepackage && pack.name === "Free") ||
-                                            (issamepackage &&
-                                              pack.name === "Free" &&
-                                              remainingAds === 0) ? (
-                                            <div>
-                                              {/*   <div className="p-0 items-center flex rounded-full bg-grey-50">
+                                <div
+                                  onClick={() =>
+                                    (!issamepackage && pack.name === "Free") ||
+                                      (issamepackage && pack.name === "Free" && remainingAds === 0)
+                                      ? handleClick(pack)
+                                      : handleClick(pack)
+                                  }
+                                  className="flex justify-between items-center w-full"
+                                >
+                                  <div className="p-3">
+                                    <p className="text-gray-700 font-semibold dark:text-gray-300">
+                                      {pack.name}
+                                    </p>
+                                    <ul className="flex flex-col gap-1 p-1">
+                                      {pack.features
+                                        .slice(0, 1)
+                                        .map((feature: any, index: number) => (
+                                          <li key={index} className="flex items-center gap-1">
+
+                                            <DoneOutlinedIcon />
+                                            <p className="text-sm">{feature.title}</p>
+                                          </li>
+                                        ))}
+                                    </ul>
+                                  </div>
+
+                                  <div className="p-3">
+                                    <div className="text-gray-600 mb-1">
+                                      <div className="flex gap-2 text-sm">
+                                        {daysRemaining > 0 && pack.name === Plan ? (
+                                          <>
+                                            <div className="p-1 flex-block rounded-full bg-orange-500">
+                                              <p className="text-white text-xs">Active</p>
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <>
+                                            {(!issamepackage && pack.name === "Free") ||
+                                              (issamepackage &&
+                                                pack.name === "Free" &&
+                                                remainingAds === 0) ? (
+                                              <div>
+                                                {/*   <div className="p-0 items-center flex rounded-full bg-grey-50">
                                                 <p className="bg-gray-500 border rounded-xl p-2 text-white font-bold text-xs">
                                                   Disabled
                                                 </p>
@@ -2145,83 +2165,86 @@ const AdForm = ({
                                                 You can&apos;t subscribe to Free Package
                                               </div>
                                               */}
-                                            </div>
-                                          ) : (
-                                            issamepackage &&
-                                            pack.name === "Free" &&
-                                            remainingAds > 0 && (
-                                              <>
-                                                {/* <div className="p-1 w-full items-center justify-center flex rounded-full bg-orange-500">
+                                              </div>
+                                            ) : (
+                                              issamepackage &&
+                                              pack.name === "Free" &&
+                                              remainingAds > 0 && (
+                                                <>
+                                                  {/* <div className="p-1 w-full items-center justify-center flex rounded-full bg-orange-500">
                                               <p className="text-white text-xs">Active</p>
                                             </div>*/}
-                                              </>
-                                            )
-                                          )}
+                                                </>
+                                              )
+                                            )}
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="text-center">
+                                      {pack.name === "Free" ? (
+                                        <></>
+                                      ) : (
+                                        <>
+                                          <div className="text-gray-800 font-bold mb-0">
+                                            <ul className="flex flex-col items-center gap-0 py-0">
+                                              {(selectedSubCategory.toLowerCase() === "assets financing" ? pack.price2 : pack.price).map((price: any, index: number) => (
+                                                <li
+                                                  key={index}
+                                                  className={`flex items-center gap-0 ${index !== activeButton ? "hidden" : ""
+                                                    }`}
+                                                >
+                                                  <p
+                                                    className={`font-semibold ${activePackage === pack
+                                                      ? "text-orange-500"
+                                                      : "text-gray-800 dark:text-gray-400"
+                                                      }`}
+                                                  >
+                                                    Ksh {price.amount.toLocaleString()}/{" "}
+                                                    {activeButtonTitle}
+                                                  </p>
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </div>
                                         </>
                                       )}
                                     </div>
                                   </div>
-                                  <div className="text-center">
-                                    {pack.name === "Free" ? (
-                                      <></>
-                                    ) : (
-                                      <>
-                                        <div className="text-gray-800 font-bold mb-0">
-                                          <ul className="flex flex-col items-center gap-0 py-0">
-                                            {pack.price.map((price: any, index: number) => (
-                                              <li
-                                                key={index}
-                                                className={`flex items-center gap-0 ${index !== activeButton ? "hidden" : ""
-                                                  }`}
-                                              >
-                                                <p
-                                                  className={`font-semibold ${activePackage === pack
-                                                    ? "text-orange-500"
-                                                    : "text-gray-800 dark:text-gray-400"
-                                                    }`}
-                                                >
-                                                  Ksh {price.amount.toLocaleString()}/{" "}
-                                                  {activeButtonTitle}
-                                                </p>
-                                              </li>
-                                            ))}
-                                          </ul>
-                                        </div>
-                                      </>
-                                    )}
-                                  </div>
                                 </div>
-                              </div>
-                              {pack.name !== "Free" && activePackage === pack && (
-                                <>
-                                  <div className="flex flex-wrap justify-end items-center p-2">
-                                    {selectedSubCategory !== "Assets Financing" && (
+                                {pack.name !== "Free" && activePackage === pack && (
+                                  <>
+                                    <div className="flex flex-wrap justify-end items-center p-2">
+                                      {selectedSubCategory !== "Assets Financing" && (
+                                        <button
+                                          className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
+                                            ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                            : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                            }`}
+                                          onClick={() => handleButtonClick(0, "1 week")}
+                                        >
+                                          1 week
+                                        </button>
+                                      )}
                                       <button
-                                        className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
+                                        className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
                                           ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
                                           : "border border-orange-500 text-orange-500 rounded-full p-2"
                                           }`}
-                                        onClick={() => handleButtonClick(0, "1 week")}
+                                        onClick={() => handleButtonClick(1, "1 month")}
                                       >
-                                        1 week
+                                        1 month
                                       </button>
-                                    )}
-                                    <button
-                                      className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
-                                        ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
-                                        : "border border-orange-500 text-orange-500 rounded-full p-2"
-                                        }`}
-                                      onClick={() => handleButtonClick(1, "1 month")}
-                                    >
-                                      1 month
-                                    </button>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          );
-                        })}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            );
+                          })}
                     </div>
+
+
+
 
                   </div>
 
@@ -2241,7 +2264,7 @@ const AdForm = ({
               </div>
             </button>
 
-            <p className="mt-2 text-xs text-gray-600 dark:text-gray-500 text-center">
+            <p className="mt-3 mb-10 text-xs text-gray-600 dark:text-gray-500 text-center">
               By clicking on Create Ad, you accept the{" "}
               <span onClick={() => handleOpenTerms()} className="text-orange-500 cursor-pointer underline">
                 Terms of Use

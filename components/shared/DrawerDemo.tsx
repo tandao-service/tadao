@@ -269,7 +269,7 @@ export function DrawerDemo({
                   <> <button
                     onClick={() => {
                       setIsOpenP(true);
-                      router.push("/sign-in");
+                      router.push("/auth");
                     }}
                     className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                   >
@@ -278,7 +278,7 @@ export function DrawerDemo({
                     <button
                       onClick={() => {
                         setIsOpenP(true);
-                        router.push("/sign-in");
+                        router.push("/auth");
                       }}
                       disabled={isSending}
                       className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"

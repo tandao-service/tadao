@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getUserByClerkId } from "@/lib/actions/user.actions";
-import { getByUserIdLaons } from "@/lib/actions/loan.actions";
+import { getallPendingLaons, getByUserIdLaons } from "@/lib/actions/loan.actions";
 import CollectionInfinite from "@/components/shared/CollectionInfinite";
 import PresenceProvider from "@/components/shared/PresenceProvider";
 import FCMTokenProvider from "@/components/shared/FCMTokenProvider";
@@ -14,8 +14,7 @@ import MobileSkeleton from "./MobileSkeleton";
 import { Capacitor } from "@capacitor/core";
 
 export default function MainClient({ queryObject }: { queryObject: any }) {
-  const { categories, subcategories, packages, adsCount } = useGlobalData();
-
+  const { categories, subcategories, packages, adsCount, loans } = useGlobalData();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
@@ -78,7 +77,7 @@ export default function MainClient({ queryObject }: { queryObject: any }) {
         subcategoryList={subcategories}
         AdsCountPerRegion={adsCount}
         packagesList={packages}
-        loans={[]} // if you still need "loans", fetch them server-side like others
+        loans={loans} // if you still need "loans", fetch them server-side like others
         myloans={myloans}
       />
       <Toaster />

@@ -1,16 +1,17 @@
 import { Schema, model, models, Document } from 'mongoose'
 
 export interface IPackages
- extends Document {
+  extends Document {
   _id: string;
   name: string;
   description: string;
   features: Feature[];
-  price:  Price[];
+  price: Price[];
   imageUrl: string;
-  color:string;
-  priority:number;
-  list:number;
+  color: string;
+  priority: number;
+  list: number;
+  price2: Price[];
 }
 export interface Feature {
   title: string;
@@ -31,7 +32,7 @@ const FeatureSchema = new Schema<Feature>({
 });
 const PackagesSchema = new Schema({
   name: { type: String, required: true, unique: true },
-  description: { type: String, required: true},
+  description: { type: String, required: true },
   features: [FeatureSchema],
   price: [PriceSchema],
   imageUrl: { type: String, required: true },

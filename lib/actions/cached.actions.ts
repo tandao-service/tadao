@@ -3,6 +3,7 @@ import { getAllCategories } from "./category.actions";
 import { getAllSubCategories } from "./subcategory.actions";
 import { getAllPackages } from "./packages.actions";
 import { getAdsCountAllRegion } from "./dynamicAd.actions";
+import { getallPendingLaons } from "./loan.actions";
 
 export const getAllCategoriesCached = cache(async () => {
     return getAllCategories();
@@ -19,3 +20,7 @@ export const getAllPackagesCached = cache(async () => {
 export const getAdsCountAllRegionCached = cache(async () => {
     return getAdsCountAllRegion();
 });
+export const getallPendingLaonsCached = cache(async () => {
+    return getallPendingLaons();
+});
+
