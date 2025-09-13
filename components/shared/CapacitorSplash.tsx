@@ -14,7 +14,7 @@ export default function CapacitorSplash() {
         const done = () => {
             // fade out the overlay, then unmount
             setOpacity(0);
-            setTimeout(() => setVisible(false), 1000);
+            setTimeout(() => setVisible(false), 250);
         };
 
         if (document.readyState === 'complete') {
