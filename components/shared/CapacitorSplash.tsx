@@ -14,7 +14,7 @@ export default function CapacitorSplash() {
         const done = () => {
             // fade out the overlay, then unmount
             setOpacity(0);
-            setTimeout(() => setVisible(false), 250);
+            setTimeout(() => setVisible(false), 1000);
         };
 
         if (document.readyState === 'complete') {
@@ -46,7 +46,7 @@ export default function CapacitorSplash() {
             }}
         >
             <img
-                src="/assets/icons/logo.png"
+                src="/logo_white.png"
                 alt="Tadao Market"
                 width={128}
                 height={128}
