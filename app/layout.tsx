@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-
 import "./globals.css";
-import AppDeepLinkHandler from "@/components/shared/AppDeepLinkHandler";
-import SplashHandler from "@/components/shared/SplashHandler";
+import Script from "next/script";
+import CapacitorSplash from "@/components/shared/CapacitorSplash";
 import { AuthProvider } from "./hooks/useAuth";
-
-// Firebase Auth Provider
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -17,20 +14,16 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Tadao",
   description: "Tadao | Buy and Sell Online in Kenya",
-  icons: {
-    icon: "/logo.png",
-  },
+  icons: { icon: "/logo.png" },
+  // Helps status bar & splash blend on Android
+  themeColor: "#f97316",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={poppins.variable}>
-        <SplashHandler />
+        <CapacitorSplash />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
