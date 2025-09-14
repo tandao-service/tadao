@@ -32,7 +32,7 @@ export default function About() {
             <main>
                 <div>
                     <div
-                        className={`bg-gradient-to-b from-orange-500 to-orange-500 lg:from-gray-100 justify-center pl-2 pr-2 h-[60px] lg:to-gray-100 transition-all duration-300 overflow-visible w-full flex flex-col items-center`}
+                        className={`bg-gradient-to-b from-orange-500 to-orange-500 justify-center pl-2 pr-2 h-[60px] transition-all duration-300 overflow-visible w-full flex flex-col items-center`}
                     >
                         <div className="w-full h-full justify-between flex items-center">
                             <div className="flex items-center gap-1">
