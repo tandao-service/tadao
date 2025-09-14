@@ -68,13 +68,15 @@ export default function Navbarhome({
   const [isOpenP, setIsOpenP] = useState(false);
   const handleCloseP = () => setIsOpenP(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  //const { user: currentUser, signOutUser } = useAuth(); // Firebase auth
+  const { user: currentUser, signOutUser } = useAuth(); // Firebase auth
 
 
   const requireAuthRedirect = () => {
-    if (!user?._Id) {
+    if (!user?._id) {
       setIsOpenP(true);
       router.push("/auth"); // your Firebase auth page
+    } else {
+
     }
   };
 
@@ -102,42 +104,45 @@ export default function Navbarhome({
             {/* Secondary actions */}
             <div className="hidden lg:flex items-center gap-2">
               {/* Post Ad (Primary CTA) */}
-              <button
-                //onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-                onClick={() => handleOpenSell()}
-                className="w-[120px] text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-              >
-                <SellOutlinedIcon /> Post Ad
-              </button>
+              {!user && currentUser ? (<></>) : (<>
+                <button
+                  onClick={() => (user?._id ? handleOpenSell() : requireAuthRedirect())}
 
-              {/* Donated Items */}
-              <button
-                onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-              >
-                <VolunteerActivismIcon fontSize="small" /> Donated
-              </button>
+                  className="w-[120px] text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                >
+                  <SellOutlinedIcon /> Post Ad
+                </button>
 
-              {/* Auction */}
-              <button
-                onClick={() => (user?._Id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
-                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-              >
-                <GavelIcon fontSize="small" /> Auction
-              </button>
+                {/* Donated Items */}
+                <button
+                  onClick={() => (user?._id ? handleOpenSell() : requireAuthRedirect())}
+                  className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                >
+                  <VolunteerActivismIcon fontSize="small" /> Donated
+                </button>
 
-              {/* Lost & Found */}
-              <button
-                onClick={() => (user?._Id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
-                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-              >
-                <SearchIcon fontSize="small" /> Lost & Found
-              </button>
+                {/* Auction */}
+                <button
+                  onClick={() => (user?._id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
+                  className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                >
+                  <GavelIcon fontSize="small" /> Auction
+                </button>
+
+                {/* Lost & Found */}
+                <button
+                  onClick={() => (user?._id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
+                  className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+                >
+                  <SearchIcon fontSize="small" /> Lost & Found
+                </button>
+              </>)}
+
             </div>
             <div
               className="w-8 h-8 flex text-white hover:bg-orange-300 items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] tooltip tooltip-bottom hover:cursor-pointer"
               data-tip="Bookmark"
-              onClick={() => (user?._Id ? handleOpenBook() : requireAuthRedirect())}
+              onClick={() => (user?._id ? handleOpenBook() : requireAuthRedirect())}
             >
               <TooltipProvider>
                 <Tooltip>

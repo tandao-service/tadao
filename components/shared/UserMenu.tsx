@@ -2,8 +2,7 @@ import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
-
-
+import { IoPerson } from "react-icons/io5";
 const getInitials = (firstName?: string, lastName?: string) => {
     return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
 };
@@ -40,7 +39,7 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
                             />
                         ) : (
                             <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-500">
-                                <span>👤</span>
+                                <span> <IoPerson size={24} color="#171717ff" /> </span>
                             </div>
                         )}
                     </div>

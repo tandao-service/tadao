@@ -65,8 +65,8 @@ export default function Navbar({
   const isActive = pathname === "/";
   const [isOpenP, setIsOpenP] = useState(false);
   const handleCloseP = () => setIsOpenP(false);
+ const { user: currentUser, signOutUser } = useAuth(); // Firebase auth
 
-  //const { user, signOutUser } = useAuth(); // Firebase Auth
 
   const userId = user?._id || "";
   const requireAuthRedirect = () => {
@@ -107,36 +107,39 @@ export default function Navbar({
           {/* Secondary actions */}
           {popup !== "sell" && (<>
             {/* Post Ad (Primary CTA) */}
-            <button
-              onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-              className="w-[120px] text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-            >
-              <SellOutlinedIcon /> Post Ad
-            </button>
+            {!user && currentUser ? (<></>) : (<>
+              <button
+                onClick={() => (user?._id ? handleOpenSell() : requireAuthRedirect())}
 
-            {/* Donated Items */}
-            <button
-              onClick={() => (user?._Id ? handleOpenSell() : requireAuthRedirect())}
-              className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-            >
-              <VolunteerActivismIcon fontSize="small" /> Donated
-            </button>
+                className="w-[120px] text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <SellOutlinedIcon /> Post Ad
+              </button>
 
-            {/* Auction */}
-            <button
-              onClick={() => (user?._Id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
-              className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-            >
-              <GavelIcon fontSize="small" /> Auction
-            </button>
+              {/* Donated Items */}
+              <button
+                onClick={() => (user?._id ? handleOpenSell() : requireAuthRedirect())}
+                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <VolunteerActivismIcon fontSize="small" /> Donated
+              </button>
 
-            {/* Lost & Found */}
-            <button
-              onClick={() => (user?._Id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
-              className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
-            >
-              <SearchIcon fontSize="small" /> Lost & Found
-            </button>
+              {/* Auction */}
+              <button
+                onClick={() => (user?._id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
+                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <GavelIcon fontSize="small" /> Auction
+              </button>
+
+              {/* Lost & Found */}
+              <button
+                onClick={() => (user?._id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
+                className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
+              >
+                <SearchIcon fontSize="small" /> Lost & Found
+              </button>
+            </>)}
           </>)}
           {popup !== "bookmark" && (
             <>
