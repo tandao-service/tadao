@@ -18,6 +18,8 @@ import GavelIcon from "@mui/icons-material/Gavel";             // Auction
 import SearchIcon from "@mui/icons-material/Search";           // Lost & Found
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline"; // Alt for Lost & Found
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useToast } from "../ui/use-toast";
 type NavProps = {
   userstatus: string;
   userId: string;
@@ -69,7 +71,7 @@ export default function Navbarhome({
   const handleCloseP = () => setIsOpenP(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { user: currentUser, signOutUser } = useAuth(); // Firebase auth
-
+  const { toast } = useToast()
 
   const requireAuthRedirect = () => {
     if (!user?._id) {
@@ -106,8 +108,26 @@ export default function Navbarhome({
               {/* Post Ad (Primary CTA) */}
               {!user && currentUser ? (<></>) : (<>
                 <button
-                  onClick={() => (user?._id ? handleOpenSell() : requireAuthRedirect())}
-
+                  onClick={() => {
+                    if (user?._id && currentUser) {
+                      // Logged in, ready
+                      handleOpenSell();
+                    } else if (!user?._id && currentUser) {
+                      // Logged in but user data still loading
+                      toast({
+                        title: "Please wait",
+                        description: (
+                          <div className="flex items-center gap-2">
+                            <CircularProgress sx={{ color: "#000000" }} size={20} />
+                            <span>Loading...</span>
+                          </div>
+                        ),
+                      });
+                    } else {
+                      // Not logged in
+                      requireAuthRedirect();
+                    }
+                  }}
                   className="w-[120px] text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
                 >
                   <SellOutlinedIcon /> Post Ad
@@ -115,7 +135,26 @@ export default function Navbarhome({
 
                 {/* Donated Items */}
                 <button
-                  onClick={() => (user?._id ? handleOpenSell() : requireAuthRedirect())}
+                  onClick={() => {
+                    if (user?._id && currentUser) {
+                      // Logged in, ready
+                      handleOpenSell();
+                    } else if (!user?._id && currentUser) {
+                      // Logged in but user data still loading
+                      toast({
+                        title: "Please wait",
+                        description: (
+                          <div className="flex items-center gap-2">
+                            <CircularProgress sx={{ color: "#000000" }} size={20} />
+                            <span>Loading...</span>
+                          </div>
+                        ),
+                      });
+                    } else {
+                      // Not logged in
+                      requireAuthRedirect();
+                    }
+                  }}
                   className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
                 >
                   <VolunteerActivismIcon fontSize="small" /> Donated
@@ -123,7 +162,27 @@ export default function Navbarhome({
 
                 {/* Auction */}
                 <button
-                  onClick={() => (user?._id ? handleOpenSell('Donations', 'Donated Items') : requireAuthRedirect())}
+                  onClick={() => {
+                    if (user?._id && currentUser) {
+                      // Logged in, ready
+                      handleOpenSell('Donations', 'Donated Items');
+                    } else if (!user?._id && currentUser) {
+                      // Logged in but user data still loading
+                      toast({
+                        title: "Please wait",
+                        description: (
+                          <div className="flex items-center gap-2">
+                            <CircularProgress sx={{ color: "#000000" }} size={20} />
+                            <span>Loading...</span>
+                          </div>
+                        ),
+                      });
+                    } else {
+                      // Not logged in
+                      requireAuthRedirect();
+                    }
+                  }}
+
                   className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
                 >
                   <GavelIcon fontSize="small" /> Auction
@@ -131,7 +190,27 @@ export default function Navbarhome({
 
                 {/* Lost & Found */}
                 <button
-                  onClick={() => (user?._id ? handleOpenSell('Lost and Found', 'Lost and Found Items') : requireAuthRedirect())}
+                  onClick={() => {
+                    if (user?._id && currentUser) {
+                      // Logged in, ready
+                      handleOpenSell('Lost and Found', 'Lost and Found Items');
+                    } else if (!user?._id && currentUser) {
+                      // Logged in but user data still loading
+                      toast({
+                        title: "Please wait",
+                        description: (
+                          <div className="flex items-center gap-2">
+                            <CircularProgress sx={{ color: "#000000" }} size={20} />
+                            <span>Loading...</span>
+                          </div>
+                        ),
+                      });
+                    } else {
+                      // Not logged in
+                      requireAuthRedirect();
+                    }
+                  }}
+
                   className="px-3 py-1 text-sm dark:bg-[#131B1E] dark:hover:bg-[#2D3236] dark:text-gray-300 bg-white hover:text-orange-400 text-gray-900 p-1 rounded-full flex items-center justify-center gap-1"
                 >
                   <SearchIcon fontSize="small" /> Lost & Found
