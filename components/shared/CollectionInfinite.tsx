@@ -1116,7 +1116,7 @@ const CollectionInfinite = ({
                     handleOpenSettings={handleOpenSettings}
                     handlePayNow={handlePay}
                     userId={userId}
-                    user={user}
+                    user={user?.user ?? []}
                     loans={loans}
                     packagesList={packagesList} />
                 </div>
