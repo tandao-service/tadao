@@ -21,6 +21,11 @@ export async function GET() {
       priority: '0.5',
     },
     {
+      loc: `${baseUrl}/privacy`,
+      changefreq: 'monthly',
+      priority: '0.5',
+    },
+    {
       loc: `${baseUrl}/google-home`,
       changefreq: 'monthly',
       priority: '0.7',

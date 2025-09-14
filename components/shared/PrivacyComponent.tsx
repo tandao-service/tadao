@@ -179,7 +179,7 @@ const PrivacyComponent = ({
                   <li>Your account information and data will be permanently deleted and cannot be recovered.</li>
                   <li>You will no longer have access to any data or content associated with your account.</li>
                   <li>Any product listings you have posted will be removed from the website.</li>
-                  <li>To delete your account: Go to &apos;Manage Account&apos; in your settings. Select the &apos;Security&apos; tab. Click on the &apos;Delete Account&apos; button.</li>
+                  <li>To delete your account: Go to &apos;Your Profile&apos;, then click the settings icon on the right side to open the settings page. Finally, click the &apos;Delete Account&apos; button.</li>
                   <li>Please contact our support team if you need assistance with account deletion.</li>
                 </ul>
 
