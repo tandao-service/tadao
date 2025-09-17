@@ -1156,10 +1156,10 @@ const CollectionInfinite = ({
 
                     <div
                       onClick={() => {
-                        if (user?._id && currentUser) {
+                        if (user?.user?._id && currentUser) {
                           // Logged in, ready
                           handleOpenSell();
-                        } else if (!user?._id && currentUser) {
+                        } else if (!user?.user?._id && currentUser) {
                           // Logged in but user data still loading
                           toast({
                             title: "Please wait",
@@ -1189,10 +1189,10 @@ const CollectionInfinite = ({
                     {/* Donated */}
                     <div
                       onClick={() => {
-                        if (user?._id && currentUser) {
+                        if (user?.user?._id && currentUser) {
                           // Logged in, ready
                           handleDrawer('Donations', 'Donated Items');
-                        } else if (!user?._id && currentUser) {
+                        } else if (!user?.user?._id && currentUser) {
                           // Logged in but user data still loading
                           toast({
                             title: "Please wait",
@@ -1221,10 +1221,10 @@ const CollectionInfinite = ({
                     {/* Auction */}
                     <div
                       onClick={() => {
-                        if (user?._id && currentUser) {
+                        if (user?.user?._id && currentUser) {
                           // Logged in, ready
                           handleDrawer('bids', 'bids');
-                        } else if (!user?._id && currentUser) {
+                        } else if (!user?.user?._id && currentUser) {
                           // Logged in but user data still loading
                           toast({
                             title: "Please wait",
@@ -1253,10 +1253,10 @@ const CollectionInfinite = ({
                     {/* Lost & Found */}
                     <div
                       onClick={() => {
-                        if (user?._id && currentUser) {
+                        if (user?.user?._id && currentUser) {
                           // Logged in, ready
                           handleDrawer('Lost and Found', 'Lost and Found Items');
-                        } else if (!user?._id && currentUser) {
+                        } else if (!user?.user?._id && currentUser) {
                           // Logged in but user data still loading
                           toast({
                             title: "Please wait",
