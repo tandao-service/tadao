@@ -116,10 +116,10 @@ export function DrawerDemo({
       return;
     }
 
-    if (isVerified && !hasSubscription) {
-      setShowPackages(false);
-      return;
-    }
+    // if (isVerified && !hasSubscription) {
+    //  setShowPackages(false);
+    //  return;
+    //}
 
     handleSubCategory(category, subcategory);
     onClose();

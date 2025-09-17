@@ -35,6 +35,7 @@ type Category = {
 type MobileProps = {
   categoryList: Category[];
   subcategoryList: any;
+  handleDrawer: (category: string, subcategory: string) => void;
   handleSubCategory: (category: string, subcategory: string) => void;
   handleOpenSell: (category?: string, subcategory?: string) => void;
   userId: string;
@@ -52,6 +53,7 @@ export default function MenuSubmobileMain({
   categoryList,
   subcategoryList,
   handleSubCategory,
+  handleDrawer,
   handlePayNow,
   userId,
   handleOpenChat,
@@ -143,7 +145,7 @@ export default function MenuSubmobileMain({
           onClick={() => {
             if (user?._id && currentUser) {
               // Logged in, ready
-              handleOpenSell('Donations', 'Donated Items');
+              handleDrawer('Donations', 'Donated Items');
             } else if (!user?._id && currentUser) {
               // Logged in but user data still loading
               toast({
@@ -175,7 +177,7 @@ export default function MenuSubmobileMain({
           onClick={() => {
             if (user?._id && currentUser) {
               // Logged in, ready
-              handleOpenSell();
+              handleDrawer('bids', 'bids');
             } else if (!user?._id && currentUser) {
               // Logged in but user data still loading
               toast({
@@ -207,7 +209,7 @@ export default function MenuSubmobileMain({
           onClick={() => {
             if (user?._id && currentUser) {
               // Logged in, ready
-              handleOpenSell('Lost and Found', 'Lost and Found Items');
+              handleDrawer('Lost and Found', 'Lost and Found Items');
             } else if (!user?._id && currentUser) {
               // Logged in but user data still loading
               toast({

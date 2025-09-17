@@ -125,6 +125,11 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
               $lte: parseCurrencyToNumber(maxPrice)
             };
             break;
+          case 'bids':
+            dynamicConditions.biddingEnabled = true; // must have bidding enabled
+            dynamicConditions.biddingEndsAt = { $gte: new Date() }; // not expired yet
+
+            break;
           case 'query':
             //  dynamicConditions[`data.title`] = { $regex: value, $options: 'i' };
 
