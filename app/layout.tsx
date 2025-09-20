@@ -13,8 +13,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Tadao",
-  description: "Tadao | Buy and Sell Online in Kenya",
+  title: "Tadao Market",
+  description: "Buy & Sell Anything, Anytime, Anyplace",
   icons: { icon: "/logo.png" },
   // Helps status bar & splash blend on Android
   themeColor: "#f97316",

@@ -2266,7 +2266,7 @@ const AdForm = ({
 
             <p className="mt-3 mb-10 text-xs text-gray-600 dark:text-gray-500 text-center">
               By clicking on Create Ad, you accept the{" "}
-              <span onClick={() => handleOpenTerms()} className="text-orange-500 cursor-pointer underline">
+              <span onClick={() => router.push("/terms")} className="text-orange-500 cursor-pointer underline">
                 Terms of Use
               </span>
             </p>

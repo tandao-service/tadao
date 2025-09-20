@@ -50,7 +50,7 @@ const Footersub = ({ handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handle
             <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
-                  handleOpenTerms()
+                  router.push("/terms");
                 }}
                 className="cursor-pointer dark:text-gray-400 hover:text-[#BD7A4F] "
               >
@@ -61,7 +61,7 @@ const Footersub = ({ handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handle
             <div className="transition-colors dark:text-gray-400 text-[12px] hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
-                  handleOpenPrivacy()
+                  router.push("/privacy-policy");
                 }}
                 className="cursor-pointer hover:text-[#BD7A4F] "
               >

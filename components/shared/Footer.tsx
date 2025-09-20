@@ -55,7 +55,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
             <li className="transition-colors text-sm hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
-                  handleOpenTerms()
+                  router.push("/terms");
                 }}
                 className="cursor-pointer hover:text-[#BD7A4F] "
               >
@@ -65,7 +65,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
             <li className="transition-colors text-sm hover:text-[#BD7A4F] hover:cursor-pointer">
               <div
                 onClick={() => {
-                  handleOpenPrivacy()
+                  router.push("/privacy-policy");
                 }}
                 className="cursor-pointer hover:text-[#BD7A4F] "
               >

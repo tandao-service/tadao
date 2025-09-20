@@ -256,14 +256,31 @@ export function DrawerDemo({
                   onClick={handlePostRequest}
                   className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                 >
-                  Post {subcategory}
+                  {subcategory === "Donated Items" ? (<>
+                    <p className="text-lg font-semibold text-gray-800">
+                      Post Items to Donate
+                    </p>
+                    <p className="mt-1 text-sm text-gray-500 leading-relaxed">
+                      Give out items you no longer use — they can be of help to a needy person.
+                      <span className="block mt-1 text-gray-600">
+                        E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
+                      </span>
+                    </p>
+                  </>) : subcategory === "Bids" ? (<>
+                    <p className="text-lg font-semibold text-gray-800">
+                      Post Item on Auction
+                    </p>
+
+                  </>) : (<>
+                    Post {subcategory}</>)}
+
                 </button>
                   <button
                     onClick={handleViewRequests}
                     disabled={isSending}
                     className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded  disabled:opacity-50"
                   >
-                    {isSending ? "Checking..." : `View Posted ${subcategory}`}
+                    {isSending ? ("Checking...") : (<>{subcategory === "Bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
 
                   </button></>) : (
                   <> <button
@@ -273,7 +290,23 @@ export function DrawerDemo({
                     }}
                     className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                   >
-                    Post {subcategory}
+                    {subcategory === "Donated Items" ? (<>
+                      <p className="text-lg font-semibold text-gray-800">
+                        Post Items to Donate
+                      </p>
+                      <p className="mt-1 text-sm text-gray-500 leading-relaxed">
+                        Give out items you no longer use — they can be of help to a needy person.
+                        <span className="block mt-1 text-gray-600">
+                          E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
+                        </span>
+                      </p>
+                    </>) : subcategory === "Bids" ? (<>
+                      <p className="text-lg font-semibold text-gray-800">
+                        Post Item on Auction
+                      </p>
+
+                    </>) : (<>
+                      Post {subcategory}</>)}
                   </button>
                     <button
                       onClick={() => {
@@ -283,7 +316,8 @@ export function DrawerDemo({
                       disabled={isSending}
                       className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
                     >
-                      {isSending ? "Checking..." : `View Posted ${subcategory}`}
+                      {isSending ? ("Checking...") : (<>{subcategory === "Bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
+
 
                     </button>
                     <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} /></>

@@ -169,7 +169,7 @@ export default function MenuSubmobileMain({
           <div className="p-3 rounded-full bg-green-200 mb-2">
             <VolunteerActivismIcon className="h-6 w-6 text-green-600" />
           </div>
-          <h2 className="text-xs font-semibold text-green-700">Donated</h2>
+          <h2 className="text-xs font-semibold text-green-700">Donated Items</h2>
         </div>
 
         {/* Auction */}

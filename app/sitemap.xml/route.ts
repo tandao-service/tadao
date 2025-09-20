@@ -21,7 +21,7 @@ export async function GET() {
       priority: '0.5',
     },
     {
-      loc: `${baseUrl}/privacy`,
+      loc: `${baseUrl}/privacy-policy`,
       changefreq: 'monthly',
       priority: '0.5',
     },
