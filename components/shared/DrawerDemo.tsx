@@ -199,6 +199,9 @@ export function DrawerDemo({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
+  function capitalizeFirstLetter(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="dark:bg-[#131B1E]">
@@ -245,9 +248,17 @@ export function DrawerDemo({
           {(showVerify && showPackages) && (
             <div className="p-4">
               <DrawerHeader>
-                <DrawerTitle>{subcategory}</DrawerTitle>
+                <DrawerTitle>{capitalizeFirstLetter(subcategory)}</DrawerTitle>
                 <DrawerDescription>
                   What would you like to do?
+                  {subcategory === "Donated Items" && (<>
+                    <p className="mt-1 text-sm text-gray-600 leading-relaxed">
+                      Give out items you no longer use — they can be of help to a needy person.
+                      <span className="block mt-1 text-xs text-gray-800">
+                        E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
+                      </span>
+                    </p>
+                  </>)}
                 </DrawerDescription>
               </DrawerHeader>
               <div className="flex flex-col gap-4 w-full items-center">
@@ -260,13 +271,8 @@ export function DrawerDemo({
                     <p className="text-lg font-semibold text-gray-800">
                       Post Items to Donate
                     </p>
-                    <p className="mt-1 text-sm text-gray-500 leading-relaxed">
-                      Give out items you no longer use — they can be of help to a needy person.
-                      <span className="block mt-1 text-gray-600">
-                        E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
-                      </span>
-                    </p>
-                  </>) : subcategory === "Bids" ? (<>
+
+                  </>) : subcategory === "bids" ? (<>
                     <p className="text-lg font-semibold text-gray-800">
                       Post Item on Auction
                     </p>
@@ -280,7 +286,7 @@ export function DrawerDemo({
                     disabled={isSending}
                     className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded  disabled:opacity-50"
                   >
-                    {isSending ? ("Checking...") : (<>{subcategory === "Bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
+                    {isSending ? ("Checking...") : (<>{subcategory === "bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
 
                   </button></>) : (
                   <> <button
@@ -294,12 +300,7 @@ export function DrawerDemo({
                       <p className="text-lg font-semibold text-gray-800">
                         Post Items to Donate
                       </p>
-                      <p className="mt-1 text-sm text-gray-500 leading-relaxed">
-                        Give out items you no longer use — they can be of help to a needy person.
-                        <span className="block mt-1 text-gray-600">
-                          E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
-                        </span>
-                      </p>
+
                     </>) : subcategory === "Bids" ? (<>
                       <p className="text-lg font-semibold text-gray-800">
                         Post Item on Auction
@@ -316,7 +317,7 @@ export function DrawerDemo({
                       disabled={isSending}
                       className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
                     >
-                      {isSending ? ("Checking...") : (<>{subcategory === "Bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
+                      {isSending ? ("Checking...") : (<>{subcategory === "bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
 
 
                     </button>
