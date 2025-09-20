@@ -107,6 +107,7 @@ export function DrawerDemo({
   };
 
   const handleViewRequests = () => {
+
     const isVerified =
       user?.user?.verified && user?.user?.verified[0]?.accountverified === true;
     const hasSubscription = user?.subscriptionStatus === "Active";
@@ -248,13 +249,13 @@ export function DrawerDemo({
           {(showVerify && showPackages) && (
             <div className="p-4">
               <DrawerHeader>
-                <DrawerTitle>{capitalizeFirstLetter(subcategory)}</DrawerTitle>
+                <DrawerTitle>{subcategory === "bids" ? (<>Auction</>) : (<>{capitalizeFirstLetter(subcategory)}</>)}</DrawerTitle>
                 <DrawerDescription>
 
                   {subcategory === "Donated Items" ? (<>
-                    <p className="mt-1 text-sm text-gray-600 leading-relaxed">
+                    <p className="mt-1 text-sm text-gray-800 leading-relaxed">
                       Give out items you no longer use — they can be of help to a needy person.
-                      <span className="block mt-1 text-xs text-gray-800">
+                      <span className="block mt-1 text-xs text-gray-900">
                         E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
                       </span>
                     </p>
@@ -267,18 +268,18 @@ export function DrawerDemo({
                   onClick={handlePostRequest}
                   className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                 >
-                  {subcategory === "Donated Items" ? (<>
-                    <p>
-                      Post Items to Donate
-                    </p>
+                  {subcategory === "Donated Items" ? (
+                    <>
+                      <p>Post Items to Donate</p>
+                    </>
+                  ) : subcategory === "bids" ? (
+                    <>
+                      <p>Post Item on Auction</p>
+                    </>
+                  ) : (
+                    <>Post {subcategory}</>
+                  )}
 
-                  </>) : subcategory === "bids" ? (<>
-                    <p>
-                      Post Item on Auction
-                    </p>
-
-                  </>) : (<>
-                    Post {subcategory}</>)}
 
                 </button>
                   <button
@@ -290,26 +291,28 @@ export function DrawerDemo({
 
                   </button></>) : (
                   <> <button
+
                     onClick={() => {
                       setIsOpenP(true);
                       router.push("/auth");
                     }}
                     className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                   >
-                    {subcategory === "Donated Items" ? (<>
-                      <p>
-                        Post Items to Donate
-                      </p>
+                    {subcategory === "Donated Items" ? (
+                      <>
+                        <p>Post Items to Donate</p>
+                      </>
+                    ) : subcategory === "bids" ? (
+                      <>
+                        <p>Post Item on Auction</p>
+                      </>
+                    ) : (
+                      <>Post {subcategory}</>
+                    )}
 
-                    </>) : subcategory === "Bids" ? (<>
-                      <p>
-                        Post Item on Auction
-                      </p>
-
-                    </>) : (<>
-                      Post {subcategory}</>)}
                   </button>
                     <button
+
                       onClick={() => {
                         setIsOpenP(true);
                         router.push("/auth");
@@ -323,7 +326,6 @@ export function DrawerDemo({
                     </button>
                     <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} /></>
                 )}
-
 
               </div>
 

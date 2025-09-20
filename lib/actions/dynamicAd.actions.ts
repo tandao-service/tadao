@@ -125,18 +125,20 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
               $lte: parseCurrencyToNumber(maxPrice)
             };
             break;
-          case 'bids':
-            dynamicConditions.biddingEnabled = true; // must have bidding enabled
-            dynamicConditions.biddingEndsAt = { $gte: new Date() }; // not expired yet
 
-            break;
           case 'query':
-            //  dynamicConditions[`data.title`] = { $regex: value, $options: 'i' };
+            if (value === "bids") {
+              dynamicConditions["data.biddingEnabled"] = true; // must have bidding enabled
+              dynamicConditions["data.biddingEndsAt"] = { $gte: new Date() }; // not expired yet
 
-            dynamicConditions["$or"] = [
-              { "data.title": { $regex: value, $options: 'i' } },
-              { "data.description": { $regex: value, $options: 'i' } }
-            ];
+            } else {
+              dynamicConditions["$or"] = [
+                { "data.title": { $regex: value, $options: 'i' } },
+                { "data.description": { $regex: value, $options: 'i' } }
+              ];
+            }
+
+
             break;
           case 'membership':
             break;

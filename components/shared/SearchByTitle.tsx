@@ -72,7 +72,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [newpage, setnewpage] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(value);
   const [newqueryObject, setNewqueryObject] = useState<any>([]);
   const observer = useRef<IntersectionObserver | null>(null);
   // Keep the early return after defining hooks
@@ -127,8 +127,10 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
     if (!newpage) {
       setPage(1);
     }
-    if (value) { fetchAds(value); }
-  }, [page, newqueryObject]);
+    if (value) {
+      fetchAds(value);
+    }
+  }, [page, newqueryObject, value]);
 
   const lastAdRef = (node: any) => {
     if (loading) return;
@@ -217,7 +219,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
                 <div>
 
                   <div className="w-full min-h-[400px] h-full flex flex-col items-center justify-center">
-                    <Image src="/assets/icons/loading2.gif" alt="loading" width={40} height={40} unoptimized /><div>Searching..</div>
+                    <Image src="/assets/icons/loading.gif" alt="loading" width={40} height={40} unoptimized /><div>Searching..</div>
                   </div>
 
                 </div>

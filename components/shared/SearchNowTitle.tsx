@@ -14,14 +14,14 @@ const SearchNowTitle = ({
   onClose,
 }: {
   placeholder?: string;
-  handleFilter: (value:any) => void;
-  onClose:() => void;
- 
+  handleFilter: (value: any) => void;
+  onClose: () => void;
+
 }) => {
   const [query, setQuery] = useState("");
   const [focus, setFocus] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
- 
+
   const handleSearch = () => {
     if (!query) return;
 
@@ -33,13 +33,13 @@ const SearchNowTitle = ({
     updatedHistory = updatedHistory.slice(0, 5); // Keep only the latest 5 searches
     setSearchHistory(updatedHistory);
     localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
-   // handleFilter({query:query});
-   
+    // handleFilter({query:query});
+
   };
 
   const handleClear = () => {
     setQuery("");
-   // handleFilter({query:''});
+    // handleFilter({query:''});
   };
 
   const removeHistoryItem = (item: string) => {
@@ -48,12 +48,12 @@ const SearchNowTitle = ({
     localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
   };
   const handleClick = (qry: string) => {
-      
-      if (qry){
-        setQuery(qry);
-       // handleFilter({query:qry});
-      }
-     
+
+    if (qry) {
+      setQuery(qry);
+      // handleFilter({query:qry});
+    }
+
   };
   const inputRef = useRef<HTMLInputElement>(null); // ← ADD THIS
 
@@ -63,23 +63,23 @@ const SearchNowTitle = ({
     const history = JSON.parse(localStorage.getItem("searchHistory") || "[]");
     setSearchHistory(history);
   }, []);
-  
+
   const [lastSentQuery, setLastSentQuery] = useState("");
 
-useEffect(() => {
-  const delayDebounceFn = setTimeout(() => {
-    if (query && query !== lastSentQuery) {
-      handleFilter({ query });
-      setLastSentQuery(query);
-    }
-  }, 2000);
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (query && query !== lastSentQuery) {
+        handleFilter({ query });
+        setLastSentQuery(query);
+      }
+    }, 2000);
 
-  return () => clearTimeout(delayDebounceFn);
-}, [query]);
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
 
   return (
     <div className="relative border border-gray-300 dark:border-gray-600 flex justify-between items-center dark:bg-[#2D3236] bg-white p-1 rounded-sm w-full">
-      
+
       <div className="flex items-center w-full">
         {focus && (
           <div className="text-gray-400">
@@ -94,7 +94,7 @@ useEffect(() => {
           onChange={(e) => {
             setQuery(e.target.value);
             if (e.target.value === "") {
-              handleFilter({query:''});
+              handleFilter({ query: '' });
             }
           }}
           onFocus={() => setFocus(true)}
@@ -103,28 +103,28 @@ useEffect(() => {
         />
       </div>
       <div>
-      {/* {query && (
+        {/* {query && (
           <button onClick={handleClear} className="p-2">
             <DeleteOutlineIcon fontSize="small" />
           </button>
-        )} */} 
+        )} */}
       </div>
       <div className="flex gap-1">
         <button
           onClick={handleSearch}
-          className="flex justify-center items-center h-12 w-12 hover:bg-emerald-700 bg-emerald-600 text-white rounded-sm"
+          className="flex justify-center items-center h-12 w-12 hover:bg-orange-400 bg-orange-500 text-white rounded-sm"
         >
           <SearchOutlinedIcon />
         </button>
-          <button
-                                onClick={onClose}
-                                className="flex justify-center border items-center h-12 w-12 hover:bg-gray-200 bg-gray-100 text-black rounded-sm"
-                              >
-                                <CloseOutlinedIcon />
-                  </button>
+        <button
+          onClick={onClose}
+          className="flex justify-center border items-center h-12 w-12 hover:bg-gray-200 bg-gray-100 text-black rounded-sm"
+        >
+          <CloseOutlinedIcon />
+        </button>
       </div>
 
-      
+
 
       {/* Search Suggestions Dropdown */}
       {focus && searchHistory.length > 0 && (
@@ -152,23 +152,23 @@ useEffect(() => {
             </div>
           ))}
           <div className="flex gap-2 justify-between">
-          <button
-            className="w-full text-sm text-gray-500 p-2 bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-            onClick={() => {
-              setSearchHistory([]);
-              localStorage.removeItem("searchHistory");
-            }}
-          >
-            Clear All History
-          </button>
-          <button
-            className="w-full text-sm text-gray-500 p-2 bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-            onClick={() => {
-              setFocus(false);
-            }}
-          >
-           Close
-          </button>
+            <button
+              className="w-full text-sm text-gray-500 p-2 bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => {
+                setSearchHistory([]);
+                localStorage.removeItem("searchHistory");
+              }}
+            >
+              Clear All History
+            </button>
+            <button
+              className="w-full text-sm text-gray-500 p-2 bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => {
+                setFocus(false);
+              }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

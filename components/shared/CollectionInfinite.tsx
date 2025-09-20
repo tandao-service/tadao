@@ -352,10 +352,7 @@ const CollectionInfinite = ({
     setSearchvalue('')
     setIsOpenSearchByTitle(true);
   };
-  const handleOpenSearchByBids = () => {
-    setSearchvalue('bids')
-    setIsOpenSearchByTitle(true);
-  };
+
   // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
   const handleClosePerfomance = () => {
@@ -730,6 +727,7 @@ const CollectionInfinite = ({
   };
 
   const handleDrawer = (category: string, subcategory: string) => {
+
     handleClose();
     closepopup = true;
     if (category && subcategory) {
@@ -808,7 +806,14 @@ const CollectionInfinite = ({
     if (category && subcategory) {
 
       if (category === 'bids' && subcategory === 'bids') {
-        handleOpenSearchByBids()
+        handleClose();
+
+        setTimeout(() => {
+          setSearchvalue("bids");
+          setIsOpenSearchByTitle(true);
+        }, 1000);
+
+
       } else {
 
         handleClose();
@@ -1221,6 +1226,7 @@ const CollectionInfinite = ({
                     {/* Auction */}
                     <div
                       onClick={() => {
+
                         if (user?.user?._id && currentUser) {
                           // Logged in, ready
                           handleDrawer('bids', 'bids');
@@ -1237,6 +1243,7 @@ const CollectionInfinite = ({
                           });
                         } else {
                           // Not logged in
+
                           router.push("/auth");
                         }
                       }}
