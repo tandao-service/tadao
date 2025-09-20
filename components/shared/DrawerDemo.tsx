@@ -250,15 +250,15 @@ export function DrawerDemo({
               <DrawerHeader>
                 <DrawerTitle>{capitalizeFirstLetter(subcategory)}</DrawerTitle>
                 <DrawerDescription>
-                  What would you like to do?
-                  {subcategory === "Donated Items" && (<>
+
+                  {subcategory === "Donated Items" ? (<>
                     <p className="mt-1 text-sm text-gray-600 leading-relaxed">
                       Give out items you no longer use — they can be of help to a needy person.
                       <span className="block mt-1 text-xs text-gray-800">
                         E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
                       </span>
                     </p>
-                  </>)}
+                  </>) : (<>  What would you like to do?</>)}
                 </DrawerDescription>
               </DrawerHeader>
               <div className="flex flex-col gap-4 w-full items-center">
@@ -268,12 +268,12 @@ export function DrawerDemo({
                   className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                 >
                   {subcategory === "Donated Items" ? (<>
-                    <p className="text-lg font-semibold text-gray-800">
+                    <p>
                       Post Items to Donate
                     </p>
 
                   </>) : subcategory === "bids" ? (<>
-                    <p className="text-lg font-semibold text-gray-800">
+                    <p>
                       Post Item on Auction
                     </p>
 
@@ -297,12 +297,12 @@ export function DrawerDemo({
                     className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                   >
                     {subcategory === "Donated Items" ? (<>
-                      <p className="text-lg font-semibold text-gray-800">
+                      <p>
                         Post Items to Donate
                       </p>
 
                     </>) : subcategory === "Bids" ? (<>
-                      <p className="text-lg font-semibold text-gray-800">
+                      <p>
                         Post Item on Auction
                       </p>
 
