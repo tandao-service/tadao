@@ -1,7 +1,7 @@
 // app/page.tsx
 
 import MainClient from "@/components/shared/MainClient";
-import SplashHandler from "@/components/shared/SplashHandler";
+import SplashHandler from "@/components/shared/SplashHandlerAdroid";
 import {
   getAllCategoriesCached,
   getAllSubCategoriesCached,

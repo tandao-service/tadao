@@ -1,40 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
-import { registerPlugin } from "@capacitor/core";
-// Optional: if you still want to hide the Capacitor SplashScreen when present
-// import { SplashScreen } from "@capacitor/splash-screen";
-
-type SplashSwapPlugin = {
-    showWeb: () => Promise<void>;
-};
-const SplashSwap = registerPlugin<SplashSwapPlugin>("SplashSwap");
+import { SplashScreen } from "@capacitor/splash-screen";
 
 export default function SplashHandler() {
     useEffect(() => {
-        const showWebViewNow = async () => {
+        const hideSplash = async () => {
             try {
-                // If you ALSO use Capacitor SplashScreen somewhere, hide it first (optional)
-                // await SplashScreen.hide();
-
-                // IMPORTANT: Only call this when your app is actually ready:
-                // - document loaded
-                // - fonts set
-                // - any critical initial data fetched, etc.
-                await SplashSwap.showWeb();
+                await SplashScreen.hide();
             } catch (err) {
-                console.warn("Failed to swap to webview:", err);
+                console.warn("Splash hide failed:", err);
             }
         };
 
-        // Wait for full page load to ensure Next.js has painted
         if (document.readyState === "complete") {
-            showWebViewNow();
+            hideSplash();
         } else {
-            window.addEventListener("load", showWebViewNow);
-            return () => window.removeEventListener("load", showWebViewNow);
+            window.addEventListener("load", hideSplash);
+            return () => window.removeEventListener("load", hideSplash);
         }
     }, []);
 
-    return null;
+    return null; // nothing to render
 }
