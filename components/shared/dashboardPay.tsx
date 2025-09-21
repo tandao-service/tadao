@@ -38,7 +38,11 @@ type payProps = {
 const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance, handleOpenSettings,
   handleOpenShop, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: payProps) => {
   const { toast } = useToast();
-
+  const [phoneInput, setPhoneInput] = useState<string>(user?.phone ?? "");
+  const [phoneError, setPhoneError] = useState<string>("");
+  useEffect(() => {
+    setPhoneInput(user?.phone ?? "");
+  }, [user?.phone]);
   const [deposit, setdeposit] = useState(
     trans.length > 0 ? trans[0].amount : 0
   );
@@ -51,23 +55,48 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
     trans.length > 0 ? trans[0].status : "Pending"
   );
 
+  // Simple KE phone normalizer -> +2547XXXXXXXX
+  function normalizeKenyanPhone(input: string | undefined | null): string | null {
+    if (!input) return null;
+    let s = (input + "").replace(/\D/g, ""); // strip non-digits
 
+    // Accept 07XXXXXXXX, 7XXXXXXXX, 1XXXXXXXX, 2547XXXXXXXX, +2547XXXXXXXX
+    if (s.startsWith("0") && s.length >= 10) s = "254" + s.slice(1);
+    else if (s.startsWith("254")) s = s;
+    else if (s.startsWith("7") || s.startsWith("1")) s = "254" + s;
+    // else: invalid prefix
+
+    // KE MSISDN length = 12 digits when normalized (254 + 9)
+    if (s.length !== 12) return null;
+    return "+" + s; // E.164
+  }
 
 
   const handlePay = async () => {
+    // Require phone if not present on user
+    const rawPhone = user?.phone ?? phoneInput;
+    const normalizedPhone = normalizeKenyanPhone(rawPhone);
 
+    if (!normalizedPhone) {
+      setPhoneError("Enter a valid Kenyan number, e.g. 07xx..., 7xx..., or +2547xx...");
+      // Optional toast
+      // toast({ title: "Phone required", description: "Please enter a valid Kenyan phone number.", variant: "destructive" });
+      return;
+    } else {
+      setPhoneError("");
+    }
     const orderDetails = {
       id: trans[0].orderTrackingId,
       currency: "KES",
       amount: trans[0].amount,
       description: trans[0].plan || "Tadao Payment",
-      callback_url: "http://localhost:3000/successful",
+      callback_url: process.env.NEXT_PUBLIC_DOMAIN_URL + "successful",
       notification_id: "", // optional webhook setup
       billing_address: {
-        email: user.email,
-        phone_number: user.phone,
-        first_name: user.firstName,
-        last_name: user.lastName,
+        email: user?.email,
+        phone_number: normalizedPhone,
+        first_name: user?.firstName,
+        last_name: user?.lastName,
 
       },
     };
@@ -75,6 +104,7 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
       setisSubmitting(true);
 
       // Send the order details to the API
+      console.log(orderDetails)
       const response = await requestOrder(orderDetails);
 
       const orderId = response.order_tracking_id;
@@ -259,11 +289,35 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
 
                               </div>
 
-
+                              {!user?.phone && (
+                                <div className="mt-2">
+                                  <label className="block text-sm mb-1">Phone number (M-Pesa / Airtel Money)</label>
+                                  <TextField
+                                    fullWidth
+                                    size="small"
+                                    placeholder="07xx xxx xxx or +2547xx xxx xxx"
+                                    value={phoneInput}
+                                    onChange={(e) => {
+                                      setPhoneInput(e.target.value);
+                                      if (phoneError) setPhoneError("");
+                                    }}
+                                    onBlur={() => {
+                                      if (!normalizeKenyanPhone(phoneInput)) {
+                                        setPhoneError("Enter a valid Kenyan number, e.g. 07xx..., 7xx..., or +2547xx...");
+                                      }
+                                    }}
+                                    error={!!phoneError}
+                                    helperText={phoneError || "Required for billing & STK/checkout"}
+                                  />
+                                </div>
+                              )}
                               <Button
                                 onClick={handlePay}
                                 variant="default"
-                                disabled={isSubmitting}
+                                disabled={
+                                  isSubmitting ||
+                                  (!user?.phone && !normalizeKenyanPhone(phoneInput))
+                                }
                                 className="w-full hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white mt-2 shadow"
                               >
                                 {isSubmitting ? "Sending request..." : `Pay Now`}

@@ -25,11 +25,9 @@ export async function requestOrder(orderDetails: {
         "Content-Type": "application/json",
       },
     });
-
     if (response.status !== 200) {
       throw new Error(`Unexpected status code: ${response.status}`);
     }
-
     return response.data;
   } catch (error: any) {
     console.error("Error submitting order:", error?.response?.data || error.message);

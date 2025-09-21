@@ -32,7 +32,7 @@ export default function MainClient({ queryObject }: { queryObject: any }) {
     const fetchUserData = async () => {
       try {
         setLoading(false);
-        const fetchedUser: any = await getUserByClerkId(user?.uid);
+        const fetchedUser: any = await getUserByClerkId(user.uid);
         const fetchedMyLoans = await getByUserIdLaons(fetchedUser?.user?._id);
 
         setUserData(fetchedUser);
