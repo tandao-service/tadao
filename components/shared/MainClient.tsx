@@ -32,14 +32,14 @@ export default function MainClient({ queryObject }: { queryObject: any }) {
     const fetchUserData = async () => {
       try {
         setLoading(false);
-        const fetchedUser: any = await getUserByClerkId(user.uid);
-        const fetchedMyLoans = await getByUserIdLaons(fetchedUser._id);
+        const fetchedUser: any = await getUserByClerkId(user?.uid);
+        const fetchedMyLoans = await getByUserIdLaons(fetchedUser?.user?._id);
 
         setUserData(fetchedUser);
         setMyLoans(fetchedMyLoans);
-        setUserId(fetchedUser._id);
-        setUserName(fetchedUser.firstName + " " + fetchedUser.lastName);
-        setUserImage(fetchedUser.photo || "");
+        setUserId(fetchedUser?.user?._id);
+        setUserName(fetchedUser?.user?.firstName + " " + fetchedUser?.user?.lastName);
+        setUserImage(fetchedUser?.user?.photo || "");
       } catch (err) {
         console.error("User fetch failed:", err);
       } finally {

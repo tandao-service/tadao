@@ -129,7 +129,7 @@ export async function getUserByClerkId(clerkId: string) {
     // Get User
     const user: any = await User.findOne({ clerkId });
     if (!user) throw new Error('User not found')
-    //console.log(user)
+    //console.log(user);
     // Get Verification Fee
     const verifyData = await Verifies.findOne()
     const fee = verifyData?.fee || 500
@@ -184,7 +184,7 @@ export async function getUserByClerkId(clerkId: string) {
         subscriptionStatus = 'Expired'
       }
     }
-    // console.log(JSON.parse(JSON.stringify({ ...user.toObject(), fee })))
+    console.log(JSON.parse(JSON.stringify({ ...user.toObject(), fee })))
     return {
       user: JSON.parse(JSON.stringify({ ...user.toObject(), fee })),
       transaction,
