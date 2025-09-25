@@ -1,25 +1,46 @@
 "use client";
-import { requeststkpush } from "@/lib/actions/requeststkpush";
-import TextField from "@mui/material/TextField";
+
 import React, { useEffect, useState } from "react";
-import { Requestcheckpayment } from "@/lib/actions/checkpayment";
-import { useToast } from "../ui/use-toast";
-import { useRouter } from "next/navigation";
-import { formatKsh } from "@/lib/help";
-import { Toaster } from "../ui/toaster";
 import Navbar from "./navbar";
-import { mode } from "@/constants";
 import { Button } from "../ui/button";
-import Footersub from "./Footersub";
-import { checkPaymentStatus } from "@/lib/actions/payment.actions";
+import { Toaster } from "../ui/toaster";
+import { useToast } from "../ui/use-toast";
+import { formatKsh } from "@/lib/help";
 import { requestOrder } from "@/lib/actions/requestOrder";
 import { updateOrder } from "@/lib/actions/transactions.actions";
 
-type payProps = {
+type Trans = {
+  amount: number;
+  plan: string;
+  planId?: { list: string };
+  period?: string;
+  orderTrackingId: string;
+  merchantId: string;
+  status: "Pending" | "Failed" | "Paid" | string;
+};
+
+type User = {
+  _id: string;
+  phone?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  status?: string;
+};
+
+type ReceiptData = {
+  orderId?: string;
+  amount?: number;
+  transactionId?: string;
+  phone?: string;
+  date?: string;
+};
+
+type PayProps = {
   userId: string;
   recipientUid: string;
-  trans: any;
-  user: any;
+  trans: Trans[];
+  user: User;
   onClose: () => void;
   handleOpenSell: () => void;
   handleOpenBook: () => void;
@@ -33,313 +54,286 @@ type payProps = {
   handleOpenChatId: (value: string) => void;
   handleOpenSettings: () => void;
   handleOpenPerfomance: () => void;
-
 };
-const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance, handleOpenSettings,
-  handleOpenShop, onClose, handleOpenSell, handleOpenChat, handleOpenBook, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: payProps) => {
+
+const StatusPill = ({ status }: { status: string }) => {
+  const map: Record<string, string> = {
+    Pending:
+      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+    Failed:
+      "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+    Paid:
+      "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+  };
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${map[status] ?? "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+        }`}
+    >
+      {status}
+    </span>
+  );
+};
+
+const Row = ({ label, value }: { label: React.ReactNode; value: React.ReactNode }) => (
+  <div className="flex items-start justify-between py-2">
+    <span className="text-sm text-muted-foreground">{label}</span>
+    <span className="text-sm font-medium text-foreground">{value ?? "—"}</span>
+  </div>
+);
+
+const DashboardPay = ({
+  userId,
+  trans,
+  user,
+  onClose,
+  recipientUid,
+  handleOpenPerfomance,
+  handleOpenSettings,
+  handleOpenShop,
+  handleOpenSell,
+  handleOpenChat,
+  handleOpenBook,
+  handleOpenPlan,
+  handleOpenAbout,
+  handleOpenTerms,
+  handleOpenPrivacy,
+  handleOpenSafety,
+}: PayProps) => {
   const { toast } = useToast();
-  const [phoneInput, setPhoneInput] = useState<string>(user?.phone ?? "");
-  const [phoneError, setPhoneError] = useState<string>("");
-  useEffect(() => {
-    setPhoneInput(user?.phone ?? "");
-  }, [user?.phone]);
-  const [deposit, setdeposit] = useState(
-    trans.length > 0 ? trans[0].amount : 0
-  );
-  const [stkresponse, setstkresponse] = useState("");
-  const [errorstkresponse, errorsetstkresponse] = useState("");
-  const [isSubmitting, setisSubmitting] = useState<boolean>(false);
-  const [receiptData, setReceiptData] = useState<any>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stkresponse, setStkresponse] = useState("");
+  const [errorStkresponse, setErrorStkresponse] = useState("");
+  const [receiptData, setReceiptData] = useState<ReceiptData>({});
 
-  const [pay, setpay] = useState(
-    trans.length > 0 ? trans[0].status : "Pending"
-  );
-
-  // Simple KE phone normalizer -> +2547XXXXXXXX
-  function normalizeKenyanPhone(input: string | undefined | null): string | null {
-    if (!input) return null;
-    let s = (input + "").replace(/\D/g, ""); // strip non-digits
-
-    // Accept 07XXXXXXXX, 7XXXXXXXX, 1XXXXXXXX, 2547XXXXXXXX, +2547XXXXXXXX
-    if (s.startsWith("0") && s.length >= 10) s = "254" + s.slice(1);
-    else if (s.startsWith("254")) s = s;
-    else if (s.startsWith("7") || s.startsWith("1")) s = "254" + s;
-    // else: invalid prefix
-
-    // KE MSISDN length = 12 digits when normalized (254 + 9)
-    if (s.length !== 12) return null;
-    return "+" + s; // E.164
-  }
-
+  const t = trans?.[0];
+  const pay = t?.status ?? "Pending";
 
   const handlePay = async () => {
-    // Require phone if not present on user
-    const normalizedPhone = user?.phone ?? "+254720672621";
-    //  const normalizedPhone = normalizeKenyanPhone(rawPhone);
-
-    // if (!normalizedPhone) {
-    //   setPhoneError("Enter a valid Kenyan number, e.g. 07xx..., 7xx..., or +2547xx...");
-    // Optional toast
-    // toast({ title: "Phone required", description: "Please enter a valid Kenyan phone number.", variant: "destructive" });
-    //  return;
-    // } else {
-    //  setPhoneError("");
-    //}
-    const orderDetails = {
-      id: trans[0].orderTrackingId,
-      currency: "KES",
-      amount: trans[0].amount,
-      description: trans[0].plan || "Tadao Payment",
-      callback_url: process.env.NEXT_PUBLIC_DOMAIN_URL + "successful",
-      notification_id: "", // optional webhook setup
-      billing_address: {
-        email: user?.email,
-        phone_number: normalizedPhone,
-        first_name: user?.firstName,
-        last_name: user?.lastName,
-
-      },
-    };
+    if (!t) return;
     try {
-      setisSubmitting(true);
+      setIsSubmitting(true);
+      setErrorStkresponse("");
+      setStkresponse("");
 
-      // Send the order details to the API
-      //console.log(orderDetails)
+      const orderDetails = {
+        id: t.orderTrackingId,
+        currency: "KES",
+        amount: t.amount,
+        description: t.plan || "Tadao Payment",
+        callback_url: `${process.env.NEXT_PUBLIC_DOMAIN_URL}successful`,
+        notification_id: "",
+        billing_address: {
+          email: user?.email ?? "",
+          phone_number: user?.phone ?? "+254720672621",
+          first_name: user?.firstName ?? "",
+          last_name: user?.lastName ?? "",
+        },
+      };
+
       const response = await requestOrder(orderDetails);
+      await updateOrder(t.merchantId, response.order_tracking_id);
 
-      const orderId = response.order_tracking_id;
-
-      const redirect_url = response.redirect_url;
-      await updateOrder(trans[0].merchantId, orderId)
-      // Check the redirect URL and redirect if valid
-      if (redirect_url !== "error") {
-        // Redirect the user to the payment page
-        window.location.href = redirect_url;
+      if (response.redirect_url && response.redirect_url !== "error") {
+        window.location.href = response.redirect_url;
       } else {
-        console.error("Error in redirect URL");
+        throw new Error("Invalid redirect URL");
       }
-      setisSubmitting(false); // Disable the button and show progress
-    } catch (error) {
-      setisSubmitting(false); // Disable the button and show progress
-
-      console.error("Error processing order:", error);
+    } catch (err: any) {
+      setErrorStkresponse(err?.message ?? "Error processing order.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-
-
-
-  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
-    const isDark = savedTheme === mode;
-
-    setIsDarkMode(isDark);
-    document.documentElement.classList.toggle(mode, isDark);
-  }, []);
-
-  useEffect(() => {
-    if (isDarkMode === null) return; // Prevent running on initial mount
-
-    document.documentElement.classList.toggle(mode, isDarkMode);
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
-
-  if (isDarkMode === null) return null; // Avoid flickering before state is set
-
-  if (trans.length === 0) {
+  // Empty state
+  if (!t) {
     return (
-      <div className="flex-center wrapper min-h-[200px] w-full flex-col gap-3 rounded-lg border py-28 text-center">
-        <h3 className="p-bold-20 md:h5-bold">No order found!</h3>
-        <p className="p-regular-14">No data</p>
-      </div>
-    );
-  }
-  return (
-    <div className="min-h-screen dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-gray-100">
-      <div className="top-0 z-10 fixed w-full">
-        <Navbar user={user} userstatus={user.status} userId={userId} onClose={onClose} popup={"pay"} handleOpenSell={handleOpenSell} handleOpenBook={handleOpenBook} handleOpenPlan={handleOpenPlan} handleOpenChat={handleOpenChat}
+      <div className="min-h-screen bg-background">
+        <Navbar
+          user={user}
+          userstatus={user?.status ?? "User"}
+          userId={userId}
+          onClose={onClose}
+          popup={"pay"}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenChat={handleOpenChat}
           handleOpenPerfomance={handleOpenPerfomance}
           handleOpenSettings={handleOpenSettings}
           handleOpenAbout={handleOpenAbout}
           handleOpenTerms={handleOpenTerms}
           handleOpenPrivacy={handleOpenPrivacy}
           handleOpenSafety={handleOpenSafety}
-          handleOpenShop={handleOpenShop} />
+          handleOpenShop={handleOpenShop}
+        />
+        <main className="max-w-2xl mx-auto px-4 pt-20">
+          <div className="rounded-lg border p-8 text-center">
+            <h2 className="text-lg font-semibold">No order found</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              There’s nothing to pay right now.
+            </p>
+          </div>
+        </main>
       </div>
-      <div className="max-w-6xl mx-auto flex mt-[60px] mb-0 p-1">
-        <div className="fixed w-full h-screen">
-          <div className="p-1">
-            <div className="p-1 max-w-3xl dark:bg-[#2D3236] bg-white mx-auto mb-2 border rounded-lg">
-              <div className="p-0 w-full items-center">
-                <div className="flex flex-col items-center rounded-t-lg w-full p-1">
-                  <div className="gap-1 h-[450px] mt-2 items-center w-full rounded-lg">
-                    <div className="">
-                      <div className="flex flex-col items-center">
-                        <div className="flex flex-col rounded-lg dark:bg-[#2D3236] bg-white p-2 mb-2 w-full">
-                          <div className="flex justify-between w-full items-center">
-                            <div className="flex gap-1 items-center">
-                              <div className="font-bold text-grey-900 font-bold p-2">
-                                Plan
-                              </div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="font-bold p-2">{trans[0].plan}</div>
-                            </div>
-                          </div>
+    );
+  }
 
-                          <div className="p-1">
-                            {/*<div className="flex justify-between w-full items-center">
-                              <div className="flex gap-1 text-[12px] lg:text-xs items-center">
-                                Order Tracking Id:
-                              </div>
-                              <div className="flex text-[12px] lg:text-xs font-bold items-center">
-                                {trans[0].orderTrackingId}
-                              </div>
-                            </div>*/}
+  return (
+    <main className="min-h-screen bg-gray-100 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+      <div className="fixed top-0 inset-x-0 z-50">
+        <Navbar
+          user={user}
+          userstatus={user?.status ?? "User"}
+          userId={userId}
+          onClose={onClose}
+          popup={"pay"}
+          handleOpenSell={handleOpenSell}
+          handleOpenBook={handleOpenBook}
+          handleOpenPlan={handleOpenPlan}
+          handleOpenChat={handleOpenChat}
+          handleOpenPerfomance={handleOpenPerfomance}
+          handleOpenSettings={handleOpenSettings}
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+          handleOpenShop={handleOpenShop}
+        />
+      </div>
 
-                            {trans[0].plan === "Verification" ? (
-                              <>
-                                <div className="flex justify-between w-full items-center">
-                                  <div className="flex gap-1 text-[12px] lg:text-xs items-center">
-                                    Description:
-                                  </div>
-                                  <div className="flex text-[12px] lg:text-xs font-bold items-center">
-                                    One-time Account verification fee
-                                  </div>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="flex justify-between w-full items-center">
-                                  <div className="flex gap-1 text-[12px] lg:text-xs items-center">
-                                    Period:
-                                  </div>
-                                  <div className="flex text-[12px] lg:text-xs font-bold items-center">
-                                    {trans[0].period}
-                                  </div>
-                                </div>
-                                <div className="flex justify-between w-full items-center">
-                                  <div className="flex text-[12px] lg:text-xs gap-1 items-center">
-                                    Allaowable Ads:
-                                  </div>
-                                  <div className="flex text-[12px] lg:text-xs font-bold items-center">
-                                    {trans[0].planId.list}
-                                  </div>
-                                </div>
-                              </>
-                            )}
-                            <div className="flex justify-between w-full items-center">
-                              <div className="flex gap-1 text-[12px] lg:text-xs items-center">
-                                Status:
-                              </div>
-                              <div className="flex items-center">
-                                <div
-                                  className={`flex flex-col mt-1 text-[12px] lg:text-xs p-1 text-white justify-center items-center w-[70px] rounded-full ${pay === "Pending"
-                                    ? "bg-yellow-600"
-                                    : pay === "Failed"
-                                      ? "bg-red-600 "
-                                      : "bg-green-600"
-                                    }`}
-                                >
-                                  {pay}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+      <div className="max-w-3xl mx-auto px-4 pt-20 pb-10">
+        <h1 className="text-2xl font-semibold mb-4">Checkout</h1>
 
-                          {pay === "Pending" ? (
-                            <>
-                              <div className="flex justify-between w-full items-center">
-                                <div className="flex gap-1 items-center">
-                                  <div className="dark:text-gray-300 text-grey-900 font-bold p-2">
-                                    Amount
-                                  </div>
-                                </div>
-                                <div className="flex items-center">
-                                  <div className="dark:text-gray-300 text-black font-bold p-2">
-                                    {formatKsh(trans[0].amount)}
-                                  </div>
-                                </div>
-                              </div>
+        {/* Alerts */}
+        {errorStkresponse && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-200"
+          >
+            {errorStkresponse}
+          </div>
+        )}
+        {stkresponse && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-900/40 dark:bg-green-900/20 dark:text-green-200"
+          >
+            {stkresponse}
+          </div>
+        )}
 
+        {/* Order Summary */}
+        <section className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="flex items-center justify-between px-4 py-3 border-b">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Order Summary
+            </h2>
+            <StatusPill status={pay} />
+          </div>
 
-                              <Button
-                                onClick={handlePay}
-                                variant="default"
-                                disabled={
-                                  isSubmitting
-                                }
-                                className="w-full hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white mt-2 shadow"
-                              >
-                                {isSubmitting ? "Sending request..." : `Pay Now`}
-                              </Button>
-                              {stkresponse && (
-                                <div className="mt-2 text-green-700 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
-                                  {stkresponse}
-                                </div>
-                              )}
-                              {errorstkresponse && (
-                                <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
-                                  {errorstkresponse}
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <div className="mt-10 p-4 border rounded-lg shadow-sm bg-white text-gray-800">
-                                {/* Receipt Header */}
-                                <div className="text-2xl font-bold mb-2">Payment Receipt</div>
+          <div className="px-4 py-2">
+            <Row label="Plan" value={t.plan} />
+            {t.plan === "Verification" ? (
+              <Row label="Description" value="One-time account verification fee" />
+            ) : (
+              <>
+                <Row label="Period" value={t.period} />
+                <Row label="Allowable Ads" value={t.planId?.list} />
+              </>
+            )}
+            <Row label="Amount" value={formatKsh(t.amount)} />
+          </div>
+        </section>
 
-                                {/* Receipt Details */}
-                                <div className="space-y-1 text-sm">
-
-                                  <div><span className="font-semibold">Receipt ID:</span> #{receiptData.orderId}</div>
-                                  <div><span className="font-semibold">Amount Paid:</span> KES {formatKsh(receiptData.amount)}</div>
-                                  <div><span className="font-semibold">TransactionId:</span> {receiptData.transactionId}</div>
-                                  <div><span className="font-semibold">Phone:</span> {receiptData.phone}</div>
-                                  <div><span className="font-semibold">Date:</span> {receiptData.date}</div>
-                                  <div><span className="font-semibold">Payment Method:</span> M-Pesa</div>
-                                  <div><span className="font-semibold">Transaction Status:</span> <span className="text-green-600 font-medium">Successful</span></div>
-                                </div>
-
-                                {/* Paid & Navigation Buttons */}
-                                <div className="flex gap-1 mt-6 items-center">
-
-                                  <div className="flex gap-2 w-full">
-                                    <Button
-                                      variant="outline"
-                                      onClick={onClose}
-                                    >
-                                      Home
-                                    </Button>
-                                    <Button
-                                      variant="outline"
-                                      onClick={() => handleOpenShop(user)}
-                                    >
-                                      My Shop
-                                    </Button>
-                                  </div>
-                                </div>
-                              </div>
-
-                            </>
-                          )}
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        {/* Actions / Receipt */}
+        {pay === "Pending" ? (
+          <section className="mt-4">
+            <Button
+              onClick={handlePay}
+              className="w-full"
+              disabled={isSubmitting || !t.amount || !t.orderTrackingId}
+              aria-busy={isSubmitting}
+            >
+              {isSubmitting ? "Redirecting to payment…" : "Pay now"}
+            </Button>
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              You’ll be securely redirected to complete your payment.
+            </p>
+          </section>
+        ) : (
+          <section
+            className="mt-4 rounded-xl border bg-card text-card-foreground shadow-sm"
+            aria-live="polite"
+          >
+            <div className="px-4 py-3 border-b">
+              <h2 className="text-sm font-medium text-muted-foreground">
+                Payment Receipt
+              </h2>
+            </div>
+            <div className="px-4 py-3 space-y-1 text-sm">
+              <div>
+                <span className="text-muted-foreground">Receipt ID:</span>{" "}
+                <span className="font-medium">
+                  #{receiptData.orderId ?? t.orderTrackingId}
+                </span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Amount Paid:</span>{" "}
+                <span className="font-medium">
+                  KES {formatKsh(receiptData.amount ?? t.amount)}
+                </span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Transaction Id:</span>{" "}
+                <span className="font-medium">
+                  {receiptData.transactionId ?? "—"}
+                </span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Phone:</span>{" "}
+                <span className="font-medium">
+                  {receiptData.phone ?? user?.phone ?? "—"}
+                </span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Date:</span>{" "}
+                <span className="font-medium">
+                  {receiptData.date ?? new Date().toLocaleString()}
+                </span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Payment Method:</span>{" "}
+                <span className="font-medium">M-Pesa</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Status:</span>{" "}
+                <span className="text-green-600 dark:text-green-400 font-medium">
+                  Successful
+                </span>
               </div>
             </div>
-          </div>
-        </div>
+            <div className="px-4 pb-4 flex gap-2">
+              <Button variant="outline" className="w-full" onClick={onClose}>
+                Home
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleOpenShop(user)}
+              >
+                My Shop
+              </Button>
+            </div>
+          </section>
+        )}
+
         <Toaster />
       </div>
-
-    </div>
+    </main>
   );
 };
 
