@@ -115,7 +115,7 @@ export function DrawerDemo({
     priceInput: string) => {
     // Require phone if not present on user
     const customerId = generateRandomOrderId();
-    const normalizedPhone = user?.phone ?? '+254720672621';
+    const normalizedPhone = user?.phone ?? '0720672621';
     //const normalizedPhone = normalizeKenyanPhone(rawPhone);
     const trans = {
       orderTrackingId: customerId,
@@ -135,11 +135,12 @@ export function DrawerDemo({
       if (response.status === "Pending") {
         //  handlePayNow(response.merchantId);
         //pay
+
         const orderDetails = {
-          id: customerId,
+          id: response.orderTrackingId,
           currency: "KES",
-          amount: Number(priceInput),
-          description: packNameInput || "Tadao Payment",
+          amount: response.amount,
+          description: response.plan || "Tadao Payment",
           callback_url: process.env.NEXT_PUBLIC_DOMAIN_URL + "successful",
           notification_id: "", // optional webhook setup
           billing_address: {
@@ -154,11 +155,11 @@ export function DrawerDemo({
 
           // Send the order details to the API
 
-          const response = await requestOrder(orderDetails);
+          const response: any = await requestOrder(orderDetails);
+          console.log(response)
+          const orderId = response.data.order_tracking_id;
 
-          const orderId = response.order_tracking_id;
-
-          const redirect_url = response.redirect_url;
+          const redirect_url = response.data.redirect_url;
           await updateOrder(customerId, orderId)
           // Check the redirect URL and redirect if valid
           if (redirect_url !== "error") {
