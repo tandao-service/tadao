@@ -112,10 +112,10 @@ export function DrawerDemo({
       user?.user?.verified && user?.user?.verified[0]?.accountverified === true;
     const hasSubscription = user?.subscriptionStatus === "Active";
 
-    if (!isVerified) {
-      setShowVerify(false);
-      return;
-    }
+    // if (!isVerified) {
+    //  setShowVerify(false);
+    //  return;
+    //}
 
     // if (isVerified && !hasSubscription) {
     //  setShowPackages(false);

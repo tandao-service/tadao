@@ -130,7 +130,7 @@ const DashboardPay = ({
           last_name: user?.lastName ?? "",
         },
       };
-
+      console.log(orderDetails);
       const response = await requestOrder(orderDetails);
       await updateOrder(t.merchantId, response.order_tracking_id);
 
