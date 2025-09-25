@@ -105,11 +105,11 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
 
       // Send the order details to the API
       console.log(orderDetails)
-      const response = await requestOrder(orderDetails);
+      const response: any = await requestOrder(orderDetails);
 
-      const orderId = response.order_tracking_id;
+      const orderId = response.data.order_tracking_id;
 
-      const redirect_url = response.redirect_url;
+      const redirect_url = response.data.redirect_url;
       await updateOrder(trans[0].merchantId, orderId)
       // Check the redirect URL and redirect if valid
       if (redirect_url !== "error") {
