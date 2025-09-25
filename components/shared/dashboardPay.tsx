@@ -74,17 +74,17 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
 
   const handlePay = async () => {
     // Require phone if not present on user
-    const rawPhone = user?.phone ?? phoneInput;
-    const normalizedPhone = normalizeKenyanPhone(rawPhone);
+    const normalizedPhone = user?.phone ?? "+254720672621";
+    //  const normalizedPhone = normalizeKenyanPhone(rawPhone);
 
-    if (!normalizedPhone) {
-      setPhoneError("Enter a valid Kenyan number, e.g. 07xx..., 7xx..., or +2547xx...");
-      // Optional toast
-      // toast({ title: "Phone required", description: "Please enter a valid Kenyan phone number.", variant: "destructive" });
-      return;
-    } else {
-      setPhoneError("");
-    }
+    // if (!normalizedPhone) {
+    //   setPhoneError("Enter a valid Kenyan number, e.g. 07xx..., 7xx..., or +2547xx...");
+    // Optional toast
+    // toast({ title: "Phone required", description: "Please enter a valid Kenyan phone number.", variant: "destructive" });
+    //  return;
+    // } else {
+    //  setPhoneError("");
+    //}
     const orderDetails = {
       id: trans[0].orderTrackingId,
       currency: "KES",
@@ -104,12 +104,12 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
       setisSubmitting(true);
 
       // Send the order details to the API
-      console.log(orderDetails)
-      const response: any = await requestOrder(orderDetails);
+      //console.log(orderDetails)
+      const response = await requestOrder(orderDetails);
 
-      const orderId = response.data.order_tracking_id;
+      const orderId = response.order_tracking_id;
 
-      const redirect_url = response.data.redirect_url;
+      const redirect_url = response.redirect_url;
       await updateOrder(trans[0].merchantId, orderId)
       // Check the redirect URL and redirect if valid
       if (redirect_url !== "error") {
@@ -190,14 +190,14 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
                           </div>
 
                           <div className="p-1">
-                            <div className="flex justify-between w-full items-center">
+                            {/*<div className="flex justify-between w-full items-center">
                               <div className="flex gap-1 text-[12px] lg:text-xs items-center">
                                 Order Tracking Id:
                               </div>
                               <div className="flex text-[12px] lg:text-xs font-bold items-center">
                                 {trans[0].orderTrackingId}
                               </div>
-                            </div>
+                            </div>*/}
 
                             {trans[0].plan === "Verification" ? (
                               <>
@@ -263,60 +263,13 @@ const DashboardPay = ({ userId, trans, user, recipientUid, handleOpenPerfomance,
                                   </div>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-4 text-lg p-1 dark:text-gray-300 text-gray-900">
-                                {/* M-Pesa */}
-                                <span className="flex items-center gap-1">
-                                  <img src="/assets/images/mpesa.png" alt="M-Pesa" className="w-10 h-5" />
-
-                                </span>
 
 
-
-                                {/* Airtel */}
-                                <span className="flex items-center gap-1">
-                                  <img src="/assets/images/airtel.png" alt="Airtel" className="w-10 h-5" />
-
-                                </span>
-
-
-
-                                {/* Visa */}
-                                <span className="flex items-center gap-1">
-                                  <img src="/assets/images/visa.png" alt="Visa" className="w-10 h-5" />
-
-                                </span>
-
-
-                              </div>
-
-                              {!user?.phone && (
-                                <div className="mt-2">
-                                  <label className="block text-sm mb-1">Phone number (M-Pesa / Airtel Money)</label>
-                                  <TextField
-                                    fullWidth
-                                    size="small"
-                                    placeholder="07xx xxx xxx or +2547xx xxx xxx"
-                                    value={phoneInput}
-                                    onChange={(e) => {
-                                      setPhoneInput(e.target.value);
-                                      if (phoneError) setPhoneError("");
-                                    }}
-                                    onBlur={() => {
-                                      if (!normalizeKenyanPhone(phoneInput)) {
-                                        setPhoneError("Enter a valid Kenyan number, e.g. 07xx..., 7xx..., or +2547xx...");
-                                      }
-                                    }}
-                                    error={!!phoneError}
-                                    helperText={phoneError || "Required for billing & STK/checkout"}
-                                  />
-                                </div>
-                              )}
                               <Button
                                 onClick={handlePay}
                                 variant="default"
                                 disabled={
-                                  isSubmitting ||
-                                  (!user?.phone && !normalizeKenyanPhone(phoneInput))
+                                  isSubmitting
                                 }
                                 className="w-full hover:bg-[#8C4B2C] bg-[#BD7A4F] text-white mt-2 shadow"
                               >
