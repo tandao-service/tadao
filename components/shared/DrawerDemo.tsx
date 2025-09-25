@@ -14,13 +14,14 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { FreePackId, VerificationPackId } from "@/constants";
-import { createTransaction } from "@/lib/actions/transactions.actions";
+import { createTransaction, updateOrder } from "@/lib/actions/transactions.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "../ui/use-toast";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import ProgressPopup from "./ProgressPopup";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
+import { requestOrder } from "@/lib/actions/requestOrder";
 
 // import { Checkbox } from "../ui/checkbox"; // Unused
 type Package = {
@@ -71,7 +72,7 @@ export function DrawerDemo({
     const timestamp = Date.now(); // Current timestamp in milliseconds
     return `MERCHANT_${userId}_${timestamp}`;
   }
-  const handlePay = async (
+  const handlePayy = async (
     packIdInput: string,
     packNameInput: string,
     periodInput: string,
@@ -95,6 +96,7 @@ export function DrawerDemo({
       setIsSending(true);
       const response = await createTransaction(trans);
       if (response.status === "Pending") {
+
         handlePayNow(response.merchantId);
         onClose();
       }
@@ -105,6 +107,85 @@ export function DrawerDemo({
       setIsSending(false);
     }
   };
+
+
+  const handlePay = async (packIdInput: string,
+    packNameInput: string,
+    periodInput: string,
+    priceInput: string) => {
+    // Require phone if not present on user
+    const customerId = generateRandomOrderId();
+    const normalizedPhone = user?.phone ?? '+254720672621';
+    //const normalizedPhone = normalizeKenyanPhone(rawPhone);
+    const trans = {
+      orderTrackingId: customerId,
+      amount: Number(priceInput),
+      plan: packNameInput,
+      planId: packIdInput,
+      period: periodInput,
+      buyerId: userId,
+      merchantId: customerId,
+      status: "Pending",
+      createdAt: new Date(),
+    };
+
+    try {
+      setIsSending(true);
+      const response = await createTransaction(trans);
+      if (response.status === "Pending") {
+        //  handlePayNow(response.merchantId);
+        //pay
+        const orderDetails = {
+          id: customerId,
+          currency: "KES",
+          amount: Number(priceInput),
+          description: packNameInput || "Tadao Payment",
+          callback_url: process.env.NEXT_PUBLIC_DOMAIN_URL + "successful",
+          notification_id: "", // optional webhook setup
+          billing_address: {
+            email: user?.email,
+            phone_number: normalizedPhone,
+            first_name: user?.firstName,
+            last_name: user?.lastName,
+
+          },
+        };
+        try {
+
+          // Send the order details to the API
+
+          const response = await requestOrder(orderDetails);
+
+          const orderId = response.order_tracking_id;
+
+          const redirect_url = response.redirect_url;
+          await updateOrder(customerId, orderId)
+          // Check the redirect URL and redirect if valid
+          if (redirect_url !== "error") {
+            // Redirect the user to the payment page
+            window.location.href = redirect_url;
+          } else {
+            console.error("Error in redirect URL");
+          }
+
+        } catch (error) {
+          console.error("Error processing order:", error);
+        }
+        //pay
+
+        onClose();
+      }
+    } catch (error) {
+      //console.log(response);
+      console.log("Error processing payment: ", error);
+    } finally {
+      setIsSending(false);
+    }
+
+
+  };
+
+
 
   const handleViewRequests = () => {
 

@@ -2235,6 +2235,35 @@ const AdForm = ({
                                       >
                                         1 month
                                       </button>
+
+                                      <button
+                                        className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 2
+                                          ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                          : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                          }`}
+                                        onClick={() => handleButtonClick(2, "3 months")}
+                                      >
+                                        3 months
+                                      </button>
+                                      <button
+                                        className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 3
+                                          ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                          : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                          }`}
+                                        onClick={() => handleButtonClick(3, " 6 months")}
+                                      >
+                                        6 months
+                                      </button>
+                                      <button
+                                        className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 4
+                                          ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                          : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                          }`}
+                                        onClick={() => handleButtonClick(4, " 1 year")}
+                                      >
+                                        1 year
+                                      </button>
+
                                     </div>
                                   </>
                                 )}
