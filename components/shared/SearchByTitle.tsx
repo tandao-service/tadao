@@ -37,10 +37,12 @@ import VerticalCard from "./VerticalCard";
 import Skeleton from "@mui/material/Skeleton";
 import SearchNowTitle from "./SearchNowTitle";
 import { Button } from "../ui/button";
+import CategoryFilterSearch from "./CategoryFilterSearch";
 interface ChatWindowProps {
   isOpen: boolean;
   userId: string;
   value?: string;
+  categoryList: any;
   onClose: () => void;
   handleAdEdit: (ad: any) => void;
   handleAdView: (ad: any) => void;
@@ -55,6 +57,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
   isOpen,
   userId,
   value,
+  categoryList,
   onClose,
   handleAdView,
   handleAdEdit,
@@ -76,6 +79,12 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
   const [newqueryObject, setNewqueryObject] = useState<any>([]);
   const observer = useRef<IntersectionObserver | null>(null);
   // Keep the early return after defining hooks
+  const handleResetFilter = (value: any) => {
+    setNewqueryObject({
+      ...value,
+    });
+  };
+
   const handleFilter = (value: any) => {
     setQuery(value.query);
     setNewqueryObject({
@@ -161,7 +170,9 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
 
           <div className="w-full mt-2 flex h-[60px] dark:bg-[#2D3236]">
 
-            <SearchNowTitle handleFilter={handleFilter} onClose={onClose} />
+            {value === "bids" ? (<>
+              <CategoryFilterSearch categoryList={categoryList} handleFilter={handleResetFilter} /></>) : (<>
+                <SearchNowTitle handleFilter={handleFilter} onClose={onClose} /></>)}
 
 
           </div>
@@ -206,10 +217,15 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
               </div>) : (
                 !loading && (
                   <div className="flex items-center justify-center min-h-[400px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
-                    <h3 className="font-bold text-[16px] lg:text-[25px]">No results found</h3>
+                    <h3 className="font-bold text-[16px] lg:text-[25px]">No bids found</h3>
                     <p className="text-sm lg:text-[16px] text-gray-500">
-                      We couldn&apos;t find anything matching your search. <br />
-                      Try using different keywords or filters.
+                      {value === "bids" ? (<>
+                        We couldn&apos;t find any active bid <br />
+
+                      </>) : (<>
+                        We couldn&apos;t find anything matching your search. <br />
+                        Try using different keywords or filters.
+                      </>)}
                     </p>
                   </div>
 
@@ -219,7 +235,14 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
                 <div>
 
                   <div className="w-full min-h-[400px] h-full flex flex-col items-center justify-center">
-                    <Image src="/assets/icons/loading.gif" alt="loading" width={40} height={40} unoptimized /><div>Searching..</div>
+                    <Image src="/assets/icons/loading.gif" alt="loading" width={40} height={40} unoptimized /><div>
+                      {value === "bids" ? (<>
+                        Searching bids..
+
+                      </>) : (<>
+                        Searching..
+                      </>)}
+                    </div>
                   </div>
 
                 </div>

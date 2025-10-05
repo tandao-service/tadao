@@ -17,44 +17,39 @@ import TextField from "@mui/material/TextField";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
-const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any, handleFilter: (value :any) => void }) => {
+const CategoryFilterSearch = ({ handleFilter, categoryList, value }: { value?: string, categoryList: any, handleFilter: (value: any) => void }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [category, setCategory] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    console.log(categoryList);
-    setCategories(categoryList as ICategory[]);
-//const getCategories = async () => {
-    //  const categoryList = await getAllCategories();
 
-    //  categoryList && setCategories(categoryList as ICategory[]);
-   // };
-   // getCategories();
+    setCategories(categoryList as ICategory[]);
+
   }, []);
 
   const onSelectCategory = (category: string) => {
-   // let newUrl = "";
+    // let newUrl = "";
     setCategory(category);
     handleFilter({
       category: category.toString(),
-       subcategory: "",
+      subcategory: "",
     });
     //if (category && category !== "All") {
     //  newUrl = formUrlQuery({
-     //   params: "",
-     //   key: "category",
-     //   value: category,
+    //   params: "",
+    //   key: "category",
+    //   value: category,
     //  });
     //} else {
-     // newUrl = removeKeysFromQuery({
-     //   params: searchParams.toString(),
-     //   keysToRemove: ["category"],
+    // newUrl = removeKeysFromQuery({
+    //   params: searchParams.toString(),
+    //   keysToRemove: ["category"],
     //  });
     //}
-   // onLoading();
-   // router.push(newUrl, { scroll: false });
+    // onLoading();
+    // router.push(newUrl, { scroll: false });
   };
 
   return (
@@ -89,10 +84,12 @@ const CategoryFilterSearch = ({ handleFilter, categoryList }: {categoryList:any,
 
                   <div className="flex text-sm flex-col">
                     {category.name}
-                    <div className="flex text-xs dark:text-gray-500 gap-1">
+
+                    {value !== "bids" && (<div className="flex text-xs dark:text-gray-500 gap-1">
                       {category.adCount}
                       <div>ads</div>
-                    </div>
+                    </div>)}
+
                   </div>
                 </div>
                 <div>

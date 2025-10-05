@@ -13,11 +13,11 @@ export default function HomeClient(props: any) {
     const [userImage, setUserImage] = useState("");
 
     useEffect(() => {
-        if (!user) return;
-
+        //  if (!user) return;
         (async () => {
             try {
-                const fetchedUser: any = await getUserByClerkId(user.uid);
+                const fetchedUser: any = await getUserByClerkId("WS7tuWWGvrTIhdZLMDZIUIw5Y1y2");
+                console.log(fetchedUser)
                 setUserId(fetchedUser._id);
                 setUserName(fetchedUser.firstName + " " + fetchedUser.lastName);
                 setUserImage(fetchedUser.photo || "");
@@ -25,7 +25,7 @@ export default function HomeClient(props: any) {
                 console.error("Failed to fetch user by ClerkId:", err);
             }
         })();
-    }, [user]);
+    }, []);
 
     if (authLoading) {
         return <div>Loading...</div>;

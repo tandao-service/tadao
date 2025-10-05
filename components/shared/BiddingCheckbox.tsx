@@ -76,7 +76,7 @@ const BiddingCheckbox: React.FC<Props> = ({ formData, setFormData, handlePayNow,
 
             {/* Popup */}
             {showVerifyPopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                <div className="z-10 fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
                         <h2 className="text-lg font-semibold mb-4">Account Verification Required</h2>
                         <p className="mb-4">Please verify your account to enable bidding.</p>
@@ -91,12 +91,19 @@ const BiddingCheckbox: React.FC<Props> = ({ formData, setFormData, handlePayNow,
                                 disabled={loading}
                                 onClick={() => {
                                     setLoading(true);
-                                    handlePay(VerificationPackId, "Verification", "0", user.fee)
+                                    handlePay(VerificationPackId, "Verification", "0", user.user?.fee)
                                 }}
                                 className="px-4 py-2 bg-green-600 text-white rounded"
                             >
-                                {loading && <CircularProgress />}
-                                {loading ? "Submitting..." : ` Verify Now`}
+                                <div className="flex gap-2 items-center">
+                                    <CircularProgress
+                                        sx={{ color: "white" }}
+                                        size={24}
+                                    />
+                                    {loading ? "Submitting..." : ` Verify Now`}
+                                </div>
+
+
 
                             </button>
                         </div>

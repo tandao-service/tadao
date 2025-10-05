@@ -1589,6 +1589,7 @@ const CollectionInfinite = ({
                   handleAdView={handleAdView}
                   handleOpenPlan={handleOpenPlan}
                   queryObject={queryObject}
+                  categoryList={categoryList}
                   value={searchvalue}
                   handleOpenChatId={handleOpenChatId} />
                 <DrawerDemo

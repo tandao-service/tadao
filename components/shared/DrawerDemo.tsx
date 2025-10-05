@@ -63,9 +63,13 @@ export function DrawerDemo({
   const [isSending, setIsSending] = useState(false);
   const { user: currentUser } = useAuth();
   const handlePostRequest = () => {
-
-    handleOpenSell(category, subcategory);
-    onClose();
+    if (category === 'bids' && subcategory === 'bids') {
+      handleOpenSell('', '');
+      onClose();
+    } else {
+      handleOpenSell(category, subcategory);
+      onClose();
+    }
   };
   function generateRandomOrderId() {
     const timestamp = Date.now(); // Current timestamp in milliseconds

@@ -1099,9 +1099,80 @@ const AdForm = ({
                 )}
               </div>
             </div>
+            {selectedSubCategory &&
+              !["Services", "Jobs", "Repair & Construction", "Buyer Requests", "Seeking Work CVs", "Donations", "Lost and Found"].includes(selectedCategory) && (
+                <div className="mb-4 mt-2">
+                  <div className="flex gap-2 items-center">
+                    <label className="font-semibold text-sm">Enable Bidding?</label>
+                    <BiddingCheckbox handlePayNow={handlePay} formData={formData} setFormData={setFormData} user={user} />
+
+                  </div>
+
+                  {formData.biddingEnabled && (
+                    <div className="mt-4 space-y-4">
+                      {/* Bid Increment */}
+                      <div>
+                        <label className="block text-sm font-medium">
+                          Bid Increment (Ksh)
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={formData.bidIncrement}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              bidIncrement: e.target.value,
+                            }))
+                          }
+                          className="mt-1 block w-full rounded border p-2 text-sm"
+                          placeholder="Enter bid increment e.g. 500"
+                        />
+                        {formErrors_.bidIncrement && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {formErrors_.bidIncrement}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Bidding Ends At */}
+                      <div>
+                        <label className="block text-sm font-medium">
+                          Bidding Ends At
+                        </label>
+                        <input
+                          type="datetime-local"
+                          value={
+                            formData.biddingEndsAt
+                              ? new Date(formData.biddingEndsAt)
+                                .toISOString()
+                                .slice(0, 16)
+                              : ""
+                          }
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              biddingEndsAt: e.target.value,
+                            }))
+                          }
+                          className="mt-1 block w-full rounded border p-2 text-sm"
+                        />
+                        {formErrors_.biddingEndsAt && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {formErrors_.biddingEndsAt}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             {selectedSubCategory && (
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 flex gap-3 mt-3 flex-col">
+
+
+
                   <div>
                     <AutoComplete
                       data={REGIONS_WITH_AREA.map(
@@ -2013,74 +2084,7 @@ const AdForm = ({
                 )}
               </div>
             ))}
-            {selectedSubCategory &&
-              !["Services", "Jobs", "Repair & Construction", "Buyer Requests", "Seeking Work CVs", "Donations", "Lost and Found"].includes(selectedCategory) && (
-                <div className="mb-4 mt-2">
-                  <div className="flex gap-2 items-center">
-                    <label className="font-semibold text-sm">Enable Bidding?</label>
-                    <BiddingCheckbox handlePayNow={handlePay} formData={formData} setFormData={setFormData} user={user} />
 
-                  </div>
-
-                  {formData.biddingEnabled && (
-                    <div className="mt-4 space-y-4">
-                      {/* Bid Increment */}
-                      <div>
-                        <label className="block text-sm font-medium">
-                          Bid Increment (Ksh)
-                        </label>
-                        <input
-                          type="number"
-                          min={1}
-                          value={formData.bidIncrement}
-                          onChange={(e) =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              bidIncrement: e.target.value,
-                            }))
-                          }
-                          className="mt-1 block w-full rounded border p-2 text-sm"
-                          placeholder="Enter bid increment e.g. 500"
-                        />
-                        {formErrors_.bidIncrement && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {formErrors_.bidIncrement}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Bidding Ends At */}
-                      <div>
-                        <label className="block text-sm font-medium">
-                          Bidding Ends At
-                        </label>
-                        <input
-                          type="datetime-local"
-                          value={
-                            formData.biddingEndsAt
-                              ? new Date(formData.biddingEndsAt)
-                                .toISOString()
-                                .slice(0, 16)
-                              : ""
-                          }
-                          onChange={(e) =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              biddingEndsAt: e.target.value,
-                            }))
-                          }
-                          className="mt-1 block w-full rounded border p-2 text-sm"
-                        />
-                        {formErrors_.biddingEndsAt && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {formErrors_.biddingEndsAt}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
 
             {type === "Create" && selectedCategory !== "Donations" && selectedCategory !== "Lost and Found" && selectedCategory !== "Buyer Requests" && selectedSubCategory && (
               <>
@@ -2091,10 +2095,10 @@ const AdForm = ({
                   <div className="w-full mt-2 p-0 dark:text-gray-100 rounded-lg">
                     <div className="flex flex-col mb-5">
                       <p className="text-gray-700 dark:text-gray-300 font-semibold text-xl">
-                        Promote your ad
+                        Boast your ad
                       </p>
                       <p className="text-gray-600 text-sm dark:text-gray-500">
-                        Choose a promotion type for your ad to post it
+                        Choose a boast type for your ad to post it
                       </p>
                     </div>
                     {/* No Promo */}
