@@ -96,10 +96,10 @@ const BiddingCheckbox: React.FC<Props> = ({ formData, setFormData, handlePayNow,
                                 className="px-4 py-2 bg-green-600 text-white rounded"
                             >
                                 <div className="flex gap-2 items-center">
-                                    <CircularProgress
+                                    {loading && (<CircularProgress
                                         sx={{ color: "white" }}
                                         size={24}
-                                    />
+                                    />)}
                                     {loading ? "Submitting..." : ` Verify Now`}
                                 </div>
 

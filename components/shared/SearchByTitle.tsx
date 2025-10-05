@@ -76,10 +76,12 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
   const [newpage, setnewpage] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [query, setQuery] = useState(value);
+  const [categ, setCateg] = useState("");
   const [newqueryObject, setNewqueryObject] = useState<any>([]);
   const observer = useRef<IntersectionObserver | null>(null);
   // Keep the early return after defining hooks
   const handleResetFilter = (value: any) => {
+    setCateg(value)
     setNewqueryObject({
       ...value,
     });
@@ -171,7 +173,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
           <div className="w-full mt-2 flex h-[60px] dark:bg-[#2D3236]">
 
             {value === "bids" ? (<>
-              <CategoryFilterSearch categoryList={categoryList} handleFilter={handleResetFilter} /></>) : (<>
+              <CategoryFilterSearch value={value} categoryList={categoryList} handleFilter={handleResetFilter} /></>) : (<>
                 <SearchNowTitle handleFilter={handleFilter} onClose={onClose} /></>)}
 
 
@@ -183,8 +185,8 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
               {data.length > 0 ? (<div className="flex flex-col">
                 <p className="text-sm lg:text-[16px] text-gray-500">
                   {data.length > 0
-                    ? `Found ${data.length} results for “${query}”`
-                    : `No results found for “${query}”`}
+                    ? `Found ${data.length} results for “${query}” ${categ && (<>in {categ}</>)}`
+                    : `No results found for “${query} ${categ && (<>in {categ}</>)}”`}
                 </p>
                 <Masonry
                   breakpointCols={breakpointColumns}
@@ -217,7 +219,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
               </div>) : (
                 !loading && (
                   <div className="flex items-center justify-center min-h-[400px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-28 text-center">
-                    <h3 className="font-bold text-[16px] lg:text-[25px]">No bids found</h3>
+                    <h3 className="font-bold text-[16px] lg:text-[25px]">No bids found {categ && (<>in {categ}</>)}</h3>
                     <p className="text-sm lg:text-[16px] text-gray-500">
                       {value === "bids" ? (<>
                         We couldn&apos;t find any active bid <br />
@@ -237,7 +239,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
                   <div className="w-full min-h-[400px] h-full flex flex-col items-center justify-center">
                     <Image src="/assets/icons/loading.gif" alt="loading" width={40} height={40} unoptimized /><div>
                       {value === "bids" ? (<>
-                        Searching bids..
+                        Searching bids {categ && (<>in {categ}</>)}..
 
                       </>) : (<>
                         Searching..

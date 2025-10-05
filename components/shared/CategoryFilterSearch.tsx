@@ -20,8 +20,6 @@ import Image from "next/image";
 const CategoryFilterSearch = ({ handleFilter, categoryList, value }: { value?: string, categoryList: any, handleFilter: (value: any) => void }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [category, setCategory] = useState("");
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
 
@@ -36,20 +34,7 @@ const CategoryFilterSearch = ({ handleFilter, categoryList, value }: { value?: s
       category: category.toString(),
       subcategory: "",
     });
-    //if (category && category !== "All") {
-    //  newUrl = formUrlQuery({
-    //   params: "",
-    //   key: "category",
-    //   value: category,
-    //  });
-    //} else {
-    // newUrl = removeKeysFromQuery({
-    //   params: searchParams.toString(),
-    //   keysToRemove: ["category"],
-    //  });
-    //}
-    // onLoading();
-    // router.push(newUrl, { scroll: false });
+
   };
 
   return (
@@ -85,19 +70,15 @@ const CategoryFilterSearch = ({ handleFilter, categoryList, value }: { value?: s
                   <div className="flex text-sm flex-col">
                     {category.name}
 
-                    {value !== "bids" && (<div className="flex text-xs dark:text-gray-500 gap-1">
+                    <div className="flex text-xs dark:text-gray-500 gap-1">
                       {category.adCount}
                       <div>ads</div>
-                    </div>)}
+                    </div>
 
                   </div>
                 </div>
-                <div>
-                  <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
-                </div>
-                {/*  <div className="text-xs text-emerald-600">
-                  | {category.adCount} ads
-                </div> */}
+
+
               </div>
             </SelectItem>
           ))}

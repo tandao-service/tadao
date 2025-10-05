@@ -63,7 +63,7 @@ export function DrawerDemo({
   const [isSending, setIsSending] = useState(false);
   const { user: currentUser } = useAuth();
   const handlePostRequest = () => {
-    if (category === 'bids' && subcategory === 'bids') {
+    if (subcategory === 'bids') {
       handleOpenSell('', '');
       onClose();
     } else {
