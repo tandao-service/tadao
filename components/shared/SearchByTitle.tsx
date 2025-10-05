@@ -81,7 +81,7 @@ const SearchByTitle: React.FC<ChatWindowProps> = ({
   const observer = useRef<IntersectionObserver | null>(null);
   // Keep the early return after defining hooks
   const handleResetFilter = (value: any) => {
-    setCateg(value)
+    setCateg(value.category);
     setNewqueryObject({
       ...value,
     });

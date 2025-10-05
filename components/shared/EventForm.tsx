@@ -359,7 +359,7 @@ const AdForm = ({
             phone: ad.data.phone,
           });
         } else {
-          if (subcategory && category) {
+          if (subcategory && category !== "bids" && category) {
             setSelectedCategory(category);
             setSelectedSubCategory(subcategory);
             const selectedData: any = categories.find(
@@ -1170,8 +1170,6 @@ const AdForm = ({
             {selectedSubCategory && (
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 flex gap-3 mt-3 flex-col">
-
-
 
                   <div>
                     <AutoComplete
