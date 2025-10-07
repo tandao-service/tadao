@@ -5,19 +5,23 @@ import { useEffect, useState } from "react";
 import { getUserByClerkId } from "@/lib/actions/user.actions";
 import HomeDashboard from "@/components/shared/HomeDashboard";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function HomeClient(props: any) {
     const { user, loading: authLoading } = useAuth();
     const [userId, setUserId] = useState("");
     const [userName, setUserName] = useState("");
     const [userImage, setUserImage] = useState("");
-
+    const router = useRouter();
     useEffect(() => {
         //  if (!user) return;
         (async () => {
             try {
                 const fetchedUser: any = await getUserByClerkId("WS7tuWWGvrTIhdZLMDZIUIw5Y1y2");
-                console.log(fetchedUser)
+                if (fetchedUser.status === "User") {
+                    router.push("/");
+                    return
+                }
                 setUserId(fetchedUser._id);
                 setUserName(fetchedUser.firstName + " " + fetchedUser.lastName);
                 setUserImage(fetchedUser.photo || "");

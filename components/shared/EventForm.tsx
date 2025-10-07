@@ -780,7 +780,7 @@ const AdForm = ({
           formData: finalData,
           expirely: ExpirationDate_,
           priority: Priority_,
-          adstatus: Adstatus_,
+          adstatus: Plan === "Free" ? "Active" : Adstatus_,
           planId: PlanId,
           plan: Plan,
           pricePack: pricePack,
