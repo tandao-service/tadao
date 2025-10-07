@@ -11,6 +11,8 @@ import {
     signInWithCredential,
     UserCredential,
     sendPasswordResetEmail,
+    setPersistence,
+    browserLocalPersistence,
 } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase";
 import { createUser as createUserInDB } from "@/lib/actions/user.actions";
@@ -55,18 +57,15 @@ export default function AuthPage() {
     // ✅ Friendly Firebase error messages
     const getFriendlyError = (code: string) => {
         switch (code) {
-            case "auth/email-already-in-use":
-                return "This email is already registered.";
-            case "auth/invalid-email":
-                return "Invalid email address.";
-            case "auth/weak-password":
-                return "Password should be at least 6 characters.";
-            case "auth/user-not-found":
-                return "No account found with this email.";
-            case "auth/wrong-password":
-                return "Incorrect password.";
-            default:
-                return "Something went wrong. Please try again.";
+            case "auth/invalid-credential": return "Incorrect email or password.";
+            case "auth/user-not-found": return "No account found with this email.";
+            case "auth/wrong-password": return "Incorrect password.";
+            case "auth/too-many-requests": return "Too many attempts. Try again later.";
+            case "auth/operation-not-allowed": return "Email/password sign-in is disabled.";
+            case "auth/invalid-email": return "Invalid email address.";
+            case "auth/weak-password": return "Password should be at least 6 characters.";
+            case "auth/network-request-failed": return "Network error. Check your connection.";
+            default: return "Something went wrong. Please try again.";
         }
     };
 
@@ -171,11 +170,13 @@ export default function AuthPage() {
         setLoading(true);
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await setPersistence(auth, browserLocalPersistence); // web only; no-op native
+            await signInWithEmailAndPassword(auth, email.trim(), password);
             router.push("/");
         } catch (err: any) {
-            console.error(err);
-            setError(getFriendlyError(err.code));
+            // See the exact reason in dev tools
+            console.error("Firebase sign-in error:", { code: err?.code, message: err?.message });
+            setError(getFriendlyError(err?.code || ""));
         } finally {
             setLoading(false);
         }

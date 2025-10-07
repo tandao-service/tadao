@@ -26,7 +26,7 @@ export default function HomeClient(props: any) {
             try {
                 const fetchedUser: any = await getUserByClerkId(user.uid);
 
-                const status = (fetchedUser?.status ?? "").toLowerCase();
+                const status = (fetchedUser?.status ?? "user").toLowerCase();
                 if (status === "user") {
                     setRedirecting(true);
                     // ⚠️ change "/" to the page you actually want non-admins to see.
