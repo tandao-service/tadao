@@ -1,7 +1,10 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
+import CapacitorSplash from "@/components/shared/CapacitorSplash";
+import { AuthProvider } from "./hooks/useAuth";
+import SplashHandler from "@/components/shared/SplashHandler";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -35,11 +38,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={poppins.variable}>
-        {children}
+        <SplashHandler />
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
