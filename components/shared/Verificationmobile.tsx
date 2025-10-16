@@ -117,7 +117,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
             className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-xs mt-2 p-1 rounded-lg shadow"
           >
             <CheckCircleIcon sx={{ marginRight: "5px" }} />
-            Request Verification
+            Verify Now
           </button>
         </div>
       </div>
@@ -155,10 +155,22 @@ const Verificationmobile: React.FC<SettingsProp> = ({
           {isAdCreator ? (
             <ShowPopupmobile
               trigger={
-                <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-sm cursor-pointer hover:underline">
-                  <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
-                  Unverified Seller
-                </p>
+
+                <div className="flex items-center gap-5">
+                  <p className="text-gray-600 p-1 dark:text-gray-400 dark:bg-[#131B1E] bg-white rounded-sm text-sm cursor-pointer hover:underline">
+                    <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
+                    Unverified Seller
+                  </p>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => handlePay(VerificationPackId, "Verification", "0", fee)}
+                      className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
+                    >
+                      <CheckCircleIcon sx={{ marginRight: "5px" }} />
+                      Verify Now
+                    </button>
+                  </div>
+                </div>
               }
               content={unverifiedContentAdCreator}
             />
