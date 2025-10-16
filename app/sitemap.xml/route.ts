@@ -24,12 +24,7 @@ export async function GET() {
       loc: `${baseUrl}/privacy-policy`,
       changefreq: 'monthly',
       priority: '0.5',
-    },
-    {
-      loc: `${baseUrl}/google-home`,
-      changefreq: 'monthly',
-      priority: '0.7',
-    },
+    }
   ];
 
 
