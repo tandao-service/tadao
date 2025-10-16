@@ -102,13 +102,12 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
 
               {/* <div className="hidden lg:inline">Call</div> */}
             </button>
-            <button
-              className="bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow"
-              onClick={() => handleOpenEnquire()}
-            >
-              <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
-              {/*<div className="hidden lg:inline"> Enquire</div>*/}
-            </button>
+            <ChatButtonBottom
+              ad={ad}
+              userId={userId}
+              userImage={userImage}
+              userName={userName}
+            />
           </>) : (<> <div
             onClick={() => {
               setIsOpenP(true);
@@ -123,12 +122,11 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
             <div
               onClick={() => {
                 setIsOpenP(true);
-                router.push("/sign-in");
+                router.push("/auth");
               }}
             >
               <button className="flex cursor-pointer gap-1 bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow">
                 <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
-                {/*<div className="hidden lg:inline">Message</div>*/}
               </button>
             </div></>)}
 
@@ -152,7 +150,7 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
                 <div
                   onClick={() => {
                     setIsOpenP(true);
-                    router.push("/sign-in");
+                    router.push("/auth");
                   }}
                 >
                   <button className="cursor-pointer bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow">

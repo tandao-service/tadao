@@ -189,7 +189,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
         <aside className="w-full bg-white shadow-sm rounded-0 lg:rounded-xl p-4 space-y-4 w-full lg:w-[350px]">
             <div className="text-center">
 
-                {user?.photo && !isDefaultClerkAvatar(user.photo) ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
+                {user?.photo ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
                     <img
                         src={user.photo}
                         alt="Organizer avatar"

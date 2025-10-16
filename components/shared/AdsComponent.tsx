@@ -14,6 +14,7 @@ import { mode } from "@/constants";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import CollectionRelated from "@/components/shared/CollectionRelated";
 import ChatButtonBottom from "./ChatButtonBottom";
+import ChatButton from "./ChatButton";
 const CollectionRelateddd = dynamic(
   () => import("@/components/shared/CollectionRelated"),
   {
@@ -210,7 +211,7 @@ const AdsComponent = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent bg-gray-100 lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center transition-transform duration-300 ${showBottomNav ? "translate-y-0" : "translate-y-full"
+            className={`lg:hidden fixed bottom-0 left-0 right-0 dark:bg-[#233338] dark:text-gray-300 dark:lg:bg-transparent bg-gray-100 lg:bg-transparent h-auto  z-10 p-3 shadow-md flex flex-col md:flex-row justify-between items-center transition-transform duration-300 ${showBottomNav ? "translate-y-0" : "translate-y-full"
               }`}
           >
 

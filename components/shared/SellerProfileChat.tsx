@@ -198,7 +198,7 @@ const SellerProfileChat = ({ userId, loggedId, user, handlePay, handleOpenReview
           </Button></>) : (<>
             <Button onClick={() => {
               // handleOpenP();
-              router.push(`/sign-in`);
+              router.push(`/auth`);
             }} variant="outline" className="w-full">
               <CallIcon sx={{ fontSize: 18 }} /><div>Call</div>
             </Button></>)}
@@ -217,7 +217,7 @@ const SellerProfileChat = ({ userId, loggedId, user, handlePay, handleOpenReview
             </Button></>) : (<>
               <Button onClick={() => {
                 // handleOpenP();
-                router.push(`/sign-in`);
+                router.push(`/auth`);
               }}
                 variant="outline" className="w-full">
                 <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 18 }} />
@@ -238,7 +238,7 @@ const SellerProfileChat = ({ userId, loggedId, user, handlePay, handleOpenReview
                 </Button></>) : (<>
                   <Button onClick={() => {
                     // handleOpenP();
-                    router.push(`/sign-in`);
+                    router.push(`/auth`);
                   }}
                     variant="outline" className="w-full">
                     <WhatsAppIcon sx={{ fontSize: 18 }} />

@@ -222,10 +222,11 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
       <div className="bg-white dark:bg-[#2D3236] rounded-xl shadow p-4 w-full">
         {/* Seller Info */}
         <div className="flex items-center gap-4">
+
           <div onClick={() => {
             handleOpenShop(ad.organizer);
           }} className="relative">
-            {ad.organizer?.photo && !isDefaultClerkAvatar(ad.organizer.photo) ? (
+            {ad.organizer?.photo ? (
               <img
                 src={ad.organizer.photo}
                 alt="Organizer avatar"
@@ -262,7 +263,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
         <div className="grid grid-cols-3 gap-2 mt-4">
 
           {currentUser ? (<>
-            <button onClick={handleShowPhoneClick} className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+            <button onClick={handleShowPhoneClick} className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
               <FaPhoneAlt /> {showCallDisclaimer ? (<p className="text-xs">{ad.data?.phone}</p>) : (<>Call</>)}
             </button>
             <ChatButton
@@ -271,26 +272,26 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
               userImage={userImage}
               userName={userName}
             />
-            {ad.organizer.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+            {ad.organizer.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
             </button></>)}</>) : (<>
               <button onClick={() => {
                 setIsOpenP(true);
-                router.push(`/sign-in`);
-              }} className="flex gap-1 items-center justify-center items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                router.push(`/auth`);
+              }} className="flex gap-1 items-center justify-center items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
                 <FaPhoneAlt /> Call
               </button>
               <button onClick={() => {
                 setIsOpenP(true);
-                router.push(`/sign-in`);
-              }} className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                router.push(`/auth`);
+              }} className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
                 <FaEnvelope /> Enquire
               </button>
               <button onClick={() => {
                 setIsOpenP(true);
-                router.push(`/sign-in`);
+                router.push(`/auth`);
               }}
-                className="flex gap-1 items-center justify-center border border-orange-500 text-orange-600 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
                 <FaWhatsapp /> WhatsApp
               </button></>)}
 
@@ -298,7 +299,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
         </div>
         {showCallDisclaimer && (
           <p className="text-xs bg-gray-100 text-gray-500 mt-1 border rounded-sm p-1">
-            ⚠️ Never pay before meeting the seller and verifying the Item. tadaoservices.com doesn&apos;t offer payment protection. Report fraud: <a href="mailto:support@tadaoservices.com" className="underline">support@tadaoservices.com</a>
+            ⚠️ Never pay before meeting the seller and verifying the Item. tadaomarket.com doesn&apos;t offer payment protection. Report fraud: <a href="mailto:support@tadaomarket.com" className="underline">support@tadaomarket.com</a>
           </p>
         )}
         {/* Leave Feedback */}

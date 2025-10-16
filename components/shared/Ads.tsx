@@ -399,7 +399,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                     {ad.data.imageUrls.length > 0 ? (<>
                       {ad.data.imageUrls.map((image: string, index: number) => (
                         <CarouselItem key={index}>
-                          <div className="relative w-full">
+                          <div className="relative w-full h-[420px] lg:h-[380px] bg-black rounded overflow-hidden">
                             {isLoading && (
 
                               <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
@@ -410,10 +410,9 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                               <Image
                                 src={image}
                                 alt={`Image ${index + 1}`}
-                                width={800} // Adjust the width as needed
-                                height={500} // Adjust the height as needed
-                                className={`bg-[#000000] h-[420px] lg:h-[380px] object-cover cursor-pointer ${isLoading ? "opacity-0" : "opacity-100"
-                                  } transition-opacity duration-300`}
+                                fill
+                                sizes="100vw"
+                                className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
                                 onLoadingComplete={() => setIsLoading(false)}
                                 placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
                               />
@@ -423,17 +422,17 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                       ))}
                     </>) : (<>
                       <CarouselItem>
+
                         <Image
-                          src={"/fallback.jpg"}
-                          alt={"Ad image"}
-                          width={800} // Adjust the width as needed
-                          height={500} // Adjust the height as needed
-                          layout="fill"
-                          className={`object-cover h-[420px] lg:h-[380px] cursor-pointer ${isLoading ? "opacity-0" : "opacity-100"
-                            } transition-opacity duration-300`}
+                          src="/fallback.jpg"
+                          alt="Ad image"
+                          fill
+                          className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
+                          sizes="100vw"
                           onLoadingComplete={() => setIsLoading(false)}
                           placeholder="empty"
-                        /> </CarouselItem>
+                        />
+                      </CarouselItem>
                     </>)}
                   </CarouselContent>
                   <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
@@ -527,7 +526,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                 alt={`Image ${index + 1}`}
                                 width={244} // Adjust width to match the `w-36` Tailwind class
                                 height={196} // Adjust height to match the `h-24` Tailwind class
-                                className={`h-[70px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-orange-500 ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                                className={`h-[90px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-orange-500 ${isLoadingsmall ? "opacity-0" : "opacity-100"
                                   } transition-opacity duration-300`}
                                 onLoadingComplete={() => setIsLoadingsmall(false)}
                                 placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading

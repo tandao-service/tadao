@@ -145,30 +145,30 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
     });
   };
 
-    const handleShare = async () => {
-      try {
-        if (Capacitor.isNativePlatform()) {
-          // ✅ Native share (Android/iOS)
-          await Share.share({
-            title: "Check out this Profile!",
-            text: "Have a look at this Profile",
-            url: adUrl,
-            dialogTitle: "Share via",
-          });
-        } else if (navigator.share) {
-          // ✅ Web share (modern browsers)
-          await navigator.share({
-            title: "Check out this Profile!",
-            url: adUrl,
-          });
-        } else {
-          // ❌ Fallback if not supported
-          alert("Sharing is not supported on this device.");
-        }
-      } catch (error) {
-        console.error("Error sharing:", error);
+  const handleShare = async () => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // ✅ Native share (Android/iOS)
+        await Share.share({
+          title: "Check out this Profile!",
+          text: "Have a look at this Profile",
+          url: adUrl,
+          dialogTitle: "Share via",
+        });
+      } else if (navigator.share) {
+        // ✅ Web share (modern browsers)
+        await navigator.share({
+          title: "Check out this Profile!",
+          url: adUrl,
+        });
+      } else {
+        // ❌ Fallback if not supported
+        alert("Sharing is not supported on this device.");
       }
-    };
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
 
   const getInitials = (firstName?: string, lastName?: string) => {
     const first = firstName?.[0]?.toUpperCase() || '';
@@ -196,7 +196,7 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
         <div className="flex items-center gap-4">
           <div className="relative">
 
-            {user?.photo && !isDefaultClerkAvatar(user.photo) ? (
+            {user?.photo ? (
               <img
                 src={user.photo}
                 alt="Organizer avatar"
@@ -228,35 +228,35 @@ const SellerProfile = ({ userId, loggedId, user, handlePay, handleOpenReview, ha
         {/* Contact Buttons */}
         {userId !== loggedId && (<div className="flex items-center justify-center w-full gap-2 mt-4">
           {currentUser ? (<>
-            <button onClick={handleShowPhoneClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+            <button onClick={handleShowPhoneClick} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Phone className="w-5 h-5" /> Call
             </button>
 
             <button onClick={() => {
               handleOpenChatId(userId);
-            }} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+            }} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Mail className="w-5 h-5" /> Message
             </button>
 
-            {user.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+            {user.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
             </button></>)}</>) : (<>  <button onClick={() => {
               setIsOpenP(true);
-              router.push(`/sign-in`);
-            }} className="flex text-sm gap-1 items-center justify-center items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+              router.push(`/auth`);
+            }} className="flex text-sm gap-1 items-center justify-center items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <Phone className="w-5 h-5" /> Call
             </button>
               <button onClick={() => {
                 setIsOpenP(true);
-                router.push(`/sign-in`);
-              }} className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+                router.push(`/auth`);
+              }} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
                 <Mail className="w-5 h-5" /> Message
               </button>
               <button onClick={() => {
                 setIsOpenP(true);
-                router.push(`/sign-in`);
+                router.push(`/auth`);
               }}
-                className="flex text-sm gap-1 items-center justify-center border border-orange-500 text-orange-700 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+                className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
                 <MessageCircle className="w-5 h-5" /> WhatsApp
               </button></>)}
 

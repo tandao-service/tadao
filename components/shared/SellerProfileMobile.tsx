@@ -132,7 +132,7 @@ const SellerProfileMobile = ({
           }}
           className="cursor-pointer no-underline font-bold m-1"
         >
-          {ad.organizer?.photo && !isDefaultClerkAvatar(ad.organizer.photo) ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
+          {ad.organizer?.photo ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
             <img
               src={ad.organizer.photo}
               alt="Organizer avatar"

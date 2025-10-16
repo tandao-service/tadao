@@ -39,33 +39,6 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
   const [messages, setMessages] = useState<{ senderName: string; message: string }[]>([]);
 
   const { NotifyUser } = SendChat(); // Get the sendMessage function
-
-  //useEffect(() => {
-  // const checkSubscription = async () => {
-  //  try {
-  //    subscription = await getData(ad.organizer._id);
-
-  //    setsendsms(subscription.currentpack.features[5].checked);
-  //    setsendemail(subscription.currentpack.features[6].checked);
-  //    setplanpackage(subscription.currentpack.name);
-  //    const createdAtDate = new Date(subscription.transaction.createdAt);
-  //    const periodDays = parseInt(subscription.transaction.period);
-  //   const expirationDate = new Date(
-  //     createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000
-  //   );
-  //   const currentDate = new Date();
-  //   const daysRemaining_ = Math.ceil(
-  //     (expirationDate.getTime() - currentDate.getTime()) /
-  //       (1000 * 60 * 60 * 24)
-  //   );
-  //   setdaysRemaining(daysRemaining_);
-  // } catch (error) {
-  //   console.error("Error checking subscription: ", error);
-  // }
-  // };
-  // checkSubscription();
-  //}, [ad.organizer._id]);
-
   const handleSendMessage = async () => {
     if (message.trim() === "") return;
 
@@ -95,7 +68,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
       if (ad.organizer.notifications.email) {
 
         const adTitle = ad.data.title;
-        const adUrl = `https://tadaoservices.com/?Ad=${ad._id}`;
+        const adUrl = `https://tadaomarkert.com/?Ad=${ad._id}`;
         const recipientEmail = ad?.organizer?.email;
         await sendEmail(
           recipientEmail,
@@ -145,11 +118,11 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
     <>
 
       <button
-        className="bg-orange-700 hover:bg-orange-800 text-white text-xs mt-2 p-2 rounded-lg shadow"
+        className="cursor-pointer bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow"
         onClick={() => setIsOpen(true)}
       >
         <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
-        {/*<div className="hidden lg:inline"> Enquire</div>*/}
+
       </button>
 
       {isOpen && (
@@ -177,14 +150,18 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
               {formatKsh(ad.data.price)}
             </span>
 
-            <Image
-              src={ad.data.imageUrls[0]}
-              alt={ad.data.title}
-              className="w-full h-16 object-cover mb-2 rounded"
-              width={800} // Adjust width as needed
-              height={400} // Adjust height as needed
-            />
-            <div className="grid grid-cols-2 gap-2 mb-4">
+            <div className="relative  h-32 w-full bg-black rounded overflow-hidden aspect-[16/9]">
+              <Image
+                src={ad.data.imageUrls[0]}
+                alt={ad.data.title}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 800px"
+                priority={false}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 mt-4 gap-2 mb-4">
               {quickMessages.map((msg, index) => (
                 <button
                   key={index}
