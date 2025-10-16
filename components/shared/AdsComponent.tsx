@@ -199,13 +199,13 @@ const AdsComponent = ({
               handleAdEdit={handleAdEdit}
               handleOpenPlan={handleOpenPlan}
             />
-            {isOpenEnquire && (
+            {isOpenEnquire && ad && (
               <ChatButtonBottom
                 ad={ad}
-                userId={userId}
-                userImage={userImage}
-                userName={userName}
-              // handleCloseEnquire={handleCloseEnquire}
+                userId={userId ?? ""}
+                userImage={userImage ?? ""}
+                userName={userName ?? ""}
+                handleCloseEnquire={handleCloseEnquire}
               />)}
             <Toaster />
           </div>
