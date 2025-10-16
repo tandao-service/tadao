@@ -70,20 +70,6 @@ export default async function Home({ searchParams }: SearchParamProps) {
         }),
       }}
     />
-
-    {/* Add crawlable links that can become sitelinks */}
-    <nav aria-label="Primary" className="mx-auto max-w-6xl px-4 py-4">
-      <ul className="flex flex-wrap gap-4">
-        <li><a href="/" className="underline">Cars for sale</a></li>
-        <li><a href="/" className="underline">Properties</a></li>
-        <li><a href="/" className="underline">Furnitures</a></li>
-        <li><a href="/" className="underline">Electronics</a></li>
-        <li><a href="/about" className="underline">About Tadao Market</a></li>
-        <li><a href="/terms" className="underline">Terms & Conditions</a></li>
-        <li><a href="/privacy-policy" className="underline">Privacy Policy</a></li>
-
-      </ul>
-    </nav>
     <GlobalDataProvider
       initialData={{
         categories,
