@@ -28,7 +28,7 @@ const Seodiv: React.FC<Props> = ({ ad }) => {
         <main className="bg-gray-200">
 
             <div
-                className={`bg-gradient-to-b from-orange-500 to-orange-500 lg:from-[#e4ebeb] justify-center pl-2 pr-2 h-[60px] lg:to-[#e4ebeb] transition-all duration-300 overflow-visible w-full flex flex-col items-center`}
+                className={`bg-gradient-to-b from-orange-500 to-orange-500 justify-center pl-2 pr-2 h-[60px] transition-all duration-300 overflow-visible w-full flex flex-col items-center`}
             >
                 <div className="w-full h-full justify-between flex items-center">
                     <div className="flex items-center gap-1">

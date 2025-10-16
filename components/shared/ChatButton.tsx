@@ -125,7 +125,7 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
 
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="h-[90vh] dark:bg-[#2D3236] dark:text-[#F1F3F3] bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="h-[95vh] dark:bg-[#2D3236] dark:text-[#F1F3F3] bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex items-center justify-between"> <p className="font-semibold mb-2"> {ad.data.title.length > 50
               ? `${ad.data.title.substring(0, 50)}...`
               : ad.data.title}</p>
@@ -148,7 +148,7 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
               {formatKsh(ad.data.price)}
             </span>
 
-            <div className="relative h-32 w-full bg-black rounded overflow-hidden aspect-[16/9]">
+            <div className="relative h-26 w-full bg-black rounded overflow-hidden aspect-[16/9]">
               <Image
                 src={ad.data.imageUrls[0]}
                 alt={ad.data.title}

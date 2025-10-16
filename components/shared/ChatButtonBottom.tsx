@@ -23,9 +23,10 @@ type chatProps = {
   userName: string;
   userImage: string;
   ad: any;
+  handleCloseEnquire: () => void;
 };
 
-const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
+const ChatButtonBottom = ({ ad, userId, userName, userImage, handleCloseEnquire }: chatProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false); // New state for sending status
@@ -117,94 +118,86 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage }: chatProps) => {
   return (
     <>
 
-      <button
-        className="cursor-pointer bg-gradient-to-l from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-xs mt-2 p-2 rounded-lg shadow"
-        onClick={() => setIsOpen(true)}
-      >
-        <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
 
-      </button>
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+        <div className="h-[95vh] dark:bg-[#2D3236] dark:text-[#F1F3F3] bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="flex items-center justify-between"> <p className="font-semibold mb-2">{ad.data.title.length > 50
+            ? `${ad.data.title.substring(0, 50)}...`
+            : ad.data.title}</p>
 
-      {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="h-[90vh] dark:bg-[#2D3236] dark:text-[#F1F3F3] bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex items-center justify-between"> <p className="font-semibold mb-2">{ad.data.title.length > 50
-              ? `${ad.data.title.substring(0, 50)}...`
-              : ad.data.title}</p>
-
-              <button
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-2 dark:text-white rounded hover:text-orange-500 focus:outline-none"
-                disabled={isSending} // Disable close button while sending
-              >
-                <CloseOutlinedIcon />
-              </button>
-            </div>
+            <button
+              onClick={() => handleCloseEnquire()}
+              className="px-4 py-2 dark:text-white rounded hover:text-orange-500 focus:outline-none"
+              disabled={isSending} // Disable close button while sending
+            >
+              <CloseOutlinedIcon />
+            </button>
+          </div>
 
 
-            <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-              <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad.data.description ?? "", 65) }} />
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+            <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad.data.description ?? "", 65) }} />
 
-            </p>
-            <span className="font-bold w-min rounded-full mt-1 dark:text-orange-500 text-orange-500">
-              {formatKsh(ad.data.price)}
-            </span>
+          </p>
+          <span className="font-bold w-min rounded-full mt-1 dark:text-orange-500 text-orange-500">
+            {formatKsh(ad.data.price)}
+          </span>
 
-            <div className="relative  h-32 w-full bg-black rounded overflow-hidden aspect-[16/9]">
-              <Image
-                src={ad.data.imageUrls[0]}
-                alt={ad.data.title}
-                fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 800px"
-                priority={false}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 mt-4 gap-2 mb-4">
-              {quickMessages.map((msg, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleQuickMessageClick(msg)}
-                  className="text-sm border px-2 py-1 text-white rounded-md bg-gray-900 hover:bg-black transition"
-                >
-                  {msg}
-                </button>
-              ))}
-            </div>
-            <textarea
-              value={message}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault(); // prevent newline
-                  handleSendMessage(); // trigger message send
-                }
-              }}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Write your inquiry here..."
-              className="w-full h-[100px] text-sm dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
-              disabled={isSending} // Disable textarea while sending
+          <div className="relative h-26 w-full bg-black rounded overflow-hidden aspect-[16/9]">
+            <Image
+              src={ad.data.imageUrls[0]}
+              alt={ad.data.title}
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 100vw, 800px"
+              priority={false}
             />
+          </div>
 
-            <div className="flex justify-end">
+          <div className="grid grid-cols-2 mt-4 gap-2 mb-4">
+            {quickMessages.map((msg, index) => (
               <button
-                onClick={handleSendMessage}
-                className={`px-4 py-2 text-white rounded hover:bg-orange-600 focus:outline-none mr-2  ${isSending ? "bg-orange-200" : "bg-orange-500"
-                  }`}
-                disabled={isSending} // Disable button while sending
+                key={index}
+                onClick={() => handleQuickMessageClick(msg)}
+                className="text-sm border px-2 py-1 text-white rounded-md bg-gray-900 hover:bg-black transition"
               >
-                <div className="flex gap-1 items-center">
-                  {isSending && (
-                    <CircularProgress sx={{ color: "white" }} size={30} />
-                  )}
-                  {isSending ? "Sending..." : "Send Inquiry"}
-                </div>
+                {msg}
               </button>
+            ))}
+          </div>
+          <textarea
+            value={message}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault(); // prevent newline
+                handleSendMessage(); // trigger message send
+              }
+            }}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Write your inquiry here..."
+            className="w-full h-[100px] text-sm dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            disabled={isSending} // Disable textarea while sending
+          />
 
-            </div>
+          <div className="flex justify-end">
+            <button
+              onClick={handleSendMessage}
+              className={`px-4 py-2 text-white rounded hover:bg-orange-600 focus:outline-none mr-2  ${isSending ? "bg-orange-200" : "bg-orange-500"
+                }`}
+              disabled={isSending} // Disable button while sending
+            >
+              <div className="flex gap-1 items-center">
+                {isSending && (
+                  <CircularProgress sx={{ color: "white" }} size={30} />
+                )}
+                {isSending ? "Sending..." : "Send Inquiry"}
+              </div>
+            </button>
+
           </div>
         </div>
-      )}
+      </div>
+
     </>
   );
 };
