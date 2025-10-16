@@ -49,11 +49,29 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 async function HeavyData({ queryObject }: { queryObject: Record<string, any> }) {
   const [categories, subcategories, packages, adsCount, loans] = await Promise.all([
-    withTimeout(getAllCategoriesCached(), 1500, categoriesFallback),
-    withTimeout(getAllSubCategoriesCached(), 1500, subcategoriesFallback),
-    withTimeout(getAllPackagesCached(), 1500, packagesFallback),
-    withTimeout(getAdsCountAllRegionCached(), 1500, adsCountFallback),
-    withTimeout(getallPendingLaonsCached(), 1500, loansFallback),
+    getAllCategoriesCached().catch((e) => {
+      console.warn("categories failed", e);
+      return categoriesFallback;
+    }),
+    getAllSubCategoriesCached().catch((e) => {
+      console.warn("subcategories failed", e);
+      return subcategoriesFallback;
+    }),
+    getAllPackagesCached().catch((e) => {
+      console.warn("AllPackages failed", e);
+      return packagesFallback;
+    }),
+    getAdsCountAllRegionCached().catch((e) => {
+      console.warn("AdsCountAllRegion failed", e);
+      return adsCountFallback;
+    }),
+    getallPendingLaonsCached().catch((e) => {
+      console.warn("allPendingLaons failed", e);
+      return loansFallback;
+    }),
+    // withTimeout(getAllPackagesCached(), 4000, packagesFallback),
+    //withTimeout(getAdsCountAllRegionCached(), 4000, adsCountFallback),
+    //withTimeout(getallPendingLaonsCached(), 4000, loansFallback),
   ]);
 
   return (
