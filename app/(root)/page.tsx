@@ -11,6 +11,7 @@ import {
 } from "@/lib/actions/cached.actions";
 import { GlobalDataProvider } from "@/public/context/GlobalDataContext";
 import type { SearchParamProps } from "@/types";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const dynamic = "force-static";
 export const revalidate = 300;
@@ -68,14 +69,56 @@ export default async function Home({ searchParams }: SearchParamProps) {
 
   return (
     <>
-      {/* JSON-LD … (unchanged) */}
+      {/* JSON-LD */}
+      <Script
+        id="org-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Tadao Market",
+            url: "https://tadaomarket.com",
+            logo: "https://tadaomarket.com/logo.png",
+            sameAs: [
+              "https://www.facebook.com/tadaomarket",
+              "https://www.instagram.com/tadaomarket",
+              "https://twitter.com/tadaomarket",
+            ],
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+254700000000",
+              contactType: "customer service",
+              areaServed: "KE",
+              availableLanguage: ["English", "Swahili"],
+            },
+          }),
+        }}
+      />
+      <Script
+        id="website-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Tadao Market",
+            url: "https://tadaomarket.com",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://tadaomarket.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          }),
+        }}
+      />
 
       <Shell>
         <Suspense
           fallback={
             // PLAIN HTML/CSS fallback (no MUI)
             <div className="flex justify-center items-center h-dvh w-full">
-              <div className="animate-pulse text-gray-600">Loading marketplace…</div>
+              <div className="flex gap-2 items-center animate-pulse text-gray-600"><CircularProgress sx={{ color: "gray" }} size={30} />Loading marketplace…</div>
             </div>
           }
         >
