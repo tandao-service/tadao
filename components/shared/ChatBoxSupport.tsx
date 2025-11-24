@@ -24,11 +24,12 @@ type sidebarProps = {
   photoURL: string;
   recipient: UpdateUserParams;
   client: boolean;
-  handleAdEdit:(id:string)=> void;
-  handleAdView:(id:string)=> void;
-  handleCategory:(category:string)=> void;
-  handleOpenSell:()=> void;
- handleOpenPlan:()=> void;
+  handleAdEdit: (id: string) => void;
+  handleAdView: (id: string) => void;
+  handleCategory: (category: string) => void;
+  handleOpenSell: () => void;
+  handleOpenPlan: () => void;
+  handleOpenShop: (shopId: string) => void;
 };
 type propmess = {
   messageId: string;
@@ -44,7 +45,8 @@ const ChatBoxSupport = ({
   handleAdView,
   handleCategory,
   handleOpenSell,
- handleOpenPlan,
+  handleOpenPlan,
+  handleOpenShop,
 }: sidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -148,11 +150,11 @@ const ChatBoxSupport = ({
   }, [messages, uid]);
 
   return (
-    
+
     <ScrollArea.Root className="h-full overflow-hidden">
-    <ScrollArea.Viewport  className="h-[calc(100vh-160px)] lg:h-[335px] dark:bg-[#2D3236] bg-white border">
-  
-    
+      <ScrollArea.Viewport className="h-[calc(100vh-160px)] lg:h-[335px] dark:bg-[#2D3236] bg-white border">
+
+
         {messages.map((message: any) => (
           <div key={message.id}>
             <Message
@@ -163,19 +165,20 @@ const ChatBoxSupport = ({
               photoURL={photoURL}
               recipient={recipient}
               handleAdEdit={handleAdEdit}
-              handleAdView={handleAdView} 
+              handleAdView={handleAdView}
               handleCategory={handleCategory}
               handleOpenSell={handleOpenSell}
-             handleOpenPlan={handleOpenPlan}
+              handleOpenPlan={handleOpenPlan}
+              handleOpenShop={handleOpenShop}
             />
           </div>
         ))}
         <div ref={messagesEndRef}></div>
-        </ScrollArea.Viewport>
-         <ScrollArea.Scrollbar orientation="vertical" />
+      </ScrollArea.Viewport>
+      <ScrollArea.Scrollbar orientation="vertical" />
       <ScrollArea.Corner />
     </ScrollArea.Root>
-   
+
   );
 };
 
