@@ -1362,6 +1362,7 @@ const CollectionInfinite = ({
                       handleCategory={handleCategory}
                       handleOpenSell={handleOpenSell}
                       handleOpenPlan={handleOpenPlan}
+                      handleOpenShop={handleOpenShop}
                     />
                   </>)}
                 {loading && (

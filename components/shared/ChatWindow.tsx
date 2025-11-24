@@ -24,6 +24,7 @@ interface ChatWindowProps {
   handleCategory: (category: string) => void;
   handleOpenSell: () => void;
   handleOpenPlan: () => void;
+  handleOpenShop: (shopId: string) => void;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -38,6 +39,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   handleCategory,
   handleOpenSell,
   handleOpenPlan,
+  handleOpenShop,
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [title, settitle] = useState("Home");
@@ -135,6 +137,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       handleCategory={handleCategory}
                       handleOpenSell={handleOpenSell}
                       handleOpenPlan={handleOpenPlan}
+                      handleOpenShop={handleOpenShop}
                     /></div>
                   <div className="flex h-[60px] w-full">
                     <SendMessageSupport
@@ -274,6 +277,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   handleCategory={handleCategory}
                   handleOpenSell={handleOpenSell}
                   handleOpenPlan={handleOpenPlan}
+                  handleOpenShop={handleOpenShop}
                 />
               </div>
               <div className="flex h-[60px] w-full">
