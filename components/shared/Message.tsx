@@ -35,6 +35,7 @@ interface MessageProps {
   handleCategory: (category: string) => void;
   handleOpenSell: () => void;
   handleOpenPlan: () => void;
+  handleOpenShop: (shopId: string) => void;
 }
 
 const Message = ({
@@ -49,6 +50,7 @@ const Message = ({
   handleCategory,
   handleOpenSell,
   handleOpenPlan,
+  handleOpenShop,
 }: MessageProps) => {
   // Convert Timestamp to Date object
   const truncateDescription = (description: string, charLimit: number) => {
@@ -94,12 +96,14 @@ const Message = ({
           className={`flex items-start mb-4 ${message.uid === uid ? "justify-end" : "justify-start"
             }`}
         >
+
           <Image
             src={message.avatar}
             alt="avatar"
             className="w-10 h-10 rounded-full mr-3"
             height={200}
             width={200}
+            onClick={() => handleOpenShop(message.uid)}
           />
           <div
             className={`message-content max-w-xs rounded-lg p-3 ${message.uid === uid
@@ -107,7 +111,13 @@ const Message = ({
               : "bg-blue-100 dark:bg-emerald-800 dark:text-gray-300 text-left"
               }`}
           >
-            <h4 className="font-semibold">{message.name}</h4>
+            <h4
+              onClick={() => handleOpenShop(message.uid)}
+              className="font-semibold underline cursor-pointer"
+            >
+              {message.name}
+            </h4>
+
             <div className="text-sm">
               {match ? (<> <div className="flex flex-col w-full gap-1">
                 <button

@@ -327,23 +327,52 @@ const HorizontalCard = ({
           }
         >
           <div className="relative w-full h-full">
-            {isLoadingsmall && (
-              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+
+            {ad.data.imageUrls.length > 0 ? (<>
+              {isLoadingsmall && (
+
+                <div onClick={() => {
+                  handleAdView(ad);
+                }} className="absolute inset-0 flex justify-center items-center dark:bg-[#2D3236] bg-gray-200">
+                  <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                </div>
+
+              )}
+              <Image
+                onClick={() => handleAdView(ad)}
+                src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+                alt={ad.data.title || "Ad image"}
+                width={400} // Adjust width to match the `w-36` Tailwind class
+                height={400} // Adjust height to match the `h-24` Tailwind class
+                className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                  } transition-opacity duration-300`}
+                onLoadingComplete={() => setIsLoadingsmall(false)}
+                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+              />
+            </>) : (<div
+              className="w-full h-[200px] rounded-xl bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 
+             flex items-center justify-center cursor-pointer border border-gray-200 shadow-sm 
+             hover:shadow-md transition-shadow"
+              onClick={() => handleAdView(ad)}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                  <Image
+                    src="/logo.png"
+                    alt={ad.data.title || "Ad image"}
+                    width={64}
+                    height={64}
+                    className="w-10 h-10 object-contain"
+                  />
+                </div>
+                <p className="text-[11px] text-orange-300 font-bold">
+                  {ad.data.category}
+                </p>
               </div>
+            </div>
             )}
 
-            <Image
-              onClick={() => handleAdView(ad)}
-              src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
-              alt={ad.data.title || "Ad image"}
-              width={400} // Adjust width to match the `w-36` Tailwind class
-              height={400} // Adjust height to match the `h-24` Tailwind class
-              className={`rounded-l-lg object-cover cursor-pointer w-full h-full ${isLoadingsmall ? "opacity-0" : "opacity-100"
-                } transition-opacity duration-300`}
-              onLoadingComplete={() => setIsLoadingsmall(false)}
-              placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-            />
+
           </div>
           {ad.plan.name !== "Free" && (
             <div

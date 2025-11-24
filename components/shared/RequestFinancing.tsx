@@ -90,10 +90,10 @@ export const RequestFinancing: React.FC<loanProps> = ({
           !monthlyIncome
             ? "Please enter Monthly Income."
             : !deposit
-            ? "Please enter Deposit Amount."
-            : !loanterm
-            ? "Please select Preferred Loan Term."
-            : "Please enter your Employment Status.",
+              ? "Please enter Deposit Amount."
+              : !loanterm
+                ? "Please select Preferred Loan Term."
+                : "Please enter your Employment Status.",
         duration: 5000,
       });
       return;
@@ -160,9 +160,9 @@ export const RequestFinancing: React.FC<loanProps> = ({
         />
         <div className="flex flex-col justify-between h-full">
           <p className="font-semibold mb-1">
-            {ad.data.title.length > 50
-              ? `${ad.data.title.substring(0, 50)}...`
-              : ad.data.title}
+            {ad?.data?.title?.length > 50
+              ? `${ad.data?.title.substring(0, 50)}...`
+              : ad.data?.title}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
             <span
@@ -224,7 +224,7 @@ export const RequestFinancing: React.FC<loanProps> = ({
             <SelectValue placeholder="" />
           </SelectTrigger>
           <SelectContent className="text-base dark:bg-[#131B1E]">
-            {["6", "12", "24", "36", "48", "60","72","84","96","108","120","+120"].map((m) => (
+            {["6", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120", "+120"].map((m) => (
               <SelectItem key={m} value={`${m} months`}>
                 {m} months
               </SelectItem>

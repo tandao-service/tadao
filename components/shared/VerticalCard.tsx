@@ -339,26 +339,50 @@ const VerticalCard = ({
                 }
                 : undefined
             }>
-            {isLoadingsmall && (
-              <div onClick={() => {
-                handleAdView(ad);
-              }} className="absolute inset-0 flex justify-center items-center dark:bg-[#2D3236] bg-gray-200">
-                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-              </div>
-            )}
+            {ad.data.imageUrls.length > 0 ? (<>
+              {isLoadingsmall && (
 
-            <Image
+                <div onClick={() => {
+                  handleAdView(ad);
+                }} className="absolute inset-0 flex justify-center items-center dark:bg-[#2D3236] bg-gray-200">
+                  <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                </div>
+
+              )}
+              <Image
+                onClick={() => handleAdView(ad)}
+                src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+                alt={ad.data.title || "Ad image"}
+                width={400} // Set a width to control layout consistency
+                height={0} // Proportional height
+                style={{ minHeight: "200px" }} // Set the minimum height here
+                className={`w-full rounded-t-lg h-auto object-cover cursor-pointer ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                  } transition-opacity duration-300`}
+                onLoadingComplete={() => setIsLoadingsmall(false)}
+                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+              />
+            </>) : (<div
+              className="w-full h-[200px] rounded-xl bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 
+             flex items-center justify-center cursor-pointer border border-gray-200 shadow-sm 
+             hover:shadow-md transition-shadow"
               onClick={() => handleAdView(ad)}
-              src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
-              alt={ad.data.title || "Ad image"}
-              width={400} // Set a width to control layout consistency
-              height={0} // Proportional height
-              style={{ minHeight: "200px" }} // Set the minimum height here
-              className={`w-full h-auto rounded-t-lg object-cover cursor-pointer ${isLoadingsmall ? "opacity-0" : "opacity-100"
-                } transition-opacity duration-300`}
-              onLoadingComplete={() => setIsLoadingsmall(false)}
-              placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-            />
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                  <Image
+                    src="/logo.png"
+                    alt={ad.data.title || "Ad image"}
+                    width={64}
+                    height={64}
+                    className="w-10 h-10 object-contain"
+                  />
+                </div>
+                <p className="text-[11px] text-orange-300 font-bold">
+                  {ad.data.category}
+                </p>
+              </div>
+            </div>
+            )}
 
             {ad.plan.name !== "Free" && (
               <div

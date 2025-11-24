@@ -363,6 +363,9 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
           </div>
         </div>
       </div>
+
+
+
       <div className="lg:m-1 space-y-0 lg:flex lg:space-x-0 gap-2">
         <div
           className="mt-1 lg:mt-2 shadow bg-white border-t-50 border-orange-700 relative lg:flex-1 dark:bg-[#2D3236] dark:text-gray-300 rounded-xl lg:p-1">
@@ -384,216 +387,219 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </div>
             </div>
           )}
-          <div
-            className={`rounded-0 lg:p-2 flex flex-col bg-[#131B1E] lg:rounded-xl`}
-          >
-            {/* Images Section */}
-            <div className={`${inputMode === "Images" ? "block" : "hidden"}`}>
-              <div className={`relative`}>
-                <Carousel
-                  setApi={setApi}
-                  plugins={[plugin.current as any]}
-                  className="w-full"
-                >
-                  <CarouselContent>
-                    {ad.data.imageUrls.length > 0 ? (<>
-                      {ad.data.imageUrls.map((image: string, index: number) => (
-                        <CarouselItem key={index}>
-                          <div className="relative w-full h-[420px] lg:h-[380px] bg-black rounded overflow-hidden">
-                            {isLoading && (
 
-                              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-                                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-                              </div>
-                            )}
-                            <Zoom>
-                              <Image
-                                src={image}
-                                alt={`Image ${index + 1}`}
-                                fill
-                                sizes="100vw"
-                                className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
-                                onLoadingComplete={() => setIsLoading(false)}
-                                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-                              />
-                            </Zoom>
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </>) : (<>
-                      <CarouselItem>
 
-                        <Image
-                          src="/fallback.jpg"
-                          alt="Ad image"
-                          fill
-                          className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
-                          sizes="100vw"
-                          onLoadingComplete={() => setIsLoading(false)}
-                          placeholder="empty"
-                        />
-                      </CarouselItem>
-                    </>)}
-                  </CarouselContent>
-                  <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
-                  <CarouselNext className="h-[50px] w-[50px] mr-20 font-bold border-0 bg-white bg-opacity-50 text-white p-2" />
-                </Carousel>
-                <div className="flex gap-1 absolute bottom-0 right-0 items-center text-white text-[10px] lg:text-xs m-1 p-0 focus:outline-none">
-                  <div className="flex pr-2 pl-2 h-10 rounded-sm items-center bg-black bg-opacity-50">
-                    Slide {current} of {count}
-                  </div>
-                  <div
-                    className="p-1 cursor-pointer rounded-sm shadow"
-                    onClick={togglePopup}
+          {ad.data.imageUrls.length > 0 && (<>
+            <div
+              className={`rounded-0 lg:p-2 flex flex-col bg-[#131B1E] lg:rounded-xl`}
+            >
+              {/* Images Section */}
+              <div className={`${inputMode === "Images" ? "block" : "hidden"}`}>
+                <div className={`relative`}>
+                  <Carousel
+                    setApi={setApi}
+                    plugins={[plugin.current as any]}
+                    className="w-full"
                   >
-                    <Image
-                      src="/assets/icons/expand.png"
-                      alt="logo"
-                      className="w-8 ml-5 hover:cursor-pointer"
-                      width={36}
-                      height={36}
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-1 absolute bottom-0 left-0 text-white text-xs m-1 p-0 focus:outline-none">
-                  <div
-                    className="p-1 cursor-pointer rounded-sm"
-                    onClick={handlePlay}
-                  >
-                    {autoplayEnabled ? (
-                      <Image
-                        src="/assets/icons/pause.png"
-                        alt="logo"
-                        className="w-8 ml-5 hover:cursor-pointer"
-                        width={36}
-                        height={36}
-                      />
-                    ) : (
-                      <Image
-                        src="/assets/icons/play.png"
-                        alt="logo"
-                        className="w-8 ml-5 hover:cursor-pointer"
-                        width={36}
-                        height={36}
-                      />
-                    )}
-                  </div>
-                </div>
+                    <CarouselContent>
+                      {ad.data.imageUrls.length > 0 ? (<>
+                        {ad.data.imageUrls.map((image: string, index: number) => (
+                          <CarouselItem key={index}>
+                            <div className="relative w-full h-[420px] lg:h-[380px] bg-black rounded overflow-hidden">
+                              {isLoading && (
 
-                {ad.organizer.verified &&
-                  ad.organizer.verified[0].accountverified === true && (
-                    <div className="hidden lg:inline absolute bg-green-100 top-0 right-0 text-green-700 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
-                      <div className="flex gap-1 cursor-pointer">
-                        <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-                        Verified
-                      </div>
-                    </div>
-                  )}
-              </div>
-              <div className="flex space-x-1">
-                <Carousel
-                  setApi={setApi2}
-                  opts={{
-                    align: "start",
-                  }}
-                  className="w-full ml-2 mr-2 mt-1"
-                >
-                  <CarouselContent>
-                    {ad.data.imageUrls.map((image: string, index: number) => (
-                      <CarouselItem
-                        key={index}
-                        className="rounded-lg basis-1/3 lg:basis-1/4 pl-5 lg:pr-0"
-                      >
-                        <div
-                          style={{
-                            border:
-                              selectedIndex === index
-                                ? "3px solid black"
-                                : "3px solid transparent",
-                          }}
-                          className="p-0 w-full rounded-lg"
-                        >
-                          <span key={index} onClick={() => handleImageClick(index)}>
-                            <div className="relative">
-                              {isLoadingsmall && (
                                 <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
                                   <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
                                 </div>
                               )}
-
-                              <Image
-                                src={image}
-                                alt={`Image ${index + 1}`}
-                                width={244} // Adjust width to match the `w-36` Tailwind class
-                                height={196} // Adjust height to match the `h-24` Tailwind class
-                                className={`h-[90px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-orange-500 ${isLoadingsmall ? "opacity-0" : "opacity-100"
-                                  } transition-opacity duration-300`}
-                                onLoadingComplete={() => setIsLoadingsmall(false)}
-                                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-                              />
+                              <Zoom>
+                                <Image
+                                  src={image}
+                                  alt={`Image ${index + 1}`}
+                                  fill
+                                  sizes="100vw"
+                                  className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
+                                  onLoadingComplete={() => setIsLoading(false)}
+                                  placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                                />
+                              </Zoom>
                             </div>
-                          </span>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
+                          </CarouselItem>
+                        ))}
+                      </>) : (<>
+                        <CarouselItem>
 
-                  <CarouselPrevious className="md:h-10 md:w-10 lg:h-10 lg:w-10 ml-10 font-bold text-white border-2 bg-black bg-opacity-80 p-2" />
-                  <CarouselNext className="md:h-10 md:w-10 lg:h-10 lg:w-10 mr-10 font-bold bg-black border-2 bg-opacity-80 text-white p-2" />
-                </Carousel>
-              </div>
-            </div>
-          </div>
-          {/* Popup for displaying all images */}
-          {showPopup && (
-            <div className="bg-black fixed top-0 left-0 w-full min-h-screen flex justify-center items-center z-50">
-              <div className="bg-black p-4 w-full flex flex-col items-center justify-center z-50">
-                <button
-                  onClick={closePopup}
-                  className="z-10 fixed p-1 top-50 left-50 rounded-full hover:cursor-pointer m-1 p-2 absolute top-3 right-3 focus:outline-none"
-                >
-                  <CloseIcon className="text-white dark:hover:text-gray-300 m-0" />
-                </button>
-                <div className="relative w-full justify-center">
-                  <Carousel setApi={setApi} className="w-full">
-                    <CarouselContent>
-                      {ad.data.imageUrls.map((image: string, index: number) => (
-                        <CarouselItem key={index}>
-                          <div className="relative h-[500px] w-full">
-                            {isLoadingpopup && (
-                              <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
-                                <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
-                              </div>
-                            )}
-                            <Zoom>
-                              <Image
-                                src={image}
-                                alt={`Image ${index + 1}`}
-                                layout="fill" // Ensures the image scales to the parent container
-                                className={`object-contain ${isLoadingpopup ? "opacity-0" : "opacity-100"
-                                  } transition-opacity duration-300`}
-                                onLoadingComplete={() =>
-                                  setIsLoadingpopup(false)
-                                }
-                                placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
-                              />
-                            </Zoom>
-                          </div>
+                          <Image
+                            src="/fallback.jpg"
+                            alt="Ad image"
+                            fill
+                            className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
+                            sizes="100vw"
+                            onLoadingComplete={() => setIsLoading(false)}
+                            placeholder="empty"
+                          />
                         </CarouselItem>
-                      ))}
+                      </>)}
                     </CarouselContent>
                     <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
                     <CarouselNext className="h-[50px] w-[50px] mr-20 font-bold border-0 bg-white bg-opacity-50 text-white p-2" />
                   </Carousel>
-                  <div className="fixed bottom-5 left-5 p-1 text-center text-white text-sm text-muted-foreground z-10 mt">
-                    Slide {current} of {totalSlides}
+                  <div className="flex gap-1 absolute bottom-0 right-0 items-center text-white text-[10px] lg:text-xs m-1 p-0 focus:outline-none">
+                    <div className="flex pr-2 pl-2 h-10 rounded-sm items-center bg-black bg-opacity-50">
+                      Slide {current} of {count}
+                    </div>
+                    <div
+                      className="p-1 cursor-pointer rounded-sm shadow"
+                      onClick={togglePopup}
+                    >
+                      <Image
+                        src="/assets/icons/expand.png"
+                        alt="logo"
+                        className="w-8 ml-5 hover:cursor-pointer"
+                        width={36}
+                        height={36}
+                      />
+                    </div>
                   </div>
-                </div>
+                  <div className="flex gap-1 absolute bottom-0 left-0 text-white text-xs m-1 p-0 focus:outline-none">
+                    <div
+                      className="p-1 cursor-pointer rounded-sm"
+                      onClick={handlePlay}
+                    >
+                      {autoplayEnabled ? (
+                        <Image
+                          src="/assets/icons/pause.png"
+                          alt="logo"
+                          className="w-8 ml-5 hover:cursor-pointer"
+                          width={36}
+                          height={36}
+                        />
+                      ) : (
+                        <Image
+                          src="/assets/icons/play.png"
+                          alt="logo"
+                          className="w-8 ml-5 hover:cursor-pointer"
+                          width={36}
+                          height={36}
+                        />
+                      )}
+                    </div>
+                  </div>
 
+                  {ad.organizer.verified &&
+                    ad.organizer.verified[0].accountverified === true && (
+                      <div className="hidden lg:inline absolute bg-green-100 top-0 right-0 text-green-700 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                        <div className="flex gap-1 cursor-pointer">
+                          <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
+                          Verified
+                        </div>
+                      </div>
+                    )}
+                </div>
+                <div className="flex space-x-1">
+                  <Carousel
+                    setApi={setApi2}
+                    opts={{
+                      align: "start",
+                    }}
+                    className="w-full ml-2 mr-2 mt-1"
+                  >
+                    <CarouselContent>
+                      {ad.data.imageUrls.map((image: string, index: number) => (
+                        <CarouselItem
+                          key={index}
+                          className="rounded-lg basis-1/3 lg:basis-1/4 pl-5 lg:pr-0"
+                        >
+                          <div
+                            style={{
+                              border:
+                                selectedIndex === index
+                                  ? "3px solid black"
+                                  : "3px solid transparent",
+                            }}
+                            className="p-0 w-full rounded-lg"
+                          >
+                            <span key={index} onClick={() => handleImageClick(index)}>
+                              <div className="relative">
+                                {isLoadingsmall && (
+                                  <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                                    <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                                  </div>
+                                )}
+
+                                <Image
+                                  src={image}
+                                  alt={`Image ${index + 1}`}
+                                  width={244} // Adjust width to match the `w-36` Tailwind class
+                                  height={196} // Adjust height to match the `h-24` Tailwind class
+                                  className={`h-[90px] rounded-lg bg-opacity-40 object-cover cursor-pointer border-2 border-transparent hover:border-orange-500 ${isLoadingsmall ? "opacity-0" : "opacity-100"
+                                    } transition-opacity duration-300`}
+                                  onLoadingComplete={() => setIsLoadingsmall(false)}
+                                  placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                                />
+                              </div>
+                            </span>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+
+                    <CarouselPrevious className="md:h-10 md:w-10 lg:h-10 lg:w-10 ml-10 font-bold text-white border-2 bg-black bg-opacity-80 p-2" />
+                    <CarouselNext className="md:h-10 md:w-10 lg:h-10 lg:w-10 mr-10 font-bold bg-black border-2 bg-opacity-80 text-white p-2" />
+                  </Carousel>
+                </div>
               </div>
             </div>
-          )}
+            {/* Popup for displaying all images */}
+            {showPopup && (
+              <div className="bg-black fixed top-0 left-0 w-full min-h-screen flex justify-center items-center z-50">
+                <div className="bg-black p-4 w-full flex flex-col items-center justify-center z-50">
+                  <button
+                    onClick={closePopup}
+                    className="z-10 fixed p-1 top-50 left-50 rounded-full hover:cursor-pointer m-1 p-2 absolute top-3 right-3 focus:outline-none"
+                  >
+                    <CloseIcon className="text-white dark:hover:text-gray-300 m-0" />
+                  </button>
+                  <div className="relative w-full justify-center">
+                    <Carousel setApi={setApi} className="w-full">
+                      <CarouselContent>
+                        {ad.data.imageUrls.map((image: string, index: number) => (
+                          <CarouselItem key={index}>
+                            <div className="relative h-[500px] w-full">
+                              {isLoadingpopup && (
+                                <div className="absolute inset-0 flex justify-center items-center bg-[#000000] bg-opacity-50">
+                                  <Icon icon={threeDotsMove} className="w-6 h-6 text-gray-500" />
+                                </div>
+                              )}
+                              <Zoom>
+                                <Image
+                                  src={image}
+                                  alt={`Image ${index + 1}`}
+                                  layout="fill" // Ensures the image scales to the parent container
+                                  className={`object-contain ${isLoadingpopup ? "opacity-0" : "opacity-100"
+                                    } transition-opacity duration-300`}
+                                  onLoadingComplete={() =>
+                                    setIsLoadingpopup(false)
+                                  }
+                                  placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                                />
+                              </Zoom>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="h-[50px] w-[50px] ml-20 font-bold border-0 text-white bg-white bg-opacity-50 p-2" />
+                      <CarouselNext className="h-[50px] w-[50px] mr-20 font-bold border-0 bg-white bg-opacity-50 text-white p-2" />
+                    </Carousel>
+                    <div className="fixed bottom-5 left-5 p-1 text-center text-white text-sm text-muted-foreground z-10 mt">
+                      Slide {current} of {totalSlides}
+                    </div>
+                  </div>
 
+                </div>
+              </div>
+            )}
+          </>)}
           {/* Ad details */}
           <div className="p-3 lg:rounded-b-xl dark:bg-[#2D3236] dark:text-gray-300 bg-white">
             <div className="lg:hidden flex justify-end mb-2 items-center w-full">

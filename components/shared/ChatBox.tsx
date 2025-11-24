@@ -24,11 +24,12 @@ type sidebarProps = {
   photoURL: string;
   recipient: UpdateUserParams;
   client: boolean;
-  handleAdEdit:(id:string)=> void;
-  handleAdView:(id:string)=> void;
-  handleCategory:(category:string)=> void;
-  handleOpenSell:()=> void;
- handleOpenPlan:()=> void;
+  handleAdEdit: (id: string) => void;
+  handleAdView: (id: string) => void;
+  handleCategory: (category: string) => void;
+  handleOpenSell: () => void;
+  handleOpenPlan: () => void;
+  handleOpenShop: (shopId: string) => void;
 };
 type propmess = {
   messageId: string;
@@ -44,7 +45,8 @@ const ChatBox = ({
   handleAdView,
   handleCategory,
   handleOpenSell,
- handleOpenPlan,
+  handleOpenPlan,
+  handleOpenShop,
 }: sidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -148,28 +150,29 @@ const ChatBox = ({
   }, [messages, uid]);
 
   return (
-  
-      <ScrollArea className="h-[calc(100vh-130px)] dark:bg-[#222528] w-full rounded-t-md p-2">
-        {messages.map((message: any) => (
-          <div key={message.id}>
-            <Message
-              message={message}
-              displayName={displayName}
-              uid={uid}
-              recipientUid={recipientUid}
-              photoURL={photoURL}
-              recipient={recipient}
-              handleAdEdit={handleAdEdit}
-              handleAdView={handleAdView} 
-              handleCategory={handleCategory}
-              handleOpenSell={handleOpenSell}
-             handleOpenPlan={handleOpenPlan}
-            />
-          </div>
-        ))}
-        <div ref={messagesEndRef}></div>
-      </ScrollArea>
-   
+
+    <ScrollArea className="h-[calc(100vh-130px)] dark:bg-[#222528] w-full rounded-t-md p-2">
+      {messages.map((message: any) => (
+        <div key={message.id}>
+          <Message
+            message={message}
+            displayName={displayName}
+            uid={uid}
+            recipientUid={recipientUid}
+            photoURL={photoURL}
+            recipient={recipient}
+            handleAdEdit={handleAdEdit}
+            handleAdView={handleAdView}
+            handleCategory={handleCategory}
+            handleOpenSell={handleOpenSell}
+            handleOpenPlan={handleOpenPlan}
+            handleOpenShop={handleOpenShop}
+          />
+        </div>
+      ))}
+      <div ref={messagesEndRef}></div>
+    </ScrollArea>
+
   );
 };
 
