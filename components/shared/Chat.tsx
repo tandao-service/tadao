@@ -12,18 +12,20 @@ type sidebarProps = {
   senderId: string;
   senderImage: string;
 
-  handleAdEdit:(id:string)=> void;
-  handleAdView:(id:string)=> void;
-  handleCategory:(category:string)=> void;
-  handleOpenSell:()=> void;
- handleOpenPlan:()=> void;
+  handleAdEdit: (id: string) => void;
+  handleAdView: (id: string) => void;
+  handleCategory: (category: string) => void;
+  handleOpenSell: () => void;
+  handleOpenPlan: () => void;
+  handleOpenShop: (shopId: string) => void;
 };
 
 const Chat = ({ senderName, senderId, senderImage, handleAdEdit,
   handleAdView,
   handleCategory,
   handleOpenSell,
- handleOpenPlan, }: sidebarProps) => {
+  handleOpenShop,
+  handleOpenPlan, }: sidebarProps) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [recipientUid, setRecipientUid] = useState<string>("");
   const [recipientUidName, setRecipientUidName] = useState<string>("");
@@ -43,7 +45,7 @@ const Chat = ({ senderName, senderId, senderImage, handleAdEdit,
             if (
               !lastMessages[message.uid] ||
               message.createdAt.seconds >
-                lastMessages[message.uid].createdAt.seconds
+              lastMessages[message.uid].createdAt.seconds
             ) {
               lastMessages[message.uid] = message;
             }
@@ -104,15 +106,14 @@ const Chat = ({ senderName, senderId, senderImage, handleAdEdit,
                         "dd-MM-yyyy HH:mm"
                       );
                     }
-                  } catch {}
+                  } catch { }
 
                   return (
                     <li
                       key={message.uid}
-                      className={`${
-                        isActive &&
+                      className={`${isActive &&
                         "bg-gradient-to-b from-emerald-900 to-emerald-950 text-white"
-                      } rounded-sm`}
+                        } rounded-sm`}
                     >
                       <div
                         onClick={() =>
@@ -175,15 +176,14 @@ const Chat = ({ senderName, senderId, senderImage, handleAdEdit,
                         "dd-MM-yyyy HH:mm"
                       );
                     }
-                  } catch {}
+                  } catch { }
 
                   return (
                     <li
                       key={message.uid}
-                      className={`${
-                        isActive &&
+                      className={`${isActive &&
                         "bg-gradient-to-b from-emerald-900 to-emerald-950 text-white"
-                      } rounded-sm`}
+                        } rounded-sm`}
                     >
                       <div
                         onClick={() =>
@@ -249,10 +249,11 @@ const Chat = ({ senderName, senderId, senderImage, handleAdEdit,
                 photo: recipientUidImage,
               }}
               handleAdEdit={handleAdEdit}
-              handleAdView={handleAdView} 
+              handleAdView={handleAdView}
               handleCategory={handleCategory}
               handleOpenSell={handleOpenSell}
-             handleOpenPlan={handleOpenPlan}
+              handleOpenPlan={handleOpenPlan}
+              handleOpenShop={handleOpenShop}
             />
             <SendMessage
               displayName={senderName}
