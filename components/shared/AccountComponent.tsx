@@ -58,6 +58,7 @@ type setingsProp = {
   handleAdEdit: (value: any) => void;
   handleAdView: (value: any) => void;
 
+
 };
 
 const AccountComponent = ({ userId, user, userName,
@@ -435,6 +436,7 @@ const AccountComponent = ({ userId, user, userName,
           handleCategory={handleCategory}
           handleOpenSell={handleOpenSell}
           handleOpenPlan={handleOpenPlan}
+          handleOpenShop={handleOpenShop}
         />
         <footer>
           <div className="hidden lg:inline">
