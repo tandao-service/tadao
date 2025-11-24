@@ -377,7 +377,7 @@ const VerticalCard = ({
                     className="w-10 h-10 object-contain"
                   />
                 </div>
-                <p className="text-[11px] text-orange-300 font-bold">
+                <p className="text-[11px] text-orange-500 font-bold">
                   {ad.data.category}
                 </p>
               </div>
