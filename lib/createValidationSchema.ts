@@ -41,7 +41,7 @@ export const createValidationSchema = (fields: Field[], category: string) => {
   if (category === "Buyer Requests" || category === "Services" || category === "Seeking Work CVs" || category === "Jobs") {
     schemaShape["imageUrls"] = z.array(z.string()).min(1, "At least 1 image is required");
   } else {
-    schemaShape["imageUrls"] = z.array(z.string()).min(3, "At least 3 images are required");
+    schemaShape["imageUrls"] = z.array(z.string()).min(1, "At least 1 images are required");
   }
   schemaShape["region"] = z.string().nonempty(`Region is required`);
   schemaShape["area"] = z.string().nonempty(`Area is required`);
