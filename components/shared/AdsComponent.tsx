@@ -127,7 +127,20 @@ const AdsComponent = ({
     }, 0);
     return () => clearTimeout(timer);
   }, []);
+  // 👇 NEW: avoid scrolling to top on first mount
+  const firstRenderRef = useRef(true);
 
+  useEffect(() => {
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+      return;
+    }
+
+    const el = scrollRefB.current;
+    if (el) {
+      el.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [ad]); // or [ad?._id] if you prefer to depend on ad
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
     const isDark = savedTheme === mode;
