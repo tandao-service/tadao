@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -18,7 +16,7 @@ import { packageFormSchema } from "@/lib/validator";
 import { PackagesDefaultValues } from "@/constants";
 import { Textarea } from "../ui/textarea";
 import "react-datepicker/dist/react-datepicker.css";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import { Checkbox } from "../ui/checkbox";
 import { useUploadThing } from "@/lib/uploadthing";
@@ -37,26 +35,26 @@ type packageFormProps = {
 };
 
 const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
-  //const initialValues = AdDefaultValues;
-
   const initialValues =
     pack && type === "Update"
       ? {
-          ...pack,
-        }
+        ...pack,
+      }
       : PackagesDefaultValues;
-  const router = useRouter();
 
+  const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
 
   const form = useForm<z.infer<typeof packageFormSchema>>({
     resolver: zodResolver(packageFormSchema),
     defaultValues: initialValues,
   });
+
   const { startUpload } = useUploadThing("imageUploader");
   const [showmessage, setmessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const { toast } = useToast();
+
   async function onSubmit(values: z.infer<typeof packageFormSchema>) {
     let uploadedImageUrl = values.imageUrl;
     try {
@@ -82,8 +80,6 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
         });
         if (newPack) {
           form.reset();
-          // router.push(`/packages/${newPack._id}`);
-          // router.push(`/packages`);
           toast({
             title: "Created",
             description: "Package created successfully.",
@@ -110,8 +106,6 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
 
         if (updatedPack) {
           form.reset();
-          //router.push(`/packages/${updatedPack._id}`);
-          //  router.push(`/packages`);
           toast({
             title: "Updated",
             description: "Package updated successfully.",
@@ -124,6 +118,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
       console.error("Error submitting form:", error);
     }
   }
+
   // Example of a color picker component
   interface ColorPickerProps {
     value: string;
@@ -141,7 +136,6 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
   };
 
   const [newListingTitle, setNewListingTitle] = useState("");
-
   const [newListingPeriod, setNewListingPeriod] = useState("");
   const [newListingAmount, setNewListingAmount] = useState("");
 
@@ -163,7 +157,32 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
     setNewListingAmount(event.target.value);
   };
 
-  const [isChecked, setIsChecked] = useState(false); // Initializing isChecked as false
+  const [isChecked, setIsChecked] = useState(false); // for new feature row
+
+  /* ---------- Sync "x Allowed Listings" with Allowable Listing ---------- */
+  const listValue = form.watch("list");
+  useEffect(() => {
+    const currentFeatures = form.getValues("features") || [];
+
+    const numericList = Number(listValue) || 0;
+
+    const updatedFeatures = currentFeatures.map((f: any) => {
+      const isAllowedListingFeature =
+        typeof f.title === "string" &&
+        f.title.toLowerCase().includes("allowed listings");
+
+      if (isAllowedListingFeature) {
+        return {
+          ...f,
+          title: `${numericList} Allowed Listings`,
+        };
+      }
+
+      return f;
+    });
+
+    form.setValue("features", updatedFeatures);
+  }, [listValue, form]);
 
   return (
     <>
@@ -177,6 +196,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="">
             <div className="">
+              {/* Package name */}
               <div className="flex flex-col p-2 w-full">
                 <div className="flex items-center font-bold">
                   <h1>Package name</h1>
@@ -198,6 +218,8 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                   )}
                 />
               </div>
+
+              {/* Description */}
               <div className="flex flex-col p-2 w-full">
                 <div className="flex items-center font-bold">
                   <h1>Package Description</h1>
@@ -219,6 +241,8 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                   )}
                 />
               </div>
+
+              {/* Allowable Listing */}
               <div className="flex flex-col p-2 w-full">
                 <div className="flex items-center font-bold">
                   <h1>Allowable Listing</h1>
@@ -241,6 +265,8 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                   )}
                 />
               </div>
+
+              {/* Priority */}
               <div className="flex flex-col p-2 w-full">
                 <div className="flex items-center font-bold">
                   <h1>Priority</h1>
@@ -263,7 +289,9 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                   )}
                 />
               </div>
-              <div className="flex  rounded-xl border mt-3 flex-col p-2 w-full">
+
+              {/* ---------- Features Listings ---------- */}
+              <div className="flex rounded-xl border mt-3 flex-col p-2 w-full">
                 <FormField
                   control={form.control}
                   name="features"
@@ -275,46 +303,97 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                             <div className="flex items-center font-bold">
                               <h1>Features Listings</h1>
                             </div>
-                            <ul>
+                            <ul className="space-y-2">
                               {field.value &&
-                                field.value.map((feature, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <span>{feature.title}</span>
+                                field.value.map((feature: any, index: number) => {
+                                  const isAllowedListingFeature =
+                                    typeof feature.title === "string" &&
+                                    feature.title
+                                      .toLowerCase()
+                                      .includes("allowed listings");
 
-                                    <input
-                                      type="checkbox"
-                                      checked={feature.checked}
-                                      onChange={(e) => {
-                                        const updatedFeatures = [
-                                          ...field.value,
-                                        ];
-                                        updatedFeatures[index].checked =
-                                          e.target.checked;
-                                        field.onChange(updatedFeatures);
-                                      }}
-                                      className="ml-2 p-2 cursor-pointer"
-                                    />
-                                    <Image
-                                      src="/assets/icons/delete.svg"
-                                      alt="edit"
-                                      className="p-2 cursor-pointer"
-                                      width={35}
-                                      height={35}
-                                      onClick={() => {
-                                        const updatedFeatures =
-                                          field.value.filter(
-                                            (_, i) => i !== index
-                                          );
-                                        field.onChange(updatedFeatures);
-                                      }}
-                                    />
-                                  </li>
-                                ))}
+                                  const numericList = Number(listValue) || 0;
+                                  const displayTitle = isAllowedListingFeature
+                                    ? `${numericList} Allowed Listings`
+                                    : feature.title;
+
+                                  // Special row: "x Allowed Listings" → text only, no edit, no delete, no checkbox
+                                  if (isAllowedListingFeature) {
+                                    return (
+                                      <li
+                                        key={index}
+                                        className="flex items-center gap-2"
+                                      >
+                                        <span className="flex-1 text-sm font-medium">
+                                          {displayTitle}
+                                        </span>
+                                      </li>
+                                    );
+                                  }
+
+                                  // Normal features: editable + deletable
+                                  return (
+                                    <li
+                                      key={index}
+                                      className="flex items-center gap-2"
+                                    >
+                                      {/* Editable title */}
+                                      <Input
+                                        className="flex-1 dark:bg-[#2D3236] bg-white"
+                                        value={feature.title}
+                                        onChange={(e) => {
+                                          const updatedFeatures = [
+                                            ...(field.value || []),
+                                          ];
+                                          updatedFeatures[index] = {
+                                            ...updatedFeatures[index],
+                                            title: e.target.value,
+                                          };
+                                          field.onChange(updatedFeatures);
+                                        }}
+                                        placeholder="Feature title"
+                                      />
+
+                                      {/* Enabled checkbox */}
+                                      <input
+                                        type="checkbox"
+                                        checked={feature.checked}
+                                        onChange={(e) => {
+                                          const updatedFeatures = [
+                                            ...(field.value || []),
+                                          ];
+                                          updatedFeatures[index] = {
+                                            ...updatedFeatures[index],
+                                            checked: e.target.checked,
+                                          };
+                                          field.onChange(updatedFeatures);
+                                        }}
+                                        className="ml-2 p-2 cursor-pointer"
+                                      />
+
+                                      {/* Delete icon */}
+                                      <Image
+                                        src="/assets/icons/delete.svg"
+                                        alt="delete"
+                                        className="p-2 cursor-pointer"
+                                        width={35}
+                                        height={35}
+                                        onClick={() => {
+                                          const updatedFeatures =
+                                            field.value.filter(
+                                              (_: any, i: number) =>
+                                                i !== index
+                                            );
+                                          field.onChange(updatedFeatures);
+                                        }}
+                                      />
+                                    </li>
+                                  );
+                                })}
                             </ul>
-                            <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
+
+                            {/* Add new feature row */}
+                            <div className="flex items-center justify-between h-[54px] w-full overflow-hidden mt-2">
                               <Input
                                 className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
                                 value={newListingTitle}
@@ -340,7 +419,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
 
                               <Image
                                 src="/assets/icons/add.svg"
-                                alt="edit"
+                                alt="add"
                                 className="p-0 cursor-pointer"
                                 width={45}
                                 height={45}
@@ -369,6 +448,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                 />
               </div>
 
+              {/* ---------- Price Listings ---------- */}
               <div className="flex mt-3 rounded-xl border flex-col p-2 w-full">
                 <FormField
                   control={form.control}
@@ -383,23 +463,55 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                             </div>
                             <ul>
                               {field.value &&
-                                field.value.map((price, index) => (
+                                field.value.map((price: any, index: number) => (
                                   <li
                                     key={index}
-                                    className="flex items-center gap-5"
+                                    className="flex items-center mt-2 gap-5 w-full"
                                   >
-                                    <span>{price.period}</span>
-                                    <span>Ksh: {price.amount}</span>
+                                    {/* Editable Period */}
+                                    <Input
+                                      className="flex-1 ml-2 mr-2 dark:bg-[#2D3236] bg-white"
+                                      value={price.period}
+                                      onChange={(e) => {
+                                        const updatedPrice = [...(field.value || [])];
+                                        updatedPrice[index] = {
+                                          ...updatedPrice[index],
+                                          period: e.target.value,
+                                        };
+                                        field.onChange(updatedPrice);
+                                      }}
+                                      placeholder="Period"
+                                    />
 
+                                    {/* Editable Amount */}
+                                    <Input
+                                      className="flex-1 ml-2 mr-2 dark:bg-[#2D3236] bg-white"
+                                      value={price.amount}
+                                      type="number"
+                                      onChange={(e) => {
+                                        const updatedPrice = [...(field.value || [])];
+                                        updatedPrice[index] = {
+                                          ...updatedPrice[index],
+                                          amount:
+                                            e.target.value === ""
+                                              ? 0
+                                              : Number(e.target.value),
+                                        };
+                                        field.onChange(updatedPrice);
+                                      }}
+                                      placeholder="Amount"
+                                    />
+
+                                    {/* Delete icon */}
                                     <Image
                                       src="/assets/icons/delete.svg"
-                                      alt="edit"
+                                      alt="delete"
                                       className="p-2 cursor-pointer"
                                       width={35}
                                       height={35}
                                       onClick={() => {
                                         const updatedPrice = field.value.filter(
-                                          (_, i) => i !== index
+                                          (_: any, i: number) => i !== index
                                         );
                                         field.onChange(updatedPrice);
                                       }}
@@ -407,6 +519,8 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                                   </li>
                                 ))}
                             </ul>
+
+                            {/* Add new price row */}
                             <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
                               <Input
                                 className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
@@ -423,7 +537,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
 
                               <Image
                                 src="/assets/icons/add.svg"
-                                alt="edit"
+                                alt="add"
                                 className="p-0 cursor-pointer"
                                 width={45}
                                 height={45}
@@ -433,14 +547,12 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                                       ...(field.value || []),
                                       {
                                         period: newListingPeriod.trim(),
-                                        amount: parseFloat(
-                                          newListingAmount.trim()
-                                        ),
+                                        amount: parseFloat(newListingAmount.trim()),
                                       },
                                     ];
                                     field.onChange(updatedPrice);
                                     setNewListingPeriod("");
-                                    setNewListingAmount(""); // Reset checkbox state
+                                    setNewListingAmount("");
                                   }
                                 }}
                               />
@@ -453,8 +565,10 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                   )}
                 />
               </div>
+
             </div>
 
+            {/* ---------- Color ---------- */}
             <div className="flex rounded-xl border mt-3 flex-col p-2 w-full">
               <FormField
                 control={form.control}
@@ -478,8 +592,8 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
                         </label>
                         <div className="mr-2 p-2">
                           <ColorPicker
-                            value={field.value} // Assuming field.value holds the color value
-                            onChange={(color: any) => field.onChange(color)} // Assuming field.onChange handles value change
+                            value={field.value}
+                            onChange={(color: any) => field.onChange(color)}
                           />
                         </div>
                       </div>
@@ -490,6 +604,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
               />
             </div>
 
+            {/* ---------- Image & Submit ---------- */}
             <div className="flex flex-col mt-2 w-full">
               <FormField
                 control={form.control}

@@ -339,9 +339,9 @@ export async function getRelatedAdByCategory({
 }: GetRelatedAdsBySubCategoryParams) {
   try {
     await connectToDatabase()
-
+    console.log(subcategory)
     const skipAmount = (Number(page) - 1) * limit
-    const conditions = { $and: [{ subcategory: subcategory }, { _id: { $ne: adId } }, { adstatus: "Active" }] }
+    const conditions = { $and: [{ "data.subcategory": subcategory }, { _id: { $ne: adId } }, { adstatus: "Active" }] }
 
     const AdQuery = DynamicAd.find(conditions)
       //  .sort({ createdAt: 'desc' })

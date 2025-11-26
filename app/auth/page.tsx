@@ -232,7 +232,7 @@ export default function AuthPage() {
                 </div>
 
                 <h2 className="text-2xl font-bold text-center">
-                    {isSignUp ? "Sign Up" : "Sign In"}
+                    {isSignUp ? "Create Account" : "Sign In"}
                 </h2>
 
                 {error && (
@@ -290,7 +290,7 @@ export default function AuthPage() {
                         {loading && (
                             <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
                         )}
-                        {isSignUp ? "Sign Up" : "Sign In"}
+                        {isSignUp ? "Create Account" : "Sign In"}
                     </button>
                     {/* Cancel button */}
                     <button
@@ -328,7 +328,7 @@ export default function AuthPage() {
                         onClick={toggleMode}
                         className="text-blue-600 underline"
                     >
-                        {isSignUp ? "Sign In" : "Sign Up"}
+                        {isSignUp ? "Sign In" : "Create Account"}
                     </button>
                 </p>
 
