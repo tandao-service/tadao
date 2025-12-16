@@ -278,20 +278,20 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
               <button onClick={() => {
                 setIsOpenP(true);
                 router.push(`/auth`);
-              }} className="flex gap-1 items-center justify-center items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+              }} className="flex gap-1 items-center justify-center items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 px-3 py-1 rounded-md text-sm font-medium">
                 <FaPhoneAlt /> Call
               </button>
               <button onClick={() => {
                 setIsOpenP(true);
                 router.push(`/auth`);
-              }} className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+              }} className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 px-3 py-1 rounded-md text-sm font-medium">
                 <FaEnvelope /> Enquire
               </button>
               <button onClick={() => {
                 setIsOpenP(true);
                 router.push(`/auth`);
               }}
-                className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
+                className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 px-3 py-1 rounded-md text-sm font-medium">
                 <FaWhatsapp /> WhatsApp
               </button></>)}
 
