@@ -117,9 +117,9 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
   return (
     <>
       <Button onClick={() => setIsOpen(true)}
-        variant="outline" className="flex w-full items-center gap-2 border border-gray-400 text-gray-800 hover:bg-orange-50 ">
+        variant="outline" className="flex px-2 items-center gap-2 border border-gray-400 text-gray-800 hover:bg-orange-50 ">
         <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 24 }} />
-        <div className="hidden lg:inline"> Enquire</div>
+        Enquire
       </Button>
 
 

@@ -18,9 +18,10 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
 
     const handleLogout = async () => {
         await signOutUser();
-        setMenuOpen(false);
-        router.push("/"); // redirect to home after logout
+        window.location.href = "/"; // navigates and reloads
+
     };
+
 
     return (
         <div className="relative mr-2 ml-2">

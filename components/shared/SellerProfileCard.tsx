@@ -260,11 +260,11 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
         </div>
 
         {/* Contact Buttons */}
-        <div className="grid grid-cols-3 gap-2 mt-4">
+        <div className="flex gap-2 mt-4">
 
           {currentUser ? (<>
-            <button onClick={handleShowPhoneClick} className="flex gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 rounded-md text-sm font-medium">
-              <FaPhoneAlt /> {showCallDisclaimer ? (<p className="text-xs">{ad.data?.phone}</p>) : (<>Call</>)}
+            <button onClick={handleShowPhoneClick} className="flex items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 px-2 py-1 rounded-md text-sm font-medium">
+              <FaPhoneAlt /> {ad.data?.phone} {/** {showCallDisclaimer ? (<p className="text-xs">{ad.data?.phone}</p>) : (<>Call</>)}*/}
             </button>
             <ChatButton
               ad={ad}

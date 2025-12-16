@@ -69,9 +69,6 @@ export default function Navbarhome({
   const isActive = pathname === "/";
   const [isOpenP, setIsOpenP] = useState(false);
   const handleCloseP = () => setIsOpenP(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { user: currentUser, signOutUser } = useAuth(); // Firebase auth
-  const { toast } = useToast()
 
   const requireAuthRedirect = () => {
     if (!user?._id) {
