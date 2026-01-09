@@ -23,7 +23,7 @@ type CollectionProps = {
   totalPages: number;
   urlParamName?: string;
   userId: string;
-  handleOpenChatId:(value:string) => void;
+  handleOpenChatId: (value: string) => void;
 };
 
 const CollectionAbuse = ({
@@ -87,7 +87,7 @@ const CollectionAbuse = ({
                   Ad Id
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Creater Phone
+                  Creater Phone
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                   Reason
@@ -96,10 +96,10 @@ const CollectionAbuse = ({
                   Description
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Reporter Name
+                  Reporter Name
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                 Reporter Phone
+                  Reporter Phone
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                   Actions
@@ -113,10 +113,10 @@ const CollectionAbuse = ({
                   className="hover:bg-gray-100 dark:hover:bg-gray-600 text-xs"
                 >
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                    {report.adId._id}
+                    {report?.adId?._id}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                    {report.adId.data.phone}
+                    {report.adId?.data?.phone}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     {report.reason}
@@ -130,7 +130,7 @@ const CollectionAbuse = ({
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     {report.userId.phone}
                   </td>
-                 
+
 
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     <div

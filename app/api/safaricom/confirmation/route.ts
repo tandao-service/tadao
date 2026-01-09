@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       org_balance: body.OrgAccountBalance?.split('.')[0],
     };
 
-    const paymentresponse = await createPayment({
+    await createPayment({
       payment: {
         orderTrackingId: db_arr.account,
         name: db_arr.name,

@@ -8,7 +8,7 @@ const consumerSecret = process.env.MPESA_CONSUMER_SECRET || '';
 const businessShortCode = process.env.MPESA_SHORTCODE || '';
 const passkey = process.env.MPESA_PASSKEY || '';
 
-const callbackURL = 'https://tadaoservices.com/api/safaricom/callback';
+const callbackURL = 'https://tadaomakert.com/api/safaricom/callback';
 
 function getTimestamp(): string {
   const now = new Date();
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Amount, AccountReference and Account are required' }, { status: 400 });
     }
 
-    const transactionDesc = 'Payment to Pockestshop';
+    const transactionDesc = 'Payment to Tadao';
     const { password, timestamp } = generatePassword();
     const accessToken = await getAccessToken();
 

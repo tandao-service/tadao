@@ -195,10 +195,10 @@ const CollectionLoans = ({
                   <div className="flex gap-2 items-center">
                     <div className="flex flex-col">
                       <p className="text-sm font-semibold">
-                        {loan.userId.firstName} {loan.userId.lastName}
+                        {loan?.userId?.firstName} {loan?.userId?.lastName}
                       </p>
-                      <p className="text-sm font-semibold border-b">{loan.userId.email}</p>
-                      <p className="text-sm font-semibold border-b">{loan.userId.phone}</p>
+                      <p className="text-sm font-semibold border-b">{loan?.userId?.email}</p>
+                      <p className="text-sm font-semibold border-b">{loan?.userId?.phone}</p>
                     </div>
                   </div>
                   <p className="text-xs text-gray-600 dark:text-gray-300">

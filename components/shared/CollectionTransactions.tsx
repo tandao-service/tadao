@@ -126,26 +126,26 @@ const CollectionTransactions = ({
                 <tr key={trans._id} className="text-xs">
                   <td className="border p-2">
                     <img
-                      src={trans.buyer.photo}
-                      alt={`${trans.buyer.firstName}`}
+                      src={trans?.buyer?.photo ?? "/avator.png"}
+                      alt={`${trans?.buyer?.firstName}`}
                       className="w-8 h-8 object-cover rounded-xl"
                     />
                   </td>
                   <td className="border p-2">
-                    {trans.buyer.firstName} {trans.buyer.lastName}
+                    {trans?.buyer?.firstName} {trans?.buyer?.lastName}
                   </td>
 
-                  <td className="border p-2">{trans.buyer.email}</td>
+                  <td className="border p-2">{trans?.buyer?.email}</td>
                   <td className="border p-2 text-blue-500 cursor-pointer underline">
                     <div
                       className={`flex flex-col p-1 text-white justify-center items-center w-[70px] rounded-full ${trans.status === "Pending"
                         ? "bg-yellow-600"
-                        : trans.status === "Failed"
+                        : trans?.status === "Failed"
                           ? "bg-red-600 "
                           : "bg-green-600"
                         }`}
                     >
-                      {trans.status}
+                      {trans?.status}
                     </div>
                   </td>
                   <td className="border p-2">{trans.orderTrackingId}</td>
