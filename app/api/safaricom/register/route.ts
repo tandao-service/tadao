@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // Step 2: Register NEW URLs (this replaces the old ones)
     const registerRes = await axios.post(
-      "https://api.safaricom.co.ke/mpesa/c2b/v2/registerurl",
+      "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl",
       {
         ShortCode: businessShortCode,
         ResponseType: "Completed",
