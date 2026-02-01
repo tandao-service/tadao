@@ -54,7 +54,7 @@ const CategoryFilterSearch = ({ handleFilter, categoryList, value }: { value?: s
           {categories.map((category) => (
             <SelectItem
               value={category.name}
-              key={category._id}
+              key={category._id.toString()}
               className="flex w-full cursor-pointer p-regular-14 dark:hover:bg-[#131B1E]"
             >
               <div className="flex w-[280px] justify-between items-center">
