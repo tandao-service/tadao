@@ -100,7 +100,7 @@ const CreateCategoryForm = ({ category, type }: CategoryProps) => {
         };
         const deleteUrl = oldurl === uploadedUrls[0];
         await updateCategory({
-          _id: category._id,
+          _id: category._id.toString(),
           formData: finalData,
           deleteUrl: deleteUrl,
           oldurl: oldurl,
