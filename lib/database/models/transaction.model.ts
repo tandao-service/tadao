@@ -1,13 +1,13 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, Types, model, models } from "mongoose";
 export interface ITrans extends Document {
-  
-  _id: string;
+
+  _id: Types.ObjectId;
   orderTrackingId: string;
   amount: number;
   status: string;
   planId: {
-    _id: string, name: string ,color: string,imageUrl: string
-};
+    _id: string, name: string, color: string, imageUrl: string
+  };
 }
 const TransactionSchema = new Schema({
   createdAt: {
