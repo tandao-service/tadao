@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, model, models } from "mongoose";
+import mongoose, { Document, Schema, Types, model, models } from "mongoose";
 
 export interface IdynamicAd extends Document {
   data: any;
@@ -10,7 +10,7 @@ export interface IdynamicAd extends Document {
   }
   plan: {
 
-    _id: string, name: string, color: string, imageUrl: string
+    _id: Types.ObjectId, name: string, color: string, imageUrl: string
   };
   subcategory: any;
   views: string;

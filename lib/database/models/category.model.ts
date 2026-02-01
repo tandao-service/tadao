@@ -1,8 +1,8 @@
-import mongoose, { Document, Schema, model, models } from "mongoose";
+import mongoose, { Document, Schema, Types, model, models } from "mongoose";
 
 export interface ICategory extends Document {
   adCount: number;
-  _id: string;
+  _id: Types.ObjectId;
   name: string;
   imageUrl: string[];
 }

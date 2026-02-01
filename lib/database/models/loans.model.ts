@@ -1,7 +1,7 @@
-import mongoose, { Document, Schema, model, models } from "mongoose";
+import mongoose, { Document, Schema, Types, model, models } from "mongoose";
 
 export interface ILoan extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   userId: string;
   adId: string;
   loanType: string,
