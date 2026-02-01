@@ -26,7 +26,7 @@ import Reviews from "./Reviews";
 import ChatListSkeleton from "./ChatListSkeleton";
 type sidebarProps = {
   recipientUid: string;
-  uid:string;
+  uid: string;
 };
 
 interface Review {
@@ -41,87 +41,87 @@ interface Review {
 const SidebarmainReviews = ({ recipientUid, uid }: sidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Review[]>([]);
-    //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
+  //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [messages]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true); // Ensure loading starts when fetching data
+
+    try {
+      const senderMessagesQuery = query(
+        collection(db, "reviews"),
+        where("recipientUid", "==", recipientUid),
+        limit(100)
+      );
+
+      const unsubscribe = onSnapshot(
+        senderMessagesQuery,
+        (snapshot) => {
+          const senderMessages: Review[] = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...(doc.data() as Review), // Cast to the Review type
+          }));
+
+          // Sort messages by createdAt timestamp
+          senderMessages.sort((a, b) => {
+            const createdAtA = a.createdAt ? a.createdAt.toMillis() : 0;
+            const createdAtB = b.createdAt ? b.createdAt.toMillis() : 0;
+            return createdAtA - createdAtB;
+          });
+
+          setMessages(senderMessages);
+          setLoading(false); // Set loading to false only after data is retrieved
+        },
+        (error) => {
+          console.error("Error getting last messages:", error);
+          setLoading(false);
+        }
+      );
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Error setting up listener:", error);
+      setLoading(false);
+    }
+  }, [recipientUid]);
+
+
+  useEffect(() => {
     const scrollToBottom = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-  
-    useEffect(scrollToBottom, [messages]);
-  
-    const [loading, setLoading] = useState(true);
-
-useEffect(() => {
-  setLoading(true); // Ensure loading starts when fetching data
-
-  try {
-    const senderMessagesQuery = query(
-      collection(db, "reviews"),
-      where("recipientUid", "==", recipientUid),
-      limit(100)
-    );
-
-    const unsubscribe = onSnapshot(
-      senderMessagesQuery,
-      (snapshot) => {
-        const senderMessages: Review[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Review), // Cast to the Review type
-        }));
-
-        // Sort messages by createdAt timestamp
-        senderMessages.sort((a, b) => {
-          const createdAtA = a.createdAt ? a.createdAt.toMillis() : 0;
-          const createdAtB = b.createdAt ? b.createdAt.toMillis() : 0;
-          return createdAtA - createdAtB;
-        });
-
-        setMessages(senderMessages);
-        setLoading(false); // Set loading to false only after data is retrieved
-      },
-      (error) => {
-        console.error("Error getting last messages:", error);
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  } catch (error) {
-    console.error("Error setting up listener:", error);
-    setLoading(false);
-  }
-}, [recipientUid]);
-
-  
-    useEffect(() => {
-      const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      };
-      scrollToBottom();
-    }, [messages]);
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div>
       {loading ? (
         <div className="flex flex-col justify-center w-full">
-        
-         <ChatListSkeleton/>
+
+          <ChatListSkeleton />
         </div>
-      
+
       ) : messages.length > 0 ? (
         <>
           <div className="w-full dark:bg-[#2D3236] dark:text-gray-100 bg-white rounded-lg">
             <ScrollArea className="h-full w-full p-2">
               <ul className="divide-y divide-gray-200 dark:divide-gray-600">
-              {messages
-              .slice()
-              .reverse()
-              .map((message: any) => (
-                <Reviews
-                  key={message.id}
-                  message={message}
-                  uid={uid}
-                />
-              ))}
+                {messages
+                  .slice()
+                  .reverse()
+                  .map((message: any) => (
+                    <Reviews
+                      key={message.id}
+                      message={message}
+                      uid={uid}
+                    />
+                  ))}
               </ul>
             </ScrollArea>
           </div>
@@ -136,7 +136,7 @@ useEffect(() => {
           </div>
         </>
       )}
-     
+
     </div>
   );
 };

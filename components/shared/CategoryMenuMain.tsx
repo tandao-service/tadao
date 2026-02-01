@@ -48,7 +48,7 @@ const CategoryMenuMain = ({
   const handleCloseP = () => {
     setIsOpenP(false);
   };
- const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
 
   const handleCategory = (query: string) => {
     let newUrl = "";
@@ -93,83 +93,80 @@ const CategoryMenuMain = ({
           className={`flex flex-col items-center`}
         >
           <div className="w-full">
-           
-              
-              {categoryList.map((category: any, index: number) => (
-                <div
-                  key={index}
-                  onClick={() => {
-                    if (category.adCount > 0) {
-                      handleCategory(category.name);
-                    } else {
-                      toast({
-                        title: "0 Ads",
-                        description: (
-                          <>
-                            No ads in <strong>{category.name}</strong> category
-                          </>
-                        ),
-                        //action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-                      });
-                    }
-                  }}
-                  onMouseEnter={() => setHoveredCategory(category.name)}
-                  className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${
-                    hoveredCategory === category.name
-                      ? "bg-emerald-100 dark:bg-[#131B1E]"
-                      : "dark:bg-[#2D3236] bg-white"
+
+
+            {categoryList.map((category: any, index: number) => (
+              <div
+                key={index}
+                onClick={() => {
+                  if (category.adCount > 0) {
+                    handleCategory(category.name);
+                  } else {
+                    toast({
+                      title: "0 Ads",
+                      description: (
+                        <>
+                          No ads in <strong>{category.name}</strong> category
+                        </>
+                      ),
+                      //action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+                    });
+                  }
+                }}
+                onMouseEnter={() => setHoveredCategory(category.name)}
+                className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${hoveredCategory === category.name
+                    ? "bg-emerald-100 dark:bg-[#131B1E]"
+                    : "dark:bg-[#2D3236] bg-white"
                   } `}
-                >
-                  <div className={`flex gap-1 items-center mb-1 h-full w-full`}>
-                    <span>
-                      <div className="rounded-full dark:bg-[#131B1E] bg-gray-100 p-1">
-                        <Image
-                          className="w-6 h-6 object-cover"
-                          src={category.imageUrl[0]}
-                          alt={category.name}
-                          width={60}
-                          height={60}
-                        />
-                      </div>
-                    </span>
-                    <span className="flex-1 text-sm hover:no-underline my-auto">
-                      <div className="flex flex-col">
-                        <h2
-                          className={`text-xs ${
-                            category.adCount > 0
-                              ? ""
-                              : "text-gray-500 dark:text-gray-500"
+              >
+                <div className={`flex gap-1 items-center mb-1 h-full w-full`}>
+                  <span>
+                    <div className="rounded-full dark:bg-[#131B1E] bg-gray-100 p-1">
+                      <Image
+                        className="w-6 h-6 object-cover"
+                        src={category.imageUrl[0]}
+                        alt={category.name}
+                        width={60}
+                        height={60}
+                      />
+                    </div>
+                  </span>
+                  <span className="flex-1 text-sm hover:no-underline my-auto">
+                    <div className="flex flex-col">
+                      <h2
+                        className={`text-xs ${category.adCount > 0
+                            ? ""
+                            : "text-gray-500 dark:text-gray-500"
                           } `}
-                        >
-                          {category.name}
-                        </h2>
-                        <p
-                          className={`text-xs text-gray-500 dark:text-gray-500`}
-                        >
-                          {category.adCount} ads
-                        </p>
-                      </div>
-                    </span>
-                    <span
-                      className={`text-right my-auto ${
-                        category.adCount > 0
-                          ? ""
-                          : "text-gray-500 dark:text-gray-500"
+                      >
+                        {category.name}
+                      </h2>
+                      <p
+                        className={`text-xs text-gray-500 dark:text-gray-500`}
+                      >
+                        {category.adCount} ads
+                      </p>
+                    </div>
+                  </span>
+                  <span
+                    className={`text-right my-auto ${category.adCount > 0
+                        ? ""
+                        : "text-gray-500 dark:text-gray-500"
                       } `}
-                    >
-                      <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
-                    </span>
-                  </div>
-                  {/*<div
+                  >
+                    <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+                  </span>
+                </div>
+                {/*<div
                     className={`absolute h-full w-full ${
                       category.adCount > 0
                         ? ""
                         : "bg-white bg-opacity-50 dark:bg-[#2D3236] dark:bg-opacity-40"
                     } `}
                   ></div> */}
-                </div>
-              ))}
-           
+              </div>
+            ))}
+
           </div>
         </div>
       </div>
@@ -179,7 +176,7 @@ const CategoryMenuMain = ({
           onMouseEnter={() => setHoveredCategory(hoveredCategory)}
           onMouseLeave={() => setHoveredCategory(null)}
         >
-         
+
           <ScrollArea className="h-[450px] w-full">
             {subcategoryList
               .filter((cat: any) => cat.category.name === hoveredCategory)
@@ -218,11 +215,10 @@ const CategoryMenuMain = ({
                     <span className="flex-1 text-sm hover:no-underline my-auto">
                       <div className="flex flex-col">
                         <h2
-                          className={`text-xs ${
-                            sub.adCount > 0
+                          className={`text-xs ${sub.adCount > 0
                               ? ""
                               : "text-gray-500 dark:text-gray-500"
-                          } `}
+                            } `}
                         >
                           {sub.subcategory}
                         </h2>

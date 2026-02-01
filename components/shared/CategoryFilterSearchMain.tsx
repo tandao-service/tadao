@@ -17,7 +17,7 @@ import TextField from "@mui/material/TextField";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
-const CategoryFilterSearchMain = ({ onSelectCategory,categoryList }: { categoryList:any, onSelectCategory: (value :any) => void }) => {
+const CategoryFilterSearchMain = ({ onSelectCategory, categoryList }: { categoryList: any, onSelectCategory: (value: any) => void }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [category, setCategory] = useState("");
   const router = useRouter();
@@ -26,7 +26,7 @@ const CategoryFilterSearchMain = ({ onSelectCategory,categoryList }: { categoryL
   useEffect(() => {
 
     setCategories(categoryList as ICategory[]);
-  
+
   }, []);
 
   return (
@@ -46,7 +46,7 @@ const CategoryFilterSearchMain = ({ onSelectCategory,categoryList }: { categoryL
           {categories.map((category) => (
             <SelectItem
               value={category.name}
-              key={category._id}
+              key={category._id.toString()}
               className="flex w-full cursor-pointer p-regular-14 dark:hover:bg-[#131B1E]"
             >
               <div className="flex w-[280px] items-center">
@@ -67,7 +67,7 @@ const CategoryFilterSearchMain = ({ onSelectCategory,categoryList }: { categoryL
                     </div>
                   </div>
                 </div>
-              
+
               </div>
             </SelectItem>
           ))}

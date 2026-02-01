@@ -28,7 +28,7 @@ const CategorySelect = ({
 }: {
   selected: string | null;
   data: any;
-  onChange: (field: string, value: string, _id:string) => void;
+  onChange: (field: string, value: string, _id: string) => void;
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect mobile screens
   const [open, setOpen] = useState(false);
