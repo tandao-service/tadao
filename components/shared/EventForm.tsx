@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   getallcategories,
   getcategory,
@@ -11,7 +11,7 @@ import { createValidationSchema } from "@/lib/createValidationSchema";
 import CreateCategoryForm from "./CreateCategoryForm";
 import DisplayCategories from "./DisplayCategories";
 import { FileUploader } from "./FileUploader";
-import { useUploadThing } from "@/lib/uploadthing";
+
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import { Button } from "../ui/button";
 import { createData, updateAd } from "@/lib/actions/dynamicAd.actions";
@@ -66,6 +66,8 @@ import { updateUserPhone } from "@/lib/actions/user.actions";
 import { createLoan } from "@/lib/actions/loan.actions";
 import PhoneVerification from "./PhoneVerification";
 import BiddingCheckbox from "./BiddingCheckbox";
+import { AdImage, makeUploadFilesOptimized } from "@/lib/images/uploadOptimized";
+import { useUploadThing } from "@/lib/uploadthing";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -258,8 +260,7 @@ const AdForm = ({
   const [selectedFeatures, setselectedFeatures] = useState<string[]>([]);
   const { toast } = useToast();
   const router = useRouter();
-  const { startUpload } = useUploadThing("imageUploader");
-  let uploadedImageUrl: string[] = [];
+
   const [showPopup, setShowPopup] = useState(false);
   const modules = {
     toolbar: [
@@ -530,24 +531,18 @@ const AdForm = ({
     setFormErrors({});
     return true;
   };
-  const uploadFiles = async () => {
-    const uploadedUrls: string[] = [];
-    let i = 0;
-    for (const file of files) {
-      try {
-        i++;
-        const uploadedImages = await startUpload([file]);
-        if (uploadedImages && uploadedImages.length > 0) {
-          uploadedUrls.push(uploadedImages[0].url);
-          setUploadProgress(Math.round((i / files.length) * 100));
-        }
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    }
-    return uploadedUrls.filter((url) => !url.includes("blob:"));
-  };
+  const { startUpload } = useUploadThing("imageUploader");
+  const uploadFilesOptimized = useMemo(
+    () => makeUploadFilesOptimized(startUpload),
+    [startUpload]
+  );
 
+  const uploadFiles = async (): Promise<AdImage[]> => {
+    const result = await uploadFilesOptimized(files, {
+      onProgress: (p) => setUploadProgress(p),
+    });
+    return result;
+  };
   const handleInputChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -761,13 +756,13 @@ const AdForm = ({
 
 
 
-        const uploadedUrls = await uploadFiles();
-
-        if (!uploadedUrls) return;
+        const uploadedImages = await uploadFiles();
+        if (!uploadedImages) return;
 
         const baseData = {
           ...formData,
-          imageUrls: uploadedUrls,
+          images: uploadedImages,            // ✅ new field
+          imageUrls: uploadedImages.map(i => i.fullUrl), // ✅ optional (backward compat)
           price: formData["price"] ? parseCurrencyToNumber(formData["price"].toString()) : 0,
           phone,
         };
@@ -829,17 +824,22 @@ const AdForm = ({
           return
         }
 
-        const uploadedUrls = await uploadFiles();
-        // Preserve existing imageUrls if no new files are uploaded
-        const finalImageUrls =
-          uploadedUrls.length > 0 ? uploadedUrls : formData.imageUrls;
+        const uploadedImages = await uploadFiles();
 
+        // Preserve existing images if no new files uploaded
+        const finalImages =
+          uploadedImages.length > 0 ? uploadedImages : (formData.images || []);
+
+        // Optional legacy compatibility
+        const finalImageUrls =
+          finalImages.map((i: any) => i.fullUrl ?? i);
 
         const finalData = {
           ...formData,
-          imageUrls: finalImageUrls,
+          images: finalImages,                 // ✅ new field
+          imageUrls: finalImageUrls,           // ✅ optional
           price: formData["price"] ? parseCurrencyToNumber(formData["price"].toString()) : 0,
-          phone: phone,
+          phone,
         };
         const _id = ad._id;
         const updatedAd = await updateAd(userId, _id, finalData);
