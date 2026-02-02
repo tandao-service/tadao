@@ -132,7 +132,8 @@ const CollectionSearch = ({
                 columnClassName="bg-clip-padding"
               >
                 {data.map((ad: any, index: number) => {
-                  const isAdCreator = userId === ad.organizer._id.toString();
+                  const isAdCreator =
+                    !!ad?.organizer?._id && userId === ad.organizer._id.toString();
                   if (data.length === index + 1) {
                     return (
                       <div
@@ -177,7 +178,8 @@ const CollectionSearch = ({
               <div className="flex p-1 rounded-lg min-h-screen">
                 <ul className="w-full">
                   {data.map((ad: any, index: number) => {
-                    const isAdCreator = userId === ad.organizer._id.toString();
+                    const isAdCreator =
+                      !!ad?.organizer?._id && userId === ad.organizer._id.toString();
                     if (data.length === index + 1) {
                       return (
                         <div

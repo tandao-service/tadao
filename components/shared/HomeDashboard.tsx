@@ -740,13 +740,12 @@ const HomeDashboard = ({
                         >
                           Search
                         </button>
-                        <button
+                        {/**  <button
                           onClick={registerSafaricom}
                           className="hover:dark:bg-emerald-800 dark:bg-emerald-700 lg:mt-5 text-xs bg-black text-white px-4 py-2 rounded"
                         >
                           Register url Safaricom
-                        </button>
-
+                        </button>*/}
                       </div>
                     </div>
 

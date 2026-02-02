@@ -401,15 +401,14 @@ const VerticalCard = ({
                 </div>
               </div>
             )}
-            {ad.organizer.verified &&
-              ad.organizer?.verified[0]?.accountverified === true && (
-                <div className="absolute bg-green-100 top-0 right-0 text-green-700 dark:text-emerald-900 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-3 rounded-bl-lg rounded-tr-lg">
-                  <div className="flex gap-1 cursor-pointer">
-                    <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-                    Verified
-                  </div>
+            {ad?.organizer?.verified?.[0]?.accountverified === true && (
+              <div className="absolute bg-green-100 top-0 right-0 text-green-700 dark:text-emerald-900 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-3 rounded-bl-lg rounded-tr-lg">
+                <div className="flex gap-1 cursor-pointer">
+                  <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
+                  Verified
                 </div>
-              )}
+              </div>
+            )}
             {isAdCreator && (
               <div className="absolute right-2 top-10 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
                 <div

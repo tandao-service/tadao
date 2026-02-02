@@ -1155,141 +1155,143 @@ const CollectionInfinite = ({
                     packagesList={packagesList} />
                 </div>
                 <div>
-                  <div className="grid bg-white p-2 rounded-2xl grid-cols-4 md:grid-cols-4 gap-4 m-2">
+                  <div className="hidden lg:inline">
 
-                    {/* Post Ad */}
+                    <div className="grid bg-white p-2 rounded-2xl grid-cols-4 md:grid-cols-4 gap-4 m-2">
 
-                    <div
-                      onClick={() => {
-                        if (user?.user?._id && currentUser) {
-                          // Logged in, ready
-                          handleOpenSell();
-                        } else if (!user?.user?._id && currentUser) {
-                          // Logged in but user data still loading
-                          toast({
-                            title: "Please wait",
-                            description: (
-                              <div className="flex items-center gap-2">
-                                <CircularProgress sx={{ color: "#000000" }} size={20} />
-                                <span>Loading...</span>
-                              </div>
-                            ),
-                          });
-                        } else {
-                          // Not logged in
-                          router.push("/auth");
-                        }
-                      }}
+                      {/* Post Ad */}
 
-                      className="h-[100px] bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 
+                      <div
+                        onClick={() => {
+                          if (user?.user?._id && currentUser) {
+                            // Logged in, ready
+                            handleOpenSell();
+                          } else if (!user?.user?._id && currentUser) {
+                            // Logged in but user data still loading
+                            toast({
+                              title: "Please wait",
+                              description: (
+                                <div className="flex items-center gap-2">
+                                  <CircularProgress sx={{ color: "#000000" }} size={20} />
+                                  <span>Loading...</span>
+                                </div>
+                              ),
+                            });
+                          } else {
+                            // Not logged in
+                            router.push("/auth");
+                          }
+                        }}
+
+                        className="h-[100px] bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 
                flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
                hover:shadow-lg hover:scale-[1.03] transition-all"
-                    >
-                      <div className="p-3 rounded-full bg-orange-200 mb-2">
-                        <SellOutlinedIcon className="h-6 w-6 text-orange-600" />
+                      >
+                        <div className="p-3 rounded-full bg-orange-200 mb-2">
+                          <SellOutlinedIcon className="h-6 w-6 text-orange-600" />
+                        </div>
+                        <h2 className="text-base font-semibold text-orange-700">Post Ad</h2>
                       </div>
-                      <h2 className="text-base font-semibold text-orange-700">Post Ad</h2>
-                    </div>
 
-                    {/* Donated */}
-                    <div
-                      onClick={() => {
-                        if (user?.user?._id && currentUser) {
-                          // Logged in, ready
-                          handleDrawer('Donations', 'Donated Items');
-                        } else if (!user?.user?._id && currentUser) {
-                          // Logged in but user data still loading
-                          toast({
-                            title: "Please wait",
-                            description: (
-                              <div className="flex items-center gap-2">
-                                <CircularProgress sx={{ color: "#000000" }} size={20} />
-                                <span>Loading...</span>
-                              </div>
-                            ),
-                          });
-                        } else {
-                          // Not logged in
-                          router.push("/auth");
-                        }
-                      }}
-                      className="h-[100px] bg-gradient-to-br from-green-50 to-green-100 border border-green-200 
+                      {/* Donated */}
+                      <div
+                        onClick={() => {
+                          if (user?.user?._id && currentUser) {
+                            // Logged in, ready
+                            handleDrawer('Donations', 'Donated Items');
+                          } else if (!user?.user?._id && currentUser) {
+                            // Logged in but user data still loading
+                            toast({
+                              title: "Please wait",
+                              description: (
+                                <div className="flex items-center gap-2">
+                                  <CircularProgress sx={{ color: "#000000" }} size={20} />
+                                  <span>Loading...</span>
+                                </div>
+                              ),
+                            });
+                          } else {
+                            // Not logged in
+                            router.push("/auth");
+                          }
+                        }}
+                        className="h-[100px] bg-gradient-to-br from-green-50 to-green-100 border border-green-200 
                flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
                hover:shadow-lg hover:scale-[1.03] transition-all"
-                    >
-                      <div className="p-3 rounded-full bg-green-200 mb-2">
-                        <VolunteerActivismIcon className="h-6 w-6 text-green-600" />
+                      >
+                        <div className="p-3 rounded-full bg-green-200 mb-2">
+                          <VolunteerActivismIcon className="h-6 w-6 text-green-600" />
+                        </div>
+                        <h2 className="text-base font-semibold text-green-700">Donated Items</h2>
                       </div>
-                      <h2 className="text-base font-semibold text-green-700">Donated Items</h2>
-                    </div>
 
-                    {/* Auction */}
-                    <div
-                      onClick={() => {
+                      {/* Auction */}
+                      <div
+                        onClick={() => {
 
-                        if (user?.user?._id && currentUser) {
-                          // Logged in, ready
-                          handleDrawer('bids', 'bids');
-                        } else if (!user?.user?._id && currentUser) {
-                          // Logged in but user data still loading
-                          toast({
-                            title: "Please wait",
-                            description: (
-                              <div className="flex items-center gap-2">
-                                <CircularProgress sx={{ color: "#000000" }} size={20} />
-                                <span>Loading...</span>
-                              </div>
-                            ),
-                          });
-                        } else {
-                          // Not logged in
+                          if (user?.user?._id && currentUser) {
+                            // Logged in, ready
+                            handleDrawer('bids', 'bids');
+                          } else if (!user?.user?._id && currentUser) {
+                            // Logged in but user data still loading
+                            toast({
+                              title: "Please wait",
+                              description: (
+                                <div className="flex items-center gap-2">
+                                  <CircularProgress sx={{ color: "#000000" }} size={20} />
+                                  <span>Loading...</span>
+                                </div>
+                              ),
+                            });
+                          } else {
+                            // Not logged in
 
-                          router.push("/auth");
-                        }
-                      }}
-                      className="h-[100px] bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 
+                            router.push("/auth");
+                          }
+                        }}
+                        className="h-[100px] bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 
                flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
                hover:shadow-lg hover:scale-[1.03] transition-all"
-                    >
-                      <div className="p-3 rounded-full bg-blue-200 mb-2">
-                        <GavelIcon className="h-6 w-6 text-blue-600" />
+                      >
+                        <div className="p-3 rounded-full bg-blue-200 mb-2">
+                          <GavelIcon className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <h2 className="text-base font-semibold text-blue-700">Auction</h2>
                       </div>
-                      <h2 className="text-base font-semibold text-blue-700">Auction</h2>
-                    </div>
 
-                    {/* Lost & Found */}
-                    <div
-                      onClick={() => {
-                        if (user?.user?._id && currentUser) {
-                          // Logged in, ready
-                          handleDrawer('Lost and Found', 'Lost and Found Items');
-                        } else if (!user?.user?._id && currentUser) {
-                          // Logged in but user data still loading
-                          toast({
-                            title: "Please wait",
-                            description: (
-                              <div className="flex items-center gap-2">
-                                <CircularProgress sx={{ color: "#000000" }} size={20} />
-                                <span>Loading...</span>
-                              </div>
-                            ),
-                          });
-                        } else {
-                          // Not logged in
-                          router.push("/auth");
-                        }
-                      }}
-                      className="h-[100px] bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 
+                      {/* Lost & Found */}
+                      <div
+                        onClick={() => {
+                          if (user?.user?._id && currentUser) {
+                            // Logged in, ready
+                            handleDrawer('Lost and Found', 'Lost and Found Items');
+                          } else if (!user?.user?._id && currentUser) {
+                            // Logged in but user data still loading
+                            toast({
+                              title: "Please wait",
+                              description: (
+                                <div className="flex items-center gap-2">
+                                  <CircularProgress sx={{ color: "#000000" }} size={20} />
+                                  <span>Loading...</span>
+                                </div>
+                              ),
+                            });
+                          } else {
+                            // Not logged in
+                            router.push("/auth");
+                          }
+                        }}
+                        className="h-[100px] bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 
                flex flex-col items-center justify-center cursor-pointer rounded-2xl p-3 
                hover:shadow-lg hover:scale-[1.03] transition-all"
-                    >
-                      <div className="p-3 rounded-full bg-purple-200 mb-2">
-                        <SearchIcon className="h-6 w-6 text-purple-600" />
+                      >
+                        <div className="p-3 rounded-full bg-purple-200 mb-2">
+                          <SearchIcon className="h-6 w-6 text-purple-600" />
+                        </div>
+                        <h2 className="text-base font-semibold text-purple-700">Lost & Found</h2>
                       </div>
-                      <h2 className="text-base font-semibold text-purple-700">Lost & Found</h2>
+
                     </div>
-
-
                   </div>
                   <h2 className="font-bold p-2 text-[30px]">Trending Ads</h2>
                   <div className="bg-gradient-to-r from-[#8C4B2C] from-10% via-[#BD7A4F] via-40% to-[#F5CBA7] to-90%"></div>
