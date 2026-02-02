@@ -69,19 +69,7 @@ const CardAutoHeight = ({
   const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
   const { user: currentUser } = useAuth();
-  const isAdCreator = userId === ad.organizer._id.toString();
-  const truncateTitle = (title: string, maxLength: number) => {
-    if (title.length > maxLength) {
-      return title.substring(0, maxLength) + "...";
-    }
-    return title;
-  };
-  const truncateaddress = (address: string, maxLength: number) => {
-    if (address.length > maxLength) {
-      return address.substring(0, maxLength) + "...";
-    }
-    return address;
-  };
+  const isAdCreator = !!userId && userId === ad?.organizer?._id?.toString?.();
   const handle = async (id: string) => {
     if (userId) {
       const newBookmark = await createBookmark({
@@ -361,15 +349,14 @@ const CardAutoHeight = ({
                 </div>
               </div>
             )}
-            {ad.organizer.verified &&
-              ad.organizer?.verified[0]?.accountverified === true && (
-                <div className="absolute bg-green-100 top-0 right-0 text-green-700 dark:text-emerald-900 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-3 rounded-bl-lg rounded-tr-lg">
-                  <div className="flex gap-1 cursor-pointer">
-                    <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-                    Verified
-                  </div>
+            {ad?.organizer?.verified?.[0]?.accountverified === true && (
+              <div className="absolute bg-green-100 top-0 right-0 text-green-700 dark:text-emerald-900 text-[10px] py-1 px-1 lg:text-xs lg:py-1 lg:px-3 rounded-bl-lg rounded-tr-lg">
+                <div className="flex gap-1 cursor-pointer">
+                  <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
+                  Verified
                 </div>
-              )}
+              </div>
+            )}
             {isAdCreator && (
               <div className="absolute right-2 top-10 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
                 <div
