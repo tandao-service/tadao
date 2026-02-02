@@ -161,7 +161,10 @@ const HorizontalCardPublic = ({
 
             <Image
               onClick={() => handleAdView(ad)}
-              src={ad.data.imageUrls.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg"}
+              src={
+                ad.data.coverThumbUrl ??
+                (ad.data.imageUrls?.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg")
+              }
               alt={ad.data.title || "Ad image"}
               width={400} // Adjust width to match the `w-36` Tailwind class
               height={400} // Adjust height to match the `h-24` Tailwind class
@@ -413,7 +416,7 @@ const HorizontalCardPublic = ({
             </div>
             {!isAdCreator && !isbookmark && (
               <div className="">
-                   {currentUser ? (<>
+                {currentUser ? (<>
                   <div
                     className="w-8 h-8 p-1 shadow flex items-center justify-center rounded-full bg-gradient-to-l from-orange-400 to-orange-500 text-white hover:text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                     data-tip="Bookmark"

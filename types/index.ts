@@ -118,6 +118,7 @@ export type CreateAdParams = {
     address: string
     enableMap: boolean
     imageUrls: string[]
+    coverThumbUrl?: string
     negotiable: boolean
     youtube?: string
     phone: string
@@ -176,6 +177,7 @@ export type UpdateAdParams = {
     _id: string
     title: string
     imageUrls: string[]
+    coverThumbUrl?: string
     description: string
     latitude: string
     longitude: string
@@ -407,6 +409,7 @@ export type Ad = {
   description: string
   price: number
   imageUrls: string[]
+  coverThumbUrl?: string
   latitude: string
   longitude: string
   address: string

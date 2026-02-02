@@ -156,7 +156,10 @@ const CardAutoHeight = ({
           )}
 
           <Image
-            src={ad.adId.data.imageUrls[0]}
+            src={
+              ad.data.coverThumbUrl ??
+              (ad.data.imageUrls?.length > 0 ? ad.data.imageUrls[0] : "/fallback.jpg")
+            }
             alt={ad.adId.data.title}
             width={800}
             height={400}

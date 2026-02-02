@@ -1063,17 +1063,33 @@ export async function getTotalProducts() {
 // DELETE
 export async function deleteAd({ adId, deleteImages, path }: DeleteAdParams) {
   try {
-    try {
-      if (deleteImages) {
-        const utapi = new UTApi();
-        await utapi.deleteFiles(deleteImages);
-      }
-    } catch { }
-    await connectToDatabase()
-    const deletedAd = await DynamicAd.findByIdAndDelete(adId)
-    if (deletedAd) revalidatePath(path)
+    await connectToDatabase();
+
+    // 1) Delete the DB record first (so we can read its coverThumbUrl safely)
+    const deletedAd = await DynamicAd.findByIdAndDelete(adId);
+
+    // 2) Collect file keys to delete (UploadThing keys, not URLs)
+    const keysToDelete: string[] = [];
+
+    if (Array.isArray(deleteImages) && deleteImages.length > 0) {
+      keysToDelete.push(...deleteImages.filter(Boolean));
+    }
+
+    const coverKey = deletedAd?.data?.coverThumbUrl;
+    if (coverKey) keysToDelete.push(coverKey);
+
+    // 3) Deduplicate + delete
+    const uniqueKeys = Array.from(new Set(keysToDelete));
+
+    if (uniqueKeys.length > 0) {
+      const utapi = new UTApi();
+      await utapi.deleteFiles(uniqueKeys);
+    }
+
+    if (deletedAd) revalidatePath(path);
+    return deletedAd;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
 }
 interface PlaceBidParams {

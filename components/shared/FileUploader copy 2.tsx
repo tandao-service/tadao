@@ -1,6 +1,7 @@
+// components/shared/FileUploader.tsx
 "use client";
 
-import { useCallback, Dispatch, SetStateAction, useState } from "react";
+import { useCallback, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "@uploadthing/react/hooks";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 import AddBoxIcon from "@mui/icons-material/AddBox";
@@ -14,18 +15,21 @@ import { Icon } from "@iconify/react";
 import imageCompression from "browser-image-compression";
 import threeDotsScale from "@iconify-icons/svg-spinners/3-dots-scale";
 import CircularProgress from "@mui/material/CircularProgress";
+import type { AdImage } from "@/lib/images/uploadOptimized";
 
 type FileUploaderProps = {
-  onFieldChange: (urls: string[]) => void;
-  imageUrls: string[];
+  // ✅ new
+  images: AdImage[];
+  onImagesChange: (images: AdImage[]) => void;
+
+  // ✅ optional legacy (for compatibility, not required)
+  imageUrls?: string[];
+
   userName: string;
   category: string;
   anayze: string;
   adId: string;
   setFiles: Dispatch<SetStateAction<File[]>>;
-
-  // store cover thumbnail file + preview url
-  onCoverThumbChange: (file: File | null, previewUrl: string | null) => void;
 };
 
 const getNetworkType = (): "4g" | "3g" | "2g" | "slow-2g" | "unknown" => {
@@ -36,8 +40,9 @@ const getNetworkType = (): "4g" | "3g" | "2g" | "slow-2g" | "unknown" => {
   return "unknown";
 };
 
-const isMobile = (): boolean =>
-  typeof window !== "undefined" && window.innerWidth < 768;
+const isMobile = (): boolean => {
+  return typeof window !== "undefined" && window.innerWidth < 768;
+};
 
 const getSmartCompressionOptions = () => {
   const network = getNetworkType();
@@ -54,7 +59,8 @@ const getSmartCompressionOptions = () => {
 
 const compressImage = async (file: File): Promise<File> => {
   const smartOptions = getSmartCompressionOptions();
-  return await imageCompression(file, { ...smartOptions, useWebWorker: true });
+  const options = { ...smartOptions, useWebWorker: true };
+  return await imageCompression(file, options);
 };
 
 const applyWatermark = (
@@ -92,6 +98,8 @@ const applyWatermark = (
 
       const gap = headerFontSize * 0.5;
       const headerCenterX = canvas.width / 2;
+
+      // keep your existing +280 offset
       const headerCenterY = canvas.height / 2 - gap / 2 + 280;
 
       ctx.lineWidth = 2;
@@ -115,7 +123,8 @@ const applyWatermark = (
       canvas.toBlob(
         (blob) => {
           if (!blob) return reject(new Error("Failed to create blob"));
-          resolve(new File([blob], file.name, { type: file.type }));
+          const watermarkedFile = new File([blob], file.name, { type: file.type });
+          resolve(watermarkedFile);
         },
         file.type,
         0.92
@@ -129,113 +138,62 @@ const applyWatermark = (
   });
 };
 
-const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve(img);
-    };
-    img.onerror = (e) => {
-      URL.revokeObjectURL(url);
-      reject(e);
-    };
-    img.src = url;
-  });
-};
-
-const clamp = (n: number, min: number, max: number) =>
-  Math.max(min, Math.min(max, n));
-
-const toWebp = async (
-  file: File,
-  opts: { maxWidthOrHeight: number; quality: number; fileNameSuffix?: string }
-): Promise<File> => {
-  const img = await loadImageFromFile(file);
-
-  const maxDim = Math.max(img.width, img.height);
-  const scale = maxDim > opts.maxWidthOrHeight ? opts.maxWidthOrHeight / maxDim : 1;
-
-  const w = Math.round(img.width * scale);
-  const h = Math.round(img.height * scale);
-
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return file;
-
-  ctx.drawImage(img, 0, 0, w, h);
-
-  const quality = clamp(opts.quality, 0.4, 0.92);
-
-  const blob: Blob | null = await new Promise((resolve) => {
-    canvas.toBlob((b) => resolve(b), "image/webp", quality);
-  });
-
-  if (!blob) return file;
-
-  const base = file.name.replace(/\.[^/.]+$/, "");
-  const suffix = opts.fileNameSuffix ? `-${opts.fileNameSuffix}` : "";
-  const webpName = `${base}${suffix}.webp`;
-
-  return new File([blob], webpName, { type: "image/webp" });
-};
-
-// --- WebP quality presets (your chosen ranges) ---
-const WEBP_FULL_QUALITY = 0.82;   // 0.78 – 0.85
-const WEBP_THUMB_QUALITY = 0.72;  // 0.65 – 0.75
-
-const WEBP_FULL_MAX = 1600;
-const WEBP_THUMB_MAX = 500;
-
-// Full image webp
-const toWebpFull = (file: File) =>
-  toWebp(file, {
-    maxWidthOrHeight: WEBP_FULL_MAX,
-    quality: WEBP_FULL_QUALITY,
-    fileNameSuffix: "full",
-  });
-
-// Thumbnail for cover
-const toWebpThumb = (file: File) =>
-  toWebp(file, {
-    maxWidthOrHeight: WEBP_THUMB_MAX,
-    quality: WEBP_THUMB_QUALITY,
-    fileNameSuffix: "thumb",
-  });
-
 export function FileUploader({
-  imageUrls,
+  images,
+  onImagesChange,
+  imageUrls, // optional legacy
   userName,
   category,
   anayze,
   adId,
-  onFieldChange,
   setFiles,
-  onCoverThumbChange,
 }: FileUploaderProps) {
   const { toast } = useToast();
 
   const [processingStatus, setProcessingStatus] = useState(false);
 
-  // per-image loading state (fixes global spinner issue)
+  // For showing previews of new files BEFORE upload:
+  // each preview item corresponds to a File stored in `setFiles`.
+  const [newPreviews, setNewPreviews] = useState<string[]>([]);
+
+  // combine existing uploaded + new previews for display
+  const displayUrls = useMemo(() => {
+    const uploaded = (images || []).map((img) => img.smallUrl || img.fullUrl).filter(Boolean);
+    return [...uploaded, ...newPreviews];
+  }, [images, newPreviews]);
+
+  // per-image loading
   const [loadingMap, setLoadingMap] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    const next: Record<number, boolean> = {};
+    displayUrls.forEach((_, i) => (next[i] = true));
+    setLoadingMap(next);
+  }, [displayUrls.length]);
+
+  // optional: initialize previews from legacy imageUrls if images is empty
+  useEffect(() => {
+    if ((!images || images.length === 0) && imageUrls && imageUrls.length > 0) {
+      // convert legacy urls into AdImage objects
+      const legacyImages: AdImage[] = imageUrls.map((u) => ({ fullUrl: u }));
+      onImagesChange(legacyImages);
+    }
+    // only run once intentionally
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       setProcessingStatus(true);
 
       try {
-        const processedFullFiles: File[] = [];
-        let coverThumbSet = false;
+        const processedFiles: File[] = [];
+        const previewUrls: string[] = [];
 
         for (const originalFile of acceptedFiles) {
+          // reject screenshots by name
           const isScreenshot =
-            /screenshot/i.test(originalFile.name) ||
-            /Screen\s?Shot/i.test(originalFile.name);
+            /screenshot/i.test(originalFile.name) || /Screen\s?Shot/i.test(originalFile.name);
 
           if (isScreenshot) {
             toast({
@@ -247,62 +205,57 @@ export function FileUploader({
             continue;
           }
 
-          // prevent duplicates by file name
-          const alreadyAdded =
-            processedFullFiles.some((f) => f.name === originalFile.name) ||
-            imageUrls.some((u) => u.includes(encodeURIComponent(originalFile.name)));
-          if (alreadyAdded) continue;
-
           let file = originalFile;
 
-          // 1) compress (reduces huge photos early)
+          // compress only if big
           if (file.size > 0.8 * 1024 * 1024) {
             try {
-              file = await compressImage(file);
+              const compressed = await compressImage(file);
+              if (compressed.size > 0.8 * 1024 * 1024) {
+                toast({
+                  variant: "destructive",
+                  title: "Too Large",
+                  description: `${file.name} is still too large after compression. Skipped.`,
+                  duration: 5000,
+                });
+                continue;
+              }
+              file = compressed;
             } catch (err) {
               console.error("Compression failed", err);
               continue;
             }
           }
 
-          // 2) watermark
+          // watermark
           try {
-            file = await applyWatermark(
+            const watermarked = await applyWatermark(
               file,
               userName.toUpperCase(),
               "Posted on Tadao market"
             );
+            processedFiles.push(watermarked);
           } catch (error) {
-            console.error("Watermarking failed, proceeding with original:", error);
-          }
-
-          // 3) convert to WEBP full (fast loading)
-          const fullWebp = await toWebpFull(file);
-          processedFullFiles.push(fullWebp);
-
-          // 4) make WEBP thumb for cover (only when first image overall)
-          const shouldMakeCoverThumb =
-            !coverThumbSet && imageUrls.length === 0 && processedFullFiles.length === 1;
-
-          if (shouldMakeCoverThumb) {
-            const thumbWebp = await toWebpThumb(file);
-            const thumbPreview = convertFileToUrl(thumbWebp);
-            onCoverThumbChange(thumbWebp, thumbPreview);
-            coverThumbSet = true;
+            console.error("Watermark failed, using original:", error);
+            processedFiles.push(file);
           }
         }
 
-        setFiles((prev) => [...prev, ...processedFullFiles]);
+        if (processedFiles.length === 0) return;
 
-        const urls = processedFullFiles.map((f) => convertFileToUrl(f));
-        onFieldChange([...imageUrls, ...urls]);
+        // store actual Files for later upload (AdForm uses these)
+        setFiles((prev) => [...prev, ...processedFiles]);
 
-        // mark new images as "loading"
-        const startIndex = imageUrls.length;
-        setLoadingMap((m) => {
-          const next = { ...m };
-          for (let i = 0; i < urls.length; i++) next[startIndex + i] = true;
-          return next;
+        // show previews immediately (these are not uploaded yet)
+        for (const f of processedFiles) {
+          previewUrls.push(convertFileToUrl(f));
+        }
+
+        // prevent duplicate preview urls
+        setNewPreviews((prev) => {
+          const set = new Set(prev);
+          previewUrls.forEach((u) => set.add(u));
+          return Array.from(set);
         });
       } catch (err) {
         console.error("Processing failed", err);
@@ -310,7 +263,7 @@ export function FileUploader({
         setProcessingStatus(false);
       }
     },
-    [imageUrls, onFieldChange, setFiles, toast, userName, onCoverThumbChange]
+    [setFiles, userName, toast]
   );
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -318,34 +271,53 @@ export function FileUploader({
     accept: generateClientDropzoneAccept(["image/*"]),
   });
 
-  const handleRemoveImage = async (index: number) => {
-    const imageUrl = imageUrls[index];
+  const handleRemoveImage = async (displayIndex: number) => {
+    const uploadedCount = (images || []).length;
 
-    if (imageUrl) {
-      await removeImageUrl(adId, imageUrl);
+    // removing an uploaded image
+    if (displayIndex < uploadedCount) {
+      const img = images[displayIndex];
+      const url = img?.fullUrl;
+
+      if (url) {
+        try {
+          await removeImageUrl(adId, url);
+        } catch (e) {
+          console.error("removeImageUrl failed:", e);
+        }
+      }
+
+      const nextImages = [...images];
+      nextImages.splice(displayIndex, 1);
+      onImagesChange(nextImages);
+      return;
     }
 
-    const newImageUrls = [...imageUrls];
-    newImageUrls.splice(index, 1);
-    onFieldChange(newImageUrls);
+    // removing a new preview (not uploaded yet)
+    const previewIndex = displayIndex - uploadedCount;
 
-    setFiles((prevFiles) => {
-      const newFiles = [...prevFiles];
-      newFiles.splice(index, 1);
-      return newFiles;
+    setNewPreviews((prev) => {
+      const next = [...prev];
+      next.splice(previewIndex, 1);
+      return next;
     });
 
-    // if cover removed, clear cover thumb
-    if (index === 0) {
-      onCoverThumbChange(null, null);
-    }
+    // remove the corresponding File from setFiles (only the NEW ones)
+    // We assume new previews were appended in same order as setFiles additions.
+    setFiles((prev) => {
+      // remove from the tail based on previewIndex
+      // Example: if you have N files already and you added M new, previews match those M.
+      const next = [...prev];
 
-    // fix loading map indexes after delete
-    setLoadingMap((m) => {
-      const next: Record<number, boolean> = {};
-      newImageUrls.forEach((_, i) => {
-        next[i] = m[i >= index ? i + 1 : i] ?? true;
-      });
+      // To remove accurately we need to remove the (prev.length - newPreviews.length + previewIndex)
+      // BUT newPreviews state update is async, so compute using current uploadedCount + current newPreviews
+      const currentNewCount = newPreviews.length;
+      const startOfNew = Math.max(0, next.length - currentNewCount);
+      const fileIndexToRemove = startOfNew + previewIndex;
+
+      if (fileIndexToRemove >= 0 && fileIndexToRemove < next.length) {
+        next.splice(fileIndexToRemove, 1);
+      }
       return next;
     });
   };
@@ -359,9 +331,7 @@ export function FileUploader({
 
         <div>
           {category === "Property Services" || category === "Wanted Ads" ? (
-            <small className="dark:text-gray-500 text-[#464b4f]">
-              Add Profile Image
-            </small>
+            <small className="dark:text-gray-500 text-[#464b4f]">Add Profile Image</small>
           ) : (
             <>
               <small className="dark:text-gray-500 text-[#464b4f]">
@@ -377,31 +347,27 @@ export function FileUploader({
 
         {processingStatus && (
           <div className="flex p-2 gap-2 text-gray-500 justify-center items-center">
-            <CircularProgress sx={{ color: "gray" }} size={30} /> processing
-            images...
+            <CircularProgress sx={{ color: "gray" }} size={30} /> processing images...
           </div>
         )}
 
         {anayze && <div className="text-red-400 text-sm">{anayze}</div>}
 
-        {imageUrls.length > 0 ? (
-          <div className="flex w-full m-1 ">
+        {displayUrls.length > 0 ? (
+          <div className="flex w-full m-1">
             <div {...getRootProps()}>
               <AddBoxIcon className="my-auto hover:cursor-pointer" />
             </div>
 
             <div className="grid grid-cols-3 lg:grid-cols-5 w-full p-2 rounded-sm">
-              {imageUrls.map((url, index) => (
+              {displayUrls.map((url, index) => (
                 <div
-                  key={index}
+                  key={`${url}-${index}`}
                   className="relative justify-center items-center mb-1 rounded-sm bg-[#e4ebeb] shadow-sm p-1 mr-1 flex-shrink-0"
                 >
-                  {loadingMap[index] !== false && (
+                  {loadingMap[index] && (
                     <div className="absolute inset-0 flex justify-center items-center bg-gray-100">
-                      <Icon
-                        icon={threeDotsScale}
-                        className="w-6 h-6 text-gray-500"
-                      />
+                      <Icon icon={threeDotsScale} className="w-6 h-6 text-gray-500" />
                     </div>
                   )}
 
@@ -409,11 +375,9 @@ export function FileUploader({
                     <img
                       src={url}
                       alt={`image-${index}`}
-                      className={`w-full h-[100px] object-cover object-center rounded-sm transition-opacity duration-300 ${loadingMap[index] === false ? "opacity-100" : "opacity-0"
+                      className={`w-full h-[100px] object-cover object-center rounded-sm transition-opacity duration-300 ${loadingMap[index] ? "opacity-0" : "opacity-100"
                         }`}
-                      onLoad={() =>
-                        setLoadingMap((m) => ({ ...m, [index]: false }))
-                      }
+                      onLoad={() => setLoadingMap((m) => ({ ...m, [index]: false }))}
                       onError={(e) => {
                         e.currentTarget.src = "/assets/icons/error.svg";
                         setLoadingMap((m) => ({ ...m, [index]: false }));
@@ -424,13 +388,10 @@ export function FileUploader({
                   <div
                     onClick={() => handleRemoveImage(index)}
                     className="absolute top-0 right-0 rounded-xl bg-white p-1 shadow-sm"
+                    role="button"
+                    aria-label="remove image"
                   >
-                    <img
-                      src="/assets/icons/delete.svg"
-                      alt="delete"
-                      width={20}
-                      height={20}
-                    />
+                    <img src="/assets/icons/delete.svg" alt="delete" width={20} height={20} />
                   </div>
                 </div>
               ))}
@@ -455,3 +416,5 @@ export function FileUploader({
     </div>
   );
 }
+
+export default FileUploader;

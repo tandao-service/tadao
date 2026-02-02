@@ -37,7 +37,7 @@ export default function FCMTokenProvider({ userId }: { userId: string }) {
 
     const messaging = getMessaging();
     const token = await getToken(messaging, {
-      vapidKey: "YOUR_VAPBJbDtovlED9aJ4PCTCqVQFcLe605aWgL9yFW9DilBhG77qF-ySJ8RS1pFa9VyeXL81l732Cnwv8PAs6jm1wKhRMID_KEY_HERE",
+      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY!,
     });
 
     if (token) {

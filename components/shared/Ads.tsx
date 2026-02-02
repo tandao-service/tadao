@@ -398,6 +398,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                 <div className={`relative`}>
                   <Carousel
                     setApi={setApi}
+                    opts={{ loop: true }}
                     plugins={[plugin.current as any]}
                     className="w-full"
                   >

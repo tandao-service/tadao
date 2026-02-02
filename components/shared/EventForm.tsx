@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getallcategories,
   getcategory,
@@ -11,7 +11,7 @@ import { createValidationSchema } from "@/lib/createValidationSchema";
 import CreateCategoryForm from "./CreateCategoryForm";
 import DisplayCategories from "./DisplayCategories";
 import { FileUploader } from "./FileUploader";
-
+import { useUploadThing } from "@/lib/uploadthing";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import { Button } from "../ui/button";
 import { createData, updateAd } from "@/lib/actions/dynamicAd.actions";
@@ -66,8 +66,6 @@ import { updateUserPhone } from "@/lib/actions/user.actions";
 import { createLoan } from "@/lib/actions/loan.actions";
 import PhoneVerification from "./PhoneVerification";
 import BiddingCheckbox from "./BiddingCheckbox";
-import { AdImage, makeUploadFilesOptimized } from "@/lib/images/uploadOptimized";
-import { useUploadThing } from "@/lib/uploadthing";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -219,14 +217,13 @@ const AdForm = ({
   handleOpenTerms,
   handleOpenShop,
 }: AdFormProps) => {
+  const [coverThumbFile, setCoverThumbFile] = useState<File | null>(null);
+  const [coverThumbPreview, setCoverThumbPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>(
     ad ? ad.data : []
   );
   const [selectedCategory, setSelectedCategory] = useState(
     ad ? ad.data.category : ""
-  );
-  const [selectedCategoryId, setSelectedCategoryId] = useState(
-    ad ? ad.category : ""
   );
   const [selectedSubCategory, setSelectedSubCategory] = useState(
     ad ? ad.data.subcategory : ""
@@ -260,7 +257,8 @@ const AdForm = ({
   const [selectedFeatures, setselectedFeatures] = useState<string[]>([]);
   const { toast } = useToast();
   const router = useRouter();
-
+  const { startUpload } = useUploadThing("imageUploader");
+  let uploadedImageUrl: string[] = [];
   const [showPopup, setShowPopup] = useState(false);
   const modules = {
     toolbar: [
@@ -346,7 +344,7 @@ const AdForm = ({
               category.subcategory === selectedSubCategory
           );
           // Update fields if a match is found
-          setSelectedCategoryId(selectedData.category._id)
+          //setSelectedCategoryId(selectedData.category._id)
           setFields(selectedData ? selectedData.fields : []);
           setFormData(ad.data);
 
@@ -369,7 +367,7 @@ const AdForm = ({
                 ca.subcategory === subcategory
             );
             // Update fields if a match is founds
-            setSelectedCategoryId(selectedData.category._id)
+            // setSelectedCategoryId(selectedData.category._id)
             setSelectedSubCategoryId(selectedData._id);
             setFields(selectedData ? selectedData.fields : []);
             if (category === 'Buyer Requests') {
@@ -531,18 +529,41 @@ const AdForm = ({
     setFormErrors({});
     return true;
   };
-  const { startUpload } = useUploadThing("imageUploader");
-  const uploadFilesOptimized = useMemo(
-    () => makeUploadFilesOptimized(startUpload),
-    [startUpload]
-  );
+  const uploadFiles = async () => {
+    const uploadedUrls: string[] = [];
+    let i = 0;
 
-  const uploadFiles = async (): Promise<AdImage[]> => {
-    const result = await uploadFilesOptimized(files, {
-      onProgress: (p) => setUploadProgress(p),
-    });
-    return result;
+    // 1) upload cover thumb (if any)
+    let coverThumbUrl: string | null = null;
+    if (coverThumbFile) {
+      try {
+        const up = await startUpload([coverThumbFile]);
+        if (up?.[0]?.url) coverThumbUrl = up[0].url;
+      } catch (e) {
+        console.error("Cover thumb upload failed:", e);
+      }
+    }
+
+    // 2) upload full images
+    for (const file of files) {
+      try {
+        i++;
+        const uploadedImages = await startUpload([file]);
+        if (uploadedImages?.[0]?.url) {
+          uploadedUrls.push(uploadedImages[0].url);
+          setUploadProgress(Math.round((i / files.length) * 100));
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+
+    return {
+      fullUrls: uploadedUrls.filter((url) => !url.includes("blob:")),
+      coverThumbUrl,
+    };
   };
+
   const handleInputChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -552,7 +573,6 @@ const AdForm = ({
   };
   const handleInputCategoryChange = (field: string, value: any, _id: string) => {
     setSelectedCategory(value);
-    setSelectedCategoryId(_id);
     setSelectedSubCategory("");
     setSelectedSubCategoryId("");
     setFields([]);
@@ -756,13 +776,14 @@ const AdForm = ({
 
 
 
-        const uploadedImages = await uploadFiles();
-        if (!uploadedImages) return;
+        const { fullUrls, coverThumbUrl } = await uploadFiles();
+
+        if (!fullUrls) return;
 
         const baseData = {
           ...formData,
-          images: uploadedImages,            // ✅ new field
-          imageUrls: uploadedImages.map(i => i.fullUrl), // ✅ optional (backward compat)
+          imageUrls: fullUrls,
+          coverThumbUrl: coverThumbUrl || null, // NEW FIELD
           price: formData["price"] ? parseCurrencyToNumber(formData["price"].toString()) : 0,
           phone,
         };
@@ -824,20 +845,14 @@ const AdForm = ({
           return
         }
 
-        const uploadedImages = await uploadFiles();
+        const { fullUrls, coverThumbUrl } = await uploadFiles();
 
-        // Preserve existing images if no new files uploaded
-        const finalImages =
-          uploadedImages.length > 0 ? uploadedImages : (formData.images || []);
-
-        // Optional legacy compatibility
-        const finalImageUrls =
-          finalImages.map((i: any) => i.fullUrl ?? i);
+        const finalImageUrls = fullUrls.length > 0 ? fullUrls : formData.imageUrls;
 
         const finalData = {
           ...formData,
-          images: finalImages,                 // ✅ new field
-          imageUrls: finalImageUrls,           // ✅ optional
+          imageUrls: finalImageUrls,
+          coverThumbUrl: coverThumbUrl || formData.coverThumbUrl || null,
           price: formData["price"] ? parseCurrencyToNumber(formData["price"].toString()) : 0,
           phone,
         };
@@ -1206,12 +1221,18 @@ const AdForm = ({
                 <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 items-center">
                   <FileUploader
                     onFieldChange={(urls) => handleInputChange("imageUrls", urls)}
-                    imageUrls={formData["imageUrls"] || []} // Ensure this is an array
+                    imageUrls={formData["imageUrls"] || []}
                     setFiles={setFiles}
                     adId={adId || ""}
                     userName={userName}
                     category={selectedCategory}
-                    anayze={anayze} />
+                    anayze={anayze}
+                    onCoverThumbChange={(file, previewUrl) => {
+                      setCoverThumbFile(file);
+                      setCoverThumbPreview(previewUrl);
+                      // optional: store preview in form state (not needed)
+                    }}
+                  />
                   {formErrors["imageUrls"] && (
                     <p className="text-red-500 text-sm">
                       {formErrors["imageUrls"]}
