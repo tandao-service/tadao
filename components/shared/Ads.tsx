@@ -122,14 +122,10 @@ function checkPlatform(url: string) {
   }
 }
 export default function Ads({ ad, user, userId, userImage, userName, onClose, handlePay, handleOpenSafety, handleOpenSell, handleSubCategory, handleOpenReview, handleOpenPlan, handleOpenShop, }: CardProps) {
-  const [videoAdId, setvideoAdId] = React.useState<string | null>(null);
-  const [tiktokvideoAdId, setTiktokvideoAdId] = React.useState<string | null>(null);
+
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
-  const hideAddVideo = userId === ad.organizer._id;
-  const [showGuide, setShowGuide] = useState(false);
   const [showphone, setshowphone] = useState(false);
   const { user: currentUser } = useAuth();
-  const { toast } = useToast();
   const handleShowPhoneClick = (e: any) => {
     setshowphone(true);
     window.location.href = `tel:${ad.data.phone}`;
@@ -156,9 +152,6 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
     setShowPopup(false);
   };
   const [isChatOpen, setChatOpen] = useState(false);
-  const toggleChat = () => {
-    setChatOpen(!isChatOpen);
-  };
 
   const [api, setApi] = React.useState<CarouselApi>();
   const [api2, setApi2] = React.useState<CarouselApi>();
@@ -487,15 +480,14 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                     </div>
                   </div>
 
-                  {ad.organizer.verified &&
-                    ad.organizer.verified[0].accountverified === true && (
-                      <div className="hidden lg:inline absolute bg-green-100 top-0 right-0 text-green-700 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
-                        <div className="flex gap-1 cursor-pointer">
-                          <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
-                          Verified
-                        </div>
+                  {ad?.organizer?.verified?.[0]?.accountverified === true && (
+                    <div className="hidden lg:inline absolute bg-green-100 top-0 right-0 text-green-700 dark:text-gray-900 top-0 right-0 text-xs py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                      <div className="flex gap-1 cursor-pointer">
+                        <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
+                        Verified
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
                 <div className="flex space-x-1">
                   <Carousel
@@ -975,7 +967,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
               </>
             )}
             {/* 
-            {ad.organizer.businessname?.length > 0 && (
+            {ad.organizer?.businessname?.length > 0 && (
               <>
                 <div className="border-t dark:border-gray-600 border-gray-300 mt-4 mb-4"></div>
 
@@ -1007,32 +999,32 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                               handlePay={handlePay} />
                           </div>
                           <div className="m-3 p-1">
-                            {ad.organizer?.businessname && (
+                            {ad.organizer??.businessname && (
                               <div className="mb-2 md:flex-row">
                                 <div className="text-gray-500 dark:text-gray-500 text-xs">
                                   Business Name
                                 </div>
-                                <div>{ad.organizer?.businessname}</div>
+                                <div>{ad.organizer??.businessname}</div>
                               </div>
                             )}
-                            {ad.organizer?.aboutbusiness && (
+                            {ad.organizer??.aboutbusiness && (
                               <div className="mb-2 md:flex-row">
                                 <div className="text-gray-500 dark:text-gray-500 text-xs">
                                   About Business
                                 </div>
-                                <div>{ad.organizer?.aboutbusiness}</div>
+                                <div>{ad.organizer??.aboutbusiness}</div>
                               </div>
                             )}
-                            {ad.organizer?.businessaddress && (
+                            {ad.organizer??.businessaddress && (
                               <div className="mb-2 md:flex-row">
                                 <div className="text-gray-500 dark:text-gray-500 text-xs">
                                   Business Address
                                 </div>
-                                <div>{ad.organizer?.businessaddress}</div>
+                                <div>{ad.organizer??.businessaddress}</div>
                               </div>
                             )}
-                            {ad.organizer?.latitude &&
-                              ad.organizer?.latitude && (
+                            {ad.organizer??.latitude &&
+                              ad.organizer??.latitude && (
                                 <>
                                   <div className="p-0 text-l rounded-lg overflow-hidden">
                                     <div className="">
@@ -1045,21 +1037,21 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                       </p>
                                       <StreetmapOfice
                                         id={userId}
-                                        name={ad.organizer?.businessname}
-                                        address={ad.organizer?.businessaddress}
+                                        name={ad.organizer??.businessname}
+                                        address={ad.organizer??.businessaddress}
                                         imageUrl={
-                                          ad.organizer?.imageUrl ??
-                                          ad.organizer?.photo
+                                          ad.organizer??.imageUrl ??
+                                          ad.organizer??.photo
                                         }
-                                        lat={ad.organizer?.latitude}
-                                        lng={ad.organizer?.longitude}
+                                        lat={ad.organizer??.latitude}
+                                        lng={ad.organizer??.longitude}
                                       />
                                       <div className="justify-between flex w-full mb-5">
                                         <button
                                           onClick={(e) =>
                                             handleDirectionClick(
-                                              ad.organizer?.latitude,
-                                              ad.organizer?.longitude
+                                              ad.organizer??.latitude,
+                                              ad.organizer??.longitude
                                             )
                                           }
                                           className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow"
@@ -1075,8 +1067,8 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                 </>
                               )}
 
-                            {ad.organizer?.businesshours &&
-                              ad.organizer?.businesshours?.length > 0 && (
+                            {ad.organizer??.businesshours &&
+                              ad.organizer??.businesshours?.length > 0 && (
                                 <>
                                   <div className="flex flex-col gap-5 mb-0 md:flex-row">
                                     <div>
@@ -1092,7 +1084,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                               <select
                                                 className="dark:bg-[#131B1E] dark:text-gray-300 text-gray-800  bg-gray-100 p-1  rounded-sm"
                                                 value={
-                                                  ad.organizer
+                                                  ad.organizer?
                                                     ?.businesshours?.[0]
                                                     .openHour ?? ""
                                                 }
@@ -1116,7 +1108,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                               <select
                                                 className="dark:bg-[#131B1E] dark:text-gray-300 text-gray-800  bg-gray-100 p-1 rounded-sm"
                                                 value={
-                                                  ad.organizer
+                                                  ad.organizer?
                                                     ?.businesshours?.[0]
                                                     .openMinute ?? ""
                                                 }
@@ -1150,7 +1142,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                               <select
                                                 className="dark:bg-[#131B1E] dark:text-gray-300 text-gray-800  bg-gray-100 p-1 rounded-sm"
                                                 value={
-                                                  ad.organizer
+                                                  ad.organizer?
                                                     ?.businesshours?.[0]
                                                     .closeHour ?? ""
                                                 }
@@ -1174,7 +1166,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                               <select
                                                 className="dark:bg-[#131B1E] dark:text-gray-300 text-gray-800  bg-gray-100 p-1 rounded-sm"
                                                 value={
-                                                  ad.organizer
+                                                  ad.organizer?
                                                     ?.businesshours?.[0]
                                                     .closeMinute ?? ""
                                                 }
@@ -1204,8 +1196,8 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                 </>
                               )}
 
-                            {ad.organizer?.businesshours &&
-                              ad.organizer?.businessworkingdays?.length > 0 && (
+                            {ad.organizer??.businesshours &&
+                              ad.organizer??.businessworkingdays?.length > 0 && (
                                 <>
                                   <div className="flex flex-col gap-5 mb-5 md:flex-row">
                                     <div>
@@ -1219,7 +1211,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Sunday"
                                             )}
                                           />
@@ -1229,7 +1221,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Monday"
                                             )}
                                           />
@@ -1238,7 +1230,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Tuesday"
                                             )}
                                           />
@@ -1247,7 +1239,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Wednesday"
                                             )}
                                           />
@@ -1256,7 +1248,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Thursday"
                                             )}
                                           />
@@ -1265,7 +1257,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Friday"
                                             )}
                                           />
@@ -1274,7 +1266,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                         <div className="flex text-[10px] gap-1 w-full items-center lg:text-xs">
                                           <input
                                             type="checkbox"
-                                            checked={ad.organizer?.businessworkingdays?.includes(
+                                            checked={ad.organizer??.businessworkingdays?.includes(
                                               "Saturday"
                                             )}
                                           />
@@ -1510,10 +1502,10 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
 
 
 
-                {ad.organizer.whatsapp && (
+                {ad.organizer?.whatsapp && (
                   <>
                     {currentUser ? (
-                      <a href={`https://wa.me/${ad.organizer.whatsapp}/`}>
+                      <a href={`https://wa.me/${ad.organizer?.whatsapp}/`}>
                         <button className="hover:bg-orange-700 bg-[#000000] text-white text-xs mt-2 p-2 rounded-lg shadow">
                           <WhatsAppIcon sx={{ marginRight: "5px" }} />
                           WhatsApp

@@ -140,7 +140,7 @@ const Verificationmobile: React.FC<SettingsProp> = ({
 
   return (
     <div className="items-center justify-center">
-      {user.verified && user?.verified[0]?.accountverified === true ? (
+      {user?.verified && user?.verified[0]?.accountverified === true ? (
         <ShowPopupmobile
           trigger={
             <p className="text-green-700 p-1 bg-green-100 rounded-sm text-sm cursor-pointer hover:underline">

@@ -65,11 +65,11 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
       whatsapp,
       path: `/ads/${ad._id}`,
     });
-    window.location.href = `https://wa.me/${ad.organizer.whatsapp}/`;
+    window.location.href = `https://wa.me/${ad.organizer?.whatsapp}/`;
     setIsOpenP(false);
   };
 
-  const isAdCreator = userId === ad.organizer._id;
+  const isAdCreator = !!userId && userId === ad?.organizer?._id?.toString?.();
 
   return (
     <div className="w-full">
@@ -81,7 +81,7 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
           isAdCreator={isAdCreator}
           handlePayNow={handlePay}
         />
-        <Ratingsmobile recipientUid={ad.organizer._id} user={ad.organizer} handleOpenReview={handleOpenReview} />
+        <Ratingsmobile recipientUid={ad.organizer?._id} user={ad.organizer} handleOpenReview={handleOpenReview} />
       </div>
       <div className="justify-between lg:justify-end flex w-full gap-1">
         <div className="lg:hidden flex gap-1 items-center p-1 w-full">
@@ -137,7 +137,7 @@ const Contact = ({ ad, user, userId, userName, userImage, handleOpenEnquire, han
 
 
 
-          {ad.organizer.whatsapp && (
+          {ad.organizer?.whatsapp && (
             <>
               {currentUser ? (
                 <button

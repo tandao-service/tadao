@@ -100,8 +100,8 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
   const pathname = usePathname();
   const { user: currentUser } = useAuth();
 
-  const isAdCreator = userId === ad.organizer._id;
-  const isAds = pathname === "/ads/" + ad._id;
+  const isAdCreator = !!userId && userId === ad?.organizer?._id?.toString?.();
+
   let formattedCreatedAt = "";
   try {
     const createdAtDate = new Date(ad.organizer?.verified[0]?.verifieddate); // Convert seconds to milliseconds
@@ -148,7 +148,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
       whatsapp,
       path: `/ads/${ad._id}`,
     });
-    window.location.href = `https://wa.me/${ad.organizer.whatsapp}/`;
+    window.location.href = `https://wa.me/${ad.organizer?.whatsapp}/`;
   };
   const [isOpenP, setIsOpenP] = useState(false);
   const handleOpenP = () => {
@@ -228,7 +228,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
           }} className="relative">
             {ad.organizer?.photo ? (
               <img
-                src={ad.organizer.photo}
+                src={ad.organizer?.photo}
                 alt="Organizer avatar"
                 className="w-16 h-16 cursor-pointer rounded-full object-cover"
               />
@@ -243,7 +243,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
           <div>
             <div onClick={() => {
               handleOpenShop(ad.organizer);
-            }} className="text-lg cursor-pointer hover:underline font-semibold text-gray-800 dark:text-white"> {ad.organizer.firstName} {ad.organizer.lastName}</div>
+            }} className="text-lg cursor-pointer hover:underline font-semibold text-gray-800 dark:text-white"> {ad.organizer?.firstName} {ad.organizer?.lastName}</div>
             <Verification
               fee={fee}
               user={ad.organizer}
@@ -254,7 +254,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
 
             <Ratingsmobile
               user={ad.organizer}
-              recipientUid={ad.organizer._id}
+              recipientUid={ad.organizer?._id}
               handleOpenReview={handleOpenReview} />
           </div>
         </div>
@@ -272,7 +272,7 @@ const SellerProfileCard = ({ ad, fee, userId, userImage, userName, titleId, hand
               userImage={userImage}
               userName={userName}
             />
-            {ad.organizer.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
+            {ad.organizer?.whatsapp && (<><button onClick={handlewhatsappClick} className="flex text-sm gap-1 items-center justify-center border border-gray-400 text-gray-800 hover:bg-orange-50 py-1 px-2 rounded-md text-sm font-medium">
               <MessageCircle className="w-5 h-5" /> WhatsApp
             </button></>)}</>) : (<>
               <button onClick={() => {

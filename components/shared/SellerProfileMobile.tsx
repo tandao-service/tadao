@@ -128,13 +128,13 @@ const SellerProfileMobile = ({
         <div
           onClick={() => {
             handleOpenShop(ad.organizer);
-            //router.push(`/shop/${ad.organizer._id}`);
+            //router.push(`/shop/${ad.organizer?._id}`);
           }}
           className="cursor-pointer no-underline font-bold m-1"
         >
           {ad.organizer?.photo ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
             <img
-              src={ad.organizer.photo}
+              src={ad.organizer?.photo}
               alt="Organizer avatar"
               className="w-10 h-10 rounded-full object-cover"
             />
@@ -150,19 +150,19 @@ const SellerProfileMobile = ({
           <div
             onClick={() => {
               handleOpenShop(ad.organizer);
-              //router.push(`/shop/${ad.organizer._id}`);
+              //router.push(`/shop/${ad.organizer?._id}`);
             }}
             className="cursor-pointer no-underline font-bold m-1"
           >
             <p className="ml-2 text-sm font-bold">
-              {ad.organizer.firstName} {ad.organizer.lastName}
+              {ad.organizer?.firstName} {ad.organizer?.lastName}
             </p>
           </div>
 
           <div
             onClick={() => {
               handleOpenShop(ad.organizer);
-              //router.push(`/shop/${ad.organizer._id}`);
+              //router.push(`/shop/${ad.organizer?._id}`);
             }}
             className="cursor-pointer no-underline m-1"
           >

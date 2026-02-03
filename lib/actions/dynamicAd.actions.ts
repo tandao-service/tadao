@@ -1061,6 +1061,21 @@ export async function getTotalProducts() {
   }
 }
 // DELETE
+export async function deleteAdx({ adId, deleteImages, path }: DeleteAdParams) {
+  try {
+    try {
+      if (deleteImages) {
+        const utapi = new UTApi();
+        await utapi.deleteFiles(deleteImages);
+      }
+    } catch { }
+    await connectToDatabase()
+    const deletedAd = await DynamicAd.findByIdAndDelete(adId)
+    if (deletedAd) revalidatePath(path)
+  } catch (error) {
+    handleError(error)
+  }
+}
 export async function deleteAd({ adId, deleteImages, path }: DeleteAdParams) {
   try {
     await connectToDatabase();

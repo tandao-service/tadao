@@ -78,7 +78,8 @@ const SellerProfileChat = ({ userId, loggedId, user, handlePay, handleOpenReview
   const isActive = pathname === "/shop/" + userId;
   const isActiveReviews = pathname === "/reviews/" + userId;
   const router = useRouter();
-  const isAdCreator = userId === loggedId;
+  //const isAdCreator = userId === loggedId;
+  const isAdCreator = !!userId && userId === loggedId?.toString?.();
   const handleShowPhoneClick = (e: any) => {
     setshowphone(true);
     window.location.href = `tel:${user.phone}`;

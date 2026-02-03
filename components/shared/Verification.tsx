@@ -139,7 +139,7 @@ const Verification: React.FC<SettingsProp> = ({
 
   return (
     <div className="items-center dark:bg-[#233338] rounded-sm dark:text-gray-300 bg-white justify-center">
-      {user.verified && user?.verified[0]?.accountverified === true ? (
+      {user?.verified && user?.verified[0]?.accountverified === true ? (
         <ShowPopup
           trigger={
             <p className="text-green-700 p-1 bg-green-100 rounded-sm text-sm cursor-pointer hover:underline">
