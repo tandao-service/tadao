@@ -139,16 +139,11 @@ const ChatButton = ({ ad, userId, userName, userImage }: chatProps) => {
               </button>
             </div>
 
-
-            <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-              <span dangerouslySetInnerHTML={{ __html: truncateDescription(ad.data.description ?? "", 65) }} />
-
-            </p>
             <span className="font-bold w-min rounded-full mt-1 dark:text-orange-600 text-orange-600">
               {formatKsh(ad.data.price)}
             </span>
 
-            <div className="relative h-26 w-full bg-black rounded overflow-hidden aspect-[16/9]">
+            <div className="relative h-24 w-full bg-black rounded overflow-hidden aspect-[16/9]">
               <Image
                 src={ad.data.imageUrls[0]}
                 alt={ad.data.title}
