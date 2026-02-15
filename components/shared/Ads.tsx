@@ -415,6 +415,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                   className={`object-contain cursor-pointer transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
                                   onLoadingComplete={() => setIsLoading(false)}
                                   placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                                  unoptimized
                                 />
                               </Zoom>
                             </div>
@@ -431,6 +432,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                             sizes="100vw"
                             onLoadingComplete={() => setIsLoading(false)}
                             placeholder="empty"
+                            unoptimized
                           />
                         </CarouselItem>
                       </>)}
@@ -529,6 +531,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                     } transition-opacity duration-300`}
                                   onLoadingComplete={() => setIsLoadingsmall(false)}
                                   placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                                  unoptimized
                                 />
                               </div>
                             </span>
@@ -575,6 +578,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                                     setIsLoadingpopup(false)
                                   }
                                   placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                                  unoptimized
                                 />
                               </Zoom>
                             </div>
