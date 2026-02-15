@@ -185,6 +185,7 @@ const HorizontalCard = ({
                     } transition-opacity duration-300`}
                   onLoadingComplete={() => setIsLoadingsmall(false)}
                   placeholder="empty"
+                  unoptimized
                 />
 
               </div>
@@ -351,6 +352,7 @@ const HorizontalCard = ({
                   } transition-opacity duration-300`}
                 onLoadingComplete={() => setIsLoadingsmall(false)}
                 placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+                unoptimized
               />
             </>) : (<div
               className="w-full h-[200px] rounded-xl bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 

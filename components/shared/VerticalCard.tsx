@@ -196,6 +196,7 @@ const VerticalCard = ({
                 } transition-opacity duration-300`}
               onLoadingComplete={() => setIsLoadingsmall(false)}
               placeholder="empty"
+              unoptimized
             />
 
           </div>
@@ -362,6 +363,7 @@ const VerticalCard = ({
                   } transition-opacity duration-300`}
                 onLoadingComplete={() => setIsLoadingsmall(false)}
                 placeholder="empty"
+                unoptimized
               />
             </>) : (<div
               className="w-full h-[200px] rounded-xl bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 

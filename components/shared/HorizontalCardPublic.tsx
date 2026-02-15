@@ -172,6 +172,7 @@ const HorizontalCardPublic = ({
                 } transition-opacity duration-300`}
               onLoadingComplete={() => setIsLoadingsmall(false)}
               placeholder="empty" // Optional: you can use "empty" if you want a placeholder before loading
+              unoptimized
             />
           </div>
           {ad.plan.name !== "Free" && (
