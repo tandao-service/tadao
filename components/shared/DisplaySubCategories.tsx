@@ -367,6 +367,7 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                             alt={category.subcategory}
                             width={60}
                             height={60}
+                            unoptimized
                           />
                         </div>
                         <h2 className="text-lg font-semibold">

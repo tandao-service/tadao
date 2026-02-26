@@ -63,6 +63,10 @@ const dynamicAdSchema = new Schema({
 },
   { timestamps: false });
 delete mongoose.models.DynamicAd;
+// models/DynamicAd.ts (after schema definition)
+dynamicAdSchema.index({ adstatus: 1, expirely: 1, priority: -1, createdAt: -1 });
+dynamicAdSchema.index({ "data.category": 1, "data.region": 1, createdAt: -1 });
+dynamicAdSchema.index({ "data.category": 1, "data.region": 1, "data.price": 1 });
 const DynamicAd = models.DynamicAd || model('DynamicAd', dynamicAdSchema);
 
 export default DynamicAd;

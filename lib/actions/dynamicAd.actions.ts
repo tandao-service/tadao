@@ -1060,22 +1060,7 @@ export async function getTotalProducts() {
     throw new Error('Unable to fetch product totals');
   }
 }
-// DELETE
-export async function deleteAdx({ adId, deleteImages, path }: DeleteAdParams) {
-  try {
-    try {
-      if (deleteImages) {
-        const utapi = new UTApi();
-        await utapi.deleteFiles(deleteImages);
-      }
-    } catch { }
-    await connectToDatabase()
-    const deletedAd = await DynamicAd.findByIdAndDelete(adId)
-    if (deletedAd) revalidatePath(path)
-  } catch (error) {
-    handleError(error)
-  }
-}
+
 export async function deleteAd({ adId, deleteImages, path }: DeleteAdParams) {
   try {
     await connectToDatabase();
@@ -1382,3 +1367,152 @@ export const markWinner = async (bidId: string) => {
   }
 };
 
+function unslugify(slug: string) {
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function parseNum(v?: string) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+type ListingQuery = {
+  regionSlug: string;
+  category?: string;
+  subcategory?: string;
+  page?: number;
+  limit?: number;
+  min?: number;
+  max?: number;
+  sort?: "recommeded" | "new" | "lowest" | "highest" | "price_asc" | "price_desc";
+  membership?: "verified" | "unverified";
+};
+
+export async function getAdsForRegionListing({
+  regionSlug,
+  category,
+  subcategory,
+  page = 1,
+  limit = 24,
+  min,
+  max,
+  sort = "recommeded",
+  membership,
+}: ListingQuery) {
+  await connectToDatabase();
+
+  const regionName = unslugify(regionSlug);
+
+  let conditions: any = {
+    adstatus: "Active",
+    "data.region": regionName,
+  };
+
+  if (category) conditions["data.category"] = category;
+  if (subcategory) conditions["data.subcategory"] = subcategory;
+
+  if (min !== undefined || max !== undefined) {
+    conditions["data.price"] = {};
+    if (min !== undefined) conditions["data.price"].$gte = min;
+    if (max !== undefined) conditions["data.price"].$lte = max;
+  }
+
+  // membership filter (same logic you already have)
+  if (membership === "verified") {
+    const verifiedUsers = await User.find({ "verified.accountverified": true }).select("_id");
+    conditions.organizer = { $in: verifiedUsers.map((u) => u._id) };
+  } else if (membership === "unverified") {
+    const unverifiedUsers = await User.find({ "verified.accountverified": false }).select("_id");
+    conditions.organizer = { $in: unverifiedUsers.map((u) => u._id) };
+  }
+
+  const skipAmount = (page - 1) * limit;
+
+  // Sorting (align with your existing sort keys)
+  let sortObj: any = { priority: -1, createdAt: -1 };
+
+  if (sort === "lowest" || sort === "price_asc") sortObj = { priority: -1, "data.price": 1 };
+  if (sort === "highest" || sort === "price_desc") sortObj = { priority: -1, "data.price": -1 };
+  if (sort === "new") sortObj = { priority: -1, createdAt: -1 };
+
+  const query = DynamicAd.find(conditions).sort(sortObj).skip(skipAmount).limit(limit);
+
+  const [items, total] = await Promise.all([
+    populateAd(query),
+    DynamicAd.countDocuments(conditions),
+  ]);
+
+  return {
+    items: JSON.parse(JSON.stringify(items)),
+    total,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
+    regionName,
+  };
+}
+
+export type ListingMapEntry = {
+  category?: string;      // DynamicAd.data.category
+  subcategory?: string;   // DynamicAd.data.subcategory
+  title: string;          // H1 title
+};
+
+function slugify(input: string) {
+  return String(input || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * Builds a Jiji-style listing map from DB subcategories.
+ * slug example: "cars-vans-and-pickups-for-sale"
+ */
+export async function getListingMapFromDB(): Promise<Record<string, ListingMapEntry>> {
+  await connectToDatabase();
+
+  const subcats = await Subcategory.find({})
+    .populate({ path: "category", model: Category }) // get category doc
+    .select("subcategory category")
+    .lean();
+
+  const map: Record<string, ListingMapEntry> = {};
+
+  for (const s of subcats as any[]) {
+    const subName: string = (s?.subcategory || "").trim();
+
+    // Category doc may have "category" or "name" field depending on your schema
+    const catDoc = s?.category;
+    const catName: string =
+      (catDoc?.category || catDoc?.name || "").toString().trim();
+
+    if (!catName || !subName) continue;
+
+    // Default slug: "<subcategory>-for-sale"
+    const listingSlug = `${slugify(subName)}-for-sale`;
+
+    map[listingSlug] = {
+      category: catName,
+      subcategory: subName,
+      title: `${subName} for Sale`,
+    };
+  }
+
+  // ✅ OPTIONAL: special “pretty” overrides (only if you want custom slugs)
+  // Example: force "land-and-plots-for-sale" if your subcategory is "Land & Plots"
+  // If DB already creates it, this override is harmless.
+  map["land-and-plots-for-sale"] = {
+    category: "Property",
+    subcategory: "Land & Plots",
+    title: "Land & Plots for Sale",
+  };
+
+  map["cars-for-sale"] = {
+    category: "Vehicle",
+    subcategory: "Cars, Vans & Pickups",
+    title: "Cars for Sale",
+  };
+
+  return map;
+}

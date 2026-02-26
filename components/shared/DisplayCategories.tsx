@@ -75,6 +75,7 @@ const DisplayCategories = ({ categories }: catProps) => {
                       alt={category.name}
                       width={30}
                       height={30}
+                      unoptimized
                     />
                   </div>
                   <h2 className="text-sm font-bold">{category.name}</h2>

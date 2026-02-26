@@ -1,100 +1,75 @@
+// app/property/[id]/page.tsx
+import { Metadata } from "next";
+import { getAdById } from "@/lib/actions/dynamicAd.actions";
+import Seodiv from "@/components/shared/seodiv";
 
-import Seodiv from '@/components/shared/seodiv';
-import { getAdById } from '@/lib/actions/dynamicAd.actions';
-import Head from 'next/head';
-import { headers } from 'next/headers';
-import Link from 'next/link';
-import { notFound, useRouter } from 'next/navigation';
+type Props = { params: { id: string } };
 
-type Props = {
-    params: {
-        id: string;
-    };
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const ad: any = await getAdById(params.id).catch(() => null);
 
-export default async function PropertyPage({ params: { id } }: Props) {
-
-    let ad: any = null;
-
-    try {
-        ad = await getAdById(id);
-    } catch (error) {
-        console.error('Failed to fetch ad:', error);
+    if (!ad) {
+        return {
+            title: "Listing Not Found | tadaomarket.com",
+            robots: { index: false, follow: false },
+        };
     }
+
+    const data = ad?.data || {};
+    const title = data?.title ? `${data.title} | Tadao Market` : "Listing | Tadao Market";
+    const description =
+        (data?.description && String(data.description).replace(/<[^>]*>/g, "").slice(0, 160)) ||
+        "Browse listings on Tadao Market.";
+
+    const image = (data?.imageUrl?.[0] || data?.imageUrls?.[0]) ?? "https://tadaomarket.com/assets/og-image.png";
+    const url = `https://tadaomarket.com/property/${ad._id}`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: url },
+        openGraph: { title, description, url, images: [image], type: "article", siteName: "Tadao Market" },
+    };
+}
+
+export default async function PropertyPage({ params }: Props) {
+    const ad: any = await getAdById(params.id).catch(() => null);
 
     if (!ad) {
         return (
-            <>
-                <Head>
-                    <title>Property Not Found | tadaomarket.com</title>
-                    <meta name="robots" content="noindex, nofollow" />
-                </Head>
-                <main className="p-6 text-center">
-                    <h1 className="text-2xl font-bold">Property not found</h1>
-                    <p>Please check the URL or search again.</p>
-                </main>
-            </>
+            <main className="p-6 text-center">
+                <h1 className="text-2xl font-bold">Listing not found</h1>
+                <p>Please check the URL or search again.</p>
+            </main>
         );
     }
 
-    const { data = {}, category = 'Real Estate', _id } = ad;
-    const {
-        title,
-        description,
-        price,
-        imageUrl = [],
-        propertyadrea = {},
-    } = data;
+    // Add JSON-LD (Product/Offer style)
+    const data = ad?.data || {};
+    const title = data?.title || "Listing";
+    const image = (data?.imageUrl?.[0] || data?.imageUrls?.[0]) ?? "https://tadaomarket.com/assets/og-image.png";
+    const price = data?.price;
+    const url = `https://tadaomarket.com/property/${ad._id}`;
 
-    const displayImage = imageUrl[0] || '/fallback.jpg';
-    const displayTitle = title || 'Property Details';
-    const location = propertyadrea.myaddress || 'Kenya';
-    const url = `https://tadaomarket.com/property/${_id}`;
+    const ld = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: title,
+        image: [image],
+        description: (data?.description && String(data.description).replace(/<[^>]*>/g, "")) || "",
+        offers: {
+            "@type": "Offer",
+            priceCurrency: "KES",
+            price: price ?? undefined,
+            availability: "https://schema.org/InStock",
+            url,
+        },
+    };
 
-    const sharedHead = (
-        <Head>
-            <title>{displayTitle} - {category} | tadaomarket.com</title>
-            <meta name="description" content={description || 'Find properties for sale or rent in Kenya on tadaomarket.com'} />
-            <meta name="keywords" content={`${category}, ${location}, tadaomarket.com`} />
-            <meta property="og:title" content={displayTitle} />
-            <meta property="og:description" content={description} />
-            <meta property="og:image" content={displayImage} />
-            <meta property="og:url" content={url} />
-            <link rel="canonical" href={url} />
-
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "Residence",
-                        name: displayTitle,
-                        description,
-                        image: displayImage,
-                        address: {
-                            "@type": "PostalAddress",
-                            addressLocality: location,
-                        },
-                        offers: {
-                            "@type": "Offer",
-                            priceCurrency: "KES",
-                            price,
-                            availability: "https://schema.org/InStock",
-                        },
-                    }),
-                }}
-            />
-        </Head>
-    );
-
-    // Bot-friendly minimal HTML
     return (
         <>
-
-            {sharedHead}
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
             <Seodiv ad={ad} />
         </>
-
     );
-
 }
