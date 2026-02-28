@@ -1371,10 +1371,6 @@ function unslugify(slug: string) {
   return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function parseNum(v?: string) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
-}
 
 type ListingQuery = {
   regionSlug: string;
@@ -1473,38 +1469,56 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
   await connectToDatabase();
 
   const subcats = await Subcategory.find({})
-    .populate({ path: "category", model: Category }) // get category doc
+    .populate({ path: "category", model: Category })
     .select("subcategory category")
     .lean();
 
   const map: Record<string, ListingMapEntry> = {};
 
+  // remove trailing "for sale" / "for rent" from a name
+  const stripIntent = (name: string) =>
+    name
+      .replace(/\s+for\s+sale\s*$/i, "")
+      .replace(/\s+for\s+rent\s*$/i, "")
+      .trim();
+
+  // detect if the subcategory name is rent/sale
+  const detectMode = (name: string): "sale" | "rent" => {
+    const n = name.toLowerCase();
+    if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
+    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) return "sale";
+    return "sale"; // default
+  };
+
   for (const s of subcats as any[]) {
-    const subName: string = (s?.subcategory || "").trim();
-
-    // Category doc may have "category" or "name" field depending on your schema
+    const rawSub: string = (s?.subcategory || "").toString().trim();
     const catDoc = s?.category;
-    const catName: string =
-      (catDoc?.category || catDoc?.name || "").toString().trim();
 
-    if (!catName || !subName) continue;
+    const catName: string = (catDoc?.category || catDoc?.name || "").toString().trim();
+    if (!catName || !rawSub) continue;
 
-    // Default slug: "<subcategory>-for-sale"
-    const listingSlug = `${slugify(subName)}-for-sale`;
+    const mode = detectMode(rawSub);                 // "sale" | "rent"
+    const cleanSub = stripIntent(rawSub);            // remove duplicated suffix
+    const suffix = mode === "rent" ? "for-rent" : "for-sale";
+
+    // ✅ clean slug: base + one suffix
+    const listingSlug = `${slugify(cleanSub)}-${suffix}`;
+
+    // ✅ clean title: base + one suffix
+    const title = `${cleanSub} ${mode === "rent" ? "for Rent" : "for Sale"}`;
 
     map[listingSlug] = {
       category: catName,
-      subcategory: subName,
-      title: `${subName} for Sale`,
+      subcategory: rawSub, // IMPORTANT: keep rawSub so your DB filter still matches ads
+      title,
     };
   }
 
-  // ✅ OPTIONAL: special “pretty” overrides (only if you want custom slugs)
-  // Example: force "land-and-plots-for-sale" if your subcategory is "Land & Plots"
-  // If DB already creates it, this override is harmless.
+  // OPTIONAL overrides (only if you really need them)
+  // Keep them consistent with the new rule:
   map["land-and-plots-for-sale"] = {
     category: "Property",
-    subcategory: "Land & Plots",
+    subcategory: "Land & Plots", // must match DynamicAd.data.subcategory exactly
     title: "Land & Plots for Sale",
   };
 

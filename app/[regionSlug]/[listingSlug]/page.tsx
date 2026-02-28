@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { cache } from "react";
 import { getAdsForRegionListing, getListingMapFromDB } from "@/lib/actions/dynamicAd.actions";
+import SmartPropertyCard from "@/components/shared/SmartPropertyCard";
 
 const PAGE_SIZE = 24;
 
@@ -130,21 +131,14 @@ export default async function ListingPage({ params, searchParams }: Props) {
             </div>
 
             <section className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                {items.map((ad: any) => (
-                    <Link
+                {items.map((ad: any) => (<>
+                    <SmartPropertyCard
                         key={String(ad._id)}
-                        href={`/property/${ad._id}`}
-                        className="rounded-xl border p-3 hover:shadow"
-                    >
-                        <div className="font-semibold line-clamp-2">{ad?.data?.title}</div>
-                        <div className="text-sm text-gray-600 line-clamp-2">
-                            {ad?.data?.area || regionName}
-                        </div>
-                        <div className="mt-2 font-bold">
-                            KSh {Number(ad?.data?.price || 0).toLocaleString()}
-                        </div>
-                    </Link>
-                ))}
+                        ad={ad}
+                        regionFallback={regionName}
+                    />
+
+                </>))}
             </section>
 
             <div className="mt-6 flex items-center gap-3">
