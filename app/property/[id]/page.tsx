@@ -7,6 +7,7 @@ import {
     getAdById,
     getRelatedAdsServer,
 } from "@/lib/actions/dynamicAd.actions";
+import CopyLinkButton from "@/components/shared/CopyLinkButton";
 
 type Props = { params: { id: string } };
 
@@ -409,15 +410,12 @@ export default async function PropertyPage({ params }: Props) {
                                 ) : null}
 
                                 {/* Share */}
-                                <button
-                                    type="button"
+                                <CopyLinkButton
+                                    url={canonicalUrl}
                                     className="rounded-xl bg-orange-500 px-3 py-2 text-sm font-extrabold text-white hover:bg-orange-600"
-                                    onClick={async () => {
-                                        "use client";
-                                    }}
                                 >
                                     Share (copy link)
-                                </button>
+                                </CopyLinkButton>
 
                                 <div className="text-xs text-gray-500 dark:text-gray-300">
                                     Tip: For fastest browsing, use the popup view from listings.
