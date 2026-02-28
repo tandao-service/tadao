@@ -1,4 +1,17 @@
 import { Schema, model, models, Document, Types } from "mongoose";
+export interface IPackages
+  extends Document {
+  _id: any;
+  name: string;
+  description: string;
+  features: Feature[];
+  price: Price[];
+  imageUrl: string;
+  color: string;
+  priority: number;
+  list: number;
+  entitlements: any;
+}
 
 export interface Feature {
   title: string;
