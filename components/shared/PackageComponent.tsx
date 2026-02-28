@@ -9,7 +9,7 @@ import Listpackages from "@/components/shared/listpackages";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
 import { ScrollArea } from "../ui/scroll-area";
-import { IPackages } from "@/lib/database/models/packages.model";
+//import { IPackages } from "@/lib/database/models/packages.model";
 import { Icon } from "@iconify/react";
 import Barsscale from "@iconify-icons/svg-spinners/bars-scale";
 import PricingPlansSkeleton from "./PricingPlansSkeleton";
