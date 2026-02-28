@@ -43,8 +43,14 @@ export const createValidationSchema = (fields: Field[], category: string) => {
   } else {
     schemaShape["imageUrls"] = z.array(z.string()).min(1, "At least 1 images are required");
   }
-  schemaShape["region"] = z.string().nonempty(`Region is required`);
-  schemaShape["area"] = z.string().nonempty(`Area is required`);
+  // ✅ Region/Area required for most categories, but NOT for Financing
+  if (category === "Financing") {
+    schemaShape["region"] = z.string().optional();
+    schemaShape["area"] = z.string().optional();
+  } else {
+    schemaShape["region"] = z.string().nonempty(`Region is required`);
+    schemaShape["area"] = z.string().nonempty(`Area is required`);
+  }
   // Helper function to check if a field exists in the fields array
   const fieldExists = (name: string) => fields.some((field) => field.name === name);
   // Conditionally add validation for "mode" and "make"

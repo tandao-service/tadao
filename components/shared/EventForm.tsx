@@ -255,6 +255,7 @@ const AdForm = ({
     "not sure"
   );
   const [selectedFeatures, setselectedFeatures] = useState<string[]>([]);
+  const isFinancing = selectedCategory === "Financing";
   const { toast } = useToast();
   const router = useRouter();
   const { startUpload } = useUploadThing("imageUploader");
@@ -576,7 +577,19 @@ const AdForm = ({
     setSelectedSubCategory("");
     setSelectedSubCategoryId("");
     setFields([]);
+    // ✅ If Financing, auto-set "countrywide" location
+    if (value === "Financing") {
+      setSelectedCounty(null);
+      setSelectedConstituency(null);
 
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+        region: "Kenya",
+        area: "Countrywide",
+      }));
+      return;
+    }
     if (value === 'Buyer Requests') {
 
       setFormData({
@@ -628,7 +641,15 @@ const AdForm = ({
         [field]: value,
       });
     }
-
+    if (selectedCategory === "Financing") {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+        region: "Kenya",
+        area: "Countrywide",
+      }));
+      return;
+    }
   };
 
   const handleInputAutoCompleteChange = (field: string, value: any) => {
@@ -1182,7 +1203,7 @@ const AdForm = ({
                   )}
                 </div>
               )}
-            {selectedSubCategory && (
+            {selectedSubCategory && !isFinancing && (
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 flex gap-3 mt-3 flex-col">
 
