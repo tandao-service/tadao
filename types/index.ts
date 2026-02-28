@@ -74,13 +74,13 @@ export type CreateAdShopParams = {
   userId: string
   subcategory: string
   planId: string
-  plan: string
-  pricePack: number
+  //plan: string
+  // pricePack: number
   periodPack: string
   formData: any
-  priority: number
-  expirely: Date
-  adstatus: string
+  //priority: number
+  // expirely: Date
+  //adstatus: string
   path: string
 }
 //==========Loan
@@ -600,11 +600,6 @@ export type CreateTransactionParams = {
   buyerId: string;
   createdAt: Date;
   status: string;
-  //phone: string;
-  //firstName: string;
-  //middleName: string;
-  //lastName: string;
-  // email: string;
 };
 // ====== TRANSACTION status
 export type TransactionStatusParams = {

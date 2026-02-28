@@ -15,6 +15,7 @@ import User from "../database/models/user.model"
 import { createTransaction } from "./transactions.actions"
 import Subcategory from "../database/models/subcategory.model"
 import { PipelineStage } from "mongoose"
+import { requireCanPostAd } from "@/lib/actions/subscription.guard"
 
 
 const populateAd = (query: any) => {
@@ -23,10 +24,7 @@ const populateAd = (query: any) => {
     .populate({ path: 'organizer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications' })
     .populate({ path: 'plan', model: Packages, select: '_id name color imageUrl' })
 }
-const populateAdBids = (query: any) => {
-  return query
-    .populate({ path: 'userId', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications' })
-}
+
 export const fetchDynamicAds = async () => {
   try {
     await connectToDatabase();
@@ -40,68 +38,268 @@ export const fetchDynamicAds = async () => {
   }
 }
 
-export const createData = async (
-  {
-    userId,
-    subcategory,
-    formData,
-    expirely,
-    priority,
-    adstatus,
-    planId,
-    plan,
-    pricePack,
-    periodPack,
-    path
-  }: CreateAdShopParams
-) => {
+
+function addDays(d: Date, days: number) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + days);
+  return x;
+}
+function periodToDays(periodKey: string) {
+  if (periodKey === "1 week") return 7;
+  if (periodKey === "1 month") return 30;
+  if (periodKey === "3 months") return 90;
+  if (periodKey === "6 months") return 180;
+  if (periodKey === "1 year") return 360;
+  return 30;
+}
+function normalizePeriodKey(period: string) {
+  const p = String(period || "").toLowerCase().trim();
+
+  if (p.includes("week")) return "1 week";
+  if (p.includes("3") && p.includes("month")) return "3 months";
+  if (p.includes("6")) return "6 months";
+  if (p.includes("year") || p.includes("12")) return "1 year";
+  if (p.includes("month")) return "1 month";
+
+  return "1 month"; // safe default
+}
+
+export const createData = async ({
+  userId,
+  subcategory,
+  formData,
+  planId,
+  periodPack,
+  path,
+}: CreateAdShopParams) => {
   try {
     await connectToDatabase();
 
     const organizer = await User.findById(userId);
-    if (!organizer) throw new Error('Organizer not found');
+    if (!organizer) throw new Error("Organizer not found");
+
+    const pkg = await Packages.findById(planId);
+    if (!pkg) throw new Error("Package not found");
+
+
+    const now = new Date();
+    const isFree = String(pkg.name).toLowerCase() === "free";
+
+    // ✅ server truth: period + amount
+    const periodKey = normalizePeriodKey(periodPack);
+
+    const prices = Array.isArray(pkg.price) ? pkg.price : [];
+    const priceRow = prices.find(
+      (x: any) => String(x.period).toLowerCase() === periodKey
+    );
+    const amountDue = Number(priceRow?.amount || 0);
+
+    if (!isFree && amountDue <= 0) {
+      throw new Error(`Invalid pricing for ${pkg.name} / ${periodKey}`);
+    }
+
+    // ✅ server truth: expiry + status
+    const days = periodToDays(periodKey);
+    const expirelyDate = addDays(now, days);
+    const adstatusFinal = isFree ? "Active" : "Pending";
+
+    // ✅ entitlements -> boost
+    const ent = pkg.entitlements || {};
+    const boost = {
+      isTop: Number(ent.topDays || 0) > 0,
+      topUntil: Number(ent.topDays || 0) > 0 ? addDays(now, Number(ent.topDays)) : null,
+
+      isFeatured: Number(ent.featuredDays || 0) > 0,
+      featuredUntil: Number(ent.featuredDays || 0) > 0 ? addDays(now, Number(ent.featuredDays)) : null,
+
+      autoRenewHours: ent.autoRenewHours ?? null,
+    };
+    // 🔒 HARD GATE — server decides
+    const gate = await requireCanPostAd(userId);
+
+    if (!gate.allowed) {
+      // create a transaction ONLY, do NOT create ad
+      return {
+        blocked: true,
+        reason: gate.reason,
+        planId: gate.planId,
+      };
+    }
 
     const response = await DynamicAd.create({
       data: formData,
-      priority,
-      expirely,
-      adstatus,
+      priority: pkg.priority,
+      expirely: expirelyDate,
+      adstatus: adstatusFinal,
       organizer: userId,
       subcategory,
-      plan: planId,
+      plan: pkg._id,
+      boost,
     });
-
-    if (response.adstatus === "Pending") {
-      const trans = {
-        orderTrackingId: response._id,
-        amount: pricePack,
-        plan,
-        planId: response.plan,
-        period: periodPack,
-        buyerId: userId,
-        merchantId: response._id,
-        status: response.adstatus,
-        createdAt: new Date(),
-      };
-      await createTransaction(trans);
-    }
 
     revalidatePath(path);
 
-    // Populate the newly created ad before returning
-    const populatedResponse = await populateAd(
-      DynamicAd.findById(response._id)
-    );
-
+    const populatedResponse = await populateAd(DynamicAd.findById(response._id));
     return JSON.parse(JSON.stringify(await populatedResponse));
-
   } catch (error) {
     handleError(error);
   }
 };
-
 // GET ALL Ad
-export async function getAlldynamicAd({ limit = 20, page, queryObject
+// GET ALL Ad  ✅ UPDATED: uses aggregate() so Featured/Top boosts only work while active
+export async function getAlldynamicAd({
+  limit = 20,
+  page,
+  queryObject,
+}: GetAlldynamicAdParams) {
+  try {
+    await connectToDatabase();
+
+    const parseCurrencyToNumber = (value: string): number =>
+      Number(String(value || "").replace(/,/g, ""));
+
+    const conditionsAdstatus = { adstatus: "Active" };
+
+    // Dynamically build conditions from queryObject
+    const dynamicConditions: any = {};
+
+    Object.entries(queryObject || {}).forEach(([key, value]) => {
+      if (!value) return;
+
+      switch (key) {
+        case "price": {
+          const [minPrice, maxPrice] = String(value).split("-");
+          dynamicConditions["data.price"] = {
+            $gte: parseCurrencyToNumber(minPrice),
+            $lte: parseCurrencyToNumber(maxPrice),
+          };
+          break;
+        }
+
+        case "query": {
+          if (value === "bids") {
+            // ✅ NOTE: if your biddingEnabled/biddingEndsAt are TOP-LEVEL (as in your schema), use these:
+            dynamicConditions["biddingEnabled"] = true;
+            dynamicConditions["biddingEndsAt"] = { $gte: new Date() };
+
+            // If you actually stored them inside `data`, swap to:
+            // dynamicConditions["data.biddingEnabled"] = true;
+            // dynamicConditions["data.biddingEndsAt"] = { $gte: new Date() };
+          } else {
+            dynamicConditions["$or"] = [
+              { "data.title": { $regex: value, $options: "i" } },
+              { "data.description": { $regex: value, $options: "i" } },
+            ];
+          }
+          break;
+        }
+
+        // ignore these (they are not DynamicAd.data fields)
+        case "membership":
+        case "privacypolicy":
+        case "source":
+        case "action":
+        case "Ad":
+        case "Profile":
+        case "sortby":
+          break;
+
+        default:
+          dynamicConditions[`data.${key}`] = { $regex: value, $options: "i" };
+      }
+    });
+
+    // Membership-based conditions
+    let conditions: any = { ...conditionsAdstatus, ...dynamicConditions };
+
+    if ((queryObject.membership as string) === "verified") {
+      const verifiedUsers = await User.find({ "verified.accountverified": true }).select("_id");
+      conditions.organizer = { $in: verifiedUsers.map((u) => u._id) };
+    } else if ((queryObject.membership as string) === "unverified") {
+      const unverifiedUsers = await User.find({ "verified.accountverified": false }).select("_id");
+      conditions.organizer = { $in: unverifiedUsers.map((u) => u._id) };
+    }
+
+    const skipAmount = (Number(page) - 1) * limit;
+    const now = new Date();
+
+    // ✅ Sorting rules:
+    // 1) Featured (active) first
+    // 2) Top (active) next
+    // 3) priority desc
+    // 4) then sortby: new/lowest/highest/default
+    const sortby = String(queryObject?.sortby || "recommeded");
+
+    let tailSort: any = { createdAt: -1 }; // default newest
+
+    if (sortby === "lowest") tailSort = { "data.price": 1, createdAt: -1 };
+    else if (sortby === "highest") tailSort = { "data.price": -1, createdAt: -1 };
+    else if (sortby === "new" || sortby === "recommeded") tailSort = { createdAt: -1 };
+
+    const pipeline: any[] = [
+      { $match: conditions },
+
+      // ✅ compute active boost booleans
+      {
+        $addFields: {
+          featuredActive: {
+            $and: [
+              { $eq: ["$boost.isFeatured", true] },
+              { $gt: ["$boost.featuredUntil", now] },
+            ],
+          },
+          topActive: {
+            $and: [
+              { $eq: ["$boost.isTop", true] },
+              { $gt: ["$boost.topUntil", now] },
+            ],
+          },
+        },
+      },
+
+      // ✅ final sort: boost -> priority -> chosen tail sort
+      {
+        $sort: {
+          featuredActive: -1,
+          "boost.featuredUntil": -1,
+
+          topActive: -1,
+          "boost.topUntil": -1,
+
+          priority: -1,
+          ...tailSort,
+        },
+      },
+
+      { $skip: skipAmount },
+      { $limit: limit },
+    ];
+
+    const adsRaw = await DynamicAd.aggregate(pipeline);
+
+    // ✅ populate after aggregate
+    const populatedAds = await DynamicAd.populate(adsRaw, [
+      { path: "subcategory", model: Subcategory, select: "fields" },
+      {
+        path: "organizer",
+        model: User,
+        select:
+          "_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications",
+      },
+      { path: "plan", model: Packages, select: "_id name color imageUrl" },
+    ]);
+
+    const AdCount = await DynamicAd.countDocuments(conditions);
+
+    return {
+      data: JSON.parse(JSON.stringify(populatedAds)),
+      totalPages: Math.ceil(AdCount / limit),
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
+export async function getAlldynamicAd_({ limit = 20, page, queryObject
 }: GetAlldynamicAdParams) {
   try {
     await connectToDatabase()
@@ -221,114 +419,7 @@ export async function getAlldynamicAd({ limit = 20, page, queryObject
   }
 }
 
-export async function getListingsNearLocation({ limit = 20, queryObject
-}: GetAlldynamicAdParams) {
-  try {
-    await connectToDatabase()
-    // await DynamicAd.collection.createIndex({ 'data.propertyarea.location': '2dsphere' });
-    const parseCurrencyToNumber = (value: string): number => {
-      // Remove any commas from the string and convert to number
-      return Number(value.replace(/,/g, ""));
-    };
 
-    const conditionsAdstatus = { adstatus: "Active", "data.propertyarea.location": { $exists: true, $ne: null } };
-
-    // Dynamically build conditions from queryObject
-    const dynamicConditions: any = {};
-
-    let [lat, lng] = ["0", "0"];
-    Object.entries(queryObject || {}).forEach(([key, value]) => {
-      if (value) {
-        switch (key) {
-          case 'price':
-            const [minPrice, maxPrice] = (value as string).split("-");
-            dynamicConditions["data.price"] = {
-              $gte: parseCurrencyToNumber(minPrice),
-              $lte: parseCurrencyToNumber(maxPrice)
-            };
-            break;
-          case 'location':
-            [lat, lng] = (value as string).split("/");
-            break;
-          case 'query':
-            dynamicConditions["$or"] = [
-              { "data.title": { $regex: value, $options: 'i' } },
-              { "data.description": { $regex: value, $options: 'i' } }
-            ];
-            break;
-          case 'membership':
-            break;
-          case 'privacypolicy':
-            break;
-          case 'source':
-            break;
-          case 'action':
-            break;
-          case 'Ad':
-            break;
-          case 'Profile':
-            break;
-          case 'sortby':
-            break;
-          default:
-            dynamicConditions[`data.${key}`] = { $regex: value, $options: 'i' };
-        }
-      }
-    });
-
-    // Membership-based conditions
-    let conditions = { ...conditionsAdstatus, ...dynamicConditions };
-    if (queryObject.membership as string === "verified") {
-      const verifiedUsers = await User.find({ "verified.accountverified": true });
-      const verifiedUserIds = verifiedUsers.map(user => user._id);
-      conditions = {
-        ...conditions,
-        organizer: { $in: verifiedUserIds },
-      };
-    } else if (queryObject.membership as string === "unverified") {
-      const unverifiedUsers = await User.find({ "verified.accountverified": false });
-      const unverifiedUserIds = unverifiedUsers.map(user => user._id);
-      conditions = {
-        ...conditions,
-        organizer: { $in: unverifiedUserIds },
-      };
-    }
-    //console.log(conditions)
-    if (lat !== "0" && lng !== "0") {
-
-      const ads = await DynamicAd.aggregate([
-        {
-          $geoNear: {
-            near: { type: "Point", coordinates: [parseFloat(lat), parseFloat(lng)] },
-            spherical: true,
-            distanceField: "calcDistance",
-            query: conditions, // Filter by subcategory
-            key: "data.propertyarea.location" // Specify the name of the index to use
-          }
-        }
-      ]);
-      //console.log(ads)
-      // Step 2: Populate the aggregated results
-      const populatedAds = await Ad.populate(ads, [
-        { path: 'organizer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified' },
-        { path: 'subcategory', model: Subcategory, select: 'fields' },
-        { path: 'plan', model: Packages, select: '_id name color imageUrl' }
-      ]);
-
-      const AdCount = await Ad.countDocuments(conditions);
-      //const AdCount = await Ad.countDocuments(conditions)
-
-      return {
-        data: JSON.parse(JSON.stringify(populatedAds)),
-        totalPages: Math.ceil(AdCount / limit),
-      }
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-
-}
 
 // GET RELATED Ad: Ad WITH SAME CATEGORY
 export async function getRelatedAdByCategory({

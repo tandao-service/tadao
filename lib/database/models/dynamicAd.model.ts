@@ -24,9 +24,6 @@ export interface IdynamicAd extends Document {
   bookmarked: string;
   abused: string;
   bids: any;
-  //biddingEnabled: boolean;
-  //biddingEndsAt?: Date;
-  //bidIncrement?: number;
 }
 export interface Verified {
   accountverified: boolean
@@ -59,7 +56,17 @@ const dynamicAdSchema = new Schema({
   biddingEndsAt: { type: Date },                // When bidding ends
   bidIncrement: { type: Number, default: 100 }, // Minimum bid increment
   bids: [BidSchema],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  boost: {
+    isTop: { type: Boolean, default: false },
+    topUntil: { type: Date, default: null },
+
+    isFeatured: { type: Boolean, default: false },
+    featuredUntil: { type: Date, default: null },
+
+    // optional: if you want auto-renew
+    autoRenewHours: { type: Number, default: null }, // 24, 12, null
+  },
 },
   { timestamps: false });
 delete mongoose.models.DynamicAd;
@@ -67,6 +74,8 @@ delete mongoose.models.DynamicAd;
 dynamicAdSchema.index({ adstatus: 1, expirely: 1, priority: -1, createdAt: -1 });
 dynamicAdSchema.index({ "data.category": 1, "data.region": 1, createdAt: -1 });
 dynamicAdSchema.index({ "data.category": 1, "data.region": 1, "data.price": 1 });
+dynamicAdSchema.index({ "boost.featuredUntil": -1 });
+dynamicAdSchema.index({ "boost.topUntil": -1 });
 const DynamicAd = models.DynamicAd || model('DynamicAd', dynamicAdSchema);
 
 export default DynamicAd;

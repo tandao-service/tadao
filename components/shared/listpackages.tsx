@@ -9,8 +9,6 @@ import {
 } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-
-import { v4 as uuidv4 } from "uuid"; // Import UUID function
 import { IUser } from "@/lib/database/models/user.model";
 import { createTransaction } from "@/lib/actions/transactions.actions";
 import { useRouter } from "next/navigation";

@@ -15,6 +15,7 @@ import { NextResponse } from 'next/server';
 import Packages from '../database/models/packages.model';
 import User from '../database/models/user.model';
 import { updateVerification } from './user.actions';
+import { activateSubscription } from './subscription.actions';
 export async function transactionStatus(transaction: TransactionStatusParams) {
 
   const apiUrl = "https://cybqa.pesapal.com/pesapalv3/api/Auth/RequestToken";
@@ -168,27 +169,6 @@ export async function getData(userId: string) {
   }
 }
 
-
-
-
-export async function getpayTransaction(merchantId: string) {
-  try {
-    // Connect to the MongoDB server
-    await connectToDatabase();
-
-    // Find the document by buyerId
-    const conditions = { merchantId: merchantId }
-    const trans = await populateAd(Transaction.find(conditions));
-
-    if (!trans) throw new Error('Transaction not found');
-
-    // Return the document
-    return JSON.parse(JSON.stringify(trans));
-  } catch (error) {
-    // Handle any errors
-    handleError(error);
-  }
-}
 export async function getallTransaction(userId: string) {
   try {
     // Connect to the MongoDB server
@@ -549,4 +529,113 @@ export async function checkExpiredLatestSubscriptionsPerUser() {
     handleError(error);
     throw error;
   }
+}
+export async function getpayTransaction_(merchantId: string) {
+  try {
+    // Connect to the MongoDB server
+    await connectToDatabase();
+
+    // Find the document by buyerId
+    const conditions = { merchantId: merchantId }
+    const trans = await populateAd(Transaction.find(conditions));
+
+    if (!trans) throw new Error('Transaction not found');
+
+    // Return the document
+    return JSON.parse(JSON.stringify(trans));
+  } catch (error) {
+    // Handle any errors
+    handleError(error);
+  }
+}
+export async function getpayTransaction(orderTrackingId: string) {
+  await connectToDatabase();
+
+  const tx = await Transaction.find({ orderTrackingId })
+    .populate("planId") // so trans[0].planId.list etc works
+    .limit(1);
+
+  return JSON.parse(JSON.stringify(tx));
+}
+
+/**
+ * ✅ Mark transaction as PAID/ACTIVE (idempotent)
+ */
+export async function markTransactionPaid(params: {
+  orderTrackingId: string;
+  status?: "Active" | "Paid";
+}) {
+  const { orderTrackingId, status = "Active" } = params;
+
+  await connectToDatabase();
+
+  const tx: any = await Transaction.findOne({ orderTrackingId });
+  if (!tx) throw new Error("Transaction not found");
+
+  // ✅ idempotent (avoid double work)
+  if (String(tx.status).toLowerCase() === "active" || String(tx.status).toLowerCase() === "paid") {
+    return { success: true, alreadyPaid: true, tx: JSON.parse(JSON.stringify(tx)) };
+  }
+
+  tx.status = status;
+  await tx.save();
+
+  return { success: true, alreadyPaid: false, tx: JSON.parse(JSON.stringify(tx)) };
+}
+
+/**
+ * ✅ GOLD STANDARD: one call from client after payment success
+ * - mark tx paid
+ * - activate subscription for the buyer
+ */
+export async function completeSubscriptionAfterPayment(params: {
+  orderTrackingId: string;
+}) {
+  const { orderTrackingId } = params;
+
+  await connectToDatabase();
+
+  const tx: any = await Transaction.findOne({ orderTrackingId }).populate("planId");
+  if (!tx) throw new Error("Transaction not found");
+
+  // ✅ 1) mark tx paid/active (idempotent)
+  if (String(tx.status).toLowerCase() !== "active" && String(tx.status).toLowerCase() !== "paid") {
+    tx.status = "Active";
+    await tx.save();
+  }
+
+  // ✅ 2) activate subscription (skip if "Verification" is a different product)
+  if (String(tx.plan || "").toLowerCase() === "verification") {
+    return {
+      success: true,
+      txStatus: tx.status,
+      subscriptionActivated: false,
+      message: "Verification payment completed (no subscription activation).",
+    };
+  }
+
+  const buyerId = String(tx.buyer);
+  if (!buyerId) throw new Error("Transaction buyer missing");
+
+  const planId =
+    typeof tx.planId === "string" ? String(tx.planId) : String(tx.planId?._id);
+
+  const period = String(tx.period || "1 month");
+
+  const sub = await activateSubscription({
+    userId: buyerId,
+    planId,
+    period,
+  });
+
+  // ✅ optional: return latest user (if you want)
+  const user: any = await User.findById(buyerId).select("subscription");
+
+  return {
+    success: true,
+    txStatus: tx.status,
+    subscriptionActivated: true,
+    subscription: JSON.parse(JSON.stringify(user?.subscription || null)),
+    subResult: sub,
+  };
 }

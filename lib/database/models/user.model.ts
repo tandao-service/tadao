@@ -30,6 +30,7 @@ export interface IUser extends Document {
     fcm: boolean;
   };
   fee?: string;
+  subscription?: any;
 }
 
 export interface Businesshours {
@@ -86,6 +87,21 @@ const UserSchema = new Schema({
     email: { type: Boolean, default: true },
     fcm: { type: Boolean, default: true },
   },
+  subscription: {
+    planId: { type: Schema.Types.ObjectId, ref: "Packages", default: null },
+    planName: { type: String },
+    active: { type: Boolean, default: false },
+    expiresAt: { type: Date, default: null },
+    remainingAds: { type: Number, default: 0 }, // from entitlements.maxListings
+    // ✅ add:
+    entitlements: {
+      maxListings: { type: Number, default: 0 },
+      priority: { type: Number, default: 0 },
+      topDays: { type: Number, default: 0 },
+      featuredDays: { type: Number, default: 0 },
+      autoRenewHours: { type: Number, default: null },
+    },
+  }
 });
 delete mongoose.models.User;
 const User = models.User || model('User', UserSchema);

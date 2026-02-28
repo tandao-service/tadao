@@ -54,7 +54,7 @@ import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlin
 import LatLngPicker from "./LatLngPicker";
 import LandSubdivision from "./LandSubdivision";
 import GoogleMapping from "./GoogleMapping";
-import { createTransaction, getData } from "@/lib/actions/transactions.actions";
+import { getData } from "@/lib/actions/transactions.actions";
 import { getAllPackages } from "@/lib/actions/packages.actions";
 import { Icon } from "@iconify/react";
 import Gooeyballs from "@iconify-icons/svg-spinners/gooey-balls-1"; // Correct import
@@ -188,6 +188,9 @@ type AdFormProps = {
   category?: string
   subcategory?: string
   packagesList: any;
+  //listed: number;
+  //priority: number;
+  //expirationDate: Date;
   handleOpenShop: (shopId: any) => void;
   handleAdView?: (ad: any) => void;
   handlePay: (id: string) => void;
@@ -203,6 +206,8 @@ const AdForm = ({
   ad,
   adId,
   userName,
+  //daysRemaining,
+  //packname,
   packagesList,
   category,
   subcategory,
@@ -227,9 +232,14 @@ const AdForm = ({
     ad ? ad.subcategory._id : ""
   );
 
-
+  const [showGuide, setShowGuide] = useState(false);
+  // const [formData, setFormData] = useState<Record<string, any>>([]);
+  // const [selectedCategory, setSelectedCategory] = useState("");
   const [showload, setShowLoad] = useState(true);
+
   const [fields, setFields] = useState<Field[]>([]);
+  //const [selectedAutoComplete, setSelectedAutoComplete] = useState("");
+  const [autoCompleteValues, setAutoCompleteValues] = useState<any>({});
   const [selectedYear, setSelectedYear] = useState("");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formErrors_, setFormErrors_] = useState({
@@ -391,12 +401,12 @@ const AdForm = ({
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [activeButton, setActiveButton] = useState(1);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
-
+  const [priceInput, setPriceInput] = useState("");
   const [periodInput, setPeriodInput] = useState("");
-
+  const [subscription, setSubscription] = useState<any>(null);
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [remainingAds, setRemainingAds] = useState(0);
-
+  const [listed, setListed] = useState(0);
   const [Plan, setplan] = useState(subcategory === "Assets Financing" ? "Basic" : "Free");
   const [PlanId, setplanId] = useState(subcategory === "Assets Financing" ? BasicPackId : FreePackId);
   const [Priority_, setpriority] = useState(subcategory === "Assets Financing" ? 1 : 0);
@@ -404,72 +414,47 @@ const AdForm = ({
   const [color, setColor] = useState("#000000");
   const [loadingSub, setLoadingSub] = useState<boolean>(true);
   const [ExpirationDate_, setexpirationDate] = useState(new Date());
-  const [priceInput, setPriceInput] = useState(0);
-  const [listed, setListed] = useState(0);
 
   useEffect(() => {
-    const applySubscription = () => {
-      const sub = user?.subscription;
+    const setpackage = async () => {
+      try {
 
-      // 🔹 DEFAULT = Free
-      let planName = "Free";
-      let planId = FreePackId;
-      let priority = 0;
-      let adStatus = "Active";
-      let remaining = Infinity;
-      let expiresAt: Date | null = null;
-
-      // 🔹 Paid subscription exists
-      if (sub && sub.planName && sub.planName.toLowerCase() !== "free") {
-        planName = sub.planName;
-        planId = sub.planId;
-        priority = sub.entitlements?.priority ?? 0;
-        remaining = sub.remainingAds ?? 0;
-        expiresAt = sub.expiresAt ? new Date(sub.expiresAt) : null;
-
-        const expired =
-          expiresAt instanceof Date && !isNaN(expiresAt.getTime())
-            ? new Date() > expiresAt
-            : false;
-
-        if (!sub.active || expired || remaining <= 0) {
-          adStatus = "Pending";
+        const subscriptionData = user;
+        if (!subscriptionData.currentpack) {
+          setplan(selectedSubCategory === "Assets Financing" ? "Basic" : "Free");
+          setplanId(selectedSubCategory === "Assets Financing" ? BasicPackId : FreePackId);
+          setpriority(selectedSubCategory === "Assets Financing" ? 1 : 0);
+          setadstatus("Pending");
+          setActiveButton(1);
+          setActiveButtonTitle("1 month");
+          setActivePackage(selectedSubCategory === "Assets Financing" ? packagesList[1] : packagesList[0]);
         } else {
-          adStatus = "Active";
-        }
+          const listedAds = subscriptionData.ads || 0;
+          const createdAtDate = new Date(subscriptionData.transaction?.createdAt || new Date());
+          const periodDays = parseInt(subscriptionData.transaction?.period) || 0;
+          const expiryDate = new Date(createdAtDate.getTime() + periodDays * 24 * 60 * 60 * 1000);
+          setexpirationDate(expiryDate);
+          const currentDate = new Date();
+          const remainingDays = Math.ceil((expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+          setDaysRemaining(remainingDays);
+          if ((remainingDays === 0 || (subscriptionData.currentpack.list - listedAds) === 0)) {
 
-        // days remaining (UI only)
-        if (expiresAt && !expired) {
-          const diff =
-            Math.ceil(
-              (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-            ) || 0;
-          setDaysRemaining(diff);
-        } else {
-          setDaysRemaining(0);
+            setplan(selectedSubCategory === "Assets Financing" ? "Basic" : "Free");
+            setplanId(selectedSubCategory === "Assets Financing" ? BasicPackId : FreePackId);
+            setpriority(selectedSubCategory === "Assets Financing" ? 1 : 0);
+            setadstatus("Pending");
+            setActiveButton(1);
+            setActiveButtonTitle("1 month");
+            setActivePackage(selectedSubCategory === "Assets Financing" ? packagesList[1] : packagesList[0]);
+          }
+
         }
-      } else {
-        // Free plan
-        setDaysRemaining(0);
+      } catch (error) {
+
       }
-
-      setplan(planName);
-      setplanId(planId);
-      setpriority(priority);
-      setadstatus(adStatus);
-      setRemainingAds(Number.isFinite(remaining) ? remaining : 0);
-      setexpirationDate(expiresAt ?? new Date());
-
-      // 🔹 select active package visually
-      const pkg =
-        packagesList.find((p: any) => p._id === planId) ??
-        packagesList.find((p: any) => p.name === "Free");
-
-      setActivePackage(pkg ?? null);
     };
-
-    applySubscription();
-  }, [user?.subscription, selectedSubCategory]);
+    setpackage();
+  }, [selectedSubCategory]);
 
 
   useEffect(() => {
@@ -523,10 +508,7 @@ const AdForm = ({
       fetchData();
     }
   }, []);
-  function generateRandomOrderId() {
-    const timestamp = Date.now(); // Current timestamp in milliseconds
-    return `MERCHANT_${userId}_${timestamp}`;
-  }
+
   const validateForm = async () => {
     console.log("start: ");
     const validationSchema = createValidationSchema(fields, selectedCategory);
@@ -828,45 +810,20 @@ const AdForm = ({
         };
 
         const finalData = baseData;
-        const result: any = await createData({
-          userId,
+        const pricePack = Number(priceInput);
+        const newAd = await createData({
+          userId: userId,
           subcategory: selectedSubCategoryId,
           formData: finalData,
+          expirely: ExpirationDate_,
+          priority: Priority_,
+          adstatus: Plan === "Free" ? "Active" : Adstatus_,
           planId: PlanId,
+          plan: Plan,
+          pricePack: pricePack,
           periodPack: periodInput,
           path: "/create",
         });
-        if (result?.blocked) {
-          toast({
-            title: "Subscription required",
-            description: "Please complete payment to continue posting ads.",
-            duration: 5000,
-            className: "bg-red-600 text-white",
-          });
-
-          // 🔔 Open payment flow
-          if (handlePay && result.planId) {
-            const customerId = generateRandomOrderId();
-
-            const trans = {
-              orderTrackingId: customerId,
-              amount: Number(priceInput),
-              plan: Plan === "Free" ? "Active" : Adstatus_,
-              planId: PlanId,
-              period: periodInput,
-              buyerId: userId,
-              merchantId: customerId,
-              status: "Pending",
-              createdAt: new Date(),
-            };
-            const response = await createTransaction(trans);
-            if (response.status === "Pending") {
-              handlePay(response.merchantId)
-              // router.push(`/pay/${response.orderTrackingId}`);
-            }
-          }
-          return;
-        }
         if (!user?.user?.phone) {
           await updateUserPhone(userId, phone);
         }
@@ -881,10 +838,18 @@ const AdForm = ({
           duration: 5000,
           className: "bg-orange-500 text-white",
         });
-        if (handleAdView) {
-          handleAdView(result);
-        }
 
+        if (newAd) {
+          if (newAd.adstatus === "Pending" && handlePay) {
+            handlePay(newAd._id);
+          } else {
+            if (handleAdView) {
+              handleAdView(newAd);
+            }
+
+          }
+        }
+        // console.log("Data submitted successfully:", finalData);
       }
       if (type === "Update") {
         const isValid = await validateForm();
@@ -1018,7 +983,19 @@ const AdForm = ({
       return numberString;
     }
   }
+  const handleCountryCodeChange = (e: any) => {
+    setCountryCode(e.target.value);
+  };
 
+  const handleInputChangePhone = (e: any) => {
+    const input = e.target.value;
+    const formatted = formatPhoneNumber(input);
+    setPhoneNumber(formatted);
+    setFormData({
+      ...formData,
+      phone: countryCode + removeLeadingZero(formatted),
+    });
+  };
   const [selectedCounty, setSelectedCounty] = useState<string | null>(null);
   const [selectedConstituency, setSelectedConstituency] = useState<
     string | null

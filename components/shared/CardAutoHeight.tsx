@@ -70,6 +70,15 @@ const CardAutoHeight = ({
   const router = useRouter();
   const { user: currentUser } = useAuth();
   const isAdCreator = !!userId && userId === ad?.organizer?._id?.toString?.();
+  const isFeaturedActive = (ad: any) =>
+    ad?.boost?.isFeatured === true &&
+    ad?.boost?.featuredUntil &&
+    new Date(ad.boost.featuredUntil) > new Date();
+
+  const isTopActive = (ad: any) =>
+    ad?.boost?.isTop === true &&
+    ad?.boost?.topUntil &&
+    new Date(ad.boost.topUntil) > new Date();
   const handle = async (id: string) => {
     if (userId) {
       const newBookmark = await createBookmark({
@@ -287,6 +296,22 @@ const CardAutoHeight = ({
                 : undefined
             }>
 
+            {/* FEATURED / TOP BADGES */}
+            {isFeaturedActive(ad) && (
+              <div className="absolute top-0 left-0 z-20 bg-gradient-to-r from-yellow-400 to-amber-500 
+                  text-white text-[10px] lg:text-xs font-bold px-2 py-1 
+                  rounded-br-lg shadow-md">
+                ⭐ Featured
+              </div>
+            )}
+
+            {!isFeaturedActive(ad) && isTopActive(ad) && (
+              <div className="absolute top-0 left-0 z-20 bg-orange-500 
+                  text-white text-[10px] lg:text-xs font-bold px-2 py-1 
+                  rounded-br-lg shadow-md">
+                🔥 Top
+              </div>
+            )}
             {ad.data.imageUrls.length > 0 ? (<>
               {isLoadingsmall && (
 
