@@ -1530,3 +1530,30 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
 
   return map;
 }
+// lib/actions/dynamicAd.actions.ts
+export async function getRelatedAdsServer(params: {
+  adId: string;
+  category?: string;
+  subcategory?: string;
+  limit?: number;
+}) {
+  await connectToDatabase();
+
+  const { adId, category, subcategory, limit = 8 } = params;
+
+  const conditions: any = {
+    adstatus: "Active",
+    _id: { $ne: adId },
+  };
+
+  if (category) conditions["data.category"] = category;
+  if (subcategory) conditions["data.subcategory"] = subcategory;
+
+  const items = await populateAd(
+    DynamicAd.find(conditions)
+      .sort({ priority: -1, createdAt: -1 })
+      .limit(limit)
+  );
+
+  return JSON.parse(JSON.stringify(items));
+}
