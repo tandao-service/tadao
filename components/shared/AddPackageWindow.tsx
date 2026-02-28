@@ -11,13 +11,13 @@ import CreateCategoryForm from "./CreateCategoryForm";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import CreateSubCategoryForm from "./CreateSubCategoryForm";
 import PackageForm from "./packageForm";
-import { IPackages } from "@/lib/database/models/packages.model";
+//import { IPackages } from "@/lib/database/models/packages.model";
 
 interface ChatWindowProps {
   isOpen: boolean;
   onClose: () => void;
   type: string;
-  pack?: IPackages;
+  pack?: any;
   packageId?: string;
 }
 
