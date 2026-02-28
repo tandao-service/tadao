@@ -1,6 +1,9 @@
 // components/shared/SmartPropertyCard.tsx
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ProgressPopup from "./ProgressPopup";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -55,11 +58,16 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
     const landArea = safeStr(ad?.data?.["land-Area(acres)"]);
     const hasDelivery = Boolean(ad?.data?.["delivery"]);
     const hasBulk = Boolean(ad?.data?.["bulkprice"]);
-
+    const router = useRouter();
+    const [isOpenP, setIsOpenP] = useState(false);
+    const handleCloseP = () => {
+        setIsOpenP(false);
+    };
     return (
-        <Link
-            href={`/property/${id}`}
-            className="block overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
+        <div
+            // href={`/property/${id}`}
+            onClick={() => { setIsOpenP(true); router.push(`/?Ad=${id}`); }}
+            className="block cursor-pointer overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
         >
             {/* Image */}
             <div
@@ -152,6 +160,7 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                     {hasDelivery && chip("Delivery")}
                 </div>
             </div>
-        </Link>
+            <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
+        </div>
     );
 }

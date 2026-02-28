@@ -130,7 +130,7 @@ export default async function ListingPage({ params, searchParams }: Props) {
                 <a className="underline" href={canonical}>Canonical</a>
             </div>
 
-            <section className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <section className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
                 {items.map((ad: any) => (<>
                     <SmartPropertyCard
                         key={String(ad._id)}

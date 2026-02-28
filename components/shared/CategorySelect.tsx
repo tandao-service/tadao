@@ -85,6 +85,7 @@ const CategorySelect = ({
                           alt={category.category.name || ""}
                           width={24}
                           height={24}
+                          unoptimized
                         />
                         {category.category.name}
                       </div>

@@ -324,6 +324,7 @@ const CardAutoHeight = ({
                     width={64}
                     height={64}
                     className="w-10 h-10 object-contain"
+                    unoptimized
                   />
                 </div>
                 <p className="text-[11px] text-orange-500 font-bold">
@@ -372,6 +373,7 @@ const CardAutoHeight = ({
                     alt="edit"
                     width={20}
                     height={20}
+                    unoptimized
                   />
                 </div>
                 <DeleteConfirmation adId={ad._id} imageUrls={ad.data.imageUrls} onDeleteSuccess={() => setIsDeleted(true)} />

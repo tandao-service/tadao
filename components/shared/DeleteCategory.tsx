@@ -33,6 +33,7 @@ export const DeleteCategory = ({ categoryId, categoryImage }: CoProps) => {
           alt="edit"
           width={20}
           height={20}
+          unoptimized
         />
       </AlertDialogTrigger>
 

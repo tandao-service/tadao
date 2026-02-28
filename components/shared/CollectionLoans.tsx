@@ -145,6 +145,7 @@ const CollectionLoans = ({
                               alt="edit"
                               width={60}
                               height={60}
+                              unoptimized
                             />
                           </div>
                         )}
@@ -162,6 +163,7 @@ const CollectionLoans = ({
                               } transition-opacity duration-300`}
                             onLoadingComplete={() => setIsLoadingsmall(false)}
                             placeholder="empty"
+                            unoptimized
                           />
                         </a>
                       </div>

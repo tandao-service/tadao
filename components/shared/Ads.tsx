@@ -454,6 +454,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                         className="w-8 ml-5 hover:cursor-pointer"
                         width={36}
                         height={36}
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -469,6 +470,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                           className="w-8 ml-5 hover:cursor-pointer"
                           width={36}
                           height={36}
+                          unoptimized
                         />
                       ) : (
                         <Image
@@ -477,6 +479,7 @@ export default function Ads({ ad, user, userId, userImage, userName, onClose, ha
                           className="w-8 ml-5 hover:cursor-pointer"
                           width={36}
                           height={36}
+                          unoptimized
                         />
                       )}
                     </div>

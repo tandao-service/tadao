@@ -65,6 +65,7 @@ const CategoryFilterSearch = ({ handleFilter, categoryList, value }: { value?: s
                     alt={category.name || ""}
                     width={60}
                     height={60}
+                    unoptimized
                   />
 
                   <div className="flex text-sm flex-col">

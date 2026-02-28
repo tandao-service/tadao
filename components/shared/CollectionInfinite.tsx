@@ -1388,6 +1388,7 @@ const CollectionInfinite = ({
                           alt="edit"
                           width={60}
                           height={60}
+                          unoptimized
                         />
                       </div>
                     )}

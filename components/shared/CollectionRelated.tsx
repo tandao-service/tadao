@@ -199,6 +199,7 @@ const CollectionRelated = ({
               alt="edit"
               width={60}
               height={60}
+              unoptimized
             />
           </div>
 

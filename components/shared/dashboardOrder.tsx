@@ -119,6 +119,7 @@ const DashboardOrder = ({ userId, trans, user, recipientUid, handleOpenPerfomanc
               width={40}
               height={40}
               className="rounded"
+              unoptimized
             />
             <div>
               <div className="text-lg font-bold">Tadao Services</div>

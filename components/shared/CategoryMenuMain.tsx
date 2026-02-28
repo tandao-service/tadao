@@ -115,8 +115,8 @@ const CategoryMenuMain = ({
                 }}
                 onMouseEnter={() => setHoveredCategory(category.name)}
                 className={`relative text-black dark:text-[#F1F3F3] flex flex-col items-center justify-center cursor-pointer p-1 border-b dark:border-gray-600 dark:hover:bg-[#131B1E] hover:bg-emerald-100 ${hoveredCategory === category.name
-                    ? "bg-emerald-100 dark:bg-[#131B1E]"
-                    : "dark:bg-[#2D3236] bg-white"
+                  ? "bg-emerald-100 dark:bg-[#131B1E]"
+                  : "dark:bg-[#2D3236] bg-white"
                   } `}
               >
                 <div className={`flex gap-1 items-center mb-1 h-full w-full`}>
@@ -128,6 +128,7 @@ const CategoryMenuMain = ({
                         alt={category.name}
                         width={60}
                         height={60}
+                        unoptimized
                       />
                     </div>
                   </span>
@@ -135,8 +136,8 @@ const CategoryMenuMain = ({
                     <div className="flex flex-col">
                       <h2
                         className={`text-xs ${category.adCount > 0
-                            ? ""
-                            : "text-gray-500 dark:text-gray-500"
+                          ? ""
+                          : "text-gray-500 dark:text-gray-500"
                           } `}
                       >
                         {category.name}
@@ -150,8 +151,8 @@ const CategoryMenuMain = ({
                   </span>
                   <span
                     className={`text-right my-auto ${category.adCount > 0
-                        ? ""
-                        : "text-gray-500 dark:text-gray-500"
+                      ? ""
+                      : "text-gray-500 dark:text-gray-500"
                       } `}
                   >
                     <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
@@ -216,8 +217,8 @@ const CategoryMenuMain = ({
                       <div className="flex flex-col">
                         <h2
                           className={`text-xs ${sub.adCount > 0
-                              ? ""
-                              : "text-gray-500 dark:text-gray-500"
+                            ? ""
+                            : "text-gray-500 dark:text-gray-500"
                             } `}
                         >
                           {sub.subcategory}

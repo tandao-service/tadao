@@ -151,6 +151,7 @@ const ChatButtonBottom = ({ ad, userId, userName, userImage, handleCloseEnquire 
               className="object-contain"
               sizes="(max-width: 768px) 100vw, 800px"
               priority={false}
+              unoptimized
             />
           </div>
 

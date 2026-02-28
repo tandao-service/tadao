@@ -228,6 +228,7 @@ const CategoryMenu = ({
                           alt={category.name}
                           width={60}
                           height={60}
+                          unoptimized
                         />
                       </div>
                     </span>
@@ -353,6 +354,7 @@ const CategoryMenu = ({
                           alt={sub.subcategory}
                           width={60}
                           height={60}
+                          unoptimized
                         />
                       </div>
                     </span>

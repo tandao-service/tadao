@@ -161,6 +161,7 @@ const SubCategoryWindow: React.FC<ChatWindowProps> = ({
                                 alt={sub.subcategory}
                                 width={60}
                                 height={60}
+                                unoptimized
                               />
                             </div>
                             <div className="flex text-base flex-col">

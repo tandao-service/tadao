@@ -51,6 +51,7 @@ const AppPopup = () => {
             width={24} // Width of the image in pixels
             height={24} // Height of the image in pixels
             className="mr-2" // Add margin to the right for spacing
+            unoptimized
           />
           Install from Google Play
         </a>

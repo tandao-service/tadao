@@ -369,6 +369,7 @@ const DashboardPerformance = ({
                                     alt="edit"
                                     width={20}
                                     height={20}
+                                    unoptimized
                                   />
                                 </div>
                                 <DeleteConfirmation
@@ -539,6 +540,7 @@ const DashboardPerformance = ({
                                     alt="edit"
                                     width={20}
                                     height={20}
+                                    unoptimized
                                   />
                                 </div>
                                 <DeleteConfirmation
@@ -640,6 +642,7 @@ const DashboardPerformance = ({
                       alt="edit"
                       width={60}
                       height={60}
+                      unoptimized
                     />
                   </div>
 

@@ -38,7 +38,7 @@ type sidebarProps = {
   categoryList: any;
   category: string;
   onLoading: () => void;
-  handleFilter:(value:any) => void;
+  handleFilter: (value: any) => void;
 };
 
 const SubCategoryFilterSearch = ({
@@ -47,22 +47,22 @@ const SubCategoryFilterSearch = ({
   onLoading,
   handleFilter,
 }: //AdsCountPerSubcategory,
-sidebarProps) => {
+  sidebarProps) => {
   // const [categories, setCategories] = useState<ICategory[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
-   const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("");
   const onSelectCategory = (query: string) => {
     if (query) {
-    
+
       handleFilter({
         category: category.toString(),
         subcategory: query.toString(),
       })
-    
-    } 
-   
+
+    }
+
   };
   const selectedCategory = categoryList.find(
     (cat: any) => cat.subcategory === searchParams.get("subcategory")
@@ -72,7 +72,7 @@ sidebarProps) => {
   const categoryImageUrl = selectedCategory ? selectedCategory.imageUrl[0] : "";
   return (
     <>
-     
+
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <div className="py-2 px-2 rounded-sm border border-gray-300 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 items-start w-full rounded-lg cursor-pointer border">
@@ -91,6 +91,7 @@ sidebarProps) => {
                           alt={query || ""}
                           width={60}
                           height={60}
+                          unoptimized
                         />
                         <div className="w-[300px]">
                           {query}
@@ -143,6 +144,7 @@ sidebarProps) => {
                             alt={sub.subcategory}
                             width={60}
                             height={60}
+                            unoptimized
                           />
 
                           <div className="flex text-sm flex-col">

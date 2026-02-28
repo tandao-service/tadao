@@ -76,11 +76,11 @@ const SubCategorySelect = ({
                   placeholder="Search sub category"
                   value={inputValue}
                   onValueChange={setInputValue}
-                 // onKeyDown={(e) => {
-                 //   if (e.key === "Enter") {
-                   //   handleConfirm();
-                  // }
-                  //}}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //   handleConfirm();
+                // }
+                //}}
                 />
               </div>
 
@@ -94,7 +94,7 @@ const SubCategorySelect = ({
                         onChange("subcategory", category.subcategory, category._id);
                         setOpen(false);
                       }}
-                       className="p-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
+                      className="p-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
                     >
                       <div className="text-base flex gap-1 items-center">
                         <Image
@@ -103,6 +103,7 @@ const SubCategorySelect = ({
                           alt={category.subcategory || ""}
                           width={60}
                           height={60}
+                          unoptimized
                         />
                         {category.subcategory}
                       </div>
@@ -113,7 +114,7 @@ const SubCategorySelect = ({
               </CommandList>
             </Command>
 
-           
+
           </div>
         )
       ) : (
@@ -124,11 +125,11 @@ const SubCategorySelect = ({
                 placeholder="Search sub category"
                 value={inputValue}
                 onValueChange={setInputValue}
-                //onKeyDown={(e) => {
-                //  if (e.key === "Enter") {
-                //    handleConfirm();
-                //  }
-                //}}
+              //onKeyDown={(e) => {
+              //  if (e.key === "Enter") {
+              //    handleConfirm();
+              //  }
+              //}}
               />
             </div>
 
@@ -150,6 +151,7 @@ const SubCategorySelect = ({
                         alt={category.subcategory || ""}
                         width={60}
                         height={60}
+                        unoptimized
                       />
                       {category.subcategory}
                     </div>
@@ -160,7 +162,7 @@ const SubCategorySelect = ({
             </CommandList>
           </Command>
 
-         
+
         </PopoverContent>
       )}
     </Popover>

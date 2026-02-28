@@ -94,6 +94,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                           alt="Profile Image"
                           width={120}
                           height={120}
+                          unoptimized
                         />
                       </div>
 
@@ -103,7 +104,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                         Hi {senderName}
                       </h3>
                       <div className="h-10 w-10">
-                        <Image src="/hello.png" alt="logo" width={40} height={40} />
+                        <Image src="/hello.png" alt="logo" width={40} height={40} unoptimized />
                       </div>
                     </div>
                     <div className="gap-2 justify-center flex w-full items-center">
@@ -185,6 +186,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                           alt="Profile Image"
                           width={120}
                           height={120}
+                          unoptimized
                         />
                       </div>
 
@@ -248,10 +250,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   alt="Profile Image"
                   width={120}
                   height={120}
+                  unoptimized
                 />
               </div>
               <h3 className="font-bold text-black text-lg mt-3">Hi {senderName}</h3>
-              <Image src="/hello.png" alt="logo" width={40} height={40} />
+              <Image src="/hello.png" alt="logo" width={40} height={40} unoptimized />
               <h3 className="font-semibold text-2xl text-white mt-2">How can we help?</h3>
             </div>
           )}
@@ -321,6 +324,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                         alt="Profile Image"
                         width={120}
                         height={120}
+                        unoptimized
                       />
                     </div>
 

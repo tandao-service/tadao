@@ -85,6 +85,7 @@ const CategorySelectSub = ({
                           alt={category.name || ""}
                           width={24}
                           height={24}
+                          unoptimized
                         />
                         {category.name}
                       </div>

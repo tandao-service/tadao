@@ -57,6 +57,7 @@ const CategoryFilterSearchMain = ({ onSelectCategory, categoryList }: { category
                     alt={category.name || ""}
                     width={60}
                     height={60}
+                    unoptimized
                   />
 
                   <div className="flex text-sm flex-col">
