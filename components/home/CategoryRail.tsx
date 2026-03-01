@@ -15,6 +15,27 @@ function slugify(input: string) {
         .replace(/^-+|-+$/g, "");
 }
 
+function stripIntent(name: string) {
+    return String(name || "")
+        .replace(/\s+for\s+sale\s*$/i, "")
+        .replace(/\s+for\s+rent\s*$/i, "")
+        .trim();
+}
+
+function detectMode(name: string): "sale" | "rent" {
+    const n = String(name || "").toLowerCase();
+    if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
+    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) return "sale";
+    return "sale";
+}
+
+function toListingSlugFromName(name: string) {
+    const mode = detectMode(name);
+    const base = stripIntent(name);
+    const suffix = mode === "rent" ? "for-rent" : "for-sale";
+    return `${slugify(base)}-${suffix}`;
+}
+
 /** Hide scrollbar */
 const scrollbarNone = `
   .scrollbar-none::-webkit-scrollbar { display:none; }
@@ -111,7 +132,9 @@ export default function CategoryRail({
     const wrapRef = React.useRef<HTMLDivElement>(null); // inside <aside>
     const railRef = React.useRef<HTMLDivElement>(null);
 
-    const [mode, setMode] = React.useState<"relative" | "fixed" | "stopped">("relative");
+    const [mode, setMode] = React.useState<"relative" | "fixed" | "stopped">(
+        "relative"
+    );
     const [fixedTop, setFixedTop] = React.useState<number>(76);
     const [stoppedTop, setStoppedTop] = React.useState<number>(0);
 
@@ -120,40 +143,45 @@ export default function CategoryRail({
 
     if (!tree?.length) return null;
 
-    // ✅ Mobile compact version (unchanged)
+    // ✅ Mobile compact version (UPDATED: category click -> default subcategory)
     if (compact) {
         return (
             <div className="rounded-2xl border bg-white p-3 dark:border-gray-700 dark:bg-[#2D3236]">
                 <div className="text-sm font-extrabold">Categories</div>
 
                 <div className="mt-2 grid grid-cols-2 gap-2">
-                    {tree.map((c) => (
-                        <a
-                            key={c.id}
-                            href={`/listing/${slugify(c.name)}-for-sale`}
-                            className="rounded-xl border px-3 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
-                        >
-                            <div className="flex items-center gap-2">
-                                <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-slate-100">
-                                    {c.icon ? (
-                                        <Image
-                                            src={c.icon}
-                                            alt={c.name}
-                                            width={60}
-                                            height={60}
-                                            className="h-full w-full object-cover"
-                                            unoptimized
-                                        />
-                                    ) : null}
-                                </div>
+                    {tree.map((c) => {
+                        const defaultName =
+                            c?.subcategories?.length ? c.subcategories[0].name : c.name;
 
-                                <div className="min-w-0 flex-1">
-                                    <div className="truncate">{c.name}</div>
-                                    <div className="text-xs text-slate-500">{c.count} ads</div>
+                        return (
+                            <a
+                                key={c.id}
+                                href={`/${toListingSlugFromName(defaultName)}`}
+                                className="rounded-xl border px-3 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-slate-100">
+                                        {c.icon ? (
+                                            <Image
+                                                src={c.icon}
+                                                alt={c.name}
+                                                width={60}
+                                                height={60}
+                                                className="h-full w-full object-cover"
+                                                unoptimized
+                                            />
+                                        ) : null}
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                        <div className="truncate">{c.name}</div>
+                                        <div className="text-xs text-slate-500">{c.count} ads</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    ))}
+                            </a>
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -163,7 +191,9 @@ export default function CategoryRail({
     const showSub = Boolean(hovered);
 
     const computeTopOffsetPx = React.useCallback(() => {
-        const v = getComputedStyle(document.documentElement).getPropertyValue(topOffsetCssVar).trim();
+        const v = getComputedStyle(document.documentElement)
+            .getPropertyValue(topOffsetCssVar)
+            .trim();
         const n = Number(String(v).replace("px", "").trim());
         const topbarH = Number.isFinite(n) && n > 0 ? n : 64;
         return topbarH + topGap;
@@ -292,7 +322,10 @@ export default function CategoryRail({
 
             {/* LEFT */}
             <div style={outerStyle}>
-                <div ref={railRef} className="w-64 rounded-2xl border bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]">
+                <div
+                    ref={railRef}
+                    className="w-64 rounded-2xl border bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]"
+                >
                     {/* Top / Bottom buttons */}
                     {categoryScroll.showUp && (
                         <button
@@ -325,24 +358,40 @@ export default function CategoryRail({
                         {tree.map((category) => {
                             const isActive = hovered === category.name;
 
+                            // ✅ default subcategory = first subcategory (fallback to category itself)
+                            const defaultName =
+                                category?.subcategories?.length ? category.subcategories[0].name : category.name;
+
+                            const href = `/${toListingSlugFromName(defaultName)}`;
+
                             return (
                                 <div
                                     key={category.id}
                                     onMouseEnter={() => setHovered(category.name)}
                                     className={cn(
-                                        "flex items-center gap-2 border-b p-2 text-left text-sm",
+                                        "relative flex items-center gap-2 border-b p-2 text-left text-sm",
                                         "hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]",
                                         isActive && "bg-slate-50 dark:bg-[#131B1E]"
                                     )}
                                 >
-                                    <IconCircle src={category.icon} alt={category.name} />
+                                    {/* ✅ clickable overlay: category row click -> default subcategory page */}
+                                    <a
+                                        href={href}
+                                        aria-label={`Open ${category.name}`}
+                                        className="absolute inset-0 z-[1]"
+                                    />
 
-                                    <div className="min-w-0 flex-1">
-                                        <div className="truncate text-xs font-extrabold">{category.name}</div>
-                                        <div className="text-[11px] text-slate-500">{category.count} ads</div>
+                                    {/* content above overlay */}
+                                    <div className="relative z-[2] pointer-events-none flex w-full items-center gap-2">
+                                        <IconCircle src={category.icon} alt={category.name} />
+
+                                        <div className="min-w-0 flex-1">
+                                            <div className="truncate text-xs font-extrabold">{category.name}</div>
+                                            <div className="text-[11px] text-slate-500">{category.count} ads</div>
+                                        </div>
+
+                                        <div className="text-slate-400">›</div>
                                     </div>
-
-                                    <div className="text-slate-400">›</div>
                                 </div>
                             );
                         })}
@@ -392,7 +441,7 @@ export default function CategoryRail({
                             activeCat.subcategories.map((sub: any) => (
                                 <a
                                     key={sub.id}
-                                    href={`/listing/${slugify(sub.name)}`}
+                                    href={`/${toListingSlugFromName(sub.name)}`}
                                     className="flex items-center gap-2 border-b p-2 hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
                                 >
                                     <IconCircle src={sub.icon || null} alt={sub.name} />

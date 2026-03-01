@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { IoCamera } from "react-icons/io5";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -147,8 +148,11 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                 {/* Bottom badges */}
                 <div className="absolute bottom-2 left-0 right-0 flex justify-between px-2">
                     <div className="rounded-sm bg-black/70 px-2 py-1 text-[10px] text-white">
-                        🖼️ {imgCount}
+                        <div className="flex gap-1 items-center">
+                            <IoCamera /> {imgCount}
+                        </div>
                     </div>
+
 
                     {ad?.data?.["youtube-link"] && (
                         <div className="rounded-sm bg-black/70 px-2 py-1 text-[10px] text-white">

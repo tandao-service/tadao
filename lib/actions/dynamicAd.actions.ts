@@ -1750,3 +1750,217 @@ export async function getHomeFeed(params?: {
     normal: JSON.parse(JSON.stringify(normal)),
   };
 }
+
+// lib/actions/dynamicAd.actions.ts
+
+type SidebarOptions = {
+  subcategoryCounts: Record<string, number>; // keyed by raw subcategory name in DB
+  counties: string[];
+  towns: string[];
+  townsByCounty: Record<string, string[]>;
+  makes: string[];
+  models: string[];
+  totalInCategory: number;
+};
+
+function safeTrim(v: any) {
+  return String(v ?? "").trim();
+}
+
+function pickCountyExpr() {
+  return { $ifNull: ["$county", "$data.county"] };
+}
+function pickTownExpr() {
+  return { $ifNull: ["$town", { $ifNull: ["$data.town", "$data.area"] }] };
+}
+function pickSubcatExpr() {
+  return { $ifNull: ["$subcategory", "$data.subcategory"] };
+}
+function pickMakeExpr() {
+  return { $ifNull: ["$make", "$data.make"] };
+}
+function pickModelExpr() {
+  return { $ifNull: ["$model", "$data.model"] };
+}
+
+export async function getListingSidebarOptions(args: {
+  category: string;
+  regionSlug?: string;
+
+  min?: number;
+  max?: number;
+  membership?: "verified" | "unverified";
+
+  county?: string;
+  town?: string;
+
+  make?: string;
+  model?: string;
+
+  q?: string;
+}): Promise<SidebarOptions> {
+  await connectToDatabase();
+
+  const category = safeTrim(args.category);
+  const regionSlug = safeTrim(args.regionSlug);
+
+  const min = typeof args.min === "number" ? args.min : undefined;
+  const max = typeof args.max === "number" ? args.max : undefined;
+
+  const county = safeTrim(args.county);
+  const town = safeTrim(args.town);
+
+  const make = safeTrim(args.make);
+  const model = safeTrim(args.model);
+
+  const q = safeTrim(args.q);
+
+  const match: any = { category };
+
+  // optional region filter (safe if you don't store it)
+  if (regionSlug) {
+    match.$or = [
+      { regionSlug },
+      { region: regionSlug },
+      { "data.regionSlug": regionSlug },
+      { "data.region": regionSlug },
+    ];
+  }
+
+  if (args.membership === "verified") match.membership = "verified";
+  if (args.membership === "unverified") match.membership = "unverified";
+
+  if (min !== undefined || max !== undefined) {
+    match.price = {};
+    if (min !== undefined) match.price.$gte = min;
+    if (max !== undefined) match.price.$lte = max;
+  }
+
+  if (county) {
+    match.$and = match.$and || [];
+    match.$and.push({
+      $or: [{ county }, { "data.county": county }, { location: county }, { "data.location": county }],
+    });
+  }
+
+  if (town) {
+    match.$and = match.$and || [];
+    match.$and.push({
+      $or: [{ town }, { "data.town": town }, { "data.area": town }, { area: town }],
+    });
+  }
+
+  if (make) {
+    match.$and = match.$and || [];
+    match.$and.push({ $or: [{ make }, { "data.make": make }] });
+  }
+
+  if (model) {
+    match.$and = match.$and || [];
+    match.$and.push({ $or: [{ model }, { "data.model": model }] });
+  }
+
+  if (q) {
+    match.$and = match.$and || [];
+    match.$and.push({
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } },
+        { "data.title": { $regex: q, $options: "i" } },
+        { "data.description": { $regex: q, $options: "i" } },
+      ],
+    });
+  }
+
+  const pipeline: any[] = [
+    { $match: match },
+    {
+      $facet: {
+        bySubcategory: [
+          { $group: { _id: pickSubcatExpr(), c: { $sum: 1 } } },
+        ],
+        counties: [
+          { $group: { _id: pickCountyExpr() } },
+        ],
+        towns: [
+          { $group: { _id: pickTownExpr() } },
+        ],
+
+        // ✅ NEW: towns grouped by county
+        townsByCounty: [
+          {
+            $group: {
+              _id: {
+                county: pickCountyExpr(),
+                town: pickTownExpr(),
+              },
+              c: { $sum: 1 },
+            },
+          },
+        ],
+
+        makes: [
+          { $group: { _id: pickMakeExpr() } },
+        ],
+        models: [
+          { $group: { _id: pickModelExpr() } },
+        ],
+        total: [{ $count: "n" }],
+      },
+    },
+  ];
+
+  const [out] = await DynamicAd.aggregate(pipeline);
+
+  const subcategoryCounts: Record<string, number> = {};
+  for (const row of out?.bySubcategory || []) {
+    const k = safeTrim(row?._id);
+    if (!k) continue;
+    subcategoryCounts[k] = Number(row?.c || 0);
+  }
+
+  const counties = (out?.counties || [])
+    .map((x: any) => safeTrim(x?._id))
+    .filter(Boolean)
+    .sort((a: string, b: string) => a.localeCompare(b));
+
+  const towns = (out?.towns || [])
+    .map((x: any) => safeTrim(x?._id))
+    .filter(Boolean)
+    .sort((a: string, b: string) => a.localeCompare(b));
+
+  // build county -> towns map
+  const townsByCounty: Record<string, string[]> = {};
+  for (const row of out?.townsByCounty || []) {
+    const c = safeTrim(row?._id?.county);
+    const t = safeTrim(row?._id?.town);
+    if (!c || !t) continue;
+    if (!townsByCounty[c]) townsByCounty[c] = [];
+    townsByCounty[c].push(t);
+  }
+  for (const c of Object.keys(townsByCounty)) {
+    townsByCounty[c] = Array.from(new Set(townsByCounty[c])).sort((a, b) => a.localeCompare(b));
+  }
+
+  const makes = (out?.makes || [])
+    .map((x: any) => safeTrim(x?._id))
+    .filter(Boolean)
+    .sort((a: string, b: string) => a.localeCompare(b));
+
+  const models = (out?.models || [])
+    .map((x: any) => safeTrim(x?._id))
+    .filter(Boolean)
+    .sort((a: string, b: string) => a.localeCompare(b));
+
+  const totalInCategory = Number(out?.total?.[0]?.n || 0);
+
+  return {
+    subcategoryCounts,
+    counties,
+    towns,
+    townsByCounty,
+    makes,
+    models,
+    totalInCategory,
+  };
+}

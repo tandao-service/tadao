@@ -1,9 +1,13 @@
 // app/_listing/ListingPage.tsx
 import type { Metadata } from "next";
-import Link from "next/link";
 import { cache } from "react";
-import { getAlldynamicAd, getAdsForRegionListing, getListingMapFromDB } from "@/lib/actions/dynamicAd.actions";
-import SmartPropertyCard from "@/components/shared/SmartPropertyCard";
+import {
+    getAlldynamicAd,
+    getAdsForRegionListing,
+    getListingMapFromDB,
+    getListingSidebarOptions,
+} from "@/lib/actions/dynamicAd.actions";
+import ListingPageClient from "@/app/_listing/ListingPageClient";
 
 const PAGE_SIZE = 24;
 
@@ -12,7 +16,6 @@ const getListingMap = cache(async () => {
 });
 
 function regionFromSlug(slug: string) {
-    // keep hyphens as you were doing earlier
     return slug
         .split("-")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
@@ -28,13 +31,37 @@ type ListingSearchParams = {
     page?: string;
     min?: string;
     max?: string;
-    sort?: string;     // for region pages
-    sortby?: string;   // for national pages (your existing getAlldynamicAd expects sortby)
+    sort?: string;
+    sortby?: string;
     membership?: string;
+
+    county?: string;
+    town?: string;
+    make?: string;
+    model?: string;
+    q?: string;
+
+    layout?: string; // grid | list
 };
 
 function normalizeSlug(s: string) {
     return String(s || "").trim().toLowerCase();
+}
+
+function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: string) {
+    const items: { slug: string; title: string; subcategory: string }[] = [];
+    for (const [slug, entry] of Object.entries(LISTING_MAP)) {
+        if (!entry) continue;
+        if (String(entry.category || "").trim() !== String(categoryName || "").trim()) continue;
+
+        items.push({
+            slug,
+            title: String(entry.title || slug),
+            subcategory: String(entry.subcategory || ""),
+        });
+    }
+    items.sort((a, b) => a.title.localeCompare(b.title));
+    return items;
 }
 
 export async function buildListingMetadata(args: {
@@ -72,7 +99,6 @@ export default async function ListingPageUI(args: {
     searchParams: ListingSearchParams;
 }) {
     const LISTING_MAP = await getListingMap();
-
     const listingSlug = normalizeSlug(args.listingSlug);
     const listing = LISTING_MAP[listingSlug];
 
@@ -85,21 +111,58 @@ export default async function ListingPageUI(args: {
     }
 
     const page = Math.max(1, parseNum(args.searchParams.page) || 1);
-    const min = parseNum(args.searchParams.min);
-    const max = parseNum(args.searchParams.max);
+
+    const minN = parseNum(args.searchParams.min);
+    const maxN = parseNum(args.searchParams.max);
+
+    const min = args.searchParams.min || "";
+    const max = args.searchParams.max || "";
 
     const membership =
         args.searchParams.membership === "verified"
             ? "verified"
             : args.searchParams.membership === "unverified"
                 ? "unverified"
-                : undefined;
+                : "";
+
+    const county = String(args.searchParams.county || "").trim();
+    const town = String(args.searchParams.town || "").trim();
+
+    const q = String(args.searchParams.q || "").trim();
+
+    const categoryName = String(listing.category || "").trim();
+    const isVehicle = categoryName.toLowerCase() === "vehicle";
+
+    const make = isVehicle ? String(args.searchParams.make || "").trim() : "";
+    const model = isVehicle ? String(args.searchParams.model || "").trim() : "";
+
+    const layout = args.searchParams.layout === "list" ? "list" : "grid";
 
     const canonical = args.regionSlug
         ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
         : `https://tadaomarket.com/${listingSlug}`;
 
-    // ✅ 1) REGION LISTING: /r/nairobi/cars-for-sale
+    const categoryListings = getCategoryListings(LISTING_MAP, categoryName);
+
+    // Sidebar data (counts + options)
+    const sidebar = await getListingSidebarOptions({
+        category: categoryName,
+        regionSlug: args.regionSlug,
+        min: minN,
+        max: maxN,
+        membership: membership ? (membership as any) : undefined,
+        county,
+        town,
+        make,
+        model,
+        q,
+    });
+
+    // Fetch ads
+    let items: any[] = [];
+    let totalPages = 1;
+    let regionLabel = "Kenya";
+
     if (args.regionSlug) {
         const regionName = regionFromSlug(args.regionSlug);
 
@@ -112,108 +175,94 @@ export default async function ListingPageUI(args: {
                         ? "new"
                         : "recommeded";
 
-        const { items, total, totalPages, regionName: regionNameFromQuery } =
-            await getAdsForRegionListing({
-                regionSlug: args.regionSlug,
-                category: listing.category,
-                subcategory: listing.subcategory,
-                page,
-                limit: PAGE_SIZE,
-                min,
-                max,
-                sort,
-                membership,
-            });
+        const res = await getAdsForRegionListing({
+            regionSlug: args.regionSlug,
+            category: listing.category,
+            subcategory: listing.subcategory,
+            page,
+            limit: PAGE_SIZE,
+            min: minN,
+            max: maxN,
+            sort,
+            membership: membership ? (membership as any) : undefined,
 
-        const finalRegionName = regionNameFromQuery || regionName;
+            // new filters (safe if ignored)
+            county,
+            town,
+            make: isVehicle ? make : undefined,
+            model: isVehicle ? model : undefined,
+            q,
+        } as any);
 
-        return (
-            <main className="mx-auto max-w-6xl p-4">
-                <h1 className="text-2xl font-bold">
-                    {listing.title} in {finalRegionName}
-                </h1>
+        items = res?.items || [];
+        totalPages = Number(res?.totalPages || 1);
+        regionLabel = res?.regionName || regionName;
+    } else {
+        const sortby =
+            args.searchParams.sortby === "lowest"
+                ? "lowest"
+                : args.searchParams.sortby === "highest"
+                    ? "highest"
+                    : args.searchParams.sortby === "new"
+                        ? "new"
+                        : "recommeded";
 
-                <div className="mt-3 text-sm text-gray-600">
-                    {Number(total).toLocaleString()} results •{" "}
-                    <a className="underline" href={canonical}>Canonical</a>
-                </div>
+        const queryObject: any = {
+            sortby,
+            category: listing.category,
+            subcategory: listing.subcategory,
+        };
 
-                <section className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
-                    {items.map((ad: any) => (
-                        <SmartPropertyCard key={String(ad._id)} ad={ad} regionFallback={finalRegionName} />
-                    ))}
-                </section>
+        if (membership) queryObject.membership = membership;
+        if (minN !== undefined || maxN !== undefined) queryObject.price = `${minN || 0}-${maxN || 999999999}`;
 
-                <div className="mt-6 flex items-center gap-3">
-                    {page > 1 && (
-                        <Link className="underline" href={`/r/${args.regionSlug}/${listingSlug}?page=${page - 1}`}>
-                            Prev
-                        </Link>
-                    )}
-                    <span>Page {page} of {totalPages}</span>
-                    {page < totalPages && (
-                        <Link className="underline" href={`/r/${args.regionSlug}/${listingSlug}?page=${page + 1}`}>
-                            Next
-                        </Link>
-                    )}
-                </div>
-            </main>
-        );
+        if (county) queryObject.county = county;
+        if (town) queryObject.town = town;
+        if (q) queryObject.q = q;
+
+        if (isVehicle && make) queryObject.make = make;
+        if (isVehicle && model) queryObject.model = model;
+
+        const res = await getAlldynamicAd({
+            page,
+            limit: PAGE_SIZE,
+            queryObject,
+        });
+
+        items = res?.data || [];
+        totalPages = Number(res?.totalPages || 1);
+        regionLabel = "Kenya";
     }
 
-    // ✅ 2) NATIONAL LISTING: /cars-for-sale (NO REGION FILTER)
-    const sortby =
-        args.searchParams.sortby === "lowest"
-            ? "lowest"
-            : args.searchParams.sortby === "highest"
-                ? "highest"
-                : args.searchParams.sortby === "new"
-                    ? "new"
-                    : "recommeded";
-
-    const queryObject: any = {
-        sortby,
-        category: listing.category,
-        subcategory: listing.subcategory,
-    };
-
-    if (membership) queryObject.membership = membership;
-    if (min !== undefined || max !== undefined) {
-        queryObject.price = `${min || 0}-${max || 999999999}`;
-    }
-
-    const res = await getAlldynamicAd({
-        page,
-        limit: PAGE_SIZE,
-        queryObject,
-    });
-
-    const items = res?.data || [];
-    const totalPages = res?.totalPages || 1;
+    const basePath = args.regionSlug ? `/r/${args.regionSlug}/${listingSlug}` : `/${listingSlug}`;
 
     return (
-        <main className="mx-auto max-w-6xl p-4">
-            <h1 className="text-2xl font-bold">{listing.title} in Kenya</h1>
-
-            <section className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
-                {items.map((ad: any) => (
-                    <SmartPropertyCard key={String(ad._id)} ad={ad} regionFallback="Kenya" />
-                ))}
-            </section>
-
-            <div className="mt-6 flex items-center gap-3">
-                {page > 1 && (
-                    <Link className="underline" href={`/${listingSlug}?page=${page - 1}`}>
-                        Prev
-                    </Link>
-                )}
-                <span>Page {page} of {totalPages}</span>
-                {page < totalPages && (
-                    <Link className="underline" href={`/${listingSlug}?page=${page + 1}`}>
-                        Next
-                    </Link>
-                )}
-            </div>
-        </main>
+        <ListingPageClient
+            title={String(listing.title || "Listings")}
+            regionLabel={regionLabel}
+            canonical={canonical}
+            basePath={basePath}
+            activeListingSlug={listingSlug}
+            categoryName={categoryName}
+            categoryListings={categoryListings}
+            sidebar={sidebar}
+            isVehicle={isVehicle}
+            items={items}
+            totalPages={totalPages}
+            page={page}
+            selected={{
+                q,
+                county,
+                town,
+                make,
+                model,
+                min,
+                max,
+                membership,
+                sort: String(args.searchParams.sort || "recommeded"),
+                sortby: String(args.searchParams.sortby || "recommeded"),
+                layout,
+            }}
+        />
     );
 }
