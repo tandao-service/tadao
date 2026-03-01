@@ -93,10 +93,10 @@ export default function BottomNav() {
                 "transition-transform duration-200",
                 hidden ? "translate-y-full" : "translate-y-0"
             )}
-            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            style={{ paddingBottom: 0 }}
             aria-label="Bottom navigation"
         >
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-0">
                 {items.map((it) => {
                     const active = isActive(it.href);
 
