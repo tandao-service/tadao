@@ -79,8 +79,9 @@ export default function TopBar({
                             src="/logo.png"
                             alt="Tadao Market"
                             fill
-                            className="object-contain p-1"
+                            className="object-contain p-0"
                             priority
+                            unoptimized
                         />
                     </div>
                     <div className="hidden sm:block">
