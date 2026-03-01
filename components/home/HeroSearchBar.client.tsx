@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { IoSearch } from "react-icons/io5";
 
 const REGIONS = [
     { value: "all-kenya", label: "All Kenya" },
@@ -52,10 +53,10 @@ export default function HeroSearchBar() {
 
                 <button
                     onClick={go}
-                    className="rounded-xl bg-orange-500 text-white font-extrabold hover:bg-orange-600"
+                    className="items-center justify-center p-2 rounded-xl bg-orange-500 text-white font-extrabold hover:bg-orange-600"
                     aria-label="Search"
                 >
-                    🔎
+                    <IoSearch />
                 </button>
             </div>
         </div>

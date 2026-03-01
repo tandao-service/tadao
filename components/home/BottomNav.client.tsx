@@ -105,7 +105,7 @@ export default function BottomNav() {
                             key={it.href}
                             href={it.href}
                             className={cn(
-                                "flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-2",
+                                "flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-0",
                                 "text-[11px] font-bold",
                                 active ? "text-orange-600" : "text-slate-600 hover:text-orange-600"
                             )}

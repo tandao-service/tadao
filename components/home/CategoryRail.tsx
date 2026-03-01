@@ -127,9 +127,15 @@ type Props = {
 function CategoryRailCompact({ tree }: { tree: HomeCategoryNode[] }) {
     return (
         <div className="rounded-2xl border bg-white p-3 dark:border-gray-700 dark:bg-[#2D3236]">
-            <div className="text-sm font-extrabold">Categories</div>
+            <div className="flex items-center justify-between">
+                <div className="text-sm font-extrabold">Categories</div>
+                <div className="text-[11px] font-bold text-slate-500">
+                    {tree.length} groups
+                </div>
+            </div>
 
-            <div className="mt-2 grid grid-cols-2 gap-2">
+            {/* ✅ Mobile: 3 per row like screenshot */}
+            <div className="mt-3 grid grid-cols-3 gap-3">
                 {tree.map((c) => {
                     const defaultName = c?.subcategories?.length ? c.subcategories[0].name : c.name;
 
@@ -137,26 +143,36 @@ function CategoryRailCompact({ tree }: { tree: HomeCategoryNode[] }) {
                         <a
                             key={c.id}
                             href={`/${toListingSlugFromName(defaultName)}`}
-                            className="rounded-xl border px-3 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
+                            className={cn(
+                                "group rounded-2xl border bg-white p-3 text-center shadow-sm",
+                                "hover:bg-orange-50 hover:shadow-md",
+                                "dark:border-gray-700 dark:bg-[#2D3236] dark:hover:bg-[#131B1E]"
+                            )}
                         >
-                            <div className="flex items-center gap-2">
-                                <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-slate-100">
-                                    {c.icon ? (
-                                        <Image
-                                            src={c.icon}
-                                            alt={c.name}
-                                            width={60}
-                                            height={60}
-                                            className="h-full w-full object-cover"
-                                            unoptimized
-                                        />
-                                    ) : null}
-                                </div>
+                            {/* Icon bubble */}
+                            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200 group-hover:bg-orange-100 group-hover:ring-orange-200 dark:bg-[#131B1E] dark:ring-gray-700">
+                                {c.icon ? (
+                                    <Image
+                                        src={c.icon}
+                                        alt={c.name}
+                                        width={80}
+                                        height={80}
+                                        className="h-10 w-10 object-contain"
+                                        unoptimized
+                                    />
+                                ) : (
+                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-[#1f2427] dark:to-[#131B1E]" />
+                                )}
+                            </div>
 
-                                <div className="min-w-0 flex-1">
-                                    <div className="truncate">{c.name}</div>
-                                    <div className="text-xs text-slate-500">{c.count} ads</div>
-                                </div>
+                            {/* Title */}
+                            <div className="mt-2 truncate text-[12px] font-extrabold text-slate-900 dark:text-white">
+                                {c.name}
+                            </div>
+
+                            {/* Count */}
+                            <div className="mt-0.5 text-[11px] font-bold text-slate-500">
+                                {Number(c.count || 0).toLocaleString()} ads
                             </div>
                         </a>
                     );
