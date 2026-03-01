@@ -13,6 +13,11 @@ function slugify(input: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function safeDateISO(v: any) {
+  const d = v ? new Date(v) : null;
+  return d && !isNaN(d.getTime()) ? d.toISOString() : undefined;
+}
+
 export async function GET() {
   const staticUrls = [
     { loc: `${baseUrl}/`, changefreq: "daily", priority: "1.0" },
@@ -21,58 +26,64 @@ export async function GET() {
     { loc: `${baseUrl}/privacy-policy`, changefreq: "monthly", priority: "0.5" },
   ];
 
-  // Fetch once
-  const [ads, listingMap] = await Promise.all([
+  const [adsRaw, listingMap] = await Promise.all([
     getAllAds(),
     getListingMapFromDB(),
   ]);
 
-  // 1) Dynamic ad pages (/property/:id)
-  const dynamicAdUrls = (ads || [])
-    .filter((ad: any) => ad && ad._id)
-    .map((ad: any) => {
-      const d = ad.updatedAt ? new Date(ad.updatedAt) : new Date();
-      const lastmod = isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  const ads = Array.isArray(adsRaw) ? adsRaw : [];
 
-      return {
-        loc: `${baseUrl}/property/${ad._id}`,
-        lastmod,
-        changefreq: "weekly",
-        priority: "0.7",
-      };
-    });
+  // 1) Dynamic ad pages (/property/:id)
+  const dynamicAdUrls = ads
+    .filter((ad: any) => ad && ad._id)
+    .map((ad: any) => ({
+      loc: `${baseUrl}/property/${ad._id}`,
+      lastmod: safeDateISO(ad.updatedAt) || safeDateISO(ad.createdAt),
+      changefreq: "weekly",
+      priority: "0.7",
+    }));
 
   // 2) Region slugs discovered from ads
   const regions = Array.from(
     new Set(
-      (ads || [])
+      ads
         .map((a: any) => a?.data?.region)
         .filter(Boolean)
         .map((r: string) => slugify(r))
     )
   );
 
-  // 3) Listing slugs discovered from DB map (source of truth)
+  // 3) Listing slugs from DB map (source of truth)
   const listingSlugs = Object.keys(listingMap || {});
-  // If empty, avoid generating nothing
-  // (but your listingMap should not be empty if subcategories exist)
 
-  // 4) Region + listing landing pages
-  const listingUrls = regions.flatMap((regionSlug) =>
+  // ✅ 3b) National listing landing pages: /cars-for-sale
+  const nationalListingUrls = listingSlugs.map((listingSlug) => ({
+    loc: `${baseUrl}/${listingSlug}`,
+    changefreq: "daily",
+    priority: "0.8",
+  }));
+
+  // 4) Region + listing landing pages: /r/nairobi/cars-for-sale
+  const regionListingUrls = regions.flatMap((regionSlug) =>
     listingSlugs.map((listingSlug) => ({
-      loc: `${baseUrl}/${regionSlug}/${listingSlug}`,
+      loc: `${baseUrl}/r/${regionSlug}/${listingSlug}`,
       changefreq: "daily",
       priority: "0.9",
     }))
   );
 
-  const all = [...staticUrls, ...listingUrls, ...dynamicAdUrls];
+  const all = [
+    ...staticUrls,
+    ...nationalListingUrls,
+    ...regionListingUrls,
+    ...dynamicAdUrls,
+  ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${all
       .map(
-        (u) => `  <url>
+        (u: any) => `  <url>
     <loc>${u.loc}</loc>
     ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}
     <changefreq>${u.changefreq}</changefreq>
