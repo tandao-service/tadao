@@ -1648,3 +1648,105 @@ export async function getRelatedAdsServer(params: {
 
   return JSON.parse(JSON.stringify(items));
 }
+// lib/actions/dynamicAd.actions.ts
+
+export async function getHomeFeed(params?: {
+  promotedLimit?: number; // how many featured/top you want on homepage
+  normalLimit?: number;   // how many normal ads after promoted
+  category?: string;      // optional filter (Vehicle/Property/etc)
+  region?: string;        // optional filter, expects DB region format e.g "Nairobi"
+}) {
+  await connectToDatabase();
+
+  const promotedLimit = Math.max(1, Number(params?.promotedLimit ?? 24));
+  const normalLimit = Math.max(1, Number(params?.normalLimit ?? 48));
+
+  const now = new Date();
+
+  // ✅ Keep match small and index-friendly
+  const baseMatch: any = { adstatus: "Active" };
+
+  if (params?.category) baseMatch["data.category"] = params.category;
+  if (params?.region) baseMatch["data.region"] = params.region;
+
+  // ✅ 1) Promoted pipeline (Featured then Top then priority then new)
+  const promotedPipeline: any[] = [
+    { $match: baseMatch },
+    {
+      $addFields: {
+        featuredActive: {
+          $and: [
+            { $eq: ["$boost.isFeatured", true] },
+            { $gt: ["$boost.featuredUntil", now] },
+          ],
+        },
+        topActive: {
+          $and: [
+            { $eq: ["$boost.isTop", true] },
+            { $gt: ["$boost.topUntil", now] },
+          ],
+        },
+      },
+    },
+    {
+      $match: {
+        $or: [{ featuredActive: true }, { topActive: true }],
+      },
+    },
+    {
+      $sort: {
+        featuredActive: -1,
+        "boost.featuredUntil": -1,
+        topActive: -1,
+        "boost.topUntil": -1,
+        priority: -1,
+        createdAt: -1,
+      },
+    },
+    { $limit: promotedLimit },
+  ];
+
+  const promotedRaw = await DynamicAd.aggregate(promotedPipeline);
+
+  // ✅ Collect promoted IDs to exclude from normal list
+  const promotedIds = promotedRaw.map((x: any) => x._id);
+
+  // ✅ 2) Normal pipeline (priority + new), excluding promoted
+  const normalPipeline: any[] = [
+    {
+      $match: {
+        ...baseMatch,
+        ...(promotedIds.length ? { _id: { $nin: promotedIds } } : {}),
+      },
+    },
+    {
+      $sort: {
+        priority: -1,
+        createdAt: -1,
+      },
+    },
+    { $limit: normalLimit },
+  ];
+
+  const normalRaw = await DynamicAd.aggregate(normalPipeline);
+
+  // ✅ Populate both (aggregate => populate after)
+  const populateSpec = [
+    { path: "subcategory", model: Subcategory, select: "fields" },
+    {
+      path: "organizer",
+      model: User,
+      select:
+        "_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications",
+    },
+    { path: "plan", model: Packages, select: "_id name color imageUrl" },
+  ];
+
+  const promoted = await DynamicAd.populate(promotedRaw, populateSpec);
+  const normal = await DynamicAd.populate(normalRaw, populateSpec);
+
+  return {
+    promoted: JSON.parse(JSON.stringify(promoted)),
+    normal: JSON.parse(JSON.stringify(normal)),
+  };
+}
