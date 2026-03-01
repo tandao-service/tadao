@@ -16,6 +16,29 @@ type Item = {
 export default function BottomNav() {
     const pathname = usePathname();
 
+    const ref = React.useRef<HTMLElement | null>(null);
+
+    // ✅ expose nav height to the page so we pad correctly (no big gap)
+    React.useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const apply = () => {
+            const h = el.getBoundingClientRect().height || 72;
+            document.documentElement.style.setProperty("--bottomnav-h", `${Math.ceil(h)}px`);
+        };
+
+        apply();
+        const ro = new ResizeObserver(() => apply());
+        ro.observe(el);
+
+        window.addEventListener("resize", apply);
+        return () => {
+            ro.disconnect();
+            window.removeEventListener("resize", apply);
+        };
+    }, []);
+
     // show/hide on scroll direction
     const [hidden, setHidden] = React.useState(false);
     const lastYRef = React.useRef(0);
@@ -63,6 +86,7 @@ export default function BottomNav() {
 
     return (
         <nav
+            ref={ref}
             className={cn(
                 "md:hidden fixed inset-x-0 bottom-0 z-[600]",
                 "border-t bg-white/95 backdrop-blur",

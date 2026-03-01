@@ -39,7 +39,7 @@ export default function HomeShell({
 
             {/* Push content below fixed toolbar (TopBar sets --topbar-h) */}
             <div
-                className="mx-auto max-w-6xl px-3 pb-10 md:pb-10 pb-28"
+                className="mx-auto max-w-6xl px-3 pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
                 style={{ paddingTop: "var(--topbar-h, 64px)" }}
             >
                 {/* HERO */}

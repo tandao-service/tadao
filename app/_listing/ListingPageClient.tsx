@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import SmartPropertyCard from "@/components/shared/SmartPropertyCard";
 import TopBar from "@/components/home/TopBar.client";
 import { cn } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
 
 type SidebarData = {
     subcategoryCounts: Record<string, number>;
@@ -154,6 +155,28 @@ export default function ListingPageClient(props: Props) {
 
     const clearAll = () => router.replace(props.basePath);
 
+    // ✅ Mobile back (router.back with fallback)
+    const goBack = React.useCallback(() => {
+        if (typeof window !== "undefined" && window.history.length > 1) {
+            router.back();
+        } else {
+            router.push(props.basePath || "/");
+        }
+    }, [router, props.basePath]);
+
+    // ✅ Jiji-like sticky back pill (mobile only)
+    const [showStickyBack, setShowStickyBack] = React.useState(false);
+
+    React.useEffect(() => {
+        const onScroll = () => {
+            // show after user scrolls a bit
+            setShowStickyBack(window.scrollY > 160);
+        };
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
     // -------------------------
     // ✅ Infinite scroll state
     // -------------------------
@@ -223,6 +246,26 @@ export default function ListingPageClient(props: Props) {
     return (
         <>
             <TopBar />
+
+            {/* ✅ Sticky back pill (mobile only) */}
+            <div
+                className={cn(
+                    "md:hidden fixed left-3 z-[650] transition-all duration-200",
+                    showStickyBack ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+                )}
+                style={{
+                    top: "calc(var(--topbar-h, 64px) + 10px)",
+                }}
+            >
+                <button
+                    type="button"
+                    onClick={goBack}
+                    className="inline-flex items-center gap-2 rounded-full border bg-white/95 px-3 py-2 text-sm font-extrabold text-slate-800 shadow-md backdrop-blur hover:bg-orange-50"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back
+                </button>
+            </div>
 
             <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
                 <main className="mx-auto max-w-7xl p-4">
@@ -382,18 +425,18 @@ export default function ListingPageClient(props: Props) {
 
                         {/* RIGHT */}
                         <section className="min-w-0">
-                            {/* ✅ This RIGHT header card matches your screenshot */}
                             <div className="rounded-2xl border bg-white p-4 shadow-sm">
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="min-w-0">
-                                        <h1 className="truncate text-2xl font-extrabold">{props.title} in {props.regionLabel}</h1>
+                                        <h1 className="truncate text-2xl font-extrabold">
+                                            {props.title} in {props.regionLabel}
+                                        </h1>
                                         <a className="mt-1 inline-block text-sm text-slate-600 underline" href={props.canonical}>
                                             Canonical
                                         </a>
                                     </div>
                                 </div>
 
-                                {/* Search row */}
                                 <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-[220px_1fr_110px]">
                                     <select
                                         value={county}
@@ -426,7 +469,6 @@ export default function ListingPageClient(props: Props) {
                                     </button>
                                 </div>
 
-                                {/* Town row */}
                                 <div className="mt-2">
                                     <select
                                         value={town}
@@ -442,7 +484,6 @@ export default function ListingPageClient(props: Props) {
                                     </select>
                                 </div>
 
-                                {/* Layout + Clear row */}
                                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                                     <div className="flex items-center gap-2">
                                         <button
@@ -485,13 +526,10 @@ export default function ListingPageClient(props: Props) {
                                 </div>
                             </div>
 
-                            {/* Results grid */}
                             <div
                                 className={cn(
                                     "mt-4 gap-4",
-                                    layout === "grid"
-                                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                                        : "grid grid-cols-1"
+                                    layout === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" : "grid grid-cols-1"
                                 )}
                             >
                                 {allItems.map((ad: any) => (
@@ -499,7 +537,6 @@ export default function ListingPageClient(props: Props) {
                                 ))}
                             </div>
 
-                            {/* Infinite scroll sentinel */}
                             <div ref={sentinelRef} className="h-1" />
 
                             <div className="mt-4 flex items-center justify-center">
