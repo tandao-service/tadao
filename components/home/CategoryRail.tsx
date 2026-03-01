@@ -1,10 +1,11 @@
-// components/home/CategoryRail.tsx
 "use client";
 
 import * as React from "react";
 import Image from "next/image";
 import type { HomeCategoryNode } from "@/lib/home/home.categories";
 import { cn } from "@/lib/utils";
+
+/* ---------------- helpers ---------------- */
 
 function slugify(input: string) {
     return String(input || "")
@@ -41,6 +42,25 @@ const scrollbarNone = `
   .scrollbar-none::-webkit-scrollbar { display:none; }
   .scrollbar-none { -ms-overflow-style:none; scrollbar-width:none; }
 `;
+
+function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
+    return (
+        <div className="rounded-full bg-gray-100 p-1 dark:bg-[#131B1E]">
+            {src ? (
+                <Image
+                    className="h-8 w-8 rounded-full object-cover"
+                    src={src}
+                    alt={alt}
+                    width={60}
+                    height={60}
+                    unoptimized
+                />
+            ) : (
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-slate-100 to-slate-200" />
+            )}
+        </div>
+    );
+}
 
 function useScrollButtons(deps: any[] = []) {
     const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -85,24 +105,7 @@ function useScrollButtons(deps: any[] = []) {
     return { scrollRef, showUp, showDown, toTop, toBottom };
 }
 
-function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
-    return (
-        <div className="rounded-full bg-gray-100 p-1 dark:bg-[#131B1E]">
-            {src ? (
-                <Image
-                    className="h-8 w-8 rounded-full object-cover"
-                    src={src}
-                    alt={alt}
-                    width={60}
-                    height={60}
-                    unoptimized
-                />
-            ) : (
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-slate-100 to-slate-200" />
-            )}
-        </div>
-    );
-}
+/* ---------------- types ---------------- */
 
 type Props = {
     tree: HomeCategoryNode[];
@@ -119,81 +122,76 @@ type Props = {
     bottomGap?: number;
 };
 
-export default function CategoryRail({
+/* ---------------- compact component (no desktop hooks) ---------------- */
+
+function CategoryRailCompact({ tree }: { tree: HomeCategoryNode[] }) {
+    return (
+        <div className="rounded-2xl border bg-white p-3 dark:border-gray-700 dark:bg-[#2D3236]">
+            <div className="text-sm font-extrabold">Categories</div>
+
+            <div className="mt-2 grid grid-cols-2 gap-2">
+                {tree.map((c) => {
+                    const defaultName = c?.subcategories?.length ? c.subcategories[0].name : c.name;
+
+                    return (
+                        <a
+                            key={c.id}
+                            href={`/${toListingSlugFromName(defaultName)}`}
+                            className="rounded-xl border px-3 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
+                        >
+                            <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-slate-100">
+                                    {c.icon ? (
+                                        <Image
+                                            src={c.icon}
+                                            alt={c.name}
+                                            width={60}
+                                            height={60}
+                                            className="h-full w-full object-cover"
+                                            unoptimized
+                                        />
+                                    ) : null}
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+                                    <div className="truncate">{c.name}</div>
+                                    <div className="text-xs text-slate-500">{c.count} ads</div>
+                                </div>
+                            </div>
+                        </a>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+/* ---------------- desktop component (all desktop hooks live here) ---------------- */
+
+function CategoryRailDesktop({
     tree,
-    compact,
     footerRef,
     topOffsetCssVar = "--topbar-h",
     topGap = 12,
     bottomGap = 12,
-}: Props) {
+}: Omit<Props, "compact">) {
     const [hovered, setHovered] = React.useState<string>("");
 
-    const wrapRef = React.useRef<HTMLDivElement>(null); // inside <aside>
+    const wrapRef = React.useRef<HTMLDivElement>(null);
     const railRef = React.useRef<HTMLDivElement>(null);
 
-    const [mode, setMode] = React.useState<"relative" | "fixed" | "stopped">(
-        "relative"
-    );
+    const [mode, setMode] = React.useState<"relative" | "fixed" | "stopped">("relative");
     const [fixedTop, setFixedTop] = React.useState<number>(76);
     const [stoppedTop, setStoppedTop] = React.useState<number>(0);
 
     const categoryScroll = useScrollButtons();
     const subcategoryScroll = useScrollButtons([hovered]);
 
-    if (!tree?.length) return null;
-
-    // ✅ Mobile compact version (UPDATED: category click -> default subcategory)
-    if (compact) {
-        return (
-            <div className="rounded-2xl border bg-white p-3 dark:border-gray-700 dark:bg-[#2D3236]">
-                <div className="text-sm font-extrabold">Categories</div>
-
-                <div className="mt-2 grid grid-cols-2 gap-2">
-                    {tree.map((c) => {
-                        const defaultName =
-                            c?.subcategories?.length ? c.subcategories[0].name : c.name;
-
-                        return (
-                            <a
-                                key={c.id}
-                                href={`/${toListingSlugFromName(defaultName)}`}
-                                className="rounded-xl border px-3 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-slate-100">
-                                        {c.icon ? (
-                                            <Image
-                                                src={c.icon}
-                                                alt={c.name}
-                                                width={60}
-                                                height={60}
-                                                className="h-full w-full object-cover"
-                                                unoptimized
-                                            />
-                                        ) : null}
-                                    </div>
-
-                                    <div className="min-w-0 flex-1">
-                                        <div className="truncate">{c.name}</div>
-                                        <div className="text-xs text-slate-500">{c.count} ads</div>
-                                    </div>
-                                </div>
-                            </a>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    }
-
     const activeCat = tree.find((x) => x.name === hovered) || tree[0];
     const showSub = Boolean(hovered);
 
     const computeTopOffsetPx = React.useCallback(() => {
-        const v = getComputedStyle(document.documentElement)
-            .getPropertyValue(topOffsetCssVar)
-            .trim();
+        const v = getComputedStyle(document.documentElement).getPropertyValue(topOffsetCssVar).trim();
         const n = Number(String(v).replace("px", "").trim());
         const topbarH = Number.isFinite(n) && n > 0 ? n : 64;
         return topbarH + topGap;
@@ -211,20 +209,13 @@ export default function CategoryRail({
 
         const scrollY = window.scrollY;
 
-        // document Y positions
         const wrapTop = wrap.getBoundingClientRect().top + scrollY;
         const railH = rail.offsetHeight;
 
-        // if no footer, behave like normal fixed-after-start
         let footerTop = Number.POSITIVE_INFINITY;
-        if (footerEl) {
-            footerTop = footerEl.getBoundingClientRect().top + scrollY;
-        }
+        if (footerEl) footerTop = footerEl.getBoundingClientRect().top + scrollY;
 
-        // When we must stop (rail bottom should not go into footer)
         const stopY = footerTop - railH - bottomGap;
-
-        // Start sticking when wrapper top hits the topOffset
         const startStickY = wrapTop - topOffsetPx;
 
         if (scrollY < startStickY) {
@@ -234,13 +225,11 @@ export default function CategoryRail({
         }
 
         if (scrollY >= stopY - topOffsetPx) {
-            // STOP: position absolute within wrapper
             setMode("stopped");
             setStoppedTop(Math.max(0, stopY - wrapTop));
             return;
         }
 
-        // Normal stick
         setMode("fixed");
         setStoppedTop(0);
     }, [bottomGap, computeTopOffsetPx, footerRef]);
@@ -252,7 +241,6 @@ export default function CategoryRail({
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll);
 
-        // watch size changes (hover flyout can change height)
         const ro = new ResizeObserver(() => recompute());
         if (railRef.current) ro.observe(railRef.current);
 
@@ -263,7 +251,6 @@ export default function CategoryRail({
         };
     }, [recompute]);
 
-    // also recompute when hover changes (flyout open changes height)
     React.useEffect(() => {
         recompute();
     }, [hovered, recompute]);
@@ -275,21 +262,13 @@ export default function CategoryRail({
                 ? { position: "absolute", top: stoppedTop, width: 256, zIndex: 60 }
                 : { position: "relative", width: 256 };
 
-    // Flyout should match the left panel's vertical behavior
     const flyoutStyle: React.CSSProperties =
         mode === "fixed"
-            ? { position: "fixed", top: fixedTop, left: "calc(50% - 24rem)", zIndex: 70 } // overridden below by container math
+            ? { position: "fixed", top: fixedTop, left: "calc(50% - 24rem)", zIndex: 70 }
             : mode === "stopped"
                 ? { position: "absolute", top: stoppedTop, left: 256 + 12, zIndex: 70 }
                 : { position: "absolute", top: 0, left: 256 + 12, zIndex: 70 };
 
-    /**
-     * NOTE:
-     * We don’t hardcode flyout "left" as viewport-based.
-     * Instead we anchor it to the wrapper using a second element that sits next to rail.
-     * So we’ll render flyout as a sibling with "absolute" under wrapper,
-     * BUT when mode=fixed we make it fixed and compute its left from wrapper rect.
-     */
     const [flyoutLeft, setFlyoutLeft] = React.useState<number>(0);
 
     React.useEffect(() => {
@@ -298,7 +277,6 @@ export default function CategoryRail({
 
         const calc = () => {
             const r = wrap.getBoundingClientRect();
-            // wrapper’s left in viewport + rail width + gap
             setFlyoutLeft(r.left + 256 + 12);
         };
 
@@ -326,7 +304,6 @@ export default function CategoryRail({
                     ref={railRef}
                     className="w-64 rounded-2xl border bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]"
                 >
-                    {/* Top / Bottom buttons */}
                     {categoryScroll.showUp && (
                         <button
                             onClick={categoryScroll.toTop}
@@ -349,7 +326,6 @@ export default function CategoryRail({
                         <h2 className="text-sm font-extrabold">Categories</h2>
                     </div>
 
-                    {/* internal scroll */}
                     <div
                         ref={categoryScroll.scrollRef}
                         className="scrollbar-none h-[450px] w-full overflow-y-auto"
@@ -358,7 +334,6 @@ export default function CategoryRail({
                         {tree.map((category) => {
                             const isActive = hovered === category.name;
 
-                            // ✅ default subcategory = first subcategory (fallback to category itself)
                             const defaultName =
                                 category?.subcategories?.length ? category.subcategories[0].name : category.name;
 
@@ -374,14 +349,9 @@ export default function CategoryRail({
                                         isActive && "bg-slate-50 dark:bg-[#131B1E]"
                                     )}
                                 >
-                                    {/* ✅ clickable overlay: category row click -> default subcategory page */}
-                                    <a
-                                        href={href}
-                                        aria-label={`Open ${category.name}`}
-                                        className="absolute inset-0 z-[1]"
-                                    />
+                                    {/* clickable overlay */}
+                                    <a href={href} aria-label={`Open ${category.name}`} className="absolute inset-0 z-[1]" />
 
-                                    {/* content above overlay */}
                                     <div className="relative z-[2] pointer-events-none flex w-full items-center gap-2">
                                         <IconCircle src={category.icon} alt={category.name} />
 
@@ -399,7 +369,6 @@ export default function CategoryRail({
                 </div>
             </div>
 
-            {/* reserve space in normal flow so main column doesn't jump */}
             <div className="h-[1px]" style={{ height: 0 }} />
 
             {/* RIGHT flyout */}
@@ -461,5 +430,18 @@ export default function CategoryRail({
                 </div>
             )}
         </div>
+    );
+}
+
+/* ---------------- main export ---------------- */
+
+export default function CategoryRail(props: Props) {
+    // ✅ allowed: early return BEFORE any hooks in this component
+    if (!props.tree?.length) return null;
+
+    return props.compact ? (
+        <CategoryRailCompact tree={props.tree} />
+    ) : (
+        <CategoryRailDesktop {...props} />
     );
 }
