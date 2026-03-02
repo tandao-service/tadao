@@ -44,6 +44,7 @@ export const DeleteConfirmation = ({ adId, imageUrls, onDeleteSuccess }: deleteP
           alt="edit"
           width={20}
           height={20}
+          
         />
       </AlertDialogTrigger>
 

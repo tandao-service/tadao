@@ -9,20 +9,20 @@ import PropertyGallery from "../PropertyGallery";
 
 import TopBar from "@/components/home/TopBar.client";
 import MobileBackPill from "@/components/home/MobileBackPill.client";
+import RelatedPropertiesInfinite from "@/components/home/RelatedPropertiesInfinite";
 
+// ✅ NEW: client infinite related section
 
 type Props = { params: { id: string } };
 
 function stripHtml(input: any) {
     return String(input || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
-
 function moneyKsh(v: any) {
     const n = Number(v);
     if (!Number.isFinite(n) || n <= 0) return "";
     return `KSh ${n.toLocaleString()}`;
 }
-
 function safeStr(v: any) {
     return String(v ?? "").trim();
 }
@@ -69,7 +69,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
     };
 }
+function slugify(input: string) {
+    return String(input ?? "")
+        .toLowerCase()
+        .trim()
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+}
 
+// Detect "rent" intent from common keywords
+function detectMode(name: string): "rent" | "sale" {
+    const s = String(name ?? "").toLowerCase();
+    return /\b(rent|rental|to let|letting|lease)\b/.test(s) ? "rent" : "sale";
+}
+
+// Remove "for rent / for sale" intent words from base category
+function stripIntent(name: string) {
+    return String(name ?? "")
+        .replace(/for\s+rent/gi, "")
+        .replace(/for\s+sale/gi, "")
+        .replace(/to\s+let/gi, "")
+        .replace(/rent(al)?/gi, "")
+        .replace(/lease/gi, "")
+        .trim();
+}
+
+function toListingSlugFromName(name: string) {
+    const mode = detectMode(name);
+    const base = stripIntent(name);
+    const suffix = mode === "rent" ? "for-rent" : "for-sale";
+    return `${slugify(base)}-${suffix}`;
+}
 export default async function PropertyPage({ params }: Props) {
     const ad: any = await getAdById(params.id).catch(() => null);
 
@@ -119,11 +151,11 @@ export default async function PropertyPage({ params }: Props) {
 
     const canonicalUrl = `https://tadaomarket.com/property/${ad._id}`;
 
-    // ✅ chat route (adjust if your app uses a different chat URL)
     const organizerId = safeStr(organizer?._id);
-    const chatHref = organizerId ? `/chat?to=${encodeURIComponent(organizerId)}&ad=${encodeURIComponent(String(ad._id))}` : "/chat";
+    const chatHref = organizerId
+        ? `/chat?to=${encodeURIComponent(organizerId)}&ad=${encodeURIComponent(String(ad._id))}`
+        : "/chat";
 
-    // JSON-LD
     const ld = {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -139,11 +171,13 @@ export default async function PropertyPage({ params }: Props) {
         },
     };
 
-    const related =
+    // ✅ initial page (page 1)
+    const PAGE_SIZE = 8;
+    const relatedInitial =
         (await getRelatedAdsServer({
             subcategory: safeStr(data?.subcategory),
             adId: String(ad?._id),
-            limit: 8,
+            limit: PAGE_SIZE,
         }).catch(() => [])) || [];
 
     return (
@@ -160,6 +194,18 @@ export default async function PropertyPage({ params }: Props) {
                         <Link href="/" className="font-bold text-gray-900 hover:underline">
                             Home
                         </Link>
+
+                        {safeStr(data?.subcategory) ? (
+                            <>
+                                <span className="text-gray-400">/</span>
+                                <Link
+                                    href={`/${toListingSlugFromName(safeStr(data.subcategory))}`}
+                                    className="font-bold text-gray-900 hover:underline"
+                                >
+                                    {safeStr(data.subcategory)}
+                                </Link>
+                            </>
+                        ) : null}
                         <span className="text-gray-400">/</span>
                         <span className="text-gray-500">{region}</span>
                         {area ? (
@@ -258,7 +304,6 @@ export default async function PropertyPage({ params }: Props) {
                                     ) : null}
                                 </div>
 
-                                {/* Contacts */}
                                 <div className="mt-4 grid grid-cols-1 gap-2">
                                     {phone ? (
                                         <a
@@ -289,7 +334,6 @@ export default async function PropertyPage({ params }: Props) {
                                         </a>
                                     ) : null}
 
-                                    {/* ✅ Chat button under contacts */}
                                     <Link
                                         href={chatHref}
                                         className="rounded-xl border bg-white px-3 py-2 text-center text-sm font-extrabold text-gray-900 hover:bg-orange-50"
@@ -309,63 +353,14 @@ export default async function PropertyPage({ params }: Props) {
                     </aside>
                 </section>
 
-                {/* Related Ads */}
-                <section className="mt-8">
-                    <div className="mb-3 flex items-center justify-between">
-                        <h2 className="text-lg font-extrabold text-gray-900">Related Ads</h2>
-                        {safeStr(data?.subcategory) ? <span className="text-xs text-gray-500">{safeStr(data.subcategory)}</span> : null}
-                    </div>
-
-                    {Array.isArray(related) && related.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                            {related.map((r: any) => {
-                                const rid = String(r?._id || "");
-                                const rdata = r?.data || {};
-                                const rtitle = safeStr(rdata?.title) || "Listing";
-                                const rimg =
-                                    safeStr(rdata?.coverThumbUrl) ||
-                                    (Array.isArray(rdata?.imageUrls) && rdata.imageUrls.length > 0 ? rdata.imageUrls[0] : "") ||
-                                    "";
-                                const rprice = rdata?.contact === "contact" ? "Contact for price" : moneyKsh(rdata?.price) || "KSh 0";
-
-                                return (
-                                    <Link
-                                        key={rid}
-                                        href={`/property/${rid}`}
-                                        className="overflow-hidden rounded-xl border bg-white shadow-sm hover:shadow-md"
-                                    >
-                                        <div className="relative">
-                                            {rimg ? (
-                                                <Image
-                                                    src={rimg}
-                                                    alt={rtitle}
-                                                    width={800}
-                                                    height={450}
-                                                    className="h-32 w-full object-cover"
-                                                    unoptimized
-                                                />
-                                            ) : (
-                                                <div className="flex h-32 items-center justify-center bg-gray-100">
-                                                    <Image src="/logo.png" alt="Tadao" width={28} height={28} />
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="p-2">
-                                            <div className="line-clamp-2 text-sm font-semibold text-gray-900">{rtitle}</div>
-                                            <div className="mt-1 text-sm font-extrabold text-orange-500">{rprice}</div>
-                                            <div className="mt-1 line-clamp-1 text-[11px] text-gray-600">
-                                                {safeStr(rdata?.region)}
-                                                {safeStr(rdata?.area) ? ` - ${safeStr(rdata?.area)}` : ""}
-                                            </div>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <div className="rounded-2xl border bg-white p-6 text-sm text-gray-600">No related ads found.</div>
-                    )}
-                </section>
+                {/* ✅ Related Properties infinite */}
+                <RelatedPropertiesInfinite
+                    initial={relatedInitial}
+                    subcategory={safeStr(data?.subcategory)}
+                    currentAdId={String(ad?._id)}
+                    regionFallback={region}
+                    pageSize={PAGE_SIZE}
+                />
             </main>
         </>
     );

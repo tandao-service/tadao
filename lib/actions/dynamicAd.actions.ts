@@ -1540,7 +1540,8 @@ export async function getAdsForRegionListing({
 export type ListingMapEntry = {
   category?: string;      // DynamicAd.data.category
   subcategory?: string;   // DynamicAd.data.subcategory
-  title: string;          // H1 title
+  title: string;
+  icon: string;             // H1 title
 };
 
 function slugify(input: string) {
@@ -1602,6 +1603,8 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
       category: catName,
       subcategory: rawSub, // IMPORTANT: keep rawSub so your DB filter still matches ads
       title,
+      // ✅ icon for sidebar / CategoryRail style
+      icon: Array.isArray((s as any)?.imageUrl) ? ((s as any).imageUrl[0] || "") : "",
     };
   }
 
@@ -1611,33 +1614,40 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
     category: "Property",
     subcategory: "Land & Plots", // must match DynamicAd.data.subcategory exactly
     title: "Land & Plots for Sale",
+    icon: "",
   };
-
+  //com huney
   map["cars-for-sale"] = {
     category: "Vehicle",
     subcategory: "Cars, Vans & Pickups",
     title: "Cars for Sale",
+    icon: "",
   };
 
   return map;
 }
 // lib/actions/dynamicAd.actions.ts
-export async function getRelatedAdsServer(params: {
+export async function getRelatedAdsServer({
+  subcategory,
+  adId,
+  limit = 8,
+  skip = 0,
+}: {
+  subcategory: string;
   adId: string;
-  category?: string;
-  subcategory?: string;
   limit?: number;
+  skip?: number;
 }) {
   await connectToDatabase();
 
-  const { adId, category, subcategory, limit = 8 } = params;
+  // const { adId, category, subcategory, limit = 8 } = params;
 
   const conditions: any = {
     adstatus: "Active",
     _id: { $ne: adId },
   };
 
-  if (category) conditions["data.category"] = category;
+  //if (category) conditions["data.category"] = category;
   if (subcategory) conditions["data.subcategory"] = subcategory;
 
   const items = await populateAd(

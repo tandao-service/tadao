@@ -8,6 +8,7 @@ import {
     getListingSidebarOptions,
 } from "@/lib/actions/dynamicAd.actions";
 import ListingPageClient from "@/app/_listing/ListingPageClient";
+import { getCategoryTreeForHome } from "@/lib/home/home.categories";
 
 const PAGE_SIZE = 24;
 
@@ -41,15 +42,49 @@ type ListingSearchParams = {
     model?: string;
     q?: string;
 
-    layout?: string; // grid | list
+    layout?: string;
 };
 
 function normalizeSlug(s: string) {
     return String(s || "").trim().toLowerCase();
 }
 
+function normName(s: any) {
+    return String(s || "").trim().toLowerCase();
+}
+
+function slugify(input: string) {
+    return String(input || "")
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function stripIntent(name: string) {
+    return String(name || "")
+        .replace(/\s+for\s+sale\s*$/i, "")
+        .replace(/\s+for\s+rent\s*$/i, "")
+        .trim();
+}
+
+function detectMode(name: string): "sale" | "rent" {
+    const n = String(name || "").toLowerCase();
+    if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
+    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) return "sale";
+    return "sale";
+}
+
+function toListingSlugFromName(name: string) {
+    const mode = detectMode(name);
+    const base = stripIntent(name);
+    const suffix = mode === "rent" ? "for-rent" : "for-sale";
+    return `${slugify(base)}-${suffix}`;
+}
+
 function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: string) {
-    const items: { slug: string; title: string; subcategory: string }[] = [];
+    const items: { slug: string; title: string; subcategory: string; icon?: string }[] = [];
     for (const [slug, entry] of Object.entries(LISTING_MAP)) {
         if (!entry) continue;
         if (String(entry.category || "").trim() !== String(categoryName || "").trim()) continue;
@@ -58,6 +93,7 @@ function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: str
             slug,
             title: String(entry.title || slug),
             subcategory: String(entry.subcategory || ""),
+            icon: undefined,
         });
     }
     items.sort((a, b) => a.title.localeCompare(b.title));
@@ -73,10 +109,9 @@ export async function buildListingMetadata(args: {
     const listing = LISTING_MAP[listingSlug];
 
     const regionName = args.regionSlug ? regionFromSlug(args.regionSlug) : "Kenya";
-
     const titleText = listing?.title ?? "Listings";
     const title = `${titleText} in ${regionName} | Tadao Market`;
-    const description = `Browse ${titleText.toLowerCase()} in ${regionName}. Filter by price, location, and more on Tadao Market.`;
+    const description = `Browse ${String(titleText).toLowerCase()} in ${regionName}. Filter by price, location, and more on Tadao Market.`;
 
     const canonical = args.regionSlug
         ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
@@ -127,7 +162,6 @@ export default async function ListingPageUI(args: {
 
     const county = String(args.searchParams.county || "").trim();
     const town = String(args.searchParams.town || "").trim();
-
     const q = String(args.searchParams.q || "").trim();
 
     const categoryName = String(listing.category || "").trim();
@@ -142,9 +176,38 @@ export default async function ListingPageUI(args: {
         ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
         : `https://tadaomarket.com/${listingSlug}`;
 
-    const categoryListings = getCategoryListings(LISTING_MAP, categoryName);
+    // ✅ base subcategory list (slugs)
+    let categoryListings = getCategoryListings(LISTING_MAP, categoryName);
 
-    // Sidebar data (counts + options)
+    // ✅ homepage tree (truth for counts + icons)
+    const homeTree = await getCategoryTreeForHome(80, 200).catch(() => []);
+    const homeCat = (homeTree || []).find((c: any) => normName(c?.name) === normName(categoryName));
+
+    const iconBySub: Record<string, string> = {};
+    const homeCountsBySub: Record<string, number> = {};
+
+    if (homeCat?.subcategories?.length) {
+        for (const s of homeCat.subcategories as any[]) {
+            const name = String(s?.name || "").trim();
+            const icon = String(s?.icon || "").trim();
+            const count = Number(s?.count || 0);
+
+            if (name) {
+                if (icon) iconBySub[name] = icon;
+                homeCountsBySub[name] = count;
+            }
+        }
+    }
+
+    const homeTotalInCategory = Number(homeCat?.count || 0);
+
+    // ✅ inject icons into categoryListings (from homepage tree)
+    categoryListings = categoryListings.map((it) => ({
+        ...it,
+        icon: iconBySub[it.subcategory] || it.icon || "",
+    }));
+
+    // Sidebar (filters/options) — may have buggy counts, we'll fallback on client
     const sidebar = await getListingSidebarOptions({
         category: categoryName,
         regionSlug: args.regionSlug,
@@ -185,8 +248,6 @@ export default async function ListingPageUI(args: {
             max: maxN,
             sort,
             membership: membership ? (membership as any) : undefined,
-
-            // new filters (safe if ignored)
             county,
             town,
             make: isVehicle ? make : undefined,
@@ -237,19 +298,23 @@ export default async function ListingPageUI(args: {
     const basePath = args.regionSlug ? `/r/${args.regionSlug}/${listingSlug}` : `/${listingSlug}`;
 
     return (
+        // inside return (<ListingPageClient ... />)
         <ListingPageClient
             title={String(listing.title || "Listings")}
             regionLabel={regionLabel}
             canonical={canonical}
             basePath={basePath}
             activeListingSlug={listingSlug}
+            regionSlug={args.regionSlug}          // ✅ ADD THIS
             categoryName={categoryName}
             categoryListings={categoryListings}
-            sidebar={sidebar}
+            sidebar={JSON.parse(JSON.stringify(sidebar || {}))} // ✅ ensure plain
             isVehicle={isVehicle}
             items={items}
             totalPages={totalPages}
             page={page}
+            homeCountsBySub={{ ...homeCountsBySub }}           // ✅ ensure plain
+            homeTotalInCategory={Number(homeTotalInCategory || 0)}
             selected={{
                 q,
                 county,

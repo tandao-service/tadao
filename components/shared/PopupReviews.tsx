@@ -11,7 +11,7 @@ import CreateCategoryForm from "./CreateCategoryForm";
 
 import CreateSubCategoryForm from "./CreateSubCategoryForm";
 import PackageForm from "./packageForm";
-import { IPackages } from "@/lib/database/models/packages.model";
+
 
 import { Toaster } from "../ui/toaster";
 import { FreePackId, mode } from "@/constants";
