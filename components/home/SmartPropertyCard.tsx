@@ -1,5 +1,8 @@
+"use client";
+
 // components/shared/SmartPropertyCard.tsx
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { IoCamera } from "react-icons/io5";
@@ -75,10 +78,12 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
     const hasBulk = Boolean(ad?.data?.["bulkprice"]);
 
     // ✅ badges: prefer aggregate computed fields, fallback to boost dates
-    const featuredActive =
-        ad?.featuredActive === true ? true : isBoostActive(ad, "featured");
-    const topActive =
-        ad?.topActive === true ? true : isBoostActive(ad, "top");
+    const featuredActive = ad?.featuredActive === true ? true : isBoostActive(ad, "featured");
+    const topActive = ad?.topActive === true ? true : isBoostActive(ad, "top");
+
+    // ✅ Image loading overlay state
+    const [imgLoading, setImgLoading] = useState<boolean>(Boolean(image));
+    const [imgError, setImgError] = useState<boolean>(false);
 
     return (
         <Link
@@ -94,15 +99,29 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                         : undefined
                 }
             >
-                {image ? (
-                    <Image
-                        src={image}
-                        alt={title}
-                        width={800}
-                        height={450}
-                        className="h-[200px] w-full object-cover"
-                        unoptimized
-                    />
+                {image && !imgError ? (
+                    <>
+                        {/* ✅ Loading overlay */}
+                        {imgLoading && (
+                            <div className="absolute inset-0 z-[2] flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
+                                <div className="h-9 w-9 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
+                            </div>
+                        )}
+
+                        <Image
+                            src={image}
+                            alt={title}
+                            width={800}
+                            height={450}
+                            className="h-[200px] w-full object-cover"
+                            unoptimized
+                            onLoadingComplete={() => setImgLoading(false)}
+                            onError={() => {
+                                setImgLoading(false);
+                                setImgError(true);
+                            }}
+                        />
+                    </>
                 ) : (
                     <div className="flex h-[200px] w-full items-center justify-center bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 dark:from-[#1b1f22] dark:via-[#242a2e] dark:to-[#1b1f22]">
                         <div className="flex flex-col items-center gap-2">
@@ -148,11 +167,10 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                 {/* Bottom badges */}
                 <div className="absolute bottom-2 left-0 right-0 flex justify-between px-2">
                     <div className="rounded-sm bg-black/70 px-2 py-1 text-[10px] text-white">
-                        <div className="flex gap-1 items-center">
+                        <div className="flex items-center gap-1">
                             <IoCamera /> {imgCount}
                         </div>
                     </div>
-
 
                     {ad?.data?.["youtube-link"] && (
                         <div className="rounded-sm bg-black/70 px-2 py-1 text-[10px] text-white">

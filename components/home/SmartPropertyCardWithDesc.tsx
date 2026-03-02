@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { IoCamera } from "react-icons/io5";
@@ -36,7 +39,7 @@ function isBoostActive(ad: any, kind: "featured" | "top") {
 // ✅ sanitize + truncate (borrowed from VerticalCard)
 function truncateDescription(raw: any, charLimit = 90) {
     const safe = sanitizeHtml(String(raw ?? ""), {
-        allowedTags: [], // remove all tags -> plain text
+        allowedTags: [],
         allowedAttributes: {},
     }).trim();
 
@@ -47,7 +50,7 @@ function truncateDescription(raw: any, charLimit = 90) {
 type Props = {
     ad: any;
     regionFallback?: string;
-    descLimit?: number; // optional: control truncation length
+    descLimit?: number;
 };
 
 export default function SmartPropertyCardWithDesc({
@@ -93,6 +96,10 @@ export default function SmartPropertyCardWithDesc({
     const featuredActive = ad?.featuredActive === true ? true : isBoostActive(ad, "featured");
     const topActive = ad?.topActive === true ? true : isBoostActive(ad, "top");
 
+    // ✅ Image loading overlay state
+    const [imgLoading, setImgLoading] = useState<boolean>(Boolean(image));
+    const [imgError, setImgError] = useState<boolean>(false);
+
     return (
         <Link
             href={`/property/${id}`}
@@ -107,15 +114,29 @@ export default function SmartPropertyCardWithDesc({
                         : undefined
                 }
             >
-                {image ? (
-                    <Image
-                        src={image}
-                        alt={title}
-                        width={800}
-                        height={450}
-                        className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                        unoptimized
-                    />
+                {image && !imgError ? (
+                    <>
+                        {/* ✅ Loading overlay */}
+                        {imgLoading && (
+                            <div className="absolute inset-0 z-[2] flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
+                                <div className="h-9 w-9 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
+                            </div>
+                        )}
+
+                        <Image
+                            src={image}
+                            alt={title}
+                            width={800}
+                            height={450}
+                            className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            unoptimized
+                            onLoadingComplete={() => setImgLoading(false)}
+                            onError={() => {
+                                setImgLoading(false);
+                                setImgError(true);
+                            }}
+                        />
+                    </>
                 ) : (
                     <div className="flex h-[200px] w-full items-center justify-center bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 dark:from-[#1b1f22] dark:via-[#242a2e] dark:to-[#1b1f22]">
                         <div className="flex flex-col items-center gap-2">
@@ -189,7 +210,6 @@ export default function SmartPropertyCardWithDesc({
                     {area ? ` - ${area}` : ""}
                 </div>
 
-                {/* ✅ Truncated description */}
                 {description ? (
                     <p className="mt-2 line-clamp-2 text-[12px] text-gray-600 dark:text-gray-300">
                         {description}
