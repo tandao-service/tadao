@@ -45,6 +45,10 @@ type ListingSearchParams = {
     model?: string;
     q?: string;
 
+    // ✅ NEW for non-vehicle
+    type?: string;
+    brand?: string;
+
     layout?: string;
 };
 
@@ -55,8 +59,10 @@ function normName(s: any) {
     return String(s || "").trim().toLowerCase();
 }
 
+type CategoryListingItem = { slug: string; title: string; subcategory: string; icon?: string };
+
 function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: string) {
-    const items: { slug: string; title: string; subcategory: string; icon?: string }[] = [];
+    const items: CategoryListingItem[] = [];
     for (const [slug, entry] of Object.entries(LISTING_MAP)) {
         if (!entry) continue;
         if (String(entry.category || "").trim() !== String(categoryName || "").trim()) continue;
@@ -130,6 +136,14 @@ export async function buildListingMetadata(args: {
     return { title, description, alternates: { canonical } };
 }
 
+type ClientCategory = {
+    name: string;
+    count: number;
+    icon?: string;
+    listings: CategoryListingItem[];
+    countsBySub: Record<string, number>; // ✅ NEW
+};
+
 export default async function ListingPageUI(args: {
     listingSlug: string;
     regionSlug?: string;
@@ -172,17 +186,66 @@ export default async function ListingPageUI(args: {
     const make = isVehicle ? String(args.searchParams.make || "").trim() : "";
     const model = isVehicle ? String(args.searchParams.model || "").trim() : "";
 
+    // ✅ NEW for non-vehicle
+    const type = !isVehicle ? String(args.searchParams.type || "").trim() : "";
+    const brand = !isVehicle ? String(args.searchParams.brand || "").trim() : "";
+
     const layout = args.searchParams.layout === "list" ? "list" : "grid";
 
     const canonical = args.regionSlug
         ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
         : `https://tadaomarket.com/${listingSlug}`;
 
-    // base list (slugs)
+    // base list (slugs) for this category
     let categoryListings = getCategoryListings(LISTING_MAP, categoryName);
 
-    // ✅ homepage tree (truth for counts + icons)
+    // ✅ homepage tree (truth for counts + icons) + used for category switcher
     const homeTree = await getCategoryTreeForHome(80, 200).catch(() => []);
+
+    // Build ALL categories nav data (category -> its subcategory listings with icons)
+    const categories: ClientCategory[] = [];
+
+    for (const c of homeTree as any[]) {
+        const catName = String(c?.name || "").trim();
+        if (!catName) continue;
+
+        // icon & count from home tree
+        const catIcon = String(c?.icon || "").trim();
+        const catCount = Number(c?.count || 0);
+
+        // build icon map per subcategory
+        const iconBySub: Record<string, string> = {};
+        const countsBySub: Record<string, number> = {};
+        if (c?.subcategories?.length) {
+            for (const s of c.subcategories as any[]) {
+                const subName = String(s?.name || "").trim();
+                const subIcon = String(s?.icon || "").trim();
+                if (subName && subIcon) iconBySub[subName] = subIcon;
+                const subCount = Number(s?.count || 0);
+                if (subName) countsBySub[subName] = subCount;
+            }
+        }
+
+        // map listing slugs for this category
+        let listings = getCategoryListings(LISTING_MAP, catName);
+        listings = listings.map((it) => ({
+            ...it,
+            icon: iconBySub[it.subcategory] || it.icon || "",
+        }));
+
+        // only include categories that have listings
+        if (listings.length) {
+            categories.push({
+                name: catName,
+                count: catCount,
+                icon: catIcon || "",
+                listings,
+                countsBySub, // ✅
+            });
+        }
+    }
+
+    // current category in homeTree (for counts + icons)
     const homeCat = (homeTree || []).find((c: any) => normName(c?.name) === normName(categoryName));
 
     // ✅ MUST be plain objects {}
@@ -202,7 +265,7 @@ export default async function ListingPageUI(args: {
 
     const homeTotalInCategory = Number(homeCat?.count || 0);
 
-    // inject icons into categoryListings
+    // inject icons into current categoryListings
     categoryListings = categoryListings.map((it) => ({
         ...it,
         icon: iconBySub[it.subcategory] || it.icon || "",
@@ -220,7 +283,10 @@ export default async function ListingPageUI(args: {
         make,
         model,
         q,
-    });
+        // ✅ NEW (if your sidebar action supports it, otherwise harmless)
+        type,
+        brand,
+    } as any);
 
     // Fetch ads (initial only)
     let items: any[] = [];
@@ -254,6 +320,9 @@ export default async function ListingPageUI(args: {
             make: isVehicle ? make : undefined,
             model: isVehicle ? model : undefined,
             q,
+            // ✅ NEW for non-vehicle (if supported in your action, otherwise ignored)
+            type: !isVehicle ? type : undefined,
+            brand: !isVehicle ? brand : undefined,
         } as any);
 
         items = res?.items || [];
@@ -280,8 +349,13 @@ export default async function ListingPageUI(args: {
         if (county) queryObject.county = county;
         if (town) queryObject.town = town;
         if (q) queryObject.q = q;
+
         if (isVehicle && make) queryObject.make = make;
         if (isVehicle && model) queryObject.model = model;
+
+        // ✅ NEW for non-vehicle
+        if (!isVehicle && type) queryObject.type = type;
+        if (!isVehicle && brand) queryObject.brand = brand;
 
         const res = await getAlldynamicAd({
             page,
@@ -306,7 +380,11 @@ export default async function ListingPageUI(args: {
             regionLabel={regionLabel}
             canonical={canonical}
             activeListingSlug={listingSlug}
-            regionSlug={args.regionSlug || ""} // ✅ pass for URL building + api
+            regionSlug={args.regionSlug || ""}
+
+            // ✅ category switching data
+            categories={categories}
+
             categoryName={categoryName}
             categoryListings={categoryListings}
             sidebar={sidebar}
@@ -316,7 +394,7 @@ export default async function ListingPageUI(args: {
             page={page}
             homeCountsBySub={homeCountsBySub}
             homeTotalInCategory={homeTotalInCategory}
-            quickFilter={quickFilter} // ✅ NEW
+            quickFilter={quickFilter}
             selected={{
                 q,
                 county,
@@ -329,6 +407,10 @@ export default async function ListingPageUI(args: {
                 sort: String(args.searchParams.sort || "recommeded"),
                 sortby: String(args.searchParams.sortby || "recommeded"),
                 layout,
+
+                // ✅ NEW
+                type,
+                brand,
             }}
         />
     );
