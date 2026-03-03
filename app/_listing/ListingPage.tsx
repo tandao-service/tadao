@@ -274,6 +274,7 @@ export default async function ListingPageUI(args: {
     // Sidebar (filters/options) — initial only
     const sidebar = await getListingSidebarOptions({
         category: categoryName,
+        subcategory: String(listing.subcategory || "").trim(), // ✅ ADD THIS
         regionSlug: args.regionSlug,
         min: minN,
         max: maxN,
@@ -283,7 +284,6 @@ export default async function ListingPageUI(args: {
         make,
         model,
         q,
-        // ✅ NEW (if your sidebar action supports it, otherwise harmless)
         type,
         brand,
     } as any);

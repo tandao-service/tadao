@@ -13,9 +13,25 @@ function slugify(input: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function normalizeSlug(input: string) {
+  return String(input || "")
+    .trim()
+    .toLowerCase()
+    .replace(/^\/+|\/+$/g, ""); // remove leading/trailing slashes
+}
+
 function safeDateISO(v: any) {
   const d = v ? new Date(v) : null;
   return d && !isNaN(d.getTime()) ? d.toISOString() : undefined;
+}
+
+function xmlEscape(v: string) {
+  return String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 export async function GET() {
@@ -26,11 +42,7 @@ export async function GET() {
     { loc: `${baseUrl}/privacy-policy`, changefreq: "monthly", priority: "0.5" },
   ];
 
-  const [adsRaw, listingMap] = await Promise.all([
-    getAllAds(),
-    getListingMapFromDB(),
-  ]);
-
+  const [adsRaw, listingMap] = await Promise.all([getAllAds(), getListingMapFromDB()]);
   const ads = Array.isArray(adsRaw) ? adsRaw : [];
 
   // 1) Dynamic ad pages (/property/:id)
@@ -50,13 +62,16 @@ export async function GET() {
         .map((a: any) => a?.data?.region)
         .filter(Boolean)
         .map((r: string) => slugify(r))
+        .filter(Boolean)
     )
   );
 
   // 3) Listing slugs from DB map (source of truth)
-  const listingSlugs = Object.keys(listingMap || {});
+  const listingSlugs = Array.from(
+    new Set(Object.keys(listingMap || {}).map(normalizeSlug).filter(Boolean))
+  );
 
-  // ✅ 3b) National listing landing pages: /cars-for-sale
+  // 3b) National listing landing pages: /cars-for-sale
   const nationalListingUrls = listingSlugs.map((listingSlug) => ({
     loc: `${baseUrl}/${listingSlug}`,
     changefreq: "daily",
@@ -84,16 +99,16 @@ export async function GET() {
 ${all
       .map(
         (u: any) => `  <url>
-    <loc>${u.loc}</loc>
-    ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}
-    <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
+    <loc>${xmlEscape(u.loc)}</loc>
+    ${u.lastmod ? `<lastmod>${xmlEscape(u.lastmod)}</lastmod>` : ""}
+    <changefreq>${xmlEscape(u.changefreq)}</changefreq>
+    <priority>${xmlEscape(u.priority)}</priority>
   </url>`
       )
       .join("\n")}
 </urlset>`;
 
   return new NextResponse(xml, {
-    headers: { "Content-Type": "application/xml" },
+    headers: { "Content-Type": "application/xml; charset=utf-8" },
   });
 }

@@ -16,7 +16,45 @@ import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
 
 import BottomNav from "@/components/home/BottomNav.client";
+function slugify(input: string) {
+    return String(input || "")
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
 
+function stripIntent(name: string) {
+    return String(name || "")
+        .replace(/\s+for\s+sale\s*$/i, "")
+        .replace(/\s+for\s+rent\s*$/i, "")
+        .trim();
+}
+
+function detectMode(name: string): "sale" | "rent" {
+    const n = String(name || "").toLowerCase();
+    if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
+    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) return "sale";
+    return "sale";
+}
+
+function toListingSlugFromName(name: string) {
+    const mode = detectMode(name);
+    const base = stripIntent(name);
+    const suffix = mode === "rent" ? "for-rent" : "for-sale";
+    return `${slugify(base)}-${suffix}`;
+}
+
+function getDefaultListingSlugFromTree(tree: any[]) {
+    const first = tree?.[0];
+    const name =
+        first?.subcategories?.length ? first.subcategories[0]?.name : first?.name;
+
+    const computed = toListingSlugFromName(String(name || ""));
+    // safe fallback if tree is empty
+    return computed || "cars-for-sale";
+}
 export default function HomeShell({
     categories,
     featured,
@@ -31,7 +69,10 @@ export default function HomeShell({
     categoryTree: HomeCategoryNode[];
 }) {
     const footerRef = React.useRef<HTMLElement | null>(null);
-
+    const defaultListingSlug = React.useMemo(
+        () => getDefaultListingSlugFromTree(categoryTree as any[]),
+        [categoryTree]
+    );
     return (
         <div className="min-h-screen bg-white">
             {/* Fixed toolbar */}
@@ -100,7 +141,7 @@ export default function HomeShell({
                             <TrendingGridSkeleton />
                         )}
 
-                        <RegionsGrid regions={regions} />
+                        <RegionsGrid regions={regions} listingSlug={defaultListingSlug} />
                     </section>
                 </div>
             </div>

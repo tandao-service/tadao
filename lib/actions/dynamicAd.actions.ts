@@ -1488,11 +1488,11 @@ export async function getAdsForRegionListing({
 }: ListingQuery) {
   await connectToDatabase();
 
-  const regionName = unslugify(regionSlug);
+  const regionNames = regionCandidates(regionSlug); // ✅ key fix
 
   let conditions: any = {
     adstatus: "Active",
-    "data.region": regionName,
+    "data.region": { $in: regionNames }, // ✅ match both hyphen + space versions
   };
 
   if (category) conditions["data.category"] = category;
@@ -1504,7 +1504,6 @@ export async function getAdsForRegionListing({
     if (max !== undefined) conditions["data.price"].$lte = max;
   }
 
-  // membership filter (same logic you already have)
   if (membership === "verified") {
     const verifiedUsers = await User.find({ "verified.accountverified": true }).select("_id");
     conditions.organizer = { $in: verifiedUsers.map((u) => u._id) };
@@ -1515,11 +1514,9 @@ export async function getAdsForRegionListing({
 
   const skipAmount = (page - 1) * limit;
 
-  // Sorting (align with your existing sort keys)
   let sortObj: any = { priority: -1, createdAt: -1 };
-
-  if (sort === "lowest" || sort === "price_asc") sortObj = { priority: -1, "data.price": 1 };
-  if (sort === "highest" || sort === "price_desc") sortObj = { priority: -1, "data.price": -1 };
+  if (sort === "lowest" || sort === "price_asc") sortObj = { priority: -1, "data.price": 1, createdAt: -1 };
+  if (sort === "highest" || sort === "price_desc") sortObj = { priority: -1, "data.price": -1, createdAt: -1 };
   if (sort === "new") sortObj = { priority: -1, createdAt: -1 };
 
   const query = DynamicAd.find(conditions).sort(sortObj).skip(skipAmount).limit(limit);
@@ -1533,7 +1530,7 @@ export async function getAdsForRegionListing({
     items: JSON.parse(JSON.stringify(items)),
     total,
     totalPages: Math.max(1, Math.ceil(total / limit)),
-    regionName,
+    regionName: regionNames[0], // just for display
   };
 }
 
@@ -1763,8 +1760,10 @@ export async function getHomeFeed(params?: {
 
 // lib/actions/dynamicAd.actions.ts
 
+// lib/actions/dynamicAd.actions.ts
+
 type SidebarOptions = {
-  subcategoryCounts: Record<string, number>; // keyed by raw subcategory name in DB
+  subcategoryCounts: Record<string, number>;
   counties: string[];
   towns: string[];
   townsByCounty: Record<string, string[]>;
@@ -1776,25 +1775,50 @@ type SidebarOptions = {
 function safeTrim(v: any) {
   return String(v ?? "").trim();
 }
-
+// ✅ Always read from data.*, because your ads are stored inside `data`
 function pickCountyExpr() {
-  return { $ifNull: ["$county", "$data.county"] };
+  return { $ifNull: ["$data.county", { $ifNull: ["$data.location", ""] }] };
 }
 function pickTownExpr() {
-  return { $ifNull: ["$town", { $ifNull: ["$data.town", "$data.area"] }] };
+  return { $ifNull: ["$data.town", { $ifNull: ["$data.area", ""] }] };
 }
 function pickSubcatExpr() {
-  return { $ifNull: ["$subcategory", "$data.subcategory"] };
+  return { $ifNull: ["$data.subcategory", ""] };
 }
 function pickMakeExpr() {
-  return { $ifNull: ["$make", "$data.make"] };
+  return { $ifNull: ["$data.make", ""] };
 }
 function pickModelExpr() {
-  return { $ifNull: ["$model", "$data.model"] };
+  return { $ifNull: ["$data.model", ""] };
+}
+function normalizeRegionLabel(input: string) {
+  return String(input || "")
+    .trim()
+    .replace(/\s+/g, " ")      // collapse spaces
+    .replace(/\s*-\s*/g, "-"); // normalize hyphen spacing
 }
 
+/** "elgeyo-marakwet" => ["Elgeyo-Marakwet", "Elgeyo Marakwet"] */
+function regionCandidates(regionSlug: string) {
+  const slug = String(regionSlug || "").trim().toLowerCase();
+
+  // slug to "Title Case" words, but keep hyphens
+  const titleWithHyphen = slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join("-");
+
+  const withSpaces = titleWithHyphen.replace(/-/g, " ");
+  const withHyphens = titleWithHyphen; // "Elgeyo-Marakwet"
+
+  return Array.from(
+    new Set([normalizeRegionLabel(withHyphens), normalizeRegionLabel(withSpaces)]),
+  );
+}
 export async function getListingSidebarOptions(args: {
   category: string;
+  subcategory?: string;
   regionSlug?: string;
 
   min?: number;
@@ -1808,11 +1832,15 @@ export async function getListingSidebarOptions(args: {
   model?: string;
 
   q?: string;
+
+  // optional extras (safe to ignore if unused)
+  type?: string;
+  brand?: string;
 }): Promise<SidebarOptions> {
   await connectToDatabase();
 
   const category = safeTrim(args.category);
-  const regionSlug = safeTrim(args.regionSlug);
+  const subcategory = safeTrim(args.subcategory);
 
   const min = typeof args.min === "number" ? args.min : undefined;
   const max = typeof args.max === "number" ? args.max : undefined;
@@ -1825,97 +1853,99 @@ export async function getListingSidebarOptions(args: {
 
   const q = safeTrim(args.q);
 
-  const match: any = { category };
+  const type = safeTrim((args as any).type);
+  const brand = safeTrim((args as any).brand);
 
-  // optional region filter (safe if you don't store it)
-  if (regionSlug) {
-    match.$or = [
-      { regionSlug },
-      { region: regionSlug },
-      { "data.regionSlug": regionSlug },
-      { "data.region": regionSlug },
-    ];
+  // ✅ Base match (category + region + active only)
+  const regionSlug = safeTrim(args.regionSlug);
+  console.log(regionSlug)
+  const regionNames = regionSlug ? regionCandidates(regionSlug) : [];
+
+  const matchBase: any = {
+    adstatus: "Active",
+    "data.category": category,
+  };
+
+  if (regionNames.length) matchBase["data.region"] = { $in: regionNames };
+
+  // ✅ membership uses organizer lookup (same as your getAlldynamicAd)
+  if (args.membership === "verified") {
+    const verifiedUsers = await User.find({ "verified.accountverified": true }).select("_id");
+    matchBase.organizer = { $in: verifiedUsers.map((u) => u._id) };
+  } else if (args.membership === "unverified") {
+    const unverifiedUsers = await User.find({ "verified.accountverified": false }).select("_id");
+    matchBase.organizer = { $in: unverifiedUsers.map((u) => u._id) };
   }
-
-  if (args.membership === "verified") match.membership = "verified";
-  if (args.membership === "unverified") match.membership = "unverified";
 
   if (min !== undefined || max !== undefined) {
-    match.price = {};
-    if (min !== undefined) match.price.$gte = min;
-    if (max !== undefined) match.price.$lte = max;
+    matchBase["data.price"] = {};
+    if (min !== undefined) matchBase["data.price"].$gte = min;
+    if (max !== undefined) matchBase["data.price"].$lte = max;
   }
 
-  if (county) {
-    match.$and = match.$and || [];
-    match.$and.push({
-      $or: [{ county }, { "data.county": county }, { location: county }, { "data.location": county }],
-    });
-  }
-
+  // ✅ location filters
+  if (county) matchBase["data.county"] = county;
   if (town) {
-    match.$and = match.$and || [];
-    match.$and.push({
-      $or: [{ town }, { "data.town": town }, { "data.area": town }, { area: town }],
-    });
+    matchBase.$and = matchBase.$and || [];
+    matchBase.$and.push({ $or: [{ "data.town": town }, { "data.area": town }] });
   }
 
-  if (make) {
-    match.$and = match.$and || [];
-    match.$and.push({ $or: [{ make }, { "data.make": make }] });
-  }
+  // ✅ vehicle filters
+  if (make) matchBase["data.make"] = make;
+  if (model) matchBase["data.model"] = model;
 
-  if (model) {
-    match.$and = match.$and || [];
-    match.$and.push({ $or: [{ model }, { "data.model": model }] });
-  }
+  // ✅ non-vehicle filters (only if present)
+  if (type) matchBase["data.type"] = type;
+  if (brand) matchBase["data.brand"] = brand;
 
+  // ✅ search query
   if (q) {
-    match.$and = match.$and || [];
-    match.$and.push({
+    matchBase.$and = matchBase.$and || [];
+    matchBase.$and.push({
       $or: [
-        { title: { $regex: q, $options: "i" } },
-        { description: { $regex: q, $options: "i" } },
         { "data.title": { $regex: q, $options: "i" } },
         { "data.description": { $regex: q, $options: "i" } },
       ],
     });
   }
 
+  // ✅ Options are locked to current listing subcategory (so dropdowns make sense)
+  const matchForOptions = subcategory
+    ? { ...matchBase, "data.subcategory": subcategory }
+    : matchBase;
+
   const pipeline: any[] = [
-    { $match: match },
     {
       $facet: {
         bySubcategory: [
+          { $match: matchBase },
           { $group: { _id: pickSubcatExpr(), c: { $sum: 1 } } },
         ],
+        total: [
+          { $match: matchBase },
+          { $count: "n" },
+        ],
+
         counties: [
+          { $match: matchForOptions },
           { $group: { _id: pickCountyExpr() } },
         ],
         towns: [
+          { $match: matchForOptions },
           { $group: { _id: pickTownExpr() } },
         ],
-
-        // ✅ NEW: towns grouped by county
         townsByCounty: [
-          {
-            $group: {
-              _id: {
-                county: pickCountyExpr(),
-                town: pickTownExpr(),
-              },
-              c: { $sum: 1 },
-            },
-          },
+          { $match: matchForOptions },
+          { $group: { _id: { county: pickCountyExpr(), town: pickTownExpr() }, c: { $sum: 1 } } },
         ],
-
         makes: [
+          { $match: matchForOptions },
           { $group: { _id: pickMakeExpr() } },
         ],
         models: [
+          { $match: matchForOptions },
           { $group: { _id: pickModelExpr() } },
         ],
-        total: [{ $count: "n" }],
       },
     },
   ];
@@ -1939,13 +1969,12 @@ export async function getListingSidebarOptions(args: {
     .filter(Boolean)
     .sort((a: string, b: string) => a.localeCompare(b));
 
-  // build county -> towns map
   const townsByCounty: Record<string, string[]> = {};
   for (const row of out?.townsByCounty || []) {
     const c = safeTrim(row?._id?.county);
     const t = safeTrim(row?._id?.town);
     if (!c || !t) continue;
-    if (!townsByCounty[c]) townsByCounty[c] = [];
+    townsByCounty[c] = townsByCounty[c] || [];
     townsByCounty[c].push(t);
   }
   for (const c of Object.keys(townsByCounty)) {
