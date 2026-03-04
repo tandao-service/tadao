@@ -10,6 +10,8 @@ export type HomeSubCategory = {
     name: string;
     count: number;
     icon?: string | null;
+    // ✅ NEW: dynamic fields for this subcategory
+    fields?: any[];
 };
 
 export type HomeCategoryNode = {
@@ -129,7 +131,7 @@ export async function getCategoryTreeForHome(
     // ✅ 4) subcategories (icon from Subcategory.imageUrl[0])
     const subcats = await Subcategory.find({})
         .populate({ path: "category", model: Category, select: "name" })
-        .select("_id subcategory category imageUrl")
+        .select("_id subcategory category imageUrl fields") // ✅ add fields
         .lean();
 
     const byCat: Record<string, any[]> = Object.create(null);
@@ -159,12 +161,13 @@ export async function getCategoryTreeForHome(
 
                     const subIcon =
                         Array.isArray(s?.imageUrl) && s.imageUrl.length > 0 ? s.imageUrl[0] : null;
-
+                    const fields = Array.isArray(s?.fields) ? s.fields : [];
                     return {
                         id: slugify(subName),
                         name: subName,
                         count,
                         icon: subIcon,
+                        fields,
                     };
                 })
                 .sort((a, b) => b.count - a.count)

@@ -4,9 +4,12 @@
 import * as React from "react";
 import TopBar from "@/components/home/TopBar.client";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, SlidersHorizontal, X, Layers } from "lucide-react";
+import { ArrowLeft, SlidersHorizontal, X, Layers, MapPin } from "lucide-react";
 import SmartPropertyCardWithDesc from "@/components/home/SmartPropertyCardWithDesc";
 import { Icons } from "@/constants";
+import DynamicFilters from "@/components/home/DynamicFilters";
+import { HomeRegion } from "@/lib/home/home.data";
+import RegionsGrid from "@/components/home/RegionsGrid";
 
 type SidebarData = {
     subcategoryCounts: Record<string, number>;
@@ -26,6 +29,7 @@ type CategoryListingItem = {
     title: string;
     subcategory: string;
     icon?: string;
+
 };
 
 type QuickFilter = {
@@ -39,8 +43,15 @@ type ClientCategory = {
     icon?: string;
     listings: CategoryListingItem[];
     countsBySub: Record<string, number>; // ✅ NEW
+    fieldsBySub?: any;
 };
+type FiltersValue =
+    | string
+    | string[]
+    | { min?: string; max?: string }
+    | { make?: string; model?: string };
 
+type FiltersState = Record<string, FiltersValue>;
 type Props = {
     title: string;
     regionLabel: string;
@@ -48,7 +59,7 @@ type Props = {
 
     activeListingSlug: string;
     regionSlug?: string;
-
+    regions: HomeRegion[];
     // ✅ NEW: for category switching
     categories: ClientCategory[];
 
@@ -374,6 +385,7 @@ export default function ListingPageClient(props: Props) {
     const [countsBySubFallback, setCountsBySubFallback] = React.useState<Record<string, number>>(
         props.homeCountsBySub || {}
     );
+    const [regionsOpen, setRegionsOpen] = React.useState(false);
     const [totalFallback, setTotalFallback] = React.useState<number>(props.homeTotalInCategory || 0);
     // ✅ live sidebar + quickFilter
     const [sidebar, setSidebar] = React.useState<SidebarData>(props.sidebar);
@@ -386,6 +398,21 @@ export default function ListingPageClient(props: Props) {
         return categoryListings.find((x) => x.slug.toLowerCase() === activeSlug.toLowerCase()) || categoryListings[0];
     }, [activeSlug, categoryListings]);
 
+    const activeSubName = String(activeListing?.subcategory || "").trim();
+
+    const activeFields = React.useMemo(() => {
+        const cat = props.categories.find((c) => String(c.name).toLowerCase() === String(categoryName).toLowerCase());
+        return (cat?.fieldsBySub?.[activeSubName] || []) as any[];
+    }, [props.categories, categoryName, activeSubName]);
+    const [dyn, setDyn] = React.useState<FiltersState>({});
+    const dynSubcategory = React.useMemo(
+        () => ({
+            _id: "virtual",
+            subcategory: String(activeListing?.title || activeListing?.subcategory || "Selected"),
+            fields: Array.isArray(activeFields) ? activeFields : [],
+        }),
+        [activeListing?.title, activeListing?.subcategory, activeFields]
+    );
     // filters
     const [layout, setLayout] = React.useState<"grid" | "list">(props.selected.layout || "grid");
     const [county, setCounty] = React.useState(props.selected.county || "");
@@ -409,7 +436,9 @@ export default function ListingPageClient(props: Props) {
         if (!county) return sidebar.towns;
         return sidebar.townsByCounty?.[county] || [];
     }, [county, sidebar.towns, sidebar.townsByCounty]);
-
+    React.useEffect(() => {
+        setDyn({});
+    }, [activeSlug]);
     React.useEffect(() => {
         if (!county) return;
         if (town && !townsForCounty.includes(town)) setTown("");
@@ -533,6 +562,12 @@ export default function ListingPageClient(props: Props) {
             setTp(nextTotalPages);
             setCurrentPage(pageToFetch);
             setAllItems((prev) => (append ? [...prev, ...newItems] : newItems));
+            // ✅ dynamic fields
+            Object.entries(dyn || {}).forEach(([k, v]) => {
+                const val = String(v ?? "").trim();
+                if (!val) sp.delete(k);
+                else sp.set(k, val);
+            });
         },
         [
             activeSlug,
@@ -762,12 +797,13 @@ export default function ListingPageClient(props: Props) {
     const [catsOpen, setCatsOpen] = React.useState(false);
 
     React.useEffect(() => {
-        if (!filtersOpen && !catsOpen) return;
+        if (!filtersOpen && !catsOpen && !regionsOpen) return;
 
         const onKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
                 setFiltersOpen(false);
                 setCatsOpen(false);
+                setRegionsOpen(false);
             }
         };
         document.addEventListener("keydown", onKey);
@@ -778,7 +814,10 @@ export default function ListingPageClient(props: Props) {
             document.removeEventListener("keydown", onKey);
             document.body.style.overflow = prev;
         };
-    }, [filtersOpen, catsOpen]);
+    }, [filtersOpen, catsOpen, regionsOpen]);
+
+
+
 
     const appliedCount = React.useMemo(() => {
         const vals = [
@@ -925,95 +964,29 @@ export default function ListingPageClient(props: Props) {
             </div>
 
             <div>
-                <div className="mb-1 text-xs font-extrabold text-slate-700">Location</div>
-                <div className="grid grid-cols-1 gap-2">
-                    <select
-                        value={county}
-                        onChange={(e) => {
-                            setCounty(e.target.value);
-                            setTown("");
-                        }}
-                        className="h-12 w-full rounded-xl border px-3 text-sm font-bold outline-none focus:ring-2 focus:ring-orange-200"
-                    >
-                        <option value="">All Kenya</option>
-                        {sidebar.counties.map((c) => (
-                            <option key={c} value={c}>
-                                {c}
-                            </option>
-                        ))}
-                    </select>
+                <div>
+                    <div className="mb-1 text-xs font-extrabold text-slate-700">Location</div>
 
-                    <select value={town} onChange={(e) => setTown(e.target.value)} className="h-12 w-full rounded-xl border px-3 text-sm font-semibold outline-none focus:ring-2 focus:ring-orange-200">
-                        <option value="">{county ? "Any town / area" : "Select county first (optional)"}</option>
-                        {townsForCounty.map((t) => (
-                            <option key={t} value={t}>
-                                {t}
-                            </option>
-                        ))}
-                    </select>
+                    <button
+                        type="button"
+                        onClick={() => setRegionsOpen(true)}
+                        className="flex h-12 w-full items-center justify-between rounded-xl border bg-white px-3 text-left outline-none focus:ring-2 focus:ring-orange-200"
+                    >
+                        <div className="flex items-center gap-2 min-w-0">
+                            <MapPin className="h-4 w-4 text-slate-500" />
+                            <div className="min-w-0">
+                                <div className="truncate text-sm font-extrabold text-slate-900">
+                                    {props.regionSlug ? props.regionLabel : "All Kenya"}
+                                </div>
+                                <div className="truncate text-[11px] font-semibold text-slate-500">
+                                    Tap to change region
+                                </div>
+                            </div>
+                        </div>
+                        <div className="text-slate-400">›</div>
+                    </button>
                 </div>
             </div>
-
-            {isVehicle ? (
-                <div>
-                    <div className="mb-1 text-xs font-extrabold text-slate-700">Vehicle</div>
-                    <div className="grid grid-cols-1 gap-2">
-                        <select
-                            value={make}
-                            onChange={(e) => {
-                                setMake(e.target.value);
-                                setModel("");
-                            }}
-                            className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200"
-                        >
-                            <option value="">Any Make</option>
-                            {sidebar.makes.map((m) => (
-                                <option key={m} value={m}>
-                                    {m}
-                                </option>
-                            ))}
-                        </select>
-
-                        <select value={model} onChange={(e) => setModel(e.target.value)} className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200">
-                            <option value="">Any Model</option>
-                            {sidebar.models.map((m) => (
-                                <option key={m} value={m}>
-                                    {m}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            ) : (
-                <div>
-                    <div className="mb-1 text-xs font-extrabold text-slate-700">Type / Brand</div>
-
-                    {(quickField === "type" || /type/i.test(quickField)) ? (
-                        <select value={type} onChange={(e) => setType(e.target.value)} className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200">
-                            <option value="">Any Type</option>
-                            {quickOptions.map((opt) => (
-                                <option key={opt} value={opt}>
-                                    {opt}
-                                </option>
-                            ))}
-                        </select>
-                    ) : quickField === "brand" ? (
-                        <select value={brand} onChange={(e) => setBrand(e.target.value)} className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200">
-                            <option value="">Any Brand</option>
-                            {quickOptions.map((opt) => (
-                                <option key={opt} value={opt}>
-                                    {opt}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <div className="grid grid-cols-1 gap-2">
-                            <input value={type} onChange={(e) => setType(e.target.value)} placeholder="Type (optional)" className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200" />
-                            <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Brand (optional)" className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200" />
-                        </div>
-                    )}
-                </div>
-            )}
 
             <div>
                 <div className="mb-1 text-xs font-extrabold text-slate-700">Verified sellers</div>
@@ -1023,7 +996,23 @@ export default function ListingPageClient(props: Props) {
                     <option value="unverified">Unverified</option>
                 </select>
             </div>
+            {activeFields?.length ? (
+                <div>
+                    <div className="mb-1 text-xs font-extrabold text-slate-700">More filters</div>
 
+                    <DynamicFilters
+                        subcategory={dynSubcategory}
+                        value={dyn}
+                        onChange={setDyn}
+                        onApply={() => applyFilters()}   // optional
+                        onClear={() => {
+                            setDyn({});
+                            applyFilters();
+                        }}
+                        title="More filters"
+                    />
+                </div>
+            ) : null}
 
         </div>
     );
@@ -1116,13 +1105,6 @@ export default function ListingPageClient(props: Props) {
                                 <div className="text-sm font-extrabold">Filters</div>
                                 <div className="mt-3">{FiltersContent}</div>
 
-                                <button onClick={applyFilters} className="mt-4 w-full rounded-xl bg-orange-500 px-4 py-3 text-sm font-extrabold text-white hover:bg-orange-600">
-                                    Apply filters
-                                </button>
-
-                                <button onClick={clearAll} className="mt-2 w-full rounded-xl border px-4 py-3 text-sm font-extrabold text-slate-700 hover:bg-orange-50">
-                                    Clear
-                                </button>
                             </div>
                         </aside>
 
@@ -1517,7 +1499,43 @@ export default function ListingPageClient(props: Props) {
                     </div>
                 </div>
             ) : null}
+            {regionsOpen ? (
+                <div className="fixed inset-0 z-[950]">
+                    <button
+                        aria-label="Close regions"
+                        className="absolute inset-0 bg-black/40"
+                        onClick={() => setRegionsOpen(false)}
+                    />
 
+                    <div
+                        className="
+        absolute left-1/2 top-[72px] -translate-x-1/2
+        w-[80vw] max-w-5xl
+        rounded-2xl bg-white shadow-2xl
+        overflow-hidden
+      "
+                        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+                    >
+                        <div className="flex items-center justify-between border-b px-4 py-3">
+                            <div className="text-sm font-extrabold">Choose region</div>
+                            <button
+                                type="button"
+                                onClick={() => setRegionsOpen(false)}
+                                className="rounded-full border p-2 hover:bg-orange-50"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        <div className="max-h-[78vh] overflow-auto px-4 py-4">
+                            <RegionsGrid
+                                regions={Array.isArray(props.regions) ? props.regions : []}
+                                listingSlug={activeSlug}   // ✅ use current listing slug
+                            />
+                        </div>
+                    </div>
+                </div>
+            ) : null}
             {/* mobile filters sheet */}
             {filtersOpen ? (
                 <div className="md:hidden fixed inset-0 z-[800]">

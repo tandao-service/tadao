@@ -12,6 +12,7 @@ import { getCategoryTreeForHome } from "@/lib/home/home.categories";
 
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";
+import { getRegionsForListing } from "@/lib/home/home.data";
 
 const PAGE_SIZE = 24;
 
@@ -142,6 +143,8 @@ type ClientCategory = {
     icon?: string;
     listings: CategoryListingItem[];
     countsBySub: Record<string, number>; // ✅ NEW
+    // ✅ NEW: fields per subcategory name
+    fieldsBySub: Record<string, any[]>;
 };
 
 export default async function ListingPageUI(args: {
@@ -216,6 +219,7 @@ export default async function ListingPageUI(args: {
         // build icon map per subcategory
         const iconBySub: Record<string, string> = {};
         const countsBySub: Record<string, number> = {};
+        const fieldsBySub: Record<string, any[]> = {};
         if (c?.subcategories?.length) {
             for (const s of c.subcategories as any[]) {
                 const subName = String(s?.name || "").trim();
@@ -223,9 +227,9 @@ export default async function ListingPageUI(args: {
                 if (subName && subIcon) iconBySub[subName] = subIcon;
                 const subCount = Number(s?.count || 0);
                 if (subName) countsBySub[subName] = subCount;
+                fieldsBySub[subName] = Array.isArray(s?.fields) ? s.fields : [];
             }
         }
-
         // map listing slugs for this category
         let listings = getCategoryListings(LISTING_MAP, catName);
         listings = listings.map((it) => ({
@@ -241,6 +245,7 @@ export default async function ListingPageUI(args: {
                 icon: catIcon || "",
                 listings,
                 countsBySub, // ✅
+                fieldsBySub, // ✅
             });
         }
     }
@@ -373,7 +378,7 @@ export default async function ListingPageUI(args: {
         categoryName,
         subcategoryName: String(listing.subcategory || "").trim(),
     });
-
+    const { regions } = await getRegionsForListing(listingSlug);
     return (
         <ListingPageClient
             title={String(listing.title || "Listings")}
@@ -381,7 +386,7 @@ export default async function ListingPageUI(args: {
             canonical={canonical}
             activeListingSlug={listingSlug}
             regionSlug={args.regionSlug || ""}
-
+            regions={regions}
             // ✅ category switching data
             categories={categories}
 

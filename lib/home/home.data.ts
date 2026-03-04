@@ -218,3 +218,62 @@ export async function getHomePageData() {
     const categoryTree = await getCategoryTreeForHome(12, 12);
     return { categories, featured, trending, regions, categoryTree };
 }
+// lib/home/home.data.ts
+export async function getRegionsForListing(listingSlug: string) {
+    await connectToDatabase();
+
+    const slug = String(listingSlug || "").trim().toLowerCase();
+
+    // ✅ Find the subcategory by slug
+    const sub: any = await Subcategory.findOne(
+        { slug },
+        { _id: 1, subcategory: 1 }
+    ).lean();
+
+    // If slug not found, return national regions (fallback)
+    if (!sub?._id) {
+        const regionAgg = await DynamicAd.aggregate([
+            { $match: { adstatus: "Active", "data.region": { $type: "string" } } },
+            { $group: { _id: "$data.region", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+        ]);
+
+        const regions: HomeRegion[] = regionAgg
+            .filter((x: any) => x?._id)
+            .map((x: any) => {
+                const name = String(x._id).trim();
+                return { slug: slugify(name), name, count: Number(x.count || 0) };
+            });
+
+        const total = regions.reduce((a, b) => a + (b.count || 0), 0);
+        return { regions, total, subcategoryName: "" };
+    }
+
+    // ✅ Filter ads by subcategory ref
+    const regionAgg = await DynamicAd.aggregate([
+        {
+            $match: {
+                adstatus: "Active",
+                subcategory: sub._id,
+                "data.region": { $type: "string" },
+            },
+        },
+        { $group: { _id: "$data.region", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+    ]);
+
+    const regions: HomeRegion[] = regionAgg
+        .filter((x: any) => x?._id)
+        .map((x: any) => {
+            const name = String(x._id).trim();
+            return { slug: slugify(name), name, count: Number(x.count || 0) };
+        });
+
+    const total = regions.reduce((a, b) => a + (b.count || 0), 0);
+
+    return {
+        regions,
+        total,
+        subcategoryName: String(sub.subcategory || ""),
+    };
+}
