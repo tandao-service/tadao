@@ -1,6 +1,7 @@
 // components/home/TrendingGrid.tsx
 import type { HomeAd } from "@/lib/home/home.data";
-import AdCard from "./AdCard";
+import SmartPropertyCard from "./SmartPropertyCard";
+
 
 export default function TrendingGrid({ ads }: { ads: HomeAd[] }) {
     return (
@@ -13,9 +14,10 @@ export default function TrendingGrid({ ads }: { ads: HomeAd[] }) {
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-                {ads.map((ad) => (
-                    <AdCard key={ad.id} ad={ad} />
-                ))}
+                {ads.map((ad: any) => {
+                    const key = String(ad?._id || ad?.id || "");
+                    return <SmartPropertyCard key={key} ad={ad} />;
+                })}
             </div>
         </div>
     );

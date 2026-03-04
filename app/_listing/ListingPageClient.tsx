@@ -404,7 +404,7 @@ export default function ListingPageClient(props: Props) {
     const [membership, setMembership] = React.useState(props.selected.membership || "");
     const [sort, setSort] = React.useState(props.selected.sort || "recommeded");
     const [sortby, setSortby] = React.useState(props.selected.sortby || "recommeded");
-
+    const [mobileCatName, setMobileCatName] = React.useState<string>("");
     const townsForCounty = React.useMemo(() => {
         if (!county) return sidebar.towns;
         return sidebar.townsByCounty?.[county] || [];
@@ -441,6 +441,7 @@ export default function ListingPageClient(props: Props) {
         setActiveSlug(props.activeListingSlug);
         setCountsBySubFallback(props.homeCountsBySub || {});
         setTotalFallback(props.homeTotalInCategory || 0);
+        setMobileCatName(props.categoryName || "");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.activeListingSlug, props.items, props.page, props.totalPages]);
 
@@ -668,7 +669,27 @@ export default function ListingPageClient(props: Props) {
         },
         [fetchItems]
     );
+    const onSortChange = React.useCallback(
+        async (v: string) => {
+            setSortby(v);
 
+            // auto filter immediately
+            setCurrentPage(1);
+            setTp(1);
+            setAllItems([]);
+            setLoadingMore(true);
+
+            try {
+                await fetchItems({ page: 1, append: false, sortby: v });
+                if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+            } catch (e: any) {
+                setLoadError(String(e?.message || e));
+            } finally {
+                setLoadingMore(false);
+            }
+        },
+        [fetchItems]
+    );
     // apply/clear
     const applyFilters = React.useCallback(async () => {
         setLoadingMore(true);
@@ -1003,15 +1024,7 @@ export default function ListingPageClient(props: Props) {
                 </select>
             </div>
 
-            <div>
-                <div className="mb-1 text-xs font-extrabold text-slate-700">Sort</div>
-                <select value={sortby} onChange={(e) => setSortby(e.target.value)} className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200">
-                    <option value="recommeded">Recommended</option>
-                    <option value="new">Newest</option>
-                    <option value="lowest">Price: Low to High</option>
-                    <option value="highest">Price: High to Low</option>
-                </select>
-            </div>
+
         </div>
     );
 
@@ -1294,10 +1307,26 @@ export default function ListingPageClient(props: Props) {
                                         </button>
                                     </div>
                                 </div>
-                            </div>
 
+                            </div>
+                            {/* ✅ Sort bar (Jiji-style) */}
+                            <div className="mt-4 flex items-center justify-end gap-2">
+                                <div className="text-sm font-bold text-slate-600">Sort by:</div>
+
+                                <select
+                                    value={sortby}
+                                    onChange={(e) => onSortChange(e.target.value)}
+                                    className="h-10 rounded-xl border bg-white px-3 text-sm font-extrabold outline-none focus:ring-2 focus:ring-orange-200"
+                                >
+                                    <option value="recommeded">Recommended</option>
+                                    <option value="new">Newest</option>
+                                    <option value="lowest">Price: Low to High</option>
+                                    <option value="highest">Price: High to Low</option>
+                                </select>
+                            </div>
                             {/* results */}
                             <div className={cn("mt-4 gap-3", layout === "grid" ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" : "grid grid-cols-1")}>
+
                                 {allItems.map((ad: any) => (
                                     <SmartPropertyCardWithDesc key={String(ad._id)} ad={ad} regionFallback={props.regionLabel} />
                                 ))}
@@ -1324,41 +1353,166 @@ export default function ListingPageClient(props: Props) {
             </div>
 
             {/* ✅ Mobile categories sheet */}
+            {/* ✅ Mobile categories + subcategories sheet */}
             {catsOpen ? (
                 <div className="md:hidden fixed inset-0 z-[900]">
-                    <button aria-label="Close categories" className="absolute inset-0 bg-black/40" onClick={() => setCatsOpen(false)} />
-                    <div className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+                    <button
+                        aria-label="Close categories"
+                        className="absolute inset-0 bg-black/40"
+                        onClick={() => setCatsOpen(false)}
+                    />
+
+                    <div
+                        className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl"
+                        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+                    >
                         <div className="flex items-center justify-between border-b px-4 py-3">
-                            <div className="text-sm font-extrabold">Categories</div>
-                            <button type="button" onClick={() => setCatsOpen(false)} className="rounded-full border p-2 hover:bg-orange-50">
+                            <div className="text-sm font-extrabold">Category & Subcategory</div>
+                            <button
+                                type="button"
+                                onClick={() => setCatsOpen(false)}
+                                className="rounded-full border p-2 hover:bg-orange-50"
+                            >
                                 <X className="h-4 w-4" />
                             </button>
                         </div>
 
-                        <div className="max-h-[72vh] overflow-auto px-4 py-4 space-y-2">
-                            {props.categories.map((c) => {
-                                const active = String(c.name).toLowerCase() === String(categoryName).toLowerCase();
-                                return (
-                                    <button
-                                        key={c.name}
-                                        type="button"
-                                        onClick={async () => {
-                                            setCatsOpen(false);
-                                            await onCategoryPick(c);
-                                        }}
-                                        className={cn("w-full rounded-2xl border p-3 text-left hover:bg-orange-50", active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white")}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <IconBubble src={c.icon} alt={c.name} />
-                                            <div className="min-w-0 flex-1">
-                                                <div className={cn("truncate text-sm", active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900")}>{c.name}</div>
-                                                <div className="text-[11px] font-bold text-slate-500">{Number(c.count || 0).toLocaleString()} ads</div>
-                                            </div>
-                                            <div className={cn("text-slate-400", active ? "text-orange-600" : "")}>›</div>
+                        {/* ✅ current selection pill */}
+                        <div className="px-4 pt-3">
+                            <div className="rounded-2xl border bg-slate-50 px-3 py-2 text-xs font-extrabold text-slate-700">
+                                Selected:{" "}
+                                <span className="text-orange-700">
+                                    {categoryName} • {String(activeListing?.title || props.title)}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="max-h-[74vh] overflow-auto px-4 py-4 space-y-3">
+                            {/* ✅ Categories */}
+                            <div className="text-xs font-extrabold text-slate-700">Categories</div>
+
+                            <div className="space-y-2">
+                                {props.categories.map((c) => {
+                                    const activeCat =
+                                        String(c.name).toLowerCase() ===
+                                        String(mobileCatName || categoryName).toLowerCase();
+
+                                    return (
+                                        <div key={c.name} className="rounded-2xl border overflow-hidden">
+                                            {/* Category row */}
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    // expand category and load its subcategories list
+                                                    setMobileCatName(String(c.name));
+                                                }}
+                                                className={cn(
+                                                    "w-full px-3 py-3 text-left hover:bg-orange-50",
+                                                    activeCat ? "bg-orange-50" : "bg-white"
+                                                )}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <IconBubble src={c.icon} alt={c.name} />
+                                                    <div className="min-w-0 flex-1">
+                                                        <div
+                                                            className={cn(
+                                                                "truncate text-sm",
+                                                                activeCat
+                                                                    ? "font-extrabold text-orange-700"
+                                                                    : "font-semibold text-slate-900"
+                                                            )}
+                                                        >
+                                                            {c.name}
+                                                        </div>
+                                                        <div className="text-[11px] font-bold text-slate-500">
+                                                            {Number(c.count || 0).toLocaleString()} ads
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        className={cn(
+                                                            "text-slate-400",
+                                                            activeCat ? "text-orange-600" : ""
+                                                        )}
+                                                    >
+                                                        ▾
+                                                    </div>
+                                                </div>
+                                            </button>
+
+                                            {/* ✅ Subcategories for selected category */}
+                                            {activeCat ? (
+                                                <div className="border-t bg-white p-2">
+                                                    <div className="mb-2 px-2 text-[11px] font-extrabold text-slate-600">
+                                                        Subcategories
+                                                    </div>
+
+                                                    <div className="max-h-[45vh] overflow-auto space-y-1 pr-1">
+                                                        {(c.listings || []).map((it) => {
+                                                            const isActiveSlug =
+                                                                String(it.slug).toLowerCase() ===
+                                                                String(activeSlug).toLowerCase();
+
+                                                            const live = sidebar.subcategoryCounts?.[it.subcategory];
+                                                            const fallback = c.countsBySub?.[it.subcategory];
+                                                            const count = Number(live ?? fallback ?? 0);
+
+                                                            return (
+                                                                <button
+                                                                    key={it.slug}
+                                                                    type="button"
+                                                                    onClick={async () => {
+                                                                        // 1) close sheet
+                                                                        setCatsOpen(false);
+
+                                                                        // 2) switch category (updates listings + vehicle flags)
+                                                                        await onCategoryPick(c);
+
+                                                                        // 3) pick specific subcategory slug
+                                                                        await onSubcategoryClick(it.slug);
+                                                                    }}
+                                                                    className={cn(
+                                                                        "w-full rounded-xl px-3 py-2 text-left hover:bg-orange-50",
+                                                                        isActiveSlug
+                                                                            ? "bg-orange-50 ring-1 ring-orange-200"
+                                                                            : "bg-white"
+                                                                    )}
+                                                                >
+                                                                    <div className="flex items-center gap-3">
+                                                                        <IconBubble src={it.icon} alt={it.title} />
+                                                                        <div className="min-w-0 flex-1">
+                                                                            <div
+                                                                                className={cn(
+                                                                                    "truncate text-sm",
+                                                                                    isActiveSlug
+                                                                                        ? "font-extrabold text-orange-700"
+                                                                                        : "font-semibold text-slate-900"
+                                                                                )}
+                                                                            >
+                                                                                {it.title}
+                                                                            </div>
+                                                                            <div className="text-[11px] font-bold text-slate-500">
+                                                                                {Number(count).toLocaleString()} ads
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                            className={cn(
+                                                                                "text-slate-400",
+                                                                                isActiveSlug ? "text-orange-600" : ""
+                                                                            )}
+                                                                        >
+                                                                            ›
+                                                                        </div>
+                                                                    </div>
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ) : null}
                                         </div>
-                                    </button>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>

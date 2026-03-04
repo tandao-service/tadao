@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ListingPageUI, { buildListingMetadata } from "@/app/_listing/ListingPage";
+import ListingPageUI, { buildListingMetadata } from "@/app/_listing/ListingRegionPage";
 
 type Props = {
     params: { regionSlug: string; listingSlug: string };

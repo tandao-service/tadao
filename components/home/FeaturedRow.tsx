@@ -1,7 +1,7 @@
 // components/home/FeaturedRow.tsx
 import type { HomeAd } from "@/lib/home/home.data";
-import AdCard from "./AdCard";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import SmartPropertyCard from "./SmartPropertyCard";
 
 export default function FeaturedRow({ ads }: { ads: HomeAd[] }) {
     if (!ads?.length) return null;
@@ -17,11 +17,14 @@ export default function FeaturedRow({ ads }: { ads: HomeAd[] }) {
 
             <ScrollArea className="mt-3 w-full">
                 <div className="flex w-max gap-3 pb-2 pr-2">
-                    {ads.map((ad) => (
-                        <div key={ad.id} className="w-[240px] shrink-0">
-                            <AdCard ad={ad} />
-                        </div>
-                    ))}
+                    {ads.map((ad: any) => {
+                        const key = String(ad?._id || ad?.id || "");
+                        return (
+                            <div key={key} className="w-[240px] shrink-0">
+                                <SmartPropertyCard ad={ad} />
+                            </div>
+                        );
+                    })}
                 </div>
                 <ScrollBar orientation="horizontal" className="hidden" />
             </ScrollArea>

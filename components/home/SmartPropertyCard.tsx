@@ -1,7 +1,6 @@
 "use client";
 
 // components/shared/SmartPropertyCard.tsx
-
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +8,7 @@ import { IoCamera } from "react-icons/io5";
 
 function moneyKsh(v: any) {
     const n = Number(v);
-    if (!Number.isFinite(n)) return "KSh 0";
+    if (!Number.isFinite(n) || n <= 0) return "Contact for price";
     return `KSh ${n.toLocaleString()}`;
 }
 
@@ -25,7 +24,7 @@ function chip(label: string) {
     );
 }
 
-// ✅ boost fallback (if aggregate fields not present)
+// fallback (if aggregate fields not present)
 function isBoostActive(ad: any, kind: "featured" | "top") {
     const now = Date.now();
     const b = ad?.boost || {};
@@ -38,37 +37,52 @@ function isBoostActive(ad: any, kind: "featured" | "top") {
 }
 
 type Props = {
-    ad: any;
+    ad: any; // can be raw ad OR HomeAd
     regionFallback?: string;
 };
 
 export default function SmartPropertyCard({ ad, regionFallback }: Props) {
-    const id = String(ad?._id || "");
+    // ✅ support both raw ad + HomeAd
+    const id = String(ad?._id || ad?.id || "");
 
-    const title = safeStr(ad?.data?.title) || "Listing";
-    const region = safeStr(ad?.data?.region) || safeStr(regionFallback);
-    const area = safeStr(ad?.data?.area);
+    const rawTitle = safeStr(ad?.data?.title);
+    const homeTitle = safeStr(ad?.title);
+    const title = rawTitle || homeTitle || "Listing";
 
-    const image =
+    const rawRegion = safeStr(ad?.data?.region);
+    const homeRegion = safeStr(ad?.region);
+    const region = rawRegion || homeRegion || safeStr(regionFallback);
+
+    const rawArea = safeStr(ad?.data?.area);
+    const homeArea = safeStr(ad?.area);
+    const area = rawArea || homeArea;
+
+    const rawImage =
         ad?.data?.coverThumbUrl ||
         (Array.isArray(ad?.data?.imageUrls) && ad.data.imageUrls.length > 0
             ? ad.data.imageUrls[0]
             : null);
 
-    const imgCount = Array.isArray(ad?.data?.imageUrls) ? ad.data.imageUrls.length : 0;
+    const homeImage = ad?.image || null;
+    const image = rawImage || homeImage;
+
+    const rawImgCount = Array.isArray(ad?.data?.imageUrls) ? ad.data.imageUrls.length : 0;
+    const homeImgCount = Number(ad?.imagesCount ?? 0);
+    const imgCount = rawImgCount || homeImgCount;
 
     const planName = safeStr(ad?.plan?.name);
     const planColor = safeStr(ad?.plan?.color);
 
-    // ✅ verified can be array OR object depending on your populate
     const isVerified =
+        ad?.isVerifiedSeller === true ||
         ad?.organizer?.verified?.accountverified === true ||
         ad?.organizer?.verified?.[0]?.accountverified === true;
 
     const isContactPrice = ad?.data?.contact === "contact";
-    const price = Number(ad?.data?.price || 0);
+    const price = Number(ad?.data?.price ?? ad?.price ?? 0);
 
     const isRent = Boolean(ad?.data?.period || ad?.data?.per);
+
     const condition = safeStr(ad?.data?.condition);
     const transmission = safeStr(ad?.data?.transimmison);
     const engineCC = safeStr(ad?.data?.["engine-CC"]);
@@ -77,9 +91,13 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
     const hasDelivery = Boolean(ad?.data?.["delivery"]);
     const hasBulk = Boolean(ad?.data?.["bulkprice"]);
 
-    // ✅ badges: prefer aggregate computed fields, fallback to boost dates
-    const featuredActive = ad?.featuredActive === true ? true : isBoostActive(ad, "featured");
-    const topActive = ad?.topActive === true ? true : isBoostActive(ad, "top");
+    // ✅ badges: support HomeAd flags too
+    const featuredActive =
+        ad?.featuredActive === true ||
+        ad?.isFeatured === true ||
+        isBoostActive(ad, "featured");
+
+    const topActive = ad?.topActive === true || ad?.isTop === true || isBoostActive(ad, "top");
 
     // ✅ Image loading overlay state
     const [imgLoading, setImgLoading] = useState<boolean>(Boolean(image));
@@ -101,7 +119,6 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
             >
                 {image && !imgError ? (
                     <>
-                        {/* ✅ Loading overlay */}
                         {imgLoading && (
                             <div className="absolute inset-0 z-[2] flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
                                 <div className="h-9 w-9 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
@@ -127,13 +144,13 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                         <div className="flex flex-col items-center gap-2">
                             <Image src="/logo.png" alt="Tadao" width={40} height={40} />
                             <p className="text-[11px] font-bold text-orange-500">
-                                {safeStr(ad?.data?.category) || "Listing"}
+                                {safeStr(ad?.data?.category) || safeStr(ad?.category) || region || "Listing"}
                             </p>
                         </div>
                     </div>
                 )}
 
-                {/* ✅ LEFT stack badges (Featured/Top + Plan) */}
+                {/* LEFT stack badges */}
                 <div className="absolute left-0 top-0 flex flex-col gap-1">
                     {featuredActive && (
                         <div className="rounded-br-lg rounded-tl-sm bg-orange-500 px-2 py-1 text-[10px] font-extrabold text-white shadow-lg">
@@ -196,7 +213,7 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                 </div>
 
                 <div className="mt-2 font-bold text-orange-500">
-                    {isContactPrice ? "Contact for price" : price > 0 ? moneyKsh(price) : "KSh 0"}
+                    {isContactPrice ? "Contact for price" : moneyKsh(price)}
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-2">
