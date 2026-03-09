@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import {
@@ -13,187 +13,292 @@ import {
     sendPasswordResetEmail,
     setPersistence,
     browserLocalPersistence,
+    updateProfile,
+    fetchSignInMethodsForEmail,
 } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase";
 import { createUser as createUserInDB } from "@/lib/actions/user.actions";
 import { Capacitor } from "@capacitor/core";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-import { useToast } from "@/components/ui/use-toast";
-
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 export default function AuthPage() {
     const router = useRouter();
-    const { toast } = useToast();
+
     const [isSignUp, setIsSignUp] = useState(false);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const [authBundle, setAuthBundle] = useState<any>(null);
+    const [authBundle, setAuthBundle] = useState<{
+        auth: any;
+        googleProvider: GoogleAuthProvider;
+    } | null>(null);
 
-    // ✅ Initialize GoogleAuth once (only for native)
+    const formTitle = useMemo(
+        () => (isSignUp ? "Create Account" : "Sign In"),
+        [isSignUp]
+    );
+
     useEffect(() => {
         if (Capacitor.isNativePlatform()) {
             GoogleAuth.initialize({
                 scopes: ["profile", "email"],
                 grantOfflineAccess: true,
-                clientId: "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com",
+                clientId:
+                    "1033579054775-p1lhnkja286tij6ta1ssfo1ld1vlkbm6.apps.googleusercontent.com",
             });
         }
     }, []);
 
-    // ✅ Load Firebase auth safely
     useEffect(() => {
+        let mounted = true;
+
         (async () => {
-            const bundle = await getAuthSafe();
-            setAuthBundle(bundle);
+            try {
+                const bundle: any = await getAuthSafe();
+                if (!mounted) return;
+
+                await setPersistence(bundle.auth, browserLocalPersistence);
+                setAuthBundle(bundle);
+            } catch (err) {
+                console.error("Auth init error:", err);
+                if (mounted) {
+                    setError("Failed to initialize authentication. Please refresh the page.");
+                }
+            }
         })();
+
+        return () => {
+            mounted = false;
+        };
     }, []);
 
-    const toggleMode = () => setIsSignUp((prev) => !prev);
+    const toggleMode = () => {
+        if (loading) return;
+        setIsSignUp((prev) => !prev);
+        setError("");
+        setSuccess("");
+    };
 
-    // ✅ Friendly Firebase error messages
-    const getFriendlyError = (code: string) => {
-        switch (code) {
-            case "auth/invalid-credential": return "Incorrect email or password.";
-            case "auth/user-not-found": return "No account found with this email.";
-            case "auth/wrong-password": return "Incorrect password.";
-            case "auth/too-many-requests": return "Too many attempts. Try again later.";
-            case "auth/operation-not-allowed": return "Email/password sign-in is disabled.";
-            case "auth/invalid-email": return "Invalid email address.";
-            case "auth/weak-password": return "Password should be at least 6 characters.";
-            case "auth/network-request-failed": return "Network error. Check your connection.";
-            default: return "Something went wrong. Please try again.";
+    const clearMessages = () => {
+        setError("");
+        setSuccess("");
+    };
+
+    const getFriendlyError = (codeOrMessage: string) => {
+        const value = String(codeOrMessage || "").toLowerCase();
+
+        switch (value) {
+            case "auth/invalid-credential":
+                return "Incorrect email or password.";
+            case "auth/user-not-found":
+                return "No account was found with that email.";
+            case "auth/wrong-password":
+                return "Incorrect password.";
+            case "auth/email-already-in-use":
+                return "This email is already registered. Please sign in instead.";
+            case "auth/too-many-requests":
+                return "Too many attempts. Please wait a bit and try again.";
+            case "auth/operation-not-allowed":
+                return "Email/password sign-in is currently disabled.";
+            case "auth/invalid-email":
+                return "Please enter a valid email address.";
+            case "auth/weak-password":
+                return "Password should be at least 6 characters.";
+            case "auth/network-request-failed":
+                return "Network error. Please check your internet connection.";
+            case "auth/popup-closed-by-user":
+                return "Google sign-in was cancelled before completion.";
+            case "auth/popup-blocked":
+                return "Popup was blocked by your browser. Please allow popups and try again.";
+            case "auth/cancelled-popup-request":
+                return "Another sign-in popup was already open.";
+            case "auth/account-exists-with-different-credential":
+                return "An account already exists with this email using a different sign-in method.";
+            case "auth/invalid-login-credentials":
+                return "Incorrect email or password.";
+            case "auth/missing-password":
+                return "Please enter your password.";
+            case "auth/user-disabled":
+                return "This account has been disabled.";
+            default:
+                if (value.includes("no id token")) {
+                    return "Google sign-in failed. No ID token was returned.";
+                }
+                return "Something went wrong. Please try again.";
         }
     };
 
-    // ✅ After successful Google/Firebase login, process user
     const processUser = async (result: UserCredential) => {
         const user = result.user;
-        const isNewUser = (result as any)?._tokenResponse?.isNewUser;
+        const isNewUser = Boolean((result as any)?._tokenResponse?.isNewUser);
 
         if (isNewUser) {
+            const displayName = user.displayName?.trim() || "";
+            const nameParts = displayName.split(" ").filter(Boolean);
+
             await createUserInDB({
                 clerkId: user.uid,
                 email: user.email || "",
-                firstName: user.displayName?.split(" ")[0] || "",
-                lastName: user.displayName?.split(" ")[1] || "",
+                firstName: nameParts[0] || firstName || "",
+                lastName: nameParts.slice(1).join(" ") || lastName || "",
                 photo: user.photoURL || "",
                 status: "User",
                 verified: [
-                    { accountverified: false, verifieddate: new Date() },
+                    {
+                        accountverified: false,
+                        verifieddate: new Date(),
+                    },
                 ],
             });
         }
 
-        router.push("/");
+        router.replace("/");
     };
 
-    // ✅ Forgot password
     const handleForgotPassword = async () => {
-        if (!authBundle) return;
-        const { auth } = authBundle;
+        if (!authBundle || loading) return;
 
-        if (!email) {
-            setError("Please enter your email to reset your password.");
+        clearMessages();
+
+        const cleanEmail = email.trim().toLowerCase();
+        if (!cleanEmail) {
+            setError("Please enter your email address first.");
             return;
         }
 
-        setError("");
         setLoading(true);
-
         try {
-            await sendPasswordResetEmail(auth, email);
-            setError("Password reset link sent! Please check your email.");
-            // toast({
-            //     title: "Alert",
-            //      description: "Password reset link sent! Please check your email.",
-            //     duration: 5000,
-            //       className: "bg-[#000000] text-white",
-            //  });
-
+            await sendPasswordResetEmail(authBundle.auth, cleanEmail);
+            setSuccess("Password reset link sent. Please check your email.");
         } catch (err: any) {
-            console.error(err);
-            setError(getFriendlyError(err.code));
+            console.error("Password reset error:", err);
+            setError(getFriendlyError(err?.code || err?.message));
         } finally {
             setLoading(false);
         }
     };
 
-    // ✅ Email/Password Sign Up
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!authBundle) return;
-        const { auth } = authBundle;
+        if (!authBundle || loading) return;
 
-        setError("");
+        clearMessages();
+
+        const cleanEmail = email.trim().toLowerCase();
+        const cleanFirstName = firstName.trim();
+        const cleanLastName = lastName.trim();
+
+        if (!cleanFirstName || !cleanLastName) {
+            setError("Please enter both first name and last name.");
+            return;
+        }
+
+        if (!cleanEmail) {
+            setError("Please enter your email address.");
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Password should be at least 6 characters.");
+            return;
+        }
+
         setLoading(true);
 
         try {
+            const methods = await fetchSignInMethodsForEmail(authBundle.auth, cleanEmail);
+            if (methods.length > 0) {
+                setError("This email is already registered. Please sign in instead.");
+                return;
+            }
+
             const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                email,
+                authBundle.auth,
+                cleanEmail,
                 password
             );
-            const user = userCredential.user;
+
+            if (cleanFirstName || cleanLastName) {
+                await updateProfile(userCredential.user, {
+                    displayName: `${cleanFirstName} ${cleanLastName}`.trim(),
+                });
+            }
 
             await createUserInDB({
-                clerkId: user.uid,
-                email,
-                firstName,
-                lastName,
-                photo: user.photoURL || "",
+                clerkId: userCredential.user.uid,
+                email: cleanEmail,
+                firstName: cleanFirstName,
+                lastName: cleanLastName,
+                photo: userCredential.user.photoURL || "",
                 status: "User",
                 verified: [
-                    { accountverified: false, verifieddate: new Date() },
+                    {
+                        accountverified: false,
+                        verifieddate: new Date(),
+                    },
                 ],
             });
 
-            router.push("/");
+            router.replace("/");
         } catch (err: any) {
-            console.error(err);
-            setError(getFriendlyError(err.code));
+            console.error("Sign up error:", err);
+            setError(getFriendlyError(err?.code || err?.message));
         } finally {
             setLoading(false);
         }
     };
 
-    // ✅ Email/Password Sign In
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!authBundle) return;
-        const { auth } = authBundle;
+        if (!authBundle || loading) return;
 
-        setError("");
+        clearMessages();
+
+        const cleanEmail = email.trim().toLowerCase();
+        if (!cleanEmail) {
+            setError("Please enter your email address.");
+            return;
+        }
+
+        if (!password) {
+            setError("Please enter your password.");
+            return;
+        }
+
         setLoading(true);
 
         try {
-            await setPersistence(auth, browserLocalPersistence); // web only; no-op native
-            await signInWithEmailAndPassword(auth, email.trim(), password);
-            router.push("/");
+            await setPersistence(authBundle.auth, browserLocalPersistence);
+            await signInWithEmailAndPassword(authBundle.auth, cleanEmail, password);
+            router.replace("/");
         } catch (err: any) {
-            // See the exact reason in dev tools
-            console.error("Firebase sign-in error:", { code: err?.code, message: err?.message });
-            setError(getFriendlyError(err?.code || ""));
+            console.error("Firebase sign-in error:", {
+                code: err?.code,
+                message: err?.message,
+            });
+            setError(getFriendlyError(err?.code || err?.message));
         } finally {
             setLoading(false);
         }
     };
 
-    // ✅ Google Sign In (web vs native)
     const handleGoogleSignIn = async () => {
-        if (!authBundle) return;
-        const { auth, googleProvider } = authBundle;
+        if (!authBundle || loading) return;
 
-        setError("");
+        clearMessages();
         setLoading(true);
 
         try {
             if (Capacitor.isNativePlatform()) {
-                // 🔹 Native (Android/iOS)
                 const googleResult = await GoogleAuth.signIn();
+
                 if (!googleResult.authentication?.idToken) {
                     throw new Error("No ID token returned from Google");
                 }
@@ -202,148 +307,184 @@ export default function AuthPage() {
                     googleResult.authentication.idToken
                 );
 
-                const result: any = await signInWithCredential(auth, credential);
+                const result = await signInWithCredential(authBundle.auth, credential);
                 await processUser(result);
             } else {
-                // 🔹 Web/PWA
-                const result = await signInWithPopup(auth, googleProvider);
+                const result = await signInWithPopup(
+                    authBundle.auth,
+                    authBundle.googleProvider
+                );
                 await processUser(result);
             }
         } catch (err: any) {
-            console.error(err);
-            setError(getFriendlyError(err.code || err.message));
+            console.error("Google sign-in error:", err);
+            setError(getFriendlyError(err?.code || err?.message));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-white lg:bg-gray-50">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded lg:shadow">
-                <div className="flex flex-col items-center mb-4">
+        <div className="min-h-screen bg-gradient-to-b from-white to-orange-50 flex items-center justify-center px-4 py-10">
+            <div className="w-full max-w-md rounded-2xl bg-white shadow-xl border border-orange-100 p-6 sm:p-8">
+                <div className="flex flex-col items-center mb-6">
                     <img
                         src="/logo.jpg"
                         alt="Tadao Market"
-                        className="w-20 h-20 mb-2"
+                        className="w-20 h-20 rounded-full object-cover border border-orange-100 shadow-sm mb-3"
                     />
-                    <h1 className="text-3xl font-bold text-[#f97316]">
+                    <h1 className="text-3xl font-extrabold text-[#f97316] tracking-tight">
                         Tadao Market
                     </h1>
+                    <p className="text-sm text-gray-500 mt-1 text-center">
+                        Buy, sell, and connect with confidence
+                    </p>
                 </div>
 
-                <h2 className="text-2xl font-bold text-center">
-                    {isSignUp ? "Create Account" : "Sign In"}
+                <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">
+                    {formTitle}
                 </h2>
+                <p className="text-sm text-center text-gray-500 mb-6">
+                    {isSignUp
+                        ? "Create your account to start posting and managing listings."
+                        : "Welcome back. Sign in to continue."}
+                </p>
 
-                {error && (
-                    <p className="text-red-500 text-center bg-red-100 p-2 rounded">
+                {error ? (
+                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                         {error}
-                    </p>
-                )}
+                    </div>
+                ) : null}
+
+                {success ? (
+                    <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                        {success}
+                    </div>
+                ) : null}
 
                 <form
                     className="space-y-4"
                     onSubmit={isSignUp ? handleSignUp : handleSignIn}
                 >
                     {isSignUp && (
-                        <div className="flex gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <input
                                 type="text"
                                 placeholder="First Name"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                required
-                                className="w-1/2 p-2 border rounded"
+                                autoComplete="given-name"
+                                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[#f97316] focus:ring-2 focus:ring-orange-200"
+                                disabled={loading}
                             />
                             <input
                                 type="text"
                                 placeholder="Last Name"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                required
-                                className="w-1/2 p-2 border rounded"
+                                autoComplete="family-name"
+                                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[#f97316] focus:ring-2 focus:ring-orange-200"
+                                disabled={loading}
                             />
                         </div>
                     )}
+
                     <input
                         type="email"
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
                         required
-                        className="w-full p-2 border rounded"
+                        className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[#f97316] focus:ring-2 focus:ring-orange-200"
+                        disabled={loading}
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full p-2 border rounded"
-                    />
+
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder={isSignUp ? "Password (min 6 characters)" : "Password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete={isSignUp ? "new-password" : "current-password"}
+                            required
+                            className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 outline-none focus:border-[#f97316] focus:ring-2 focus:ring-orange-200"
+                            disabled={loading}
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-[#f97316]"
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                            disabled={loading}
+                        >
+                            {showPassword ? <IoEyeOffOutline size={22} /> : <IoEyeOutline size={22} />}
+                        </button>
+                    </div>
+
                     <button
                         type="submit"
-                        className="w-full p-2 font-bold text-white rounded flex justify-center items-center gap-2 hover:opacity-90"
-                        style={{ backgroundColor: "#f97316" }}
                         disabled={loading || !authBundle}
+                        className="w-full rounded-xl bg-[#f97316] px-4 py-3 font-bold text-white hover:opacity-95 disabled:opacity-60 flex items-center justify-center gap-2"
                     >
                         {loading && (
-                            <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
+                            <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                         )}
-                        {isSignUp ? "Create Account" : "Sign In"}
+                        <span>{isSignUp ? "Create Account" : "Sign In"}</span>
                     </button>
-                    {/* Cancel button */}
+
                     <button
-                        type="button" // ✅ so it doesn't submit the form
+                        type="button"
                         onClick={() => router.push("/")}
-                        className="w-full p-2 font-bold rounded border border-gray-300 text-gray-700 hover:bg-gray-100 mt-2"
+                        disabled={loading}
+                        className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
                     >
                         Cancel
                     </button>
                 </form>
 
-                <div className="flex items-center justify-center space-x-2">
-                    <span>or</span>
-                    <button
-                        onClick={handleGoogleSignIn}
-                        className="flex items-center justify-center gap-2 w-full p-2 font-semibold text-gray-700 border rounded hover:bg-gray-100 transition"
-                        disabled={loading || !authBundle}
-                    >
-                        {/**   {loading ? (
-                            <span className="animate-spin border-2 border-gray-700 border-t-transparent rounded-full w-5 h-5"></span>
-                        ) : (
-                            <>*/}
-                        <FcGoogle size={20} />
-                        <span>Sign in with Google</span>
-                        {/**   </>
-                        )}*/}
-                    </button>
+                <div className="my-5 flex items-center gap-3">
+                    <div className="h-px flex-1 bg-gray-200" />
+                    <span className="text-sm text-gray-400">or</span>
+                    <div className="h-px flex-1 bg-gray-200" />
                 </div>
 
-                <p className="text-center text-sm">
-                    {isSignUp
-                        ? "Already have an account?"
-                        : "Don't have an account?"}{" "}
+                <button
+                    onClick={handleGoogleSignIn}
+                    disabled={loading || !authBundle}
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60 flex items-center justify-center gap-3"
+                >
+                    <FcGoogle size={20} />
+                    <span>Continue with Google</span>
+                </button>
+
+                <div className="mt-6 text-center text-sm text-gray-600">
+                    {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
                     <button
+                        type="button"
                         onClick={toggleMode}
-                        className="text-blue-600 underline"
+                        disabled={loading}
+                        className="font-semibold text-[#f97316] underline underline-offset-2 disabled:opacity-60"
                     >
                         {isSignUp ? "Sign In" : "Create Account"}
                     </button>
-                </p>
+                </div>
 
                 {!isSignUp && (
-                    <p className="text-center text-sm">
+                    <div className="mt-3 text-center text-sm">
                         <button
+                            type="button"
                             onClick={handleForgotPassword}
-                            className="text-blue-600 underline"
+                            disabled={loading}
+                            className="text-blue-600 underline underline-offset-2 disabled:opacity-60"
                         >
                             Forgot your password?
                         </button>
-                    </p>
+                    </div>
                 )}
 
-                <p className="text-xs text-center text-gray-500">
+                <p className="mt-6 text-center text-xs text-gray-500 leading-5">
                     By continuing, you agree to our{" "}
                     <a
                         href="/terms"

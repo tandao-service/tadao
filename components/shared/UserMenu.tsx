@@ -3,9 +3,7 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
 import { IoPerson } from "react-icons/io5";
-const getInitials = (firstName?: string, lastName?: string) => {
-    return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
-};
+
 type Props = {
     userdata: any;
     handleOpenShop: (shopId: string) => void;

@@ -7,6 +7,8 @@ import Navbar from "./navbar";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
 import { ScrollArea } from "../ui/scroll-area";
+import { Toolbar } from "@mui/material";
+import TopBar from "../home/TopBar.client";
 type Package = {
   imageUrl: string;
   name: string;
@@ -107,7 +109,7 @@ const DashboardSellMain = ({
     }
   `}</style>
           <div className="z-10 top-0 fixed w-full">
-            <Navbar
+            {/** <Navbar
               user={user?.user ?? []}
               userstatus={user.user?.status ?? "User"}
               userId={userId}
@@ -124,7 +126,8 @@ const DashboardSellMain = ({
               handleOpenTerms={handleOpenTerms}
               handleOpenPrivacy={handleOpenPrivacy}
               handleOpenSafety={handleOpenSafety}
-            />
+            /> */}
+            <TopBar />
           </div>
 
           <div className="flex flex-col justify-center w-full h-full mt-[70px]">

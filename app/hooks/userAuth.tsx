@@ -65,7 +65,7 @@ type AppUser = {
 
 type AuthContextType = {
     authUser: User | null;
-    user: AppUser | null;
+    appUser: AppUser | null;
     appUserId: string | null;
     loading: boolean;
     profileLoading: boolean;
@@ -78,7 +78,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [authUser, setAuthUser] = useState<User | null>(null);
-    const [user, setAppUser] = useState<AppUser | null>(null);
+    const [appUser, setAppUser] = useState<AppUser | null>(null);
     const [loading, setLoading] = useState(true);
     const [profileLoading, setProfileLoading] = useState(false);
     const [authInstance, setAuthInstance] = useState<any>(null);
@@ -178,21 +178,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const value = useMemo(
         () => ({
             authUser,
-            user,
-            appUserId: user?._id ?? null,
+            appUser,
+            appUserId: appUser?._id ?? null,
             loading,
             profileLoading,
             isAuthenticated: !!authUser,
             signOutUser,
             refreshAppUser,
         }),
-        [authUser, user, loading, profileLoading]
+        [authUser, appUser, loading, profileLoading]
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
+export function userAuth() {
     const context = useContext(AuthContext);
     if (context === undefined) {
         throw new Error("useAuth must be used within an AuthProvider");
