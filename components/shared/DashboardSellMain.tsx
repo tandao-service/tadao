@@ -7,11 +7,6 @@ import Navbar from "./navbar";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
 import { ScrollArea } from "../ui/scroll-area";
-<<<<<<< HEAD
-=======
-import { Toolbar } from "@mui/material";
-import TopBar from "../home/TopBar.client";
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 type Package = {
   imageUrl: string;
   name: string;
@@ -112,11 +107,7 @@ const DashboardSellMain = ({
     }
   `}</style>
           <div className="z-10 top-0 fixed w-full">
-<<<<<<< HEAD
             <Navbar
-=======
-            {/** <Navbar
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
               user={user?.user ?? []}
               userstatus={user.user?.status ?? "User"}
               userId={userId}
@@ -133,12 +124,7 @@ const DashboardSellMain = ({
               handleOpenTerms={handleOpenTerms}
               handleOpenPrivacy={handleOpenPrivacy}
               handleOpenSafety={handleOpenSafety}
-<<<<<<< HEAD
             />
-=======
-            /> */}
-            <TopBar />
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
           </div>
 
           <div className="flex flex-col justify-center w-full h-full mt-[70px]">
