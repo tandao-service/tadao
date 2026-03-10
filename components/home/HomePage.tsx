@@ -1,8 +1,12 @@
 // components/home/HomePage.tsx
+import { Suspense } from "react";
 import type { HomeAd, HomeCategory, HomeRegion } from "@/lib/home/home.data";
 import { HomeCategoryNode } from "@/lib/home/home.categories";
 import HomeShell from "./HomeShell.client";
 
+function HomeShellFallback() {
+    return <div>Loading...</div>;
+}
 
 export default function HomePage({
     categories,
@@ -18,12 +22,14 @@ export default function HomePage({
     categoryTree: HomeCategoryNode[];
 }) {
     return (
-        <HomeShell
-            categories={categories}
-            featured={featured}
-            trending={trending}
-            regions={regions}
-            categoryTree={categoryTree}
-        />
+        <Suspense fallback={<HomeShellFallback />}>
+            <HomeShell
+                categories={categories}
+                featured={featured}
+                trending={trending}
+                regions={regions}
+                categoryTree={categoryTree}
+            />
+        </Suspense>
     );
 }
