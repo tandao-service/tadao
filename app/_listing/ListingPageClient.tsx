@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import TopBar from "@/components/home/TopBar.client";
+//import TopBar from "@/components/home/TopBar.client";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, SlidersHorizontal, X, Layers, MapPin } from "lucide-react";
 import SmartPropertyCardWithDesc from "@/components/home/SmartPropertyCardWithDesc";
@@ -1035,7 +1035,7 @@ export default function ListingPageClient(props: Props) {
 
     return (
         <>
-            <TopBar />
+
 
             {/* sticky back pill */}
             <div
