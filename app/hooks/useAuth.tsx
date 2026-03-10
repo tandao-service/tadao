@@ -9,7 +9,7 @@ import {
 } from "react";
 import { onAuthStateChanged, User, signOut } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase";
-import { getUserById } from "@/lib/actions/user.actions";
+// import { getUserById } from "@/lib/actions/user.actions"; // TEMP: mute this
 
 type AppUser = {
     _id: string;
@@ -94,13 +94,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfileLoading(true);
 
         try {
-            const data = await getUserById(current.uid);
-
-            if (data) {
-                setAppUser(data);
-            } else {
-                setAppUser(null);
-            }
+            // TEMP TEST: skip server/db fetch completely
+            setAppUser(null);
         } catch (error) {
             console.error("Failed to load app user:", error);
             setAppUser(null);
