@@ -1,10 +1,6 @@
 "use client";
 
 import * as React from "react";
-<<<<<<< HEAD
-=======
-import { useEffect } from "react";
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 import type { HomeAd, HomeCategory, HomeRegion } from "@/lib/home/home.data";
 import { HomeCategoryNode } from "@/lib/home/home.categories";
 
@@ -18,14 +14,8 @@ import RegionsGrid from "./RegionsGrid";
 import Footer from "./Footer.client";
 import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
-<<<<<<< HEAD
 
 import BottomNav from "@/components/home/BottomNav.client";
-=======
-import BottomNav from "@/components/home/BottomNav.client";
-//import { useSellCategoryTree } from "@/app/hooks/useSellCategoryTree";
-
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 function slugify(input: string) {
     return String(input || "")
         .trim()
@@ -62,15 +52,9 @@ function getDefaultListingSlugFromTree(tree: any[]) {
         first?.subcategories?.length ? first.subcategories[0]?.name : first?.name;
 
     const computed = toListingSlugFromName(String(name || ""));
-<<<<<<< HEAD
     // safe fallback if tree is empty
     return computed || "cars-for-sale";
 }
-=======
-    return computed || "cars-for-sale";
-}
-
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 export default function HomeShell({
     categories,
     featured,
@@ -85,43 +69,21 @@ export default function HomeShell({
     categoryTree: HomeCategoryNode[];
 }) {
     const footerRef = React.useRef<HTMLElement | null>(null);
-<<<<<<< HEAD
-=======
-    //  const { setCategoryTree } = useSellCategoryTree();
-
-    // useEffect(() => {
-    //     if (Array.isArray(categoryTree) && categoryTree.length > 0) {
-    //        setCategoryTree(categoryTree);
-    //    }
-    //}, [categoryTree, setCategoryTree]);
-
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
     const defaultListingSlug = React.useMemo(
         () => getDefaultListingSlugFromTree(categoryTree as any[]),
         [categoryTree]
     );
-<<<<<<< HEAD
     return (
         <div className="min-h-screen bg-white">
             {/* Fixed toolbar */}
             <TopBar />
 
             {/* Push content below fixed toolbar (TopBar sets --topbar-h) */}
-=======
-
-    return (
-        <div className="min-h-screen bg-white">
-            <TopBar />
-
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
             <div
                 className="mx-auto max-w-6xl px-3 pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
                 style={{ paddingTop: "var(--topbar-h, 64px)" }}
             >
-<<<<<<< HEAD
                 {/* HERO */}
-=======
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
                 <div className="relative mt-3 overflow-hidden rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
                     <div className="absolute inset-0 opacity-25">
                         <div className="h-full w-full bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,.35),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,.25),transparent_45%)]" />
@@ -144,13 +106,9 @@ export default function HomeShell({
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 {/* GRID */}
                 <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
                     {/* LEFT (desktop) */}
-=======
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
                     <aside className="hidden min-w-0 lg:block">
                         <CategoryRail
                             tree={categoryTree}
@@ -161,18 +119,12 @@ export default function HomeShell({
                         />
                     </aside>
 
-<<<<<<< HEAD
                     {/* Mobile categories */}
-=======
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
                     <div className="mt-4 lg:hidden">
                         <CategoryRail tree={categoryTree} compact />
                     </div>
 
-<<<<<<< HEAD
                     {/* MAIN */}
-=======
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
                     <section className="min-w-0 space-y-5">
                         <QuickChips />
 
@@ -182,10 +134,7 @@ export default function HomeShell({
                             <FeaturedRow ads={featured} />
                         ) : null}
 
-<<<<<<< HEAD
                         {/* Trending */}
-=======
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
                         {trending?.length ? (
                             <TrendingGrid ads={trending} />
                         ) : (
@@ -197,18 +146,12 @@ export default function HomeShell({
                 </div>
             </div>
 
-<<<<<<< HEAD
             {/* Footer: hide on mobile, show on md+ (also keeps rail stop point on desktop) */}
-=======
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
             <footer ref={footerRef} className="hidden md:block">
                 <Footer />
             </footer>
 
-<<<<<<< HEAD
             {/* ✅ Mobile-only bottom tabs */}
-=======
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
             <BottomNav />
         </div>
     );
