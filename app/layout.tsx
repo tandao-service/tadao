@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./hooks/useAuth";
 import TopProgressBar from "@/components/home/TopProgressBar";
-import { SellCategoryTreeProvider } from "./hooks/useSellCategoryTree";
+
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -44,9 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={poppins.variable}>
         <TopProgressBar height={3} colorClassName="bg-orange-500" />
         <AuthProvider>
-          <SellCategoryTreeProvider>
-            {children}
-          </SellCategoryTreeProvider>
+
+          {children}
+
         </AuthProvider>
       </body>
     </html>
