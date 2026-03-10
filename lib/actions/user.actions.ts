@@ -40,6 +40,7 @@ export async function createUserr(user: CreateUserParams) {
     handleError(error)
   }
 }
+<<<<<<< HEAD
 export async function getUserById(userId: string) {
   try {
     await connectToDatabase()
@@ -122,6 +123,9 @@ export async function getUserById(userId: string) {
     }
   }
 }
+=======
+
+>>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 export async function getUserByClerkId(clerkId: string) {
   try {
     await connectToDatabase()
@@ -204,6 +208,25 @@ export async function getUserByClerkId(clerkId: string) {
     }
   }
 }
+<<<<<<< HEAD
+=======
+export async function getUserById(clerkId: string) {
+  try {
+    await connectToDatabase();
+
+    const user = await User.findOne({ clerkId }).lean();
+
+    if (!user) {
+      return null;
+    }
+
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+    return null;
+  }
+}
+>>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 export async function updateUserPhone(_id: string, phone: string) {
   try {
     await connectToDatabase();

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+<<<<<<< HEAD
 import Script from "next/script";
 import CapacitorSplash from "@/components/shared/CapacitorSplash";
 import { AuthProvider } from "./hooks/useAuth";
 import SplashHandler from "@/components/shared/SplashHandler";
+=======
+import { AuthProvider } from "./hooks/useAuth";
+import TopProgressBar from "@/components/home/TopProgressBar";
+
+>>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -43,8 +49,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={poppins.variable}>
+<<<<<<< HEAD
         <SplashHandler />
         <AuthProvider>{children}</AuthProvider>
+=======
+        <TopProgressBar height={3} colorClassName="bg-orange-500" />
+        <AuthProvider>
+
+          {children}
+
+        </AuthProvider>
+>>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
       </body>
     </html>
   );

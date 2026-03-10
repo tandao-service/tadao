@@ -1,17 +1,9 @@
 "use client";
 import EventForm from "@/components/shared/EventForm";
-import { IAd } from "@/lib/database/models/ad.model";
-import Footersub from "./Footersub";
-import BottomNavigation from "./BottomNavigation";
-import Navbar from "./navbar";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
-import { ScrollArea } from "../ui/scroll-area";
-<<<<<<< HEAD
-=======
-import { Toolbar } from "@mui/material";
-import TopBar from "../home/TopBar.client";
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
+import TopBar from "./TopBar.client";
+import { useRouter } from "next/navigation";
 type Package = {
   imageUrl: string;
   name: string;
@@ -33,28 +25,11 @@ type dashboardProps = {
   packagesList: any;
   category?: string;
   subcategory?: string;
-  onClose: () => void;
-  handleOpenBook: () => void;
-  handleOpenChat: () => void;
-  handleOpenPlan: () => void;
-  handleOpenSell: () => void;
-  handleOpenAbout: () => void;
-  handleOpenTerms: () => void;
-  handleOpenPrivacy: () => void;
-  handleOpenSafety: () => void;
-  handleAdView: (ad: any) => void;
-  handleCategory: (value: string) => void;
-  handlePay: (id: string) => void;
-  popup: string;
   subcategoryList: any;
-  handleOpenShop: (shopId: any) => void;
-  handleOpenPerfomance: () => void;
-  handleOpenSettings: () => void;
 };
-const DashboardSellMain = ({
+const DashboardSell = ({
   userId,
   user,
-  //packname,
   userName,
   userImage,
   type,
@@ -64,25 +39,9 @@ const DashboardSellMain = ({
   category,
   subcategory,
   subcategoryList,
-  onClose,
-  handleCategory,
-  handleOpenSell,
-  handleOpenBook,
-  handleOpenPlan,
-  handleOpenChat,
-  handleAdView,
-  handlePay,
-  handleOpenAbout,
-  handleOpenTerms,
-  handleOpenPrivacy,
-  handleOpenSafety,
-  handleOpenSettings,
-  handleOpenShop,
-  handleOpenPerfomance,
-  popup,
 }: dashboardProps) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
-
+  const router = useRouter();
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
     const isDark = savedTheme === mode;
@@ -112,33 +71,7 @@ const DashboardSellMain = ({
     }
   `}</style>
           <div className="z-10 top-0 fixed w-full">
-<<<<<<< HEAD
-            <Navbar
-=======
-            {/** <Navbar
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
-              user={user?.user ?? []}
-              userstatus={user.user?.status ?? "User"}
-              userId={userId}
-              onClose={onClose}
-              popup={popup}
-              handleOpenSell={handleOpenSell}
-              handleOpenBook={handleOpenBook}
-              handleOpenPlan={handleOpenPlan}
-              handleOpenChat={handleOpenChat}
-              handleOpenShop={handleOpenShop}
-              handleOpenPerfomance={handleOpenPerfomance}
-              handleOpenSettings={handleOpenSettings}
-              handleOpenAbout={handleOpenAbout}
-              handleOpenTerms={handleOpenTerms}
-              handleOpenPrivacy={handleOpenPrivacy}
-              handleOpenSafety={handleOpenSafety}
-<<<<<<< HEAD
-            />
-=======
-            /> */}
             <TopBar />
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
           </div>
 
           <div className="flex flex-col justify-center w-full h-full mt-[70px]">
@@ -157,10 +90,10 @@ const DashboardSellMain = ({
                 category={category}
                 subcategory={subcategory}
                 packagesList={packagesList}
-                handleAdView={handleAdView}
-                handlePay={handlePay}
-                handleOpenShop={handleOpenShop}
-                handleOpenTerms={handleOpenTerms}
+                handleAdView={(ad: any) => router.push(`/property/${ad._id}`)}
+                handlePay={(ad: any) => router.push(`/pay/${ad._id}`)}
+                handleOpenShop={(shopId: string) => router.push(`/profile/${shopId}`)}
+                handleOpenTerms={() => router.push(`/terms`)}
               />
             </div>
 
@@ -173,4 +106,4 @@ const DashboardSellMain = ({
   );
 };
 
-export default DashboardSellMain;
+export default DashboardSell;
