@@ -42,8 +42,11 @@ export default function TopBar() {
     const router = useRouter();
     const pathname = usePathname();
 
-    const { authUser, user: appUser, appUserId, loading, profileLoading } = useAuth();
-
+    //const { authUser, user: appUser, appUserId, loading, profileLoading } = useAuth();
+    const { user, loading } = useAuth();
+    const authUser = "";
+    const appUserId = "";
+    const appUser: any = [];
     const isLoggedIn = !!authUser;
     const resolvedUserId = appUserId || "";
     const displayName = getDisplayName(appUser, authUser);
@@ -90,7 +93,8 @@ export default function TopBar() {
         };
     }, []);
 
-    const showUserLoading = loading || (isLoggedIn && profileLoading);
+    // const showUserLoading = loading || (isLoggedIn && profileLoading);
+    const showUserLoading = loading;
 
     return (
         <div
