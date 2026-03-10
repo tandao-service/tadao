@@ -110,11 +110,7 @@ export default function RelatedPropertiesInfinite({
 
             {items.length > 0 ? (
                 <>
-<<<<<<< HEAD
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-=======
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
->>>>>>> 874a1dfc95576a63fe83d03a1675763967327409
                         {items.map((r: any) => (
                             <SmartPropertyCardWithDesc
                                 key={String(r?._id || "")}
