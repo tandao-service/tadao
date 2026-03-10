@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.tadaomarket.app",
+            "sha256_cert_fingerprints": [
+                "03:96:92:C7:FC:B6:12:08:E3:11:C6:61:E8:9D:96:53:83:79:35:5E:3C:71:C9:82:96:91:25:E2:60:56:C5:65"
+            ]
+        }
+    }
+]
