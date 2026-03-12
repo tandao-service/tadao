@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { AuthProvider } from "./hooks/useAuth";
-
+import TopProgressBar from "@/components/home/TopProgressBar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,7 +19,6 @@ export const metadata: Metadata = {
   },
   description: "Buy & Sell Anything, Anytime, Anyplace",
   icons: { icon: "/logo.png" },
-  themeColor: "#f97316",
   openGraph: {
     title: "Tadao Market — Buy & Sell Anything in Kenya",
     description: "Discover and sell a wide range of goods. Simple, secure, and local.",
@@ -36,17 +36,23 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#f97316",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={poppins.variable}>
+        <Suspense fallback={null}>
+          <TopProgressBar height={3} colorClassName="bg-orange-500" />
+        </Suspense>
 
-        <AuthProvider>
-
-          {children}
-
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
