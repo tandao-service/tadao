@@ -13,7 +13,7 @@ import Bookmark from "../database/models/bookmark.model"
 import User from "../database/models/user.model"
 import nodemailer from 'nodemailer';
 import axios from "axios"
-import SendChat from "@/components/shared/SendChat"
+//import SendChat from "@/components/shared/SendChat"
 
 export async function broadcastMessage(type: string, message: string, recipient?: any) {
   try {
