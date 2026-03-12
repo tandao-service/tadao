@@ -1,4 +1,5 @@
-import PayPageClient from "./PayPageClient";
+import PayPageClient from "@/components/home/PayPageClient";
+
 
 type Props = {
     params: {
