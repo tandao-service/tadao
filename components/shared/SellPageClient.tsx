@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import DashboardSell from "@/components/home/DashboardSell";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useSellCategoryTree } from "@/app/hooks/useSellCategoryTree";
@@ -14,7 +15,28 @@ export default function SellPageClient({
     subcategory = "",
 }: Props) {
     const { authUser, user, appUserId, loading } = useAuth();
-    const { subcategoryList } = useSellCategoryTree();
+    const { subcategoryList, ensureCategoryTree } = useSellCategoryTree();
+    const [treeReady, setTreeReady] = useState(subcategoryList.length > 0);
+
+    useEffect(() => {
+        let mounted = true;
+
+        async function boot() {
+            if (subcategoryList.length > 0) {
+                if (mounted) setTreeReady(true);
+                return;
+            }
+
+            const tree = await ensureCategoryTree();
+            if (mounted) setTreeReady(Array.isArray(tree) && tree.length > 0);
+        }
+
+        boot();
+
+        return () => {
+            mounted = false;
+        };
+    }, [subcategoryList.length, ensureCategoryTree]);
 
     if (loading) {
         return (
@@ -36,7 +58,7 @@ export default function SellPageClient({
         );
     }
 
-    if (!subcategoryList.length) {
+    if (!treeReady || !subcategoryList.length) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#131B1E]">
                 <div className="text-sm text-gray-500 dark:text-gray-300">

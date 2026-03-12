@@ -8,7 +8,7 @@ import {
     getListingSidebarOptions,
 } from "@/lib/actions/dynamicAd.actions";
 import ListingPageClient from "@/app/_listing/ListingPageClient";
-import { getCategoryTreeForHome } from "@/lib/home/home.categories";
+import { getGlobalCategoryTree } from "@/lib/home/home-tree-cache";
 
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";
@@ -203,7 +203,7 @@ export default async function ListingPageUI(args: {
     let categoryListings = getCategoryListings(LISTING_MAP, categoryName);
 
     // ✅ homepage tree (truth for counts + icons) + used for category switcher
-    const homeTree = await getCategoryTreeForHome(80, 200).catch(() => []);
+    const homeTree = await getGlobalCategoryTree().catch(() => []);
 
     // Build ALL categories nav data (category -> its subcategory listings with icons)
     const categories: ClientCategory[] = [];

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useEffect } from "react";
 import type { HomeAd, HomeCategory, HomeRegion } from "@/lib/home/home.data";
 import { HomeCategoryNode } from "@/lib/home/home.categories";
 
@@ -16,7 +15,6 @@ import Footer from "./Footer.client";
 import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
 import BottomNav from "@/components/home/BottomNav.client";
-import { useSellCategoryTree } from "@/app/hooks/useSellCategoryTree";
 
 function slugify(input: string) {
     return String(input || "")
@@ -71,13 +69,6 @@ export default function HomeShell({
     categoryTree: HomeCategoryNode[];
 }) {
     const footerRef = React.useRef<HTMLElement | null>(null);
-    const { setCategoryTree } = useSellCategoryTree();
-
-    useEffect(() => {
-        if (Array.isArray(categoryTree) && categoryTree.length > 0) {
-            setCategoryTree(categoryTree);
-        }
-    }, [categoryTree, setCategoryTree]);
 
     const defaultListingSlug = React.useMemo(
         () => getDefaultListingSlugFromTree(categoryTree as any[]),

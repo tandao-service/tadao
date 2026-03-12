@@ -5,6 +5,7 @@ import "./globals.css";
 import { AuthProvider } from "./hooks/useAuth";
 import TopProgressBar from "@/components/home/TopProgressBar";
 import { SellCategoryTreeProvider } from "./hooks/useSellCategoryTree";
+import { getGlobalCategoryTree } from "@/lib/home/home-tree-cache";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -41,11 +42,13 @@ export const viewport: Viewport = {
   themeColor: "#f97316",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const initialCategoryTree = await getGlobalCategoryTree();
+
   return (
     <html lang="en">
       <body className={poppins.variable}>
@@ -54,7 +57,7 @@ export default function RootLayout({
         </Suspense>
 
         <AuthProvider>
-          <SellCategoryTreeProvider>
+          <SellCategoryTreeProvider initialCategoryTree={initialCategoryTree}>
             {children}
           </SellCategoryTreeProvider>
         </AuthProvider>
