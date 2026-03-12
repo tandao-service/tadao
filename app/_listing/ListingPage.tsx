@@ -405,8 +405,7 @@ export default async function ListingPageUI(args: {
                 min,
                 max,
                 membership,
-                sort: String(args.searchParams.sort || "recommeded"),
-                sortby: String(args.searchParams.sortby || "recommeded"),
+                sort,
                 layout,
 
                 // ✅ NEW
