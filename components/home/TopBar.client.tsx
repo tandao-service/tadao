@@ -12,8 +12,8 @@ import DiamondIcon from "@mui/icons-material/Diamond";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // use your existing components
-import Unreadmessages from "@/components/shared/Unreadmessages";
-import UserMenu from "@/components/shared/UserMenu";
+//import Unreadmessages from "@/components/shared/Unreadmessages";
+//import UserMenu from "@/components/shared/UserMenu";
 
 // If you have your auth hook, you can keep it.
 // If not, remove this and rely on "user" prop only.
@@ -131,18 +131,18 @@ export default function TopBar({
                                         className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-white text-slate-700 hover:bg-slate-50"
                                     >
                                         <MessageIcon fontSize="small" />
-                                        {/* unread badge */}
+                                        {/* unread badge 
                                         {userId ? (
                                             <span className="absolute -right-1 -top-1">
                                                 <Unreadmessages userId={userId} />
-                                            </span>
-                                        ) : null}
+                                            </span> 
+                                        ) : null}*/}
                                     </button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <div className="flex items-center gap-2">
+                                    {/** <div className="flex items-center gap-2">
                                         Chats {userId ? <Unreadmessages userId={userId} /> : null}
-                                    </div>
+                                    </div> */}
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
@@ -182,7 +182,7 @@ export default function TopBar({
                         Sell
                     </button>
 
-                    {/* Sign in (only when logged out) */}
+                    {/* Sign in (only when logged out) 
                     {!user?._id && !userId ? (
                         <button
                             type="button"
@@ -194,7 +194,7 @@ export default function TopBar({
                     ) : (
                         // User menu (when logged in)
                         <UserMenu userdata={user} handleOpenShop={() => router.push("/profile")} handleOpenSettings={() => router.push("/settings")} />
-                    )}
+                    )}*/}
                 </div>
             </div>
         </div>

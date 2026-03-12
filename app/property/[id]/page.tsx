@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { getAdById, getRelatedAdsServer } from "@/lib/actions/dynamicAd.actions";
-import CopyLinkButton from "@/components/shared/CopyLinkButton";
+//import CopyLinkButton from "@/components/shared/CopyLinkButton";
 import PropertyGallery from "../PropertyGallery";
 
 import TopBar from "@/components/home/TopBar.client";
@@ -341,12 +341,12 @@ export default async function PropertyPage({ params }: Props) {
                                         💬 Chat seller
                                     </Link>
 
-                                    <CopyLinkButton
+                                    {/**   <CopyLinkButton
                                         url={canonicalUrl}
                                         className="rounded-xl bg-orange-500 px-3 py-2 text-sm font-extrabold text-white hover:bg-orange-600"
                                     >
                                         Share (copy link)
-                                    </CopyLinkButton>
+                                    </CopyLinkButton>*/}
                                 </div>
                             </div>
                         </div>
