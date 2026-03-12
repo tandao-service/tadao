@@ -122,7 +122,7 @@ const PackageComponent = ({ userId, user, packagesList, onClose, handlePay, hand
                   daysRemaining={daysRemaining}
                   packname={planPackage}
                   user={user}
-                  handlePayNow={handlePay}
+                //handlePayNow={handlePay}
                 />
                 <Toaster />
               </div>
