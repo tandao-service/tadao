@@ -105,17 +105,19 @@ const PopupPay = ({ isOpen, userId, userName, txtId, user, handleOpenPerfomance,
           </div>
 
         ) : (
-          <DashboardPay user={user} userId={userId} trans={trans} recipientUid={userId} onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
-            handleOpenTerms={handleOpenTerms}
-            handleOpenPrivacy={handleOpenPrivacy}
-            handleOpenSafety={handleOpenSafety}
-            handleOpenPlan={handleOpenPlan}
-            handleOpenBook={handleOpenBook}
-            handleOpenChat={handleOpenChat}
-            handleOpenPerfomance={handleOpenPerfomance}
-            handleOpenSettings={handleOpenSettings}
-            handleOpenShop={handleOpenShop}
-            handleOpenChatId={handleOpenChatId} />)}
+          <DashboardPay user={user} userId={userId} trans={trans} recipientUid={userId}
+          //   onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
+          // handleOpenTerms={handleOpenTerms}
+          // handleOpenPrivacy={handleOpenPrivacy}
+          // handleOpenSafety={handleOpenSafety}
+          // handleOpenPlan={handleOpenPlan}
+          // handleOpenBook={handleOpenBook}
+          // handleOpenChat={handleOpenChat}
+          // handleOpenPerfomance={handleOpenPerfomance}
+          // handleOpenSettings={handleOpenSettings}
+          // handleOpenShop={handleOpenShop}
+          // handleOpenChatId={handleOpenChatId} 
+          />)}
 
         <Toaster />
       </div>
