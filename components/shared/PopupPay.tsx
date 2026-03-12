@@ -105,7 +105,7 @@ const PopupPay = ({ isOpen, userId, userName, txtId, user, handleOpenPerfomance,
           </div>
 
         ) : (
-          <DashboardPay user={user} userId={userId} trans={trans} recipientUid={userId}
+          <DashboardPay user={user} userId={userId} trans={trans} callbackurl={userId}
           //   onClose={onClose} handleOpenSell={handleOpenSell} handleOpenAbout={handleOpenAbout}
           // handleOpenTerms={handleOpenTerms}
           // handleOpenPrivacy={handleOpenPrivacy}
