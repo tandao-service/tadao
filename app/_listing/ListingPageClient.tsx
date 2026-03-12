@@ -924,6 +924,7 @@ export default function ListingPageClient(props: Props) {
         async (v: string) => {
 
             setCurrentPage(1);
+            setSort(v);
             setTp(1);
             setAllItems([]);
             setLoadingMore(true);
@@ -1735,7 +1736,7 @@ export default function ListingPageClient(props: Props) {
                                                     setMobileCatName(String(c.name));
                                                 }}
                                                 className={cn(
-                                                    "w-full px-3 py-3 text-left hover:bg-orange-50",
+                                                    "w-full px-3 py-0 text-left hover:bg-orange-50",
                                                     activeCat ? "bg-orange-50" : "bg-white"
                                                 )}
                                             >
@@ -1808,7 +1809,7 @@ export default function ListingPageClient(props: Props) {
                                                                         );
                                                                     }}
                                                                     className={cn(
-                                                                        "w-full rounded-xl px-3 py-2 text-left hover:bg-orange-50",
+                                                                        "w-full rounded-xl px-3 py-0 text-left hover:bg-orange-50",
                                                                         isActiveSlug
                                                                             ? "bg-orange-50 ring-1 ring-orange-200"
                                                                             : "bg-white"
