@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import { AuthProvider } from "./hooks/useAuth";
 import TopProgressBar from "@/components/home/TopProgressBar";
+import { SellCategoryTreeProvider } from "./hooks/useSellCategoryTree";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -52,7 +53,11 @@ export default function RootLayout({
           <TopProgressBar height={3} colorClassName="bg-orange-500" />
         </Suspense>
 
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <SellCategoryTreeProvider>
+            {children}
+          </SellCategoryTreeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
