@@ -1,14 +1,20 @@
-// app/pay/[orderTrackingId]/page.tsx
-
-import PayPageClient from "@/components/home/PayPageClient";
-
+import PayPageClient from "./PayPageClient";
 
 type Props = {
     params: {
         orderTrackingId: string;
     };
+    searchParams?: Promise<{
+        returnTo?: string;
+    }>;
 };
 
-export default function Page({ params }: Props) {
-    return <PayPageClient orderTrackingId={params.orderTrackingId} />;
+export default async function Page({ params, searchParams }: Props) {
+    const sp = (await searchParams) || {};
+    return (
+        <PayPageClient
+            orderTrackingId={params.orderTrackingId}
+            returnTo={sp.returnTo || "/sell?resumePost=1"}
+        />
+    );
 }

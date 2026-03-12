@@ -20,14 +20,14 @@ import TopBar from "../home/TopBar.client";
 
 type payProps = {
   userId: string;
-  recipientUid: string;
+  callbackurl: string;
   trans: any;
   user: any;
 
 };
 
 const DashboardPay = ({
-
+  callbackurl,
   trans,
   user,
 }: payProps) => {
@@ -115,7 +115,7 @@ const DashboardPay = ({
             setpayphone("");
             setpay("Active");
             setisSubmitting(false);
-
+            router.push(callbackurl);
             const receipt = {
               orderId: trans[0].orderTrackingId,
               transactionId: paymentStatus.payment.transactionId,

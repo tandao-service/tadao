@@ -1,21 +1,21 @@
-// app/pay/[orderTrackingId]/PayPageClient.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { useAuth } from "@/app/hooks/useAuth";
-import DashboardPay from "../shared/dashboardPay";
 import { getpayTransaction } from "@/lib/actions/transactions.actions";
+import DashboardPay from "../shared/dashboardPay";
 
 
 type Props = {
     orderTrackingId: string;
+    returnTo: string;
 };
 
-export default function PayPageClient({ orderTrackingId }: Props) {
+export default function PayPageClient({ orderTrackingId, returnTo }: Props) {
     const router = useRouter();
     const { user, appUserId, loading, profileLoading } = useAuth();
-
     const [trans, setTrans] = useState<any[]>([]);
     const [pageLoading, setPageLoading] = useState(true);
 
@@ -31,15 +31,9 @@ export default function PayPageClient({ orderTrackingId }: Props) {
         const loadTransaction = async () => {
             try {
                 setPageLoading(true);
-
                 const data = await getpayTransaction(orderTrackingId);
                 if (!mounted) return;
-
-                if (data) {
-                    setTrans([data]);
-                } else {
-                    setTrans([]);
-                }
+                setTrans(data ? [data] : []);
             } catch (error) {
                 console.error("Failed to load transaction:", error);
                 if (mounted) setTrans([]);
@@ -48,9 +42,7 @@ export default function PayPageClient({ orderTrackingId }: Props) {
             }
         };
 
-        if (orderTrackingId) {
-            loadTransaction();
-        }
+        loadTransaction();
 
         return () => {
             mounted = false;
@@ -58,33 +50,22 @@ export default function PayPageClient({ orderTrackingId }: Props) {
     }, [orderTrackingId]);
 
     if (loading || profileLoading || pageLoading) {
-        return (
-            <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#131B1E]">
-                <div className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                    Loading payment...
-                </div>
-            </main>
-        );
+        return <div className="min-h-screen flex items-center justify-center">Loading payment...</div>;
     }
 
     if (!user || !appUserId) return null;
 
     if (!trans.length) {
-        return (
-            <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#131B1E]">
-                <div className="rounded-xl border bg-white p-6 dark:bg-[#1f272b]">
-                    <h1 className="text-lg font-bold">Transaction not found</h1>
-                </div>
-            </main>
-        );
+        return <div className="min-h-screen flex items-center justify-center">Transaction not found.</div>;
     }
 
     return (
         <DashboardPay
             userId={String(user._id)}
-            recipientUid=""
             trans={trans}
             user={user}
+            callbackurl={returnTo}
+
         />
     );
 }

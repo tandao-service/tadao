@@ -66,6 +66,7 @@ import { createLoan } from "@/lib/actions/loan.actions";
 import PhoneVerification from "./PhoneVerification";
 import BiddingCheckbox from "./BiddingCheckbox";
 import { FileUploader } from "./FileUploader";
+import SubscriptionRequiredModal from "./SubscriptionRequiredModal";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -245,6 +246,7 @@ const AdForm = ({
     "not sure"
   );
   const [selectedFeatures, setselectedFeatures] = useState<string[]>([]);
+  const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const isFinancing = selectedCategory === "Financing";
   const { toast } = useToast();
   const router = useRouter();
@@ -387,7 +389,29 @@ const AdForm = ({
     };
     getCategory();
   }, []);
+  useEffect(() => {
+    if (type !== "Create") return;
 
+    try {
+      const raw = sessionStorage.getItem("sell_draft");
+      if (!raw) return;
+
+      const draft = JSON.parse(raw);
+
+      if (draft?.formData) setFormData(draft.formData);
+      if (draft?.selectedCategory) setSelectedCategory(draft.selectedCategory);
+      if (draft?.selectedSubCategory) setSelectedSubCategory(draft.selectedSubCategory);
+      if (draft?.selectedSubCategoryId) setSelectedSubCategoryId(draft.selectedSubCategoryId);
+      if (draft?.countryCode) setCountryCode(draft.countryCode);
+      if (draft?.phoneNumber) setPhoneNumber(draft.phoneNumber);
+      if (draft?.selectedCounty) setSelectedCounty(draft.selectedCounty);
+      if (draft?.selectedConstituency) setSelectedConstituency(draft.selectedConstituency);
+      if (typeof draft?.activeButton === "number") setActiveButton(draft.activeButton);
+      if (draft?.activeButtonTitle) setActiveButtonTitle(draft.activeButtonTitle);
+    } catch (error) {
+      console.error("Failed to restore draft:", error);
+    }
+  }, [type]);
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [activeButton, setActiveButton] = useState(1);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
@@ -710,6 +734,26 @@ const AdForm = ({
     const kenyanPhoneRegex = /^(?:\+254|254|0)?(7\d{8})$/;
     return kenyanPhoneRegex.test(phone.trim());
   }
+  const saveSellDraft = () => {
+    try {
+      const draft = {
+        formData,
+        selectedCategory,
+        selectedSubCategory,
+        selectedSubCategoryId,
+        countryCode,
+        phoneNumber,
+        selectedCounty,
+        selectedConstituency,
+        activeButton,
+        activeButtonTitle,
+      };
+
+      sessionStorage.setItem("sell_draft", JSON.stringify(draft));
+    } catch (error) {
+      console.error("Failed to save sell draft:", error);
+    }
+  };
   const handleSubmit = async () => {
     setLoading(true);
     setUploadProgress(0);
@@ -845,25 +889,18 @@ const AdForm = ({
           });
 
           // 🔔 Open payment flow
-          if (handlePay && result.planId) {
-            const customerId = generateRandomOrderId();
+          if (result?.blocked) {
+            saveSellDraft();
 
-            const trans = {
-              orderTrackingId: customerId,
-              amount: Number(priceInput),
-              plan: Plan === "Free" ? "Active" : Adstatus_,
-              planId: PlanId,
-              period: periodInput,
-              buyerId: userId,
-              merchantId: customerId,
-              status: "Pending",
-              createdAt: new Date(),
-            };
-            const response = await createTransaction(trans);
-            if (response.status === "Pending") {
-              handlePay(response.merchantId)
-              // router.push(`/pay/${response.orderTrackingId}`);
-            }
+            toast({
+              title: "Subscription required",
+              description: "Choose a package to continue posting your ad.",
+              duration: 5000,
+              className: "bg-red-600 text-white",
+            });
+
+            setSubscriptionModalOpen(true);
+            return;
           }
           return;
         }
@@ -2380,6 +2417,15 @@ const AdForm = ({
             </div>
           </div>
         </div>)}
+        <SubscriptionRequiredModal
+          open={subscriptionModalOpen}
+          onClose={() => setSubscriptionModalOpen(false)}
+          packagesList={packagesList || []}
+          userId={userId}
+          user={user}
+          daysRemaining={daysRemaining}
+          packname={Plan}
+        />
       </>)}
     </>
   );
