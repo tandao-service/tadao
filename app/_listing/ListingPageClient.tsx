@@ -29,7 +29,6 @@ type CategoryListingItem = {
     title: string;
     subcategory: string;
     icon?: string;
-
 };
 
 type QuickFilter = {
@@ -42,9 +41,10 @@ type ClientCategory = {
     count: number;
     icon?: string;
     listings: CategoryListingItem[];
-    countsBySub: Record<string, number>; // ✅ NEW
+    countsBySub: Record<string, number>;
     fieldsBySub?: any;
 };
+
 type FiltersValue =
     | string
     | string[]
@@ -52,6 +52,7 @@ type FiltersValue =
     | { make?: string; model?: string };
 
 type FiltersState = Record<string, FiltersValue>;
+
 type Props = {
     title: string;
     regionLabel: string;
@@ -60,7 +61,6 @@ type Props = {
     activeListingSlug: string;
     regionSlug?: string;
     regions: HomeRegion[];
-    // ✅ NEW: for category switching
     categories: ClientCategory[];
 
     categoryName: string;
@@ -87,7 +87,6 @@ type Props = {
         max: string;
         membership: string;
         sort: string;
-        sortby: string;
         layout: "grid" | "list";
 
         type?: string;
@@ -99,6 +98,7 @@ function setQS(sp: URLSearchParams, key: string, value: string) {
     if (!value) sp.delete(key);
     else sp.set(key, value);
 }
+
 function initials2(label: string) {
     const s = String(label || "").trim();
     if (!s) return "NA";
@@ -106,16 +106,15 @@ function initials2(label: string) {
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
     return (parts[0][0] + parts[1][0]).toUpperCase();
 }
+
 function isLikelyImagePath(v: string) {
     const s = (v || "").trim();
     if (!s) return false;
-    // starts with / or http(s) or data:
     if (/^(\/|https?:\/\/|data:)/i.test(s)) return true;
-    // or ends with an image extension
     if (/\.(svg|png|jpg|jpeg|webp|gif)$/i.test(s)) return true;
     return false;
 }
-/** ✅ icon resolver: listing.icon -> Icons map -> emoji -> solid initials circle */
+
 function IconOrInitial(props: { label: string; src?: string; className?: string }) {
     const { label, src, className } = props;
 
@@ -124,7 +123,6 @@ function IconOrInitial(props: { label: string; src?: string; className?: string 
         if (isLikelyImagePath(direct)) {
             return <img src={direct} alt={label} className="h-9 w-9 object-contain" loading="lazy" />;
         }
-        // otherwise treat as emoji/text
         return <span className="text-[28px] leading-none" aria-hidden>{direct}</span>;
     }
 
@@ -136,34 +134,149 @@ function IconOrInitial(props: { label: string; src?: string; className?: string 
         return <span className="text-[28px] leading-none" aria-hidden>{v}</span>;
     }
 
-    // 3) fallback: SOLID circle with initials
     return (
         <div
-            className={cn("flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[11px] font-extrabold text-white", className)}
+            className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[11px] font-extrabold text-white",
+                className
+            )}
             title={label}
         >
             {initials2(label)}
         </div>
     );
 }
+
 function IconBubble({ src, alt }: { src?: string; alt: string }) {
     return (
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200">
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200">
             {src ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={src} alt={alt} className="h-6 w-6 object-contain" loading="lazy" />
+                <img src={src} alt={alt} className="h-5 w-5 object-contain" loading="lazy" />
             ) : (
-                <div className="h-6 w-6 rounded-full bg-gradient-to-br from-slate-200 to-slate-100" />
+                <div className="h-5 w-5 rounded-full bg-gradient-to-br from-slate-200 to-slate-100" />
             )}
         </div>
     );
 }
+
+function SidebarPanel({
+    children,
+    className,
+}: {
+    children: React.ReactNode;
+    className?: string;
+}) {
+    return (
+        <div
+            className={cn(
+                "overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
+                className
+            )}
+        >
+            {children}
+        </div>
+    );
+}
+
+function SidebarSection({
+    title,
+    right,
+    children,
+    className,
+}: {
+    title: string;
+    right?: React.ReactNode;
+    children: React.ReactNode;
+    className?: string;
+}) {
+    return (
+        <section className={cn("border-b border-slate-200 last:border-b-0", className)}>
+            <div className="flex items-center justify-between px-4 py-3">
+                <h3 className="text-[13px] font-extrabold uppercase tracking-[0.02em] text-slate-700">
+                    {title}
+                </h3>
+                {right ? (
+                    <div className="text-[11px] font-bold text-slate-500">{right}</div>
+                ) : null}
+            </div>
+            <div className="px-3 pb-3">{children}</div>
+        </section>
+    );
+}
+
+function SidebarListItem({
+    active,
+    onClick,
+    icon,
+    title,
+    subtitle,
+    trailing,
+}: {
+    active?: boolean;
+    onClick?: () => void;
+    icon?: React.ReactNode;
+    title: React.ReactNode;
+    subtitle?: React.ReactNode;
+    trailing?: React.ReactNode;
+}) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className={cn(
+                "group flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left transition",
+                active ? "bg-orange-50 ring-1 ring-orange-200" : "hover:bg-slate-50"
+            )}
+        >
+            {icon ? <div className="shrink-0">{icon}</div> : null}
+
+            <div className="min-w-0 flex-1">
+                <div
+                    className={cn(
+                        "truncate text-[13px]",
+                        active
+                            ? "font-extrabold text-orange-700"
+                            : "font-semibold text-slate-900"
+                    )}
+                >
+                    {title}
+                </div>
+                {subtitle ? (
+                    <div className="mt-0.5 truncate text-[11px] font-medium text-slate-500">
+                        {subtitle}
+                    </div>
+                ) : null}
+            </div>
+
+            {trailing ? (
+                <div
+                    className={cn(
+                        "shrink-0 text-[11px] font-bold",
+                        active ? "text-orange-600" : "text-slate-400"
+                    )}
+                >
+                    {trailing}
+                </div>
+            ) : null}
+        </button>
+    );
+}
+
+function SidebarMiniLabel({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.02em] text-slate-600">
+            {children}
+        </div>
+    );
+}
+
 function SearchableSelect<T extends { [k: string]: any }>(props: {
     label?: string;
     items: T[];
-    valueKey: keyof T;     // e.g. "name"
-    subtitleKey?: keyof T; // e.g. "count"
-    iconKey?: keyof T;     // e.g. "icon"
+    valueKey: keyof T;
+    subtitleKey?: keyof T;
+    iconKey?: keyof T;
     value: string;
     placeholder?: string;
     onChange: (item: T) => void;
@@ -191,18 +304,21 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
         if (!open) setQ("");
     }, [open]);
 
-    // close on escape / outside click
     React.useEffect(() => {
         if (!open) return;
+
         const onKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") setOpen(false);
         };
+
         const onClick = (e: MouseEvent) => {
             const t = e.target as HTMLElement;
             if (!t.closest?.("[data-combobox-root='1']")) setOpen(false);
         };
+
         document.addEventListener("keydown", onKey);
         document.addEventListener("mousedown", onClick);
+
         return () => {
             document.removeEventListener("keydown", onKey);
             document.removeEventListener("mousedown", onClick);
@@ -211,21 +327,30 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
 
     return (
         <div className="relative" data-combobox-root="1">
-            {label ? <div className="mb-1 text-xs font-extrabold text-slate-700">{label}</div> : null}
+            {label ? (
+                <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.02em] text-slate-600">
+                    {label}
+                </div>
+            ) : null}
 
             <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
-                className="flex h-12 w-full items-center justify-between gap-3 rounded-xl border bg-white px-3 text-left text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-orange-200"
+                className="flex h-11 w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 text-left text-[13px] font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-orange-200"
             >
                 <div className="flex min-w-0 items-center gap-3">
-                    {iconKey ? <IconBubble src={String(selected?.[iconKey] || "")} alt={String(selected?.[valueKey] || "Category")} /> : null}
+                    {iconKey ? (
+                        <IconBubble
+                            src={String(selected?.[iconKey] || "")}
+                            alt={String(selected?.[valueKey] || "Category")}
+                        />
+                    ) : null}
                     <div className="min-w-0">
                         <div className="truncate">
                             {selected ? String(selected[valueKey]) : placeholder || "Select..."}
                         </div>
                         {subtitleKey && selected ? (
-                            <div className="truncate text-[11px] font-bold text-slate-500">
+                            <div className="truncate text-[11px] font-medium text-slate-500">
                                 {Number(selected[subtitleKey] || 0).toLocaleString()} ads
                             </div>
                         ) : null}
@@ -235,14 +360,14 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
             </button>
 
             {open ? (
-                <div className="absolute z-[999] mt-2 w-full overflow-hidden rounded-2xl border bg-white shadow-xl">
-                    <div className="border-b p-2">
+                <div className="absolute z-[999] mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                    <div className="border-b border-slate-200 p-2">
                         <input
                             autoFocus
                             value={q}
                             onChange={(e) => setQ(e.target.value)}
                             placeholder="Search category..."
-                            className="h-11 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200"
+                            className="h-10 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
                         />
                     </div>
 
@@ -250,7 +375,8 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
                         {filtered.length ? (
                             filtered.map((it) => {
                                 const name = String(it[valueKey] || "");
-                                const active = name.toLowerCase() === String(value || "").toLowerCase();
+                                const active =
+                                    name.toLowerCase() === String(value || "").toLowerCase();
                                 const sub = subtitleKey ? Number(it[subtitleKey] || 0) : 0;
 
                                 return (
@@ -262,21 +388,43 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
                                             setOpen(false);
                                         }}
                                         className={cn(
-                                            "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-orange-50",
+                                            "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-slate-50",
                                             active ? "bg-orange-50 ring-1 ring-orange-200" : ""
                                         )}
                                     >
-                                        {iconKey ? <IconBubble src={String(it[iconKey] || "")} alt={name} /> : null}
+                                        {iconKey ? (
+                                            <IconBubble src={String(it[iconKey] || "")} alt={name} />
+                                        ) : null}
                                         <div className="min-w-0 flex-1">
-                                            <div className={cn("truncate text-sm", active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900")}>{name}</div>
-                                            {subtitleKey ? <div className="text-[11px] font-bold text-slate-500">{sub.toLocaleString()} ads</div> : null}
+                                            <div
+                                                className={cn(
+                                                    "truncate text-[13px]",
+                                                    active
+                                                        ? "font-extrabold text-orange-700"
+                                                        : "font-semibold text-slate-900"
+                                                )}
+                                            >
+                                                {name}
+                                            </div>
+                                            {subtitleKey ? (
+                                                <div className="text-[11px] font-medium text-slate-500">
+                                                    {sub.toLocaleString()} ads
+                                                </div>
+                                            ) : null}
                                         </div>
-                                        <div className={cn("text-slate-400", active ? "text-orange-600" : "")}>›</div>
+                                        <div
+                                            className={cn(
+                                                "text-slate-400",
+                                                active ? "text-orange-600" : ""
+                                            )}
+                                        >
+                                            ›
+                                        </div>
                                     </button>
                                 );
                             })
                         ) : (
-                            <div className="px-3 py-8 text-center text-sm font-semibold text-slate-500">
+                            <div className="px-3 py-8 text-center text-[13px] font-semibold text-slate-500">
                                 No matches
                             </div>
                         )}
@@ -286,6 +434,7 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
         </div>
     );
 }
+
 function parsePlainTextToMakeModels(text: string) {
     const blocks = String(text || "")
         .trim()
@@ -330,29 +479,85 @@ function pickPricePresets(categoryName: string, activeSubTitle: string): PricePr
     const sub = String(activeSubTitle || "").toLowerCase();
     const has = (re: RegExp) => re.test(cat) || re.test(sub);
 
-    if (has(/\bvehicle\b|\bcars?\b|\btrucks?\b|\bbuses?\b|\bmotorbikes?\b|\bmachinery\b|\bheavy\s*equipment\b/)) {
-        return [preset(undefined, 500_000), preset(500_000, 1_500_000), preset(1_500_000, 3_000_000), preset(3_000_000, 6_000_000), preset(6_000_000, undefined)];
+    if (
+        has(
+            /\bvehicle\b|\bcars?\b|\btrucks?\b|\bbuses?\b|\bmotorbikes?\b|\bmachinery\b|\bheavy\s*equipment\b/
+        )
+    ) {
+        return [
+            preset(undefined, 500_000),
+            preset(500_000, 1_500_000),
+            preset(1_500_000, 3_000_000),
+            preset(3_000_000, 6_000_000),
+            preset(6_000_000, undefined),
+        ];
     }
 
     if (has(/\bland\b|\bplot\b|\bfarm\b|\bacres?\b/)) {
-        return [preset(undefined, 500_000), preset(500_000, 2_000_000), preset(2_000_000, 5_000_000), preset(5_000_000, 10_000_000), preset(10_000_000, undefined)];
+        return [
+            preset(undefined, 500_000),
+            preset(500_000, 2_000_000),
+            preset(2_000_000, 5_000_000),
+            preset(5_000_000, 10_000_000),
+            preset(10_000_000, undefined),
+        ];
     }
 
     const isProperty =
-        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(cat) ||
-        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(sub);
+        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(
+            cat
+        ) ||
+        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(
+            sub
+        );
 
     if (isProperty) {
-        const isRent = /\brent\b|\blet\b|\bshort\s*let\b|\bairbnb\b/.test(sub) || /\brent\b|\blet\b/.test(cat);
-        if (isRent) return [preset(undefined, 10_000), preset(10_000, 30_000), preset(30_000, 60_000), preset(60_000, 120_000), preset(120_000, undefined)];
-        return [preset(undefined, 3_000_000), preset(3_000_000, 8_000_000), preset(8_000_000, 15_000_000), preset(15_000_000, 30_000_000), preset(30_000_000, undefined)];
+        const isRent =
+            /\brent\b|\blet\b|\bshort\s*let\b|\bairbnb\b/.test(sub) ||
+            /\brent\b|\blet\b/.test(cat);
+
+        if (isRent) {
+            return [
+                preset(undefined, 10_000),
+                preset(10_000, 30_000),
+                preset(30_000, 60_000),
+                preset(60_000, 120_000),
+                preset(120_000, undefined),
+            ];
+        }
+
+        return [
+            preset(undefined, 3_000_000),
+            preset(3_000_000, 8_000_000),
+            preset(8_000_000, 15_000_000),
+            preset(15_000_000, 30_000_000),
+            preset(30_000_000, undefined),
+        ];
     }
 
-    if (has(/\bparts?\b|\bspares?\b|\baccessor(y|ies)\b|\belectronics?\b|\bphones?\b|\blaptops?\b|\bfurniture\b/)) {
-        return [preset(undefined, 1_000), preset(1_000, 5_000), preset(5_000, 20_000), preset(20_000, 50_000), preset(50_000, 150_000), preset(150_000, undefined)];
+    if (
+        has(
+            /\bparts?\b|\bspares?\b|\baccessor(y|ies)\b|\belectronics?\b|\bphones?\b|\blaptops?\b|\bfurniture\b/
+        )
+    ) {
+        return [
+            preset(undefined, 1_000),
+            preset(1_000, 5_000),
+            preset(5_000, 20_000),
+            preset(20_000, 50_000),
+            preset(50_000, 150_000),
+            preset(150_000, undefined),
+        ];
     }
 
-    return [preset(undefined, 1_000), preset(1_000, 5_000), preset(5_000, 20_000), preset(20_000, 50_000), preset(50_000, 150_000), preset(150_000, undefined)];
+    return [
+        preset(undefined, 1_000),
+        preset(1_000, 5_000),
+        preset(5_000, 20_000),
+        preset(20_000, 50_000),
+        preset(50_000, 150_000),
+        preset(150_000, undefined),
+    ];
 }
 
 type FetchOverrides = {
@@ -367,44 +572,52 @@ type FetchOverrides = {
     max?: string;
     membership?: string;
     sort?: string;
-    sortby?: string;
     layout?: "grid" | "list";
-
     make?: string;
     model?: string;
-
     type?: string;
     brand?: string;
 };
 
 export default function ListingPageClient(props: Props) {
-    // ✅ stateful category context (needed for category switching)
     const [categoryName, setCategoryName] = React.useState(props.categoryName);
     const [isVehicle, setIsVehicle] = React.useState(props.isVehicle);
-    const [categoryListings, setCategoryListings] = React.useState<CategoryListingItem[]>(props.categoryListings);
+    const [categoryListings, setCategoryListings] = React.useState<CategoryListingItem[]>(
+        props.categoryListings
+    );
     const [countsBySubFallback, setCountsBySubFallback] = React.useState<Record<string, number>>(
         props.homeCountsBySub || {}
     );
     const [regionsOpen, setRegionsOpen] = React.useState(false);
-    const [totalFallback, setTotalFallback] = React.useState<number>(props.homeTotalInCategory || 0);
-    // ✅ live sidebar + quickFilter
-    const [sidebar, setSidebar] = React.useState<SidebarData>(props.sidebar);
-    const [quickFilterState, setQuickFilterState] = React.useState<QuickFilter>(props.quickFilter);
+    const [totalFallback, setTotalFallback] = React.useState<number>(
+        props.homeTotalInCategory || 0
+    );
 
-    // active listing slug (subcategory listing)
+    const [sidebar, setSidebar] = React.useState<SidebarData>(props.sidebar);
+    const [quickFilterState, setQuickFilterState] = React.useState<QuickFilter>(
+        props.quickFilter
+    );
+
     const [activeSlug, setActiveSlug] = React.useState<string>(props.activeListingSlug);
 
     const activeListing = React.useMemo(() => {
-        return categoryListings.find((x) => x.slug.toLowerCase() === activeSlug.toLowerCase()) || categoryListings[0];
+        return (
+            categoryListings.find((x) => x.slug.toLowerCase() === activeSlug.toLowerCase()) ||
+            categoryListings[0]
+        );
     }, [activeSlug, categoryListings]);
 
     const activeSubName = String(activeListing?.subcategory || "").trim();
 
     const activeFields = React.useMemo(() => {
-        const cat = props.categories.find((c) => String(c.name).toLowerCase() === String(categoryName).toLowerCase());
+        const cat = props.categories.find(
+            (c) => String(c.name).toLowerCase() === String(categoryName).toLowerCase()
+        );
         return (cat?.fieldsBySub?.[activeSubName] || []) as any[];
     }, [props.categories, categoryName, activeSubName]);
+
     const [dyn, setDyn] = React.useState<FiltersState>({});
+
     const dynSubcategory = React.useMemo(
         () => ({
             _id: "virtual",
@@ -413,8 +626,10 @@ export default function ListingPageClient(props: Props) {
         }),
         [activeListing?.title, activeListing?.subcategory, activeFields]
     );
-    // filters
-    const [layout, setLayout] = React.useState<"grid" | "list">(props.selected.layout || "grid");
+
+    const [layout, setLayout] = React.useState<"grid" | "list">(
+        props.selected.layout || "grid"
+    );
     const [county, setCounty] = React.useState(props.selected.county || "");
     const [town, setTown] = React.useState(props.selected.town || "");
     const [q, setQ] = React.useState(props.selected.q || "");
@@ -430,22 +645,23 @@ export default function ListingPageClient(props: Props) {
 
     const [membership, setMembership] = React.useState(props.selected.membership || "");
     const [sort, setSort] = React.useState(props.selected.sort || "recommeded");
-    const [sortby, setSortby] = React.useState(props.selected.sortby || "recommeded");
     const [mobileCatName, setMobileCatName] = React.useState<string>("");
+
     const townsForCounty = React.useMemo(() => {
         if (!county) return sidebar.towns;
         return sidebar.townsByCounty?.[county] || [];
     }, [county, sidebar.towns, sidebar.townsByCounty]);
+
     React.useEffect(() => {
         setDyn({});
     }, [activeSlug]);
+
     React.useEffect(() => {
         if (!county) return;
         if (town && !townsForCounty.includes(town)) setTown("");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [county]);
 
-    // items state
     const [allItems, setAllItems] = React.useState<any[]>(props.items || []);
     const [currentPage, setCurrentPage] = React.useState<number>(props.page || 1);
     const [tp, setTp] = React.useState<number>(props.totalPages || 1);
@@ -454,7 +670,6 @@ export default function ListingPageClient(props: Props) {
 
     const sentinelRef = React.useRef<HTMLDivElement | null>(null);
 
-    // sync SSR on real route changes
     React.useEffect(() => {
         setCategoryName(props.categoryName);
         setIsVehicle(props.isVehicle);
@@ -474,7 +689,6 @@ export default function ListingPageClient(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.activeListingSlug, props.items, props.page, props.totalPages]);
 
-    // URL builder
     const buildPathForSlug = React.useCallback(
         (slug: string) => {
             const prefix = props.regionSlug ? `/r/${props.regionSlug}/` : `/`;
@@ -492,7 +706,6 @@ export default function ListingPageClient(props: Props) {
         [buildPathForSlug]
     );
 
-    // fetcher (uses CURRENT category/isVehicle state)
     const fetchItems = React.useCallback(
         async (opts: FetchOverrides) => {
             setLoadError("");
@@ -509,7 +722,6 @@ export default function ListingPageClient(props: Props) {
             const max2 = opts.max ?? max;
             const membership2 = opts.membership ?? membership;
             const sort2 = opts.sort ?? sort;
-            const sortby2 = opts.sortby ?? sortby;
             const layout2 = opts.layout ?? layout;
 
             const make2 = opts.make ?? make;
@@ -532,7 +744,6 @@ export default function ListingPageClient(props: Props) {
             setQS(sp, "max", max2);
             setQS(sp, "membership", membership2);
             setQS(sp, "sort", sort2);
-            setQS(sp, "sortby", sortby2);
             setQS(sp, "layout", layout2);
 
             if (isVehicle) {
@@ -547,13 +758,23 @@ export default function ListingPageClient(props: Props) {
                 setQS(sp, "brand", brand2 || "");
             }
 
+            Object.entries(dyn || {}).forEach(([k, v]) => {
+                const val = String(v ?? "").trim();
+                if (!val) sp.delete(k);
+                else sp.set(k, val);
+            });
+
             updateUrlShallow(listingSlug, sp);
 
             const res = await fetch(`/api/listings?${sp.toString()}`, { cache: "no-store" });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
             const json = await res.json();
-            const newItems = Array.isArray(json?.items) ? json.items : Array.isArray(json?.data) ? json.data : [];
+            const newItems = Array.isArray(json?.items)
+                ? json.items
+                : Array.isArray(json?.data)
+                    ? json.data
+                    : [];
             const nextTotalPages = Number(json?.totalPages || 1);
 
             if (json?.sidebar) setSidebar(json.sidebar);
@@ -562,12 +783,6 @@ export default function ListingPageClient(props: Props) {
             setTp(nextTotalPages);
             setCurrentPage(pageToFetch);
             setAllItems((prev) => (append ? [...prev, ...newItems] : newItems));
-            // ✅ dynamic fields
-            Object.entries(dyn || {}).forEach(([k, v]) => {
-                const val = String(v ?? "").trim();
-                if (!val) sp.delete(k);
-                else sp.set(k, val);
-            });
         },
         [
             activeSlug,
@@ -582,16 +797,15 @@ export default function ListingPageClient(props: Props) {
             max,
             membership,
             sort,
-            sortby,
             layout,
             make,
             model,
             type,
             brand,
+            dyn,
         ]
     );
 
-    // infinite scroll
     const canLoadMore = currentPage < tp && !loadingMore;
 
     const fetchNextPage = React.useCallback(async () => {
@@ -621,14 +835,11 @@ export default function ListingPageClient(props: Props) {
         return () => io.disconnect();
     }, [fetchNextPage]);
 
-    // subcategory switch (within category)
     const onSubcategoryClick = React.useCallback(
         async (slug: string) => {
             if (!slug) return;
 
             setActiveSlug(slug);
-
-            // reset category-specific filters so they don't stick across subcategories
             setMake("");
             setModel("");
             setType("");
@@ -640,8 +851,18 @@ export default function ListingPageClient(props: Props) {
             setLoadingMore(true);
 
             try {
-                await fetchItems({ page: 1, append: false, listingSlug: slug, make: "", model: "", type: "", brand: "" });
-                if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+                await fetchItems({
+                    page: 1,
+                    append: false,
+                    listingSlug: slug,
+                    make: "",
+                    model: "",
+                    type: "",
+                    brand: "",
+                });
+                if (typeof window !== "undefined") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
@@ -651,7 +872,6 @@ export default function ListingPageClient(props: Props) {
         [fetchItems]
     );
 
-    // ✅ CATEGORY switch (new)
     const onCategoryPick = React.useCallback(
         async (cat: ClientCategory) => {
             if (!cat?.name) return;
@@ -660,26 +880,19 @@ export default function ListingPageClient(props: Props) {
             const nextCategoryName = String(cat.name).trim();
             const nextIsVehicle = nextCategoryName.toLowerCase() === "vehicle";
             const nextListings = cat.listings;
-
-            // pick first slug in that category (or keep current if exists)
             const nextSlug = nextListings[0]?.slug;
 
-            // update UI state first
             setCategoryName(nextCategoryName);
             setIsVehicle(nextIsVehicle);
             setCategoryListings(nextListings);
             setCountsBySubFallback(cat.countsBySub || {});
             setTotalFallback(Number(cat.count || 0));
-            // reset category-specific filters only
             setMake("");
             setModel("");
             setType("");
             setBrand("");
 
-            // switch active slug
             setActiveSlug(nextSlug);
-
-            // reset paging
             setCurrentPage(1);
             setTp(1);
             setAllItems([]);
@@ -695,7 +908,9 @@ export default function ListingPageClient(props: Props) {
                     type: "",
                     brand: "",
                 });
-                if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+                if (typeof window !== "undefined") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
@@ -704,19 +919,20 @@ export default function ListingPageClient(props: Props) {
         },
         [fetchItems]
     );
+
     const onSortChange = React.useCallback(
         async (v: string) => {
-            setSortby(v);
 
-            // auto filter immediately
             setCurrentPage(1);
             setTp(1);
             setAllItems([]);
             setLoadingMore(true);
 
             try {
-                await fetchItems({ page: 1, append: false, sortby: v });
-                if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+                await fetchItems({ page: 1, append: false, sort: v });
+                if (typeof window !== "undefined") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
@@ -725,8 +941,11 @@ export default function ListingPageClient(props: Props) {
         },
         [fetchItems]
     );
-    // apply/clear
+
     const applyFilters = React.useCallback(async () => {
+        setCurrentPage(1);
+        setTp(1);
+        setAllItems([]);
         setLoadingMore(true);
         try {
             await fetchItems({ page: 1, append: false });
@@ -749,8 +968,8 @@ export default function ListingPageClient(props: Props) {
         setBrand("");
         setType("");
         setSort("recommeded");
-        setSortby("recommeded");
         setLayout("grid");
+        setDyn({});
 
         setLoadingMore(true);
         try {
@@ -768,7 +987,6 @@ export default function ListingPageClient(props: Props) {
                 brand: "",
                 type: "",
                 sort: "recommeded",
-                sortby: "recommeded",
                 layout: "grid",
             });
         } catch (e: any) {
@@ -778,7 +996,6 @@ export default function ListingPageClient(props: Props) {
         }
     }, [fetchItems]);
 
-    // sticky back (mobile)
     const goBack = React.useCallback(() => {
         if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
         else window.location.href = "/";
@@ -792,7 +1009,6 @@ export default function ListingPageClient(props: Props) {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    // mobile modals
     const [filtersOpen, setFiltersOpen] = React.useState(false);
     const [catsOpen, setCatsOpen] = React.useState(false);
 
@@ -806,18 +1022,17 @@ export default function ListingPageClient(props: Props) {
                 setRegionsOpen(false);
             }
         };
+
         document.addEventListener("keydown", onKey);
 
         const prev = document.body.style.overflow;
         document.body.style.overflow = "hidden";
+
         return () => {
             document.removeEventListener("keydown", onKey);
             document.body.style.overflow = prev;
         };
     }, [filtersOpen, catsOpen, regionsOpen]);
-
-
-
 
     const appliedCount = React.useMemo(() => {
         const vals = [
@@ -832,6 +1047,7 @@ export default function ListingPageClient(props: Props) {
             !isVehicle ? type : "",
             !isVehicle ? brand : "",
         ].filter((x) => String(x || "").trim().length > 0);
+
         return vals.length;
     }, [q, county, town, min, max, membership, isVehicle, make, model, type, brand]);
 
@@ -851,9 +1067,11 @@ export default function ListingPageClient(props: Props) {
         const d = sum(countsBySubFallback);
         return d;
     }, [sidebar?.totalInCategory, sidebar?.subcategoryCounts, totalFallback, countsBySubFallback]);
-    // quick filter chips
+
     const quickField = String(quickFilterState?.field || "").trim();
-    const quickOptions = Array.isArray(quickFilterState?.options) ? quickFilterState.options : [];
+    const quickOptions = Array.isArray(quickFilterState?.options)
+        ? quickFilterState.options
+        : [];
 
     const makeModelParsed = React.useMemo(() => {
         if (quickField !== "make-model") return [];
@@ -885,18 +1103,29 @@ export default function ListingPageClient(props: Props) {
                 const field =
                     quickFilterState?.field === "brand"
                         ? "brand"
-                        : quickFilterState?.field === "type" || /type/i.test(quickFilterState?.field || "")
+                        : quickFilterState?.field === "type" ||
+                            /type/i.test(quickFilterState?.field || "")
                             ? "type"
                             : "q";
 
                 if (field === "type") {
                     setType(val);
                     setBrand("");
-                    await fetchItems({ page: 1, append: false, type: val.trim(), brand: "" });
+                    await fetchItems({
+                        page: 1,
+                        append: false,
+                        type: val.trim(),
+                        brand: "",
+                    });
                 } else if (field === "brand") {
                     setBrand(val);
                     setType("");
-                    await fetchItems({ page: 1, append: false, brand: val.trim(), type: "" });
+                    await fetchItems({
+                        page: 1,
+                        append: false,
+                        brand: val.trim(),
+                        type: "",
+                    });
                 } else {
                     setQ(val);
                     await fetchItems({ page: 1, append: false, q: val.trim() });
@@ -943,7 +1172,12 @@ export default function ListingPageClient(props: Props) {
 
             setLoadingMore(true);
             try {
-                await fetchItems({ page: 1, append: false, min: nextMin, max: nextMax });
+                await fetchItems({
+                    page: 1,
+                    append: false,
+                    min: nextMin,
+                    max: nextMax,
+                });
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
@@ -954,57 +1188,71 @@ export default function ListingPageClient(props: Props) {
     );
 
     const FiltersContent = (
-        <div className="space-y-3">
+        <div className="space-y-4">
             <div>
-                <div className="mb-1 text-xs font-extrabold text-slate-700">Price (KSh)</div>
+                <SidebarMiniLabel>Price, KSh</SidebarMiniLabel>
                 <div className="grid grid-cols-2 gap-2">
-                    <input value={min} onChange={(e) => setMin(e.target.value)} placeholder="min" inputMode="numeric" className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200" />
-                    <input value={max} onChange={(e) => setMax(e.target.value)} placeholder="max" inputMode="numeric" className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200" />
+                    <input
+                        value={min}
+                        onChange={(e) => setMin(e.target.value)}
+                        placeholder="Min"
+                        inputMode="numeric"
+                        className="h-10 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                    />
+                    <input
+                        value={max}
+                        onChange={(e) => setMax(e.target.value)}
+                        placeholder="Max"
+                        inputMode="numeric"
+                        className="h-10 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                    />
                 </div>
             </div>
 
             <div>
-                <div>
-                    <div className="mb-1 text-xs font-extrabold text-slate-700">Location</div>
+                <SidebarMiniLabel>Location</SidebarMiniLabel>
 
-                    <button
-                        type="button"
-                        onClick={() => setRegionsOpen(true)}
-                        className="flex h-12 w-full items-center justify-between rounded-xl border bg-white px-3 text-left outline-none focus:ring-2 focus:ring-orange-200"
-                    >
-                        <div className="flex items-center gap-2 min-w-0">
-                            <MapPin className="h-4 w-4 text-slate-500" />
-                            <div className="min-w-0">
-                                <div className="truncate text-sm font-extrabold text-slate-900">
-                                    {props.regionSlug ? props.regionLabel : "All Kenya"}
-                                </div>
-                                <div className="truncate text-[11px] font-semibold text-slate-500">
-                                    Tap to change region
-                                </div>
+                <button
+                    type="button"
+                    onClick={() => setRegionsOpen(true)}
+                    className="flex h-10 w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 text-left outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                >
+                    <div className="flex min-w-0 items-center gap-2">
+                        <MapPin className="h-4 w-4 text-slate-500" />
+                        <div className="min-w-0">
+                            <div className="truncate text-[13px] font-semibold text-slate-900">
+                                {props.regionSlug ? props.regionLabel : "All Kenya"}
+                            </div>
+                            <div className="truncate text-[11px] font-medium text-slate-500 md:hidden">
+                                Tap to change region
                             </div>
                         </div>
-                        <div className="text-slate-400">›</div>
-                    </button>
-                </div>
+                    </div>
+                    <div className="text-slate-400">›</div>
+                </button>
             </div>
 
             <div>
-                <div className="mb-1 text-xs font-extrabold text-slate-700">Verified sellers</div>
-                <select value={membership} onChange={(e) => setMembership(e.target.value)} className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200">
+                <SidebarMiniLabel>Verified Seller</SidebarMiniLabel>
+                <select
+                    value={membership}
+                    onChange={(e) => setMembership(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-slate-200 px-3 text-[13px] font-medium outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                >
                     <option value="">Show all</option>
                     <option value="verified">Verified</option>
                     <option value="unverified">Unverified</option>
                 </select>
             </div>
+
             {activeFields?.length ? (
                 <div>
-                    <div className="mb-1 text-xs font-extrabold text-slate-700">More filters</div>
-
+                    <SidebarMiniLabel>More Filters</SidebarMiniLabel>
                     <DynamicFilters
                         subcategory={dynSubcategory}
                         value={dyn}
                         onChange={setDyn}
-                        onApply={() => applyFilters()}   // optional
+                        onApply={() => applyFilters()}
                         onClear={() => {
                             setDyn({});
                             applyFilters();
@@ -1013,23 +1261,6 @@ export default function ListingPageClient(props: Props) {
                     />
                 </div>
             ) : null}
-
-        </div>
-    );
-
-    // Desktop sidebar categories list
-    const DesktopCategories = (
-        <div className="rounded-2xl border bg-white p-3 shadow-sm">
-            <SearchableSelect
-                label="Category"
-                items={props.categories}
-                valueKey="name"
-                subtitleKey="count"
-                iconKey="icon"
-                value={categoryName}
-                placeholder="Choose category"
-                onChange={(cat) => onCategoryPick(cat)}
-            />
         </div>
     );
 
@@ -1037,18 +1268,19 @@ export default function ListingPageClient(props: Props) {
         <>
             <TopBar />
 
-            {/* sticky back pill */}
             <div
                 className={cn(
-                    "md:hidden fixed left-3 z-[650] transition-all duration-200",
-                    showStickyBack ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+                    "fixed left-3 z-[650] transition-all duration-200 md:hidden",
+                    showStickyBack
+                        ? "translate-y-0 opacity-100"
+                        : "pointer-events-none -translate-y-2 opacity-0"
                 )}
                 style={{ top: "calc(var(--topbar-h, 64px) + 10px)" }}
             >
                 <button
                     type="button"
                     onClick={goBack}
-                    className="inline-flex items-center gap-2 rounded-full border bg-white/95 px-3 py-2 text-sm font-extrabold text-slate-800 shadow-md backdrop-blur hover:bg-orange-50"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-3 py-2 text-sm font-extrabold text-slate-800 shadow-md backdrop-blur hover:bg-orange-50"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back
@@ -1057,64 +1289,90 @@ export default function ListingPageClient(props: Props) {
 
             <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
                 <main className="mx-auto max-w-7xl p-4">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[300px_1fr]">
-                        {/* LEFT (desktop only) */}
-                        <aside className="hidden md:block space-y-3">
-                            {/* ✅ Categories switcher */}
-                            {DesktopCategories}
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[290px_minmax(0,1fr)]">
+                        <aside className="hidden md:block">
+                            <SidebarPanel>
+                                <SidebarSection
+                                    title="Category"
+                                    right={`${Number(totalCategoryAds || 0).toLocaleString()} ads`}
+                                >
+                                    <SearchableSelect
+                                        items={props.categories}
+                                        valueKey="name"
+                                        subtitleKey="count"
+                                        iconKey="icon"
+                                        value={categoryName}
+                                        placeholder="Choose category"
+                                        onChange={(cat) => onCategoryPick(cat)}
+                                    />
+                                </SidebarSection>
 
-                            {/* Subcategories */}
-                            <div className="rounded-2xl border bg-white p-3 shadow-sm">
-                                <div className="mb-2 flex items-center justify-between">
-                                    <div className="text-sm font-extrabold">{categoryName}</div>
-                                    <div className="text-xs font-bold text-slate-500">{Number(totalCategoryAds || 0).toLocaleString()} ads</div>
-                                </div>
+                                <SidebarSection
+                                    title={categoryName}
+                                    right={`${Number(totalCategoryAds || 0).toLocaleString()} ads`}
+                                >
+                                    <div className="max-h-[360px] space-y-1 overflow-auto pr-1">
+                                        {categoryListings.map((it) => {
+                                            const active =
+                                                it.slug.toLowerCase() === activeSlug.toLowerCase();
+                                            const live =
+                                                sidebar.subcategoryCounts?.[it.subcategory];
+                                            const fallback =
+                                                countsBySubFallback?.[it.subcategory];
+                                            const count = Number(live ?? fallback ?? 0);
 
-                                <div className="max-h-[520px] overflow-auto pr-1">
-                                    {categoryListings.map((it) => {
-                                        const active = it.slug.toLowerCase() === activeSlug.toLowerCase();
-                                        const live = sidebar.subcategoryCounts?.[it.subcategory];
-                                        const fallback = countsBySubFallback?.[it.subcategory];
-                                        const count = Number(live ?? fallback ?? 0);
+                                            return (
+                                                <SidebarListItem
+                                                    key={it.slug}
+                                                    active={active}
+                                                    onClick={() =>
+                                                        onSubcategoryClick(it.slug)
+                                                    }
+                                                    icon={
+                                                        <IconBubble
+                                                            src={it.icon}
+                                                            alt={it.title}
+                                                        />
+                                                    }
+                                                    title={it.title}
+                                                    subtitle={`${count.toLocaleString()} ads`}
+                                                    trailing="›"
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                </SidebarSection>
 
-                                        return (
-                                            <button
-                                                key={it.slug}
-                                                type="button"
-                                                onClick={() => onSubcategoryClick(it.slug)}
-                                                className={cn("w-full rounded-xl px-3 py-2 text-left hover:bg-orange-50", active ? "bg-orange-50 ring-1 ring-orange-200" : "")}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <IconBubble src={it.icon} alt={it.title} />
-                                                    <div className="min-w-0 flex-1">
-                                                        <div className={cn("truncate text-sm", active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900")}>
-                                                            {it.title}
-                                                        </div>
-                                                        <div className="text-[11px] font-bold text-slate-500">{Number(count).toLocaleString()} ads</div>
-                                                    </div>
-                                                    <div className={cn("text-slate-400", active ? "text-orange-600" : "")}>›</div>
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                                <SidebarSection title="Filters">
+                                    {FiltersContent}
 
-                            {/* Filters */}
-                            <div className="rounded-2xl border bg-white p-3 shadow-sm">
-                                <div className="text-sm font-extrabold">Filters</div>
-                                <div className="mt-3">{FiltersContent}</div>
-
-                            </div>
+                                    <div className="grid grid-cols-2 gap-2 pt-3">
+                                        <button
+                                            type="button"
+                                            onClick={clearAll}
+                                            className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-extrabold text-slate-700 hover:bg-slate-50"
+                                        >
+                                            Clear
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={applyFilters}
+                                            className="h-10 rounded-lg bg-orange-500 px-3 text-[13px] font-extrabold text-white hover:bg-orange-600"
+                                        >
+                                            Apply
+                                        </button>
+                                    </div>
+                                </SidebarSection>
+                            </SidebarPanel>
                         </aside>
 
-                        {/* RIGHT */}
                         <section className="min-w-0">
-                            <div className="rounded-2xl border bg-white p-4 shadow-sm">
+                            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="min-w-0">
-                                        <h1 className="truncate text-2xl font-extrabold">
-                                            {String(activeListing?.title || props.title)} in {props.regionLabel}
+                                        <h1 className="truncate text-2xl font-extrabold text-slate-900">
+                                            {String(activeListing?.title || props.title)} in{" "}
+                                            {props.regionLabel}
                                         </h1>
 
                                         <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-600">
@@ -1126,18 +1384,16 @@ export default function ListingPageClient(props: Props) {
                                         </div>
                                     </div>
 
-                                    {/* ✅ Mobile: category button */}
                                     <button
                                         type="button"
                                         onClick={() => setCatsOpen(true)}
-                                        className="md:hidden inline-flex items-center gap-2 rounded-xl border bg-white px-3 py-2 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
+                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-800 hover:bg-orange-50 md:hidden"
                                     >
                                         <Layers className="h-4 w-4" />
                                         Category
                                     </button>
                                 </div>
 
-                                {/* search row */}
                                 <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-[220px_1fr_110px]">
                                     <select
                                         value={county}
@@ -1145,7 +1401,7 @@ export default function ListingPageClient(props: Props) {
                                             setCounty(e.target.value);
                                             setTown("");
                                         }}
-                                        className="h-12 w-full rounded-xl border px-3 text-sm font-bold outline-none focus:ring-2 focus:ring-orange-200"
+                                        className="h-12 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold outline-none focus:ring-2 focus:ring-orange-200"
                                     >
                                         <option value="">All Kenya</option>
                                         {sidebar.counties.map((c) => (
@@ -1159,15 +1415,17 @@ export default function ListingPageClient(props: Props) {
                                         value={q}
                                         onChange={(e) => setQ(e.target.value)}
                                         placeholder="Search keywords..."
-                                        className="h-12 w-full rounded-xl border px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200"
+                                        className="h-12 w-full rounded-xl border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200"
                                     />
 
-                                    <button onClick={applyFilters} className="h-12 rounded-xl bg-orange-500 px-4 text-sm font-extrabold text-white hover:bg-orange-600">
+                                    <button
+                                        onClick={applyFilters}
+                                        className="h-12 rounded-xl bg-orange-500 px-4 text-sm font-extrabold text-white hover:bg-orange-600"
+                                    >
                                         Search
                                     </button>
                                 </div>
 
-                                {/* price chips */}
                                 <div className="mt-3 space-y-3">
                                     <div className="flex flex-wrap gap-2">
                                         {pricePresets.map((p) => {
@@ -1179,8 +1437,10 @@ export default function ListingPageClient(props: Props) {
                                                     type="button"
                                                     onClick={() => onPricePreset(p)}
                                                     className={cn(
-                                                        "rounded-xl border px-4 py-2 text-xs font-extrabold",
-                                                        active ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200" : "bg-white text-slate-700 hover:bg-orange-50"
+                                                        "rounded-xl border border-slate-200 px-4 py-2 text-xs font-extrabold",
+                                                        active
+                                                            ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                            : "bg-white text-slate-700 hover:bg-orange-50"
                                                     )}
                                                 >
                                                     {p.label}
@@ -1189,23 +1449,40 @@ export default function ListingPageClient(props: Props) {
                                         })}
                                     </div>
 
-                                    {/* quick chips */}
-                                    {/* ✅ quick chips WITH ICONS */}
                                     {isVehicle ? (
                                         quickField === "make-model" && makeModelParsed.length ? (
                                             <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
                                                 {makeModelParsed.slice(0, 7).map((m) => {
-                                                    const active = String(make || "").toLowerCase() === m.make.toLowerCase();
+                                                    const active =
+                                                        String(make || "").toLowerCase() ===
+                                                        m.make.toLowerCase();
+
                                                     return (
                                                         <button
                                                             key={m.make}
                                                             type="button"
-                                                            onClick={() => onMakeModelChip(m.make)}
-                                                            className={cn("h-[92px] rounded-xl border p-2 text-center", active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white hover:bg-orange-50")}
+                                                            onClick={() =>
+                                                                onMakeModelChip(m.make)
+                                                            }
+                                                            className={cn(
+                                                                "h-[92px] rounded-xl border border-slate-200 p-2 text-center",
+                                                                active
+                                                                    ? "bg-orange-50 ring-1 ring-orange-200"
+                                                                    : "bg-white hover:bg-orange-50"
+                                                            )}
                                                         >
                                                             <div className="flex h-full flex-col items-center justify-center gap-2">
                                                                 <IconOrInitial label={m.make} />
-                                                                <div className={cn("text-[11px] font-extrabold", active ? "text-orange-700" : "text-slate-900")}>{m.make}</div>
+                                                                <div
+                                                                    className={cn(
+                                                                        "text-[11px] font-extrabold",
+                                                                        active
+                                                                            ? "text-orange-700"
+                                                                            : "text-slate-900"
+                                                                    )}
+                                                                >
+                                                                    {m.make}
+                                                                </div>
                                                             </div>
                                                         </button>
                                                     );
@@ -1214,17 +1491,34 @@ export default function ListingPageClient(props: Props) {
                                         ) : topTypeChips.length ? (
                                             <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
                                                 {topTypeChips.map((opt) => {
-                                                    const active = String(make || "").toLowerCase() === String(opt || "").toLowerCase();
+                                                    const active =
+                                                        String(make || "").toLowerCase() ===
+                                                        String(opt || "").toLowerCase();
+
                                                     return (
                                                         <button
                                                             key={opt}
                                                             type="button"
                                                             onClick={() => onQuickChip(opt)}
-                                                            className={cn("h-[92px] rounded-xl border p-2 text-center", active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white hover:bg-orange-50")}
+                                                            className={cn(
+                                                                "h-[92px] rounded-xl border border-slate-200 p-2 text-center",
+                                                                active
+                                                                    ? "bg-orange-50 ring-1 ring-orange-200"
+                                                                    : "bg-white hover:bg-orange-50"
+                                                            )}
                                                         >
                                                             <div className="flex h-full flex-col items-center justify-center gap-2">
                                                                 <IconOrInitial label={opt} />
-                                                                <div className={cn("text-[11px] font-extrabold", active ? "text-orange-700" : "text-slate-900")}>{opt}</div>
+                                                                <div
+                                                                    className={cn(
+                                                                        "text-[11px] font-extrabold",
+                                                                        active
+                                                                            ? "text-orange-700"
+                                                                            : "text-slate-900"
+                                                                    )}
+                                                                >
+                                                                    {opt}
+                                                                </div>
                                                             </div>
                                                         </button>
                                                     );
@@ -1235,20 +1529,41 @@ export default function ListingPageClient(props: Props) {
                                         <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
                                             {topTypeChips.map((opt) => {
                                                 const active =
-                                                    (quickField === "brand" && String(brand || "").toLowerCase() === String(opt || "").toLowerCase()) ||
-                                                    ((quickField === "type" || /type/i.test(quickField)) && String(type || "").toLowerCase() === String(opt || "").toLowerCase()) ||
-                                                    (!quickField && String(q || "").toLowerCase() === String(opt || "").toLowerCase());
+                                                    (quickField === "brand" &&
+                                                        String(brand || "").toLowerCase() ===
+                                                        String(opt || "").toLowerCase()) ||
+                                                    ((quickField === "type" ||
+                                                        /type/i.test(quickField)) &&
+                                                        String(type || "").toLowerCase() ===
+                                                        String(opt || "").toLowerCase()) ||
+                                                    (!quickField &&
+                                                        String(q || "").toLowerCase() ===
+                                                        String(opt || "").toLowerCase());
 
                                                 return (
                                                     <button
                                                         key={opt}
                                                         type="button"
                                                         onClick={() => onQuickChip(opt)}
-                                                        className={cn("h-[92px] rounded-xl border p-2 text-center", active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white hover:bg-orange-50")}
+                                                        className={cn(
+                                                            "h-[92px] rounded-xl border border-slate-200 p-2 text-center",
+                                                            active
+                                                                ? "bg-orange-50 ring-1 ring-orange-200"
+                                                                : "bg-white hover:bg-orange-50"
+                                                        )}
                                                     >
                                                         <div className="flex h-full flex-col items-center justify-center gap-2">
                                                             <IconOrInitial label={opt} />
-                                                            <div className={cn("text-[11px] font-extrabold", active ? "text-orange-700" : "text-slate-900")}>{opt}</div>
+                                                            <div
+                                                                className={cn(
+                                                                    "text-[11px] font-extrabold",
+                                                                    active
+                                                                        ? "text-orange-700"
+                                                                        : "text-slate-900"
+                                                                )}
+                                                            >
+                                                                {opt}
+                                                            </div>
                                                         </div>
                                                     </button>
                                                 );
@@ -1257,13 +1572,11 @@ export default function ListingPageClient(props: Props) {
                                     ) : null}
                                 </div>
 
-
-                                {/* mobile actions */}
                                 <div className="mt-3 flex items-center justify-between gap-2 md:hidden">
                                     <button
                                         type="button"
                                         onClick={() => setFiltersOpen(true)}
-                                        className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
+                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
                                     >
                                         <SlidersHorizontal className="h-4 w-4" />
                                         Filters
@@ -1277,28 +1590,37 @@ export default function ListingPageClient(props: Props) {
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => setLayout("grid")}
-                                            className={cn("rounded-xl border px-3 py-3 text-sm font-extrabold", layout === "grid" ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200" : "bg-white text-slate-700 hover:bg-orange-50")}
+                                            className={cn(
+                                                "rounded-xl border border-slate-200 px-3 py-3 text-sm font-extrabold",
+                                                layout === "grid"
+                                                    ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                    : "bg-white text-slate-700 hover:bg-orange-50"
+                                            )}
                                         >
                                             Grid
                                         </button>
                                         <button
                                             onClick={() => setLayout("list")}
-                                            className={cn("rounded-xl border px-3 py-3 text-sm font-extrabold", layout === "list" ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200" : "bg-white text-slate-700 hover:bg-orange-50")}
+                                            className={cn(
+                                                "rounded-xl border border-slate-200 px-3 py-3 text-sm font-extrabold",
+                                                layout === "list"
+                                                    ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                    : "bg-white text-slate-700 hover:bg-orange-50"
+                                            )}
                                         >
                                             List
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
-                            {/* ✅ Sort bar (Jiji-style) */}
+
                             <div className="mt-4 flex items-center justify-end gap-2">
                                 <div className="text-sm font-bold text-slate-600">Sort by:</div>
 
                                 <select
-                                    value={sortby}
+                                    value={sort}
                                     onChange={(e) => onSortChange(e.target.value)}
-                                    className="h-10 rounded-xl border bg-white px-3 text-sm font-extrabold outline-none focus:ring-2 focus:ring-orange-200"
+                                    className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-extrabold outline-none focus:ring-2 focus:ring-orange-200"
                                 >
                                     <option value="recommeded">Recommended</option>
                                     <option value="new">Newest</option>
@@ -1306,25 +1628,47 @@ export default function ListingPageClient(props: Props) {
                                     <option value="highest">Price: High to Low</option>
                                 </select>
                             </div>
-                            {/* results */}
-                            <div className={cn("mt-4 gap-3", layout === "grid" ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" : "grid grid-cols-1")}>
 
+                            <div
+                                className={cn(
+                                    "mt-4 gap-3",
+                                    layout === "grid"
+                                        ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
+                                        : "grid grid-cols-1"
+                                )}
+                            >
                                 {allItems.map((ad: any) => (
-                                    <SmartPropertyCardWithDesc key={String(ad._id)} ad={ad} regionFallback={props.regionLabel} />
+                                    <SmartPropertyCardWithDesc
+                                        key={String(ad._id)}
+                                        ad={ad}
+                                        regionFallback={props.regionLabel}
+                                    />
                                 ))}
                             </div>
 
                             <div ref={sentinelRef} className="h-1" />
 
                             <div className="mt-4 flex items-center justify-center">
-                                {loadingMore ? <div className="rounded-xl border bg-white px-4 py-2 text-sm font-bold text-slate-700">Loading…</div> : null}
-                                {!loadingMore && currentPage >= tp ? <div className="rounded-xl border bg-white px-4 py-2 text-sm font-bold text-slate-700">You’ve reached the end</div> : null}
+                                {loadingMore ? (
+                                    <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">
+                                        Loading…
+                                    </div>
+                                ) : null}
+
+                                {!loadingMore && currentPage >= tp ? (
+                                    <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">
+                                        You’ve reached the end
+                                    </div>
+                                ) : null}
                             </div>
 
                             {loadError ? (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                                     Failed to load: {loadError}{" "}
-                                    <button className="underline" onClick={() => location.reload()}>
+                                    <button
+                                        className="underline"
+                                        onClick={() => location.reload()}
+                                    >
                                         Refresh
                                     </button>
                                 </div>
@@ -1334,10 +1678,8 @@ export default function ListingPageClient(props: Props) {
                 </main>
             </div>
 
-            {/* ✅ Mobile categories sheet */}
-            {/* ✅ Mobile categories + subcategories sheet */}
             {catsOpen ? (
-                <div className="md:hidden fixed inset-0 z-[900]">
+                <div className="fixed inset-0 z-[900] md:hidden">
                     <button
                         aria-label="Close categories"
                         className="absolute inset-0 bg-black/40"
@@ -1348,30 +1690,33 @@ export default function ListingPageClient(props: Props) {
                         className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl"
                         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
-                        <div className="flex items-center justify-between border-b px-4 py-3">
-                            <div className="text-sm font-extrabold">Category & Subcategory</div>
+                        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+                            <div className="text-sm font-extrabold">
+                                Category & Subcategory
+                            </div>
                             <button
                                 type="button"
                                 onClick={() => setCatsOpen(false)}
-                                className="rounded-full border p-2 hover:bg-orange-50"
+                                className="rounded-full border border-slate-200 p-2 hover:bg-orange-50"
                             >
                                 <X className="h-4 w-4" />
                             </button>
                         </div>
 
-                        {/* ✅ current selection pill */}
                         <div className="px-4 pt-3">
-                            <div className="rounded-2xl border bg-slate-50 px-3 py-2 text-xs font-extrabold text-slate-700">
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-extrabold text-slate-700">
                                 Selected:{" "}
                                 <span className="text-orange-700">
-                                    {categoryName} • {String(activeListing?.title || props.title)}
+                                    {categoryName} •{" "}
+                                    {String(activeListing?.title || props.title)}
                                 </span>
                             </div>
                         </div>
 
-                        <div className="max-h-[74vh] overflow-auto px-4 py-4 space-y-3">
-                            {/* ✅ Categories */}
-                            <div className="text-xs font-extrabold text-slate-700">Categories</div>
+                        <div className="max-h-[74vh] space-y-3 overflow-auto px-4 py-4">
+                            <div className="text-xs font-extrabold text-slate-700">
+                                Categories
+                            </div>
 
                             <div className="space-y-2">
                                 {props.categories.map((c) => {
@@ -1380,12 +1725,13 @@ export default function ListingPageClient(props: Props) {
                                         String(mobileCatName || categoryName).toLowerCase();
 
                                     return (
-                                        <div key={c.name} className="rounded-2xl border overflow-hidden">
-                                            {/* Category row */}
+                                        <div
+                                            key={c.name}
+                                            className="overflow-hidden rounded-2xl border border-slate-200"
+                                        >
                                             <button
                                                 type="button"
                                                 onClick={() => {
-                                                    // expand category and load its subcategories list
                                                     setMobileCatName(String(c.name));
                                                 }}
                                                 className={cn(
@@ -1407,13 +1753,18 @@ export default function ListingPageClient(props: Props) {
                                                             {c.name}
                                                         </div>
                                                         <div className="text-[11px] font-bold text-slate-500">
-                                                            {Number(c.count || 0).toLocaleString()} ads
+                                                            {Number(
+                                                                c.count || 0
+                                                            ).toLocaleString()}{" "}
+                                                            ads
                                                         </div>
                                                     </div>
                                                     <div
                                                         className={cn(
                                                             "text-slate-400",
-                                                            activeCat ? "text-orange-600" : ""
+                                                            activeCat
+                                                                ? "text-orange-600"
+                                                                : ""
                                                         )}
                                                     >
                                                         ▾
@@ -1421,36 +1772,40 @@ export default function ListingPageClient(props: Props) {
                                                 </div>
                                             </button>
 
-                                            {/* ✅ Subcategories for selected category */}
                                             {activeCat ? (
-                                                <div className="border-t bg-white p-2">
+                                                <div className="border-t border-slate-200 bg-white p-2">
                                                     <div className="mb-2 px-2 text-[11px] font-extrabold text-slate-600">
                                                         Subcategories
                                                     </div>
 
-                                                    <div className="max-h-[45vh] overflow-auto space-y-1 pr-1">
+                                                    <div className="max-h-[45vh] space-y-1 overflow-auto pr-1">
                                                         {(c.listings || []).map((it) => {
                                                             const isActiveSlug =
                                                                 String(it.slug).toLowerCase() ===
                                                                 String(activeSlug).toLowerCase();
 
-                                                            const live = sidebar.subcategoryCounts?.[it.subcategory];
-                                                            const fallback = c.countsBySub?.[it.subcategory];
-                                                            const count = Number(live ?? fallback ?? 0);
+                                                            const live =
+                                                                sidebar.subcategoryCounts?.[
+                                                                it.subcategory
+                                                                ];
+                                                            const fallback =
+                                                                c.countsBySub?.[
+                                                                it.subcategory
+                                                                ];
+                                                            const count = Number(
+                                                                live ?? fallback ?? 0
+                                                            );
 
                                                             return (
                                                                 <button
                                                                     key={it.slug}
                                                                     type="button"
                                                                     onClick={async () => {
-                                                                        // 1) close sheet
                                                                         setCatsOpen(false);
-
-                                                                        // 2) switch category (updates listings + vehicle flags)
                                                                         await onCategoryPick(c);
-
-                                                                        // 3) pick specific subcategory slug
-                                                                        await onSubcategoryClick(it.slug);
+                                                                        await onSubcategoryClick(
+                                                                            it.slug
+                                                                        );
                                                                     }}
                                                                     className={cn(
                                                                         "w-full rounded-xl px-3 py-2 text-left hover:bg-orange-50",
@@ -1460,7 +1815,10 @@ export default function ListingPageClient(props: Props) {
                                                                     )}
                                                                 >
                                                                     <div className="flex items-center gap-3">
-                                                                        <IconBubble src={it.icon} alt={it.title} />
+                                                                        <IconBubble
+                                                                            src={it.icon}
+                                                                            alt={it.title}
+                                                                        />
                                                                         <div className="min-w-0 flex-1">
                                                                             <div
                                                                                 className={cn(
@@ -1473,13 +1831,18 @@ export default function ListingPageClient(props: Props) {
                                                                                 {it.title}
                                                                             </div>
                                                                             <div className="text-[11px] font-bold text-slate-500">
-                                                                                {Number(count).toLocaleString()} ads
+                                                                                {Number(
+                                                                                    count
+                                                                                ).toLocaleString()}{" "}
+                                                                                ads
                                                                             </div>
                                                                         </div>
                                                                         <div
                                                                             className={cn(
                                                                                 "text-slate-400",
-                                                                                isActiveSlug ? "text-orange-600" : ""
+                                                                                isActiveSlug
+                                                                                    ? "text-orange-600"
+                                                                                    : ""
                                                                             )}
                                                                         >
                                                                             ›
@@ -1499,6 +1862,7 @@ export default function ListingPageClient(props: Props) {
                     </div>
                 </div>
             ) : null}
+
             {regionsOpen ? (
                 <div className="fixed inset-0 z-[950]">
                     <button
@@ -1508,20 +1872,15 @@ export default function ListingPageClient(props: Props) {
                     />
 
                     <div
-                        className="
-        absolute left-1/2 top-[72px] -translate-x-1/2
-        w-[80vw] max-w-5xl
-        rounded-2xl bg-white shadow-2xl
-        overflow-hidden
-      "
+                        className="absolute left-1/2 top-[72px] w-[80vw] max-w-5xl -translate-x-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl"
                         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
-                        <div className="flex items-center justify-between border-b px-4 py-3">
+                        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
                             <div className="text-sm font-extrabold">Choose region</div>
                             <button
                                 type="button"
                                 onClick={() => setRegionsOpen(false)}
-                                className="rounded-full border p-2 hover:bg-orange-50"
+                                className="rounded-full border border-slate-200 p-2 hover:bg-orange-50"
                             >
                                 <X className="h-4 w-4" />
                             </button>
@@ -1530,28 +1889,45 @@ export default function ListingPageClient(props: Props) {
                         <div className="max-h-[78vh] overflow-auto px-4 py-4">
                             <RegionsGrid
                                 regions={Array.isArray(props.regions) ? props.regions : []}
-                                listingSlug={activeSlug}   // ✅ use current listing slug
+                                listingSlug={activeSlug}
                             />
                         </div>
                     </div>
                 </div>
             ) : null}
-            {/* mobile filters sheet */}
+
             {filtersOpen ? (
-                <div className="md:hidden fixed inset-0 z-[800]">
-                    <button aria-label="Close filters" className="absolute inset-0 bg-black/40" onClick={() => setFiltersOpen(false)} />
-                    <div className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-                        <div className="flex items-center justify-between border-b px-4 py-3">
+                <div className="fixed inset-0 z-[800] md:hidden">
+                    <button
+                        aria-label="Close filters"
+                        className="absolute inset-0 bg-black/40"
+                        onClick={() => setFiltersOpen(false)}
+                    />
+                    <div
+                        className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl"
+                        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+                    >
+                        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
                             <div className="text-sm font-extrabold">Filters</div>
-                            <button type="button" onClick={() => setFiltersOpen(false)} className="rounded-full border p-2 hover:bg-orange-50">
+                            <button
+                                type="button"
+                                onClick={() => setFiltersOpen(false)}
+                                className="rounded-full border border-slate-200 p-2 hover:bg-orange-50"
+                            >
                                 <X className="h-4 w-4" />
                             </button>
                         </div>
 
-                        <div className="max-h-[72vh] overflow-auto px-4 py-4">{FiltersContent}</div>
+                        <div className="max-h-[72vh] overflow-auto px-4 py-4">
+                            {FiltersContent}
+                        </div>
 
-                        <div className="grid grid-cols-2 gap-2 border-t px-4 py-3">
-                            <button type="button" onClick={clearAll} className="h-12 rounded-xl border px-4 text-sm font-extrabold text-slate-700 hover:bg-orange-50">
+                        <div className="grid grid-cols-2 gap-2 border-t border-slate-200 px-4 py-3">
+                            <button
+                                type="button"
+                                onClick={clearAll}
+                                className="h-12 rounded-xl border border-slate-200 px-4 text-sm font-extrabold text-slate-700 hover:bg-orange-50"
+                            >
                                 Clear
                             </button>
                             <button

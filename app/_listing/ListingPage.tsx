@@ -37,7 +37,6 @@ type ListingSearchParams = {
     min?: string;
     max?: string;
     sort?: string;
-    sortby?: string;
     membership?: string;
 
     county?: string;
@@ -59,7 +58,13 @@ function normalizeSlug(s: string) {
 function normName(s: any) {
     return String(s || "").trim().toLowerCase();
 }
-
+function normalizeSort(v?: string) {
+    const s = String(v || "").trim().toLowerCase();
+    if (s === "new") return "new";
+    if (s === "lowest") return "lowest";
+    if (s === "highest") return "highest";
+    return "recommended";
+}
 type CategoryListingItem = { slug: string; title: string; subcategory: string; icon?: string };
 
 function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: string) {
@@ -194,7 +199,7 @@ export default async function ListingPageUI(args: {
     const brand = !isVehicle ? String(args.searchParams.brand || "").trim() : "";
 
     const layout = args.searchParams.layout === "list" ? "list" : "grid";
-
+    const sort = normalizeSort(args.searchParams.sort);
     const canonical = args.regionSlug
         ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
         : `https://tadaomarket.com/${listingSlug}`;
@@ -301,14 +306,14 @@ export default async function ListingPageUI(args: {
     if (args.regionSlug) {
         const regionName = regionFromSlug(args.regionSlug);
 
-        const sort =
-            args.searchParams.sort === "price_asc"
+        const regionSort =
+            sort === "lowest"
                 ? "price_asc"
-                : args.searchParams.sort === "price_desc"
+                : sort === "highest"
                     ? "price_desc"
-                    : args.searchParams.sort === "new"
+                    : sort === "new"
                         ? "new"
-                        : "recommeded";
+                        : "recommended";
 
         const res = await getAdsForRegionListing({
             regionSlug: args.regionSlug,
@@ -318,7 +323,7 @@ export default async function ListingPageUI(args: {
             limit: PAGE_SIZE,
             min: minN,
             max: maxN,
-            sort,
+            sort: regionSort,
             membership: membership ? (membership as any) : undefined,
             county,
             town,
@@ -334,17 +339,8 @@ export default async function ListingPageUI(args: {
         totalPages = Number(res?.totalPages || 1);
         regionLabel = res?.regionName || regionName;
     } else {
-        const sortby =
-            args.searchParams.sortby === "lowest"
-                ? "lowest"
-                : args.searchParams.sortby === "highest"
-                    ? "highest"
-                    : args.searchParams.sortby === "new"
-                        ? "new"
-                        : "recommeded";
-
         const queryObject: any = {
-            sortby,
+            sort,
             category: listing.category,
             subcategory: listing.subcategory,
         };
