@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "./hooks/useAuth";
 
 
 const poppins = Poppins({
@@ -41,10 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={poppins.variable}>
 
+        <AuthProvider>
 
-        {children}
+          {children}
 
-
+        </AuthProvider>
       </body>
     </html>
   );
