@@ -1,5 +1,5 @@
 "use client";
-import EventForm from "@/components/shared/EventForm";
+//import EventForm from "@/components/shared/EventForm";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
 import TopBar from "./TopBar.client";
@@ -78,7 +78,7 @@ const DashboardSell = ({
 
             <div className="p-1 lg: p-2 flex min-h-[100vh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
 
-              <EventForm
+              {/**   <EventForm
                 userId={userId}
                 userImage={userImage}
                 type={type}
@@ -94,7 +94,7 @@ const DashboardSell = ({
                 handlePay={(ad: any) => router.push(`/pay/${ad._id}`)}
                 handleOpenShop={(shopId: string) => router.push(`/profile/${shopId}`)}
                 handleOpenTerms={() => router.push(`/terms`)}
-              />
+              />*/}
             </div>
 
 
