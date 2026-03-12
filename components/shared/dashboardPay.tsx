@@ -16,44 +16,20 @@ import { activateSubscription } from "@/lib/actions/subscription.actions";
 
 // ✅ NEW: mark transaction paid (recommended)
 import { completeSubscriptionAfterPayment, markTransactionPaid } from "@/lib/actions/transactions.actions";
+import TopBar from "../home/TopBar.client";
 
 type payProps = {
   userId: string;
   recipientUid: string;
   trans: any;
   user: any;
-  onClose: () => void;
-  handleOpenSell: () => void;
-  handleOpenBook: () => void;
-  handleOpenPlan: () => void;
-  handleOpenChat: () => void;
-  handleOpenAbout: () => void;
-  handleOpenTerms: () => void;
-  handleOpenPrivacy: () => void;
-  handleOpenSafety: () => void;
-  handleOpenShop: (shopId: any) => void;
-  handleOpenChatId: (value: string) => void;
-  handleOpenSettings: () => void;
-  handleOpenPerfomance: () => void;
+
 };
 
 const DashboardPay = ({
-  userId,
+
   trans,
   user,
-  recipientUid,
-  handleOpenPerfomance,
-  handleOpenSettings,
-  handleOpenShop,
-  onClose,
-  handleOpenSell,
-  handleOpenChat,
-  handleOpenBook,
-  handleOpenPlan,
-  handleOpenAbout,
-  handleOpenTerms,
-  handleOpenPrivacy,
-  handleOpenSafety,
 }: payProps) => {
   const { toast } = useToast();
   const router = useRouter();
@@ -223,24 +199,7 @@ const DashboardPay = ({
   return (
     <div className="min-h-screen dark:bg-[#131B1E] h-screen text-black dark:text-[#F1F3F3] bg-gray-200">
       <div className="top-0 z-10 fixed w-full">
-        <Navbar
-          user={user}
-          userstatus={user.status}
-          userId={userId}
-          onClose={onClose}
-          popup={"pay"}
-          handleOpenSell={handleOpenSell}
-          handleOpenBook={handleOpenBook}
-          handleOpenPlan={handleOpenPlan}
-          handleOpenChat={handleOpenChat}
-          handleOpenPerfomance={handleOpenPerfomance}
-          handleOpenSettings={handleOpenSettings}
-          handleOpenAbout={handleOpenAbout}
-          handleOpenTerms={handleOpenTerms}
-          handleOpenPrivacy={handleOpenPrivacy}
-          handleOpenSafety={handleOpenSafety}
-          handleOpenShop={handleOpenShop}
-        />
+        <TopBar />
       </div>
 
       <div className="max-w-6xl mx-auto flex mt-[60px] mb-0 p-1">
@@ -388,16 +347,7 @@ const DashboardPay = ({
                               </div>
                             </div>
 
-                            <div className="flex gap-1 mt-6 items-center">
-                              <div className="flex gap-2 w-full">
-                                <Button variant="outline" onClick={onClose}>
-                                  Home
-                                </Button>
-                                <Button variant="outline" onClick={() => handleOpenShop(user)}>
-                                  My Shop
-                                </Button>
-                              </div>
-                            </div>
+
                           </div>
                         )}
                       </div>

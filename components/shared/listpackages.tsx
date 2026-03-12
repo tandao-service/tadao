@@ -27,8 +27,7 @@ type PackProps = {
   userId: string;
   daysRemaining: number;
   packname: string;
-  user: IUser;
-  handlePayNow: (id: string) => void;
+  user: any;
 };
 export default function Listpackages({
   packagesList,
@@ -36,9 +35,8 @@ export default function Listpackages({
   packname,
   daysRemaining,
   user,
-  handlePayNow,
 }: PackProps) {
-  const { user: currentUser } = useAuth();
+
   const [activeButton, setActiveButton] = useState(1);
   const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
   const router = useRouter();
@@ -48,11 +46,13 @@ export default function Listpackages({
     periodInput: string,
     priceInput: string
   ) => {
+    if (!packIdInput || !packNameInput || !periodInput || !priceInput) return;
 
     function generateRandomOrderId() {
-      const timestamp = Date.now(); // Current timestamp in milliseconds
+      const timestamp = Date.now();
       return `MERCHANT_${userId}_${timestamp}`;
     }
+
     const customerId = generateRandomOrderId();
 
     const trans = {
@@ -66,10 +66,15 @@ export default function Listpackages({
       status: "Pending",
       createdAt: new Date(),
     };
-    const response = await createTransaction(trans);
-    if (response.status === "Pending") {
-      handlePayNow(response.merchantId)
-      // router.push(`/pay/${response.orderTrackingId}`);
+
+    try {
+      const response = await createTransaction(trans);
+
+      if (response?.status === "Pending" && response?.orderTrackingId) {
+        router.push(`/pay/${response.orderTrackingId}`);
+      }
+    } catch (error) {
+      console.error("Failed to create transaction:", error);
     }
   };
   const handleButtonClick = (index: number, title: string) => {
@@ -280,7 +285,7 @@ export default function Listpackages({
             disabled
             className="p-1 w-[150px] dark:text-white lg:w-[200px] font-bold rounded-md "
           />
-          {currentUser ? (<Button
+          {user ? (<Button
             type="submit"
             onClick={() =>
               handlepay(packIdInput, packNameInput, periodInput, priceInput)
