@@ -1,9 +1,14 @@
 "use client";
+import EventForm from "@/components/shared/EventForm";
+import { IAd } from "@/lib/database/models/ad.model";
+import Footersub from "./Footersub";
+import BottomNavigation from "./BottomNavigation";
+import Navbar from "./navbar";
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
-import TopBar from "./TopBar.client";
-import { useRouter } from "next/navigation";
-import EventForm from "../shared/EventForm";
+import { ScrollArea } from "../ui/scroll-area";
+import { Toolbar } from "@mui/material";
+import TopBar from "../home/TopBar.client";
 type Package = {
   imageUrl: string;
   name: string;
@@ -25,11 +30,28 @@ type dashboardProps = {
   packagesList: any;
   category?: string;
   subcategory?: string;
+  onClose: () => void;
+  handleOpenBook: () => void;
+  handleOpenChat: () => void;
+  handleOpenPlan: () => void;
+  handleOpenSell: () => void;
+  handleOpenAbout: () => void;
+  handleOpenTerms: () => void;
+  handleOpenPrivacy: () => void;
+  handleOpenSafety: () => void;
+  handleAdView: (ad: any) => void;
+  handleCategory: (value: string) => void;
+  handlePay: (id: string) => void;
+  popup: string;
   subcategoryList: any;
+  handleOpenShop: (shopId: any) => void;
+  handleOpenPerfomance: () => void;
+  handleOpenSettings: () => void;
 };
-const DashboardSell = ({
+const DashboardSellMain = ({
   userId,
   user,
+  //packname,
   userName,
   userImage,
   type,
@@ -39,9 +61,25 @@ const DashboardSell = ({
   category,
   subcategory,
   subcategoryList,
+  onClose,
+  handleCategory,
+  handleOpenSell,
+  handleOpenBook,
+  handleOpenPlan,
+  handleOpenChat,
+  handleAdView,
+  handlePay,
+  handleOpenAbout,
+  handleOpenTerms,
+  handleOpenPrivacy,
+  handleOpenSafety,
+  handleOpenSettings,
+  handleOpenShop,
+  handleOpenPerfomance,
+  popup,
 }: dashboardProps) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
-  const router = useRouter();
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
     const isDark = savedTheme === mode;
@@ -71,6 +109,24 @@ const DashboardSell = ({
     }
   `}</style>
           <div className="z-10 top-0 fixed w-full">
+            {/** <Navbar
+              user={user?.user ?? []}
+              userstatus={user.user?.status ?? "User"}
+              userId={userId}
+              onClose={onClose}
+              popup={popup}
+              handleOpenSell={handleOpenSell}
+              handleOpenBook={handleOpenBook}
+              handleOpenPlan={handleOpenPlan}
+              handleOpenChat={handleOpenChat}
+              handleOpenShop={handleOpenShop}
+              handleOpenPerfomance={handleOpenPerfomance}
+              handleOpenSettings={handleOpenSettings}
+              handleOpenAbout={handleOpenAbout}
+              handleOpenTerms={handleOpenTerms}
+              handleOpenPrivacy={handleOpenPrivacy}
+              handleOpenSafety={handleOpenSafety}
+            /> */}
             <TopBar />
           </div>
 
@@ -90,10 +146,10 @@ const DashboardSell = ({
                 category={category}
                 subcategory={subcategory}
                 packagesList={packagesList}
-                handleAdView={(ad: any) => router.push(`/property/${ad._id}`)}
-                handlePay={(ad: any) => router.push(`/pay/${ad._id}`)}
-                handleOpenShop={(shopId: string) => router.push(`/profile/${shopId}`)}
-                handleOpenTerms={() => router.push(`/terms`)}
+                handleAdView={handleAdView}
+                handlePay={handlePay}
+                handleOpenShop={handleOpenShop}
+                handleOpenTerms={handleOpenTerms}
               />
             </div>
 
@@ -106,4 +162,4 @@ const DashboardSell = ({
   );
 };
 
-export default DashboardSell;
+export default DashboardSellMain;
