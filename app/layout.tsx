@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "./hooks/useAuth";
-import TopProgressBar from "@/components/home/TopProgressBar";
 
 
 const poppins = Poppins({
@@ -42,12 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={poppins.variable}>
-        <TopProgressBar height={3} colorClassName="bg-orange-500" />
-        <AuthProvider>
 
-          {children}
 
-        </AuthProvider>
+        {children}
+
+
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-import TopProgressBar from "@/components/home/TopProgressBar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
