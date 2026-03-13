@@ -18,9 +18,9 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import Unreadmessages from "@/components/shared/Unreadmessages";
 import UserMenu from "@/components/shared/UserMenu";
 import { useAuth } from "@/app/hooks/useAuth";
+import Unreadmessages from "../shared/Unreadmessages";
 
 function getDisplayName(appUser?: any, authUser?: any) {
     if (appUser?.firstName || appUser?.lastName) {
@@ -195,7 +195,7 @@ export default function TopBar() {
                                 <TooltipTrigger asChild>
                                     <button
                                         type="button"
-                                        onClick={() => router.push("/pricing")}
+                                        onClick={() => router.push("/plan")}
                                         className="flex h-9 w-9 items-center justify-center rounded-full border bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:bg-[#222C31]"
                                     >
                                         <DiamondIcon fontSize="small" />
