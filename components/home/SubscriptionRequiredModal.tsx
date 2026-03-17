@@ -1,29 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createSellSubscriptionCheckout } from "@/lib/actions/sell.actions";
-
-type PriceRow = {
-    amount: number;
-    period: string;
-};
-
-type Package = {
-    _id: string;
-    name: string;
-    description?: string;
-    features?: { title?: string }[] | string[];
-    price?: PriceRow[];
-    price2?: PriceRow[];
-    color?: string;
-    priority?: number;
-};
+import PackageSelector, { type PackageSelectorPackage } from "./PackageSelector";
 
 type Props = {
     open: boolean;
     onClose: () => void;
-    packagesList: Package[];
+    packagesList: PackageSelectorPackage[];
     userId: string;
     user: any;
     daysRemaining?: number;
@@ -35,129 +21,152 @@ export default function SubscriptionRequiredModal({
     onClose,
     packagesList,
     userId,
+    user,
+    daysRemaining = 0,
+    packname = "",
 }: Props) {
     const router = useRouter();
-    const [selectedPackageId, setSelectedPackageId] = useState("");
-    const [selectedPeriod, setSelectedPeriod] = useState("1 month");
+
+    const [activePackage, setActivePackage] = useState<PackageSelectorPackage | null>(null);
+    const [activeButton, setActiveButton] = useState(1);
+    const [activeButtonTitle, setActiveButtonTitle] = useState("1 month");
+    const [periodInput, setPeriodInput] = useState("1 month");
     const [loading, setLoading] = useState(false);
 
-    const paidPackages = useMemo(
-        () => packagesList.filter((p) => String(p.name).toLowerCase() !== "free"),
-        [packagesList]
-    );
+    const remainingAds = Number(user?.subscription?.remainingAds ?? 0);
 
-    const selectedPackage = paidPackages.find((p) => p._id === selectedPackageId);
+    useEffect(() => {
+        if (!open || !packagesList.length) return;
+
+        const starter =
+            packagesList.find((p) => String(p.name).toLowerCase() !== "free") ||
+            packagesList[0] ||
+            null;
+
+        setActivePackage(starter);
+        setActiveButton(1);
+        setActiveButtonTitle("1 month");
+        setPeriodInput("1 month");
+    }, [open, packagesList]);
+
+    const selectedSubCategory = ""; // modal is generic; no assets-financing logic here unless you pass it in
 
     const selectedAmount = useMemo(() => {
-        const prices = selectedPackage?.price || [];
-        const row = prices.find(
-            (x) => String(x.period).toLowerCase() === String(selectedPeriod).toLowerCase()
-        );
+        if (!activePackage) return 0;
+        const prices = activePackage.price || [];
+        const row = prices[activeButton];
         return Number(row?.amount || 0);
-    }, [selectedPackage, selectedPeriod]);
+    }, [activePackage, activeButton]);
 
-    if (!open) return null;
+    const handleSelectPackage = (pack: PackageSelectorPackage) => {
+        setActivePackage(pack);
+
+        const prices = pack.price || [];
+        const row = prices[activeButton];
+        if (row?.period) {
+            setPeriodInput(row.period);
+        }
+    };
+
+    const handleSelectPeriod = (index: number, title: string) => {
+        setActiveButton(index);
+        setActiveButtonTitle(title);
+
+        if (!activePackage) return;
+        const prices = activePackage.price || [];
+        const row = prices[index];
+        setPeriodInput(row?.period || title);
+    };
 
     const handleContinue = async () => {
-        if (!selectedPackageId) return;
+        if (!activePackage) return;
 
         try {
             setLoading(true);
 
-            const res = await createSellSubscriptionCheckout({
+            const result = await createSellSubscriptionCheckout({
                 userId,
-                packageId: selectedPackageId,
-                period: selectedPeriod,
+                packageId: activePackage._id,
+                period: periodInput || activeButtonTitle || "1 month",
                 returnUrl: "/sell?payStatus=success",
             });
 
-            if (!res?.ok || !res.transactionId) {
-                throw new Error(res?.message || "Unable to create payment.");
+            if (!result?.ok || !result?.transactionId) {
+                throw new Error(result?.message || "Failed to create checkout");
             }
 
-            router.push(`/pay/${res.transactionId}?returnTo=/sell?payStatus=success&tx=${res.transactionId}`);
+            router.push(`/pay/${result.transactionId}`);
         } catch (error) {
             console.error(error);
-        } finally {
             setLoading(false);
         }
     };
 
+    if (!open) return null;
+
     return (
-        <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl rounded-xl bg-white dark:bg-[#1f2428] shadow-xl p-5">
-                <div className="flex items-start justify-between gap-3">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3">
+            <div className="w-full max-w-2xl rounded-2xl bg-white dark:bg-[#1E2528] shadow-xl max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
                     <div>
-                        <h3 className="text-xl font-semibold">Subscription required</h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                            Your free package has reached its maximum listings. Select a package to continue posting.
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                            Subscription required
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Your current package cannot post more ads. Choose a package to continue.
                         </p>
                     </div>
+
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="px-3 py-1 rounded border text-sm"
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#2D3236]"
                     >
-                        Close
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="mt-4 grid gap-3">
-                    {paidPackages.map((pack) => (
-                        <button
-                            key={pack._id}
-                            onClick={() => setSelectedPackageId(pack._id)}
-                            className={`text-left border rounded-lg p-4 transition ${selectedPackageId === pack._id
-                                ? "border-orange-500 ring-2 ring-orange-200"
-                                : "border-gray-200 dark:border-gray-700"
-                                }`}
-                        >
-                            <div className="font-semibold">{pack.name}</div>
-                            {pack.description && (
-                                <div className="text-sm text-gray-500 mt-1">{pack.description}</div>
-                            )}
-                        </button>
-                    ))}
-                </div>
+                <div className="p-4">
+                    <PackageSelector
+                        packagesList={packagesList}
+                        selectedSubCategory={selectedSubCategory}
+                        activePackage={activePackage}
+                        activeButton={activeButton}
+                        activeButtonTitle={activeButtonTitle}
+                        currentPlanName={packname}
+                        remainingAds={remainingAds}
+                        daysRemaining={daysRemaining}
+                        showFree={false}
+                        compact
+                        onSelectPackage={handleSelectPackage}
+                        onSelectPeriod={handleSelectPeriod}
+                    />
 
-                <div className="mt-4">
-                    <label className="text-sm font-medium block mb-2">Choose period</label>
-                    <div className="flex flex-wrap gap-2">
-                        {["1 week", "1 month", "3 months", "6 months", "1 year"].map((period) => (
-                            <button
-                                key={period}
-                                onClick={() => setSelectedPeriod(period)}
-                                className={`px-3 py-2 rounded-full text-sm border ${selectedPeriod === period
-                                    ? "bg-orange-500 text-white border-orange-500"
-                                    : "border-gray-300 dark:border-gray-700"
-                                    }`}
-                            >
-                                {period}
-                            </button>
-                        ))}
+                    <div className="mt-4 rounded-lg border border-orange-200 bg-orange-50 dark:bg-[#2D3236] dark:border-orange-800 p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Selected package</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                    {activePackage?.name || "—"}
+                                </p>
+                            </div>
+
+                            <div className="text-right">
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Amount</p>
+                                <p className="font-semibold text-orange-600">
+                                    Ksh {selectedAmount.toLocaleString()}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div className="mt-5 rounded-lg bg-gray-50 dark:bg-[#2b3137] p-4">
-                    <div className="text-sm text-gray-500">Amount</div>
-                    <div className="text-2xl font-bold">
-                        KES {selectedAmount.toLocaleString()}
-                    </div>
-                </div>
-
-                <div className="mt-5 flex justify-end gap-3">
                     <button
-                        onClick={onClose}
-                        className="px-4 py-2 rounded border"
-                        disabled={loading}
-                    >
-                        Cancel
-                    </button>
-                    <button
+                        type="button"
                         onClick={handleContinue}
-                        disabled={!selectedPackageId || loading}
-                        className="px-4 py-2 rounded bg-orange-500 text-white disabled:opacity-50"
+                        disabled={!activePackage || loading}
+                        className="mt-4 w-full rounded-lg bg-black text-white py-3 hover:bg-gray-900 disabled:opacity-60"
                     >
-                        {loading ? "Preparing payment..." : "Continue to Pay"}
+                        {loading ? "Preparing checkout..." : "Continue to payment"}
                     </button>
                 </div>
             </div>

@@ -6,16 +6,17 @@ import Subcategory from "@/lib/database/models/subcategory.model";
 import DynamicAd from "@/lib/database/models/dynamicAd.model";
 
 export type HomeSubCategory = {
-    id: string;
+    id: string;      // slug for URL
+    dbId: string;    // real Mongo ObjectId
     name: string;
     count: number;
     icon?: string | null;
-    // ✅ NEW: dynamic fields for this subcategory
     fields?: any[];
 };
 
 export type HomeCategoryNode = {
-    id: string;
+    id: string;      // slug for URL
+    dbId: string;    // real Mongo ObjectId
     name: string;
     icon?: string | null;
     count: number;
@@ -35,10 +36,6 @@ function safeStr(v: any) {
     return String(v ?? "").trim();
 }
 
-/**
- * ✅ Region matching
- * If your DB stores "Nairobi" but the URL uses "nairobi", this makes matching consistent.
- */
 function normalizeRegion(v: any) {
     return slugify(safeStr(v));
 }
@@ -56,12 +53,7 @@ export async function getCategoryTreeForHome(
 
     const regionNorm = regionSlug ? normalizeRegion(regionSlug) : "";
 
-    // ✅ Base match: active ads only
-    // ✅ Optional region filter using $expr + $toLower + $trim + regex replace (safe)
     const match: any = { adstatus: "Active" };
-
-    // If you already store `data.regionSlug`, use that instead (faster):
-    // match["data.regionSlug"] = regionNorm;
 
     if (regionNorm) {
         match.$expr = {
@@ -90,7 +82,7 @@ export async function getCategoryTreeForHome(
         };
     }
 
-    // ✅ 1) counts by category
+    // 1) counts by category
     const catCounts = await DynamicAd.aggregate([
         { $match: match },
         { $group: { _id: "$data.category", count: { $sum: 1 } } },
@@ -103,7 +95,7 @@ export async function getCategoryTreeForHome(
         catCountObj[key] = Number(row?.count || 0);
     }
 
-    // ✅ 2) counts by (category, subcategory)
+    // 2) counts by (category, subcategory)
     const subCounts = await DynamicAd.aggregate([
         { $match: match },
         {
@@ -122,22 +114,22 @@ export async function getCategoryTreeForHome(
         subCountObj[`${cat}|||${sub}`] = Number(row?.count || 0);
     }
 
-    // ✅ 3) categories (icon from Category.imageUrl[0])
+    // 3) categories
     const cats = await Category.find({})
         .select("_id name imageUrl")
         .sort({ _id: 1 })
         .lean();
 
-    // ✅ 4) subcategories (icon from Subcategory.imageUrl[0])
+    // 4) subcategories
     const subcats = await Subcategory.find({})
         .populate({ path: "category", model: Category, select: "name" })
-        .select("_id subcategory category imageUrl fields") // ✅ add fields
+        .select("_id subcategory category imageUrl fields")
         .lean();
 
     const byCat: Record<string, any[]> = Object.create(null);
 
     for (const s of subcats as any[]) {
-        const parentName = safeStr(s?.category?.name);
+        const parentName = safeStr((s?.category as any)?.name);
         const subName = safeStr(s?.subcategory);
         if (!parentName || !subName) continue;
 
@@ -145,25 +137,28 @@ export async function getCategoryTreeForHome(
         byCat[parentName].push(s);
     }
 
-    // ✅ 5) Build tree + attach icons
+    // 5) Build tree
     const tree: HomeCategoryNode[] = (cats || [])
         .map((c: any) => {
             const name = safeStr(c?.name);
             if (!name) return null;
 
             const total = catCountObj[name] || 0;
-
             const subsRaw = byCat[name] || [];
+
             const subs: HomeSubCategory[] = subsRaw
                 .map((s: any) => {
                     const subName = safeStr(s?.subcategory);
                     const count = subCountObj[`${name}|||${subName}`] || 0;
-
                     const subIcon =
-                        Array.isArray(s?.imageUrl) && s.imageUrl.length > 0 ? s.imageUrl[0] : null;
+                        Array.isArray(s?.imageUrl) && s.imageUrl.length > 0
+                            ? s.imageUrl[0]
+                            : null;
                     const fields = Array.isArray(s?.fields) ? s.fields : [];
+
                     return {
-                        id: slugify(subName),
+                        id: slugify(subName),      // URL slug
+                        dbId: String(s?._id),      // real Mongo ObjectId
                         name: subName,
                         count,
                         icon: subIcon,
@@ -174,10 +169,13 @@ export async function getCategoryTreeForHome(
                 .slice(0, limitSubsPerCat);
 
             const catIcon =
-                Array.isArray(c?.imageUrl) && c.imageUrl.length > 0 ? c.imageUrl[0] : null;
+                Array.isArray(c?.imageUrl) && c.imageUrl.length > 0
+                    ? c.imageUrl[0]
+                    : null;
 
             return {
-                id: slugify(name),
+                id: slugify(name),            // URL slug
+                dbId: String(c?._id),         // real Mongo ObjectId
                 name,
                 icon: catIcon,
                 count: total,
@@ -191,16 +189,13 @@ export async function getCategoryTreeForHome(
 }
 
 /**
- * ✅ Total ads in a region (for /r/[regionSlug]/... pages)
+ * ✅ Total ads in a region
  */
 export async function getTotalAdsForRegion(regionSlug: string) {
     await connectToDatabase();
+
     const regionNorm = normalizeRegion(regionSlug);
-
     const match: any = { adstatus: "Active" };
-
-    // If you store data.regionSlug, use this:
-    // match["data.regionSlug"] = regionNorm;
 
     match.$expr = {
         $eq: [

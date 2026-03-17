@@ -28,7 +28,7 @@ const SubCategorySelect = ({
 }: {
   selected: string | null;
   data: any;
-  onChange: (field: string, value: string, _id: string) => void;
+  onChange: (field: string, value: string, dbId: string) => void;
 }) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -91,7 +91,7 @@ const SubCategorySelect = ({
                     <CommandItem
                       key={index}
                       onSelect={() => {
-                        onChange("subcategory", category.subcategory, category._id);
+                        onChange("subcategory", category.subcategory, category.dbId);
                         setOpen(false);
                       }}
                       className="p-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
@@ -140,7 +140,7 @@ const SubCategorySelect = ({
                   <CommandItem
                     key={index}
                     onSelect={() => {
-                      onChange("subcategory", category.subcategory, category._id);
+                      onChange("subcategory", category.subcategory, category.dbId);
                       setOpen(false);
                     }}
                   >

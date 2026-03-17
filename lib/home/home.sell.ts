@@ -8,6 +8,7 @@ export function flattenHomeCategoryTreeForSell(tree: HomeCategoryNode[] = []) {
             rows.push({
                 _id: sub.id,
                 subcategory: sub.name,
+                dbId: sub.dbId,
                 imageUrl: sub.icon ? [sub.icon] : [],
                 fields: Array.isArray(sub.fields) ? sub.fields : [],
                 category: {
