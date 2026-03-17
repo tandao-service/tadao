@@ -137,7 +137,7 @@ const DashboardSellMain = ({
               <EventForm
                 userId={userId}
                 userImage={userImage}
-                type={type}
+                //type={type}
                 ad={ad}
                 categories={subcategoryList}
                 adId={adId}
@@ -149,8 +149,7 @@ const DashboardSellMain = ({
                 handleAdView={handleAdView}
                 handlePay={handlePay}
                 handleOpenShop={handleOpenShop}
-                handleOpenTerms={handleOpenTerms}
-              />
+                handleOpenTerms={handleOpenTerms} type={"Create"} />
             </div>
 
 
