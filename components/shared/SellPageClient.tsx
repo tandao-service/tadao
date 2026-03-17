@@ -8,11 +8,17 @@ import { useSellCategoryTree } from "@/app/hooks/useSellCategoryTree";
 type Props = {
     category?: string;
     subcategory?: string;
+    packagesList?: any[];
+    payStatus?: string;
+    tx?: string;
 };
 
 export default function SellPageClient({
     category = "",
     subcategory = "",
+    packagesList = [],
+    payStatus = "",
+    tx = "",
 }: Props) {
     const { authUser, user, appUserId, loading } = useAuth();
     const { subcategoryList, ensureCategoryTree } = useSellCategoryTree();
@@ -75,10 +81,12 @@ export default function SellPageClient({
             userName={`${user?.firstName || ""} ${user?.lastName || ""}`.trim()}
             userImage={user?.photo || user?.imageUrl || authUser?.photoURL || ""}
             type="Create"
-            packagesList={[]}
+            packagesList={packagesList}
             category={category}
             subcategory={subcategory}
             subcategoryList={subcategoryList}
+            payStatus={payStatus}
+            tx={tx}
         />
     );
 }
