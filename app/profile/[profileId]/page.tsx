@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-// adjust these imports to your exact action paths if needed
-import { getUserById, getUserByClerkId } from "@/lib/actions/user.actions";
+import { getUserById } from "@/lib/actions/user.actions";
+
 import ProfilePageClient from "./ProfilePageClient";
+import ReviewsPageClient from "./ReviewsPageClient";
+
 
 type Props = {
     params: {
         profileId: string;
+    };
+    searchParams?: {
+        tab?: string;
     };
 };
 
@@ -25,13 +30,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-export default async function ProfilePage({ params }: Props) {
+export default async function ProfilePage({ params, searchParams }: Props) {
+    const tab = searchParams?.tab || "ads";
 
     const [appUser] = await Promise.all([
-        getUserById(params.profileId).catch(() => null)
+        getUserById(params.profileId).catch(() => null),
     ]);
 
-    // keep this fallback shape safe for DashboardMyads
+    if (!appUser) {
+        redirect("/");
+    }
+
     const currentUser =
         appUser || {
             _id: "",
@@ -45,12 +54,23 @@ export default async function ProfilePage({ params }: Props) {
             user: null,
         };
 
-    // if later you have a real loans action, replace this
     const loans = {
         data: [],
         totalPages: 0,
     };
 
+    // ✅ NEW: Reviews route handling
+    if (tab === "reviews") {
+        return (
+            <ReviewsPageClient
+                profileId={params.profileId}
+                recipient={currentUser}
+                currentUser={currentUser}
+            />
+        );
+    }
+
+    // ✅ DEFAULT: existing profile page
     return (
         <ProfilePageClient
             profileId={params.profileId}

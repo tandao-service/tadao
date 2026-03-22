@@ -1,34 +1,34 @@
-// components/Chat.js
-"use client"
+"use client";
+
 import { useEffect, useState } from "react";
-import firebase from "firebase/app";
+import "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import Image from "next/image";
-import { getUserById } from "@/lib/actions/user.actions";
-import Navbar from "@/components/shared/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import SellerProfile from "@/components/shared/SellerProfile";
-import dynamic from "next/dynamic";
-import Skeleton from "@mui/material/Skeleton";
-import Sidebar from "@/components/shared/Sidebar";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import Footersub from "@/components/shared/Footersub";
-import BottomNavigation from "@/components/shared/BottomNavigation";
-import Sidebarmain from "@/components/shared/Sidebarmain";
 import { mode } from "@/constants";
-import { IUser } from "@/lib/database/models/user.model";
 import SidebarmainReviews from "./SidebarmainReviews";
 import StarIcon from "@mui/icons-material/Star";
-import { Star, Send, X, CheckCircle, Phone, Mail, Circle } from "lucide-react";
-import { addDoc, collection, getDocs, limit, onSnapshot, query, serverTimestamp, Timestamp, where } from "firebase/firestore";
+import { Send, X, MessageSquareText, Star } from "lucide-react";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  serverTimestamp,
+  where,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Ratingsmobile from "./ratingsmobile";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
+import SellerProfileSidebar from "./SellerProfileSidebar";
+import TopBar from "../home/TopBar.client";
+import SellerProfileReviews from "./SellerProfileReviews";
+
 interface AdsProps {
   displayName: string;
   uid: string;
@@ -47,20 +47,31 @@ interface AdsProps {
   handleOpenSettings: () => void;
   handleOpenChatId: (value: string) => void;
   handleOpenReview: (value: string) => void;
-  // handleCategory: (value:string) => void;
-  // handleOpenSearchTab: (value:string) => void;
   handleOpenShop: (shopId: any) => void;
   handleOpenPerfomance: () => void;
   handlePay: (id: string) => void;
 }
 
-const ReviewsComponent = ({ displayName, uid, photoURL, user, recipient, onClose, handlePay, handleOpenShop,
-  handleOpenPerfomance, handleOpenSettings, handleOpenReview, handleOpenChat, handleOpenChatId, handleOpenBook, handleOpenSell, handleOpenPlan, handleOpenAbout, handleOpenTerms, handleOpenPrivacy, handleOpenSafety }: AdsProps) => {
+const ReviewsComponent = ({
+  displayName,
+  uid,
+  photoURL,
+  user,
+  recipient,
+  handlePay,
+  handleOpenSettings,
+  handleOpenReview,
+  handleOpenChatId,
+  handleOpenAbout,
+  handleOpenTerms,
+  handleOpenPrivacy,
+  handleOpenSafety,
+}: AdsProps) => {
   const [showForm, setShowForm] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const router = useRouter();
   const { user: currentUser } = useAuth();
-  // console.log(senderId);
+
   const [newReview, setNewReview] = useState({
     comment: "",
     rating: 0,
@@ -75,69 +86,59 @@ const ReviewsComponent = ({ displayName, uid, photoURL, user, recipient, onClose
   ]);
 
   const handleStarClick = (index: number) => {
-    const updatedStarClicked = [...starClicked];
-    updatedStarClicked[index] = !updatedStarClicked[index];
+    const updatedStarClicked = [0, 1, 2, 3, 4].map((i) => i <= index);
     setStarClicked(updatedStarClicked);
+    setNewReview((prev) => ({
+      ...prev,
+      rating: index + 1,
+    }));
   };
 
-
   const handleReviewSubmit = async () => {
-
-    if (newReview.comment && newReview.rating) {
-
+    if (!newReview.comment || !newReview.rating) {
       return;
     }
 
     try {
-      setIsSending(true); // Disable the button and show progress
+      setIsSending(true);
 
-      // Check if a review already exists for the sender and recipient combination
       const reviewQuery = query(
         collection(db, "reviews"),
-        where("uid", "==", uid), // Assuming senderUid is the UID of the current user
+        where("uid", "==", uid),
         where("recipientUid", "==", recipient._id)
-      ); // Assuming recipientUid is the UID of the recipient
+      );
 
       const reviewSnapshot = await getDocs(reviewQuery);
 
-      if (!reviewSnapshot.empty) {
+      await addDoc(collection(db, "reviews"), {
+        text: newReview.comment,
+        name: displayName,
+        avatar: photoURL,
+        createdAt: serverTimestamp(),
+        uid: uid,
+        recipientUid: recipient._id,
+        starClicked,
+        rating: newReview.rating,
+      });
 
-        await addDoc(collection(db, "reviews"), {
-          text: newReview.comment,
-          name: displayName,
-          avatar: photoURL,
-          createdAt: serverTimestamp(),
-          uid: uid,
-          recipientUid: recipient._id,
-          starClicked,
-        });
-      } else {
-        // Allow the user to submit a new review
-        await addDoc(collection(db, "reviews"), {
-          text: newReview.comment,
-          name: displayName,
-          avatar: photoURL,
-          createdAt: serverTimestamp(),
-          uid: uid,
-          recipientUid: recipient._id,
-          starClicked,
-        });
-
+      if (reviewSnapshot.empty) {
         console.log("Review submitted successfully.");
       }
     } catch (error) {
       console.error("Error sending review: ", error);
     } finally {
-      setIsSending(false); // Re-enable the button and hide progress
+      setIsSending(false);
     }
+
     setNewReview({ comment: "", rating: 0 });
     setShowForm(false);
-
+    setStarClicked([false, false, false, false, false]);
   };
+
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || mode; // Default to "dark"
+    const savedTheme = localStorage.getItem("theme") || mode;
     const isDark = savedTheme === mode;
 
     setIsDarkMode(isDark);
@@ -145,153 +146,188 @@ const ReviewsComponent = ({ displayName, uid, photoURL, user, recipient, onClose
   }, []);
 
   useEffect(() => {
-    if (isDarkMode === null) return; // Prevent running on initial mount
+    if (isDarkMode === null) return;
 
     document.documentElement.classList.toggle(mode, isDarkMode);
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
-  if (isDarkMode === null) return null; // Avoid flickering before state is set
+  if (isDarkMode === null) return null;
 
   return (
-    <div className="h-[100vh] bg-white lg:bg-gray-200 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]">
+    <div className="min-h-screen bg-slate-50 text-black dark:bg-[#131B1E] dark:text-[#F1F3F3]">
+      <TopBar />
 
-      <div className="z-10 top-0 fixed w-full">
-        <Navbar user={user} userstatus={user.status} userId={uid} onClose={onClose}
-          handleOpenSell={handleOpenSell}
-          handleOpenPlan={handleOpenPlan}
-          popup={"reviews"}
-          handleOpenBook={handleOpenBook}
-          handleOpenChat={handleOpenChat}
-          handleOpenShop={handleOpenShop}
-          handleOpenPerfomance={handleOpenPerfomance}
-          handleOpenSettings={handleOpenSettings}
-          handleOpenAbout={handleOpenAbout}
-          handleOpenTerms={handleOpenTerms}
-          handleOpenPrivacy={handleOpenPrivacy}
-          handleOpenSafety={handleOpenSafety} />
-      </div>
-      <div className="w-full max-w-6xl mx-auto h-full flex mt-[60px] p-1">
-        <div className="hidden lg:inline mr-5">
-          <div className="w-full rounded-lg p-1">
-            <SellerProfile
+      <div className="mx-auto flex w-full max-w-6xl gap-4 px-2 pb-8 pt-[calc(var(--topbar-h,64px)+12px)] md:px-4">
+        <div className="hidden lg:block lg:w-[350px]">
+          <SellerProfileReviews
+            user={recipient}
+            loggedId={uid}
+            userId={recipient._id}
+            handleOpenReview={handleOpenReview}
+            handleOpenChatId={handleOpenChatId}
+            handleOpenSettings={handleOpenSettings}
+            handlePay={handlePay}
+          //daysRemaining={0}
+          //pack={""}
+          //color={""}
+          //handleOpenPlan={function (): void { }}
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-sm dark:border-slate-700 dark:bg-[#2D3236]">
+            <div className="border-b border-slate-100 bg-gradient-to-r from-orange-500 to-orange-400 px-4 py-5 text-white dark:border-slate-700 md:px-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] backdrop-blur-sm">
+                    <MessageSquareText className="h-4 w-4" />
+                    Seller Reviews
+                  </div>
+
+                  <div className="mt-3 text-sm md:text-base">
+                    <Ratingsmobile
+                      recipientUid={recipient._id}
+                      user={recipient}
+                      handleOpenReview={handleOpenReview}
+                    />
+                  </div>
+                </div>
+
+                {currentUser ? (
+                  <button
+                    className="inline-flex items-center justify-center rounded-2xl bg-white px-4 py-3 text-sm font-bold text-orange-600 transition hover:bg-orange-50"
+                    onClick={() => setShowForm(true)}
+                  >
+                    Leave a Review
+                  </button>
+                ) : (
+                  <button
+                    className="inline-flex items-center justify-center rounded-2xl bg-white px-4 py-3 text-sm font-bold text-orange-600 transition hover:bg-orange-50"
+                    onClick={() => {
+                      router.push("/sign-in");
+                    }}
+                  >
+                    Leave a Review
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {showForm && (
+              <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/50 px-4">
+                <div className="w-full max-w-lg rounded-[28px] border border-orange-100 bg-white p-5 shadow-2xl dark:border-slate-700 dark:bg-[#1B2225] dark:text-gray-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                        Leave a Review
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        Share your experience with this seller.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => setShowForm(false)}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#2D3236] dark:text-slate-300"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  <div className="mt-5">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                      Your review
+                    </label>
+
+                    <textarea
+                      placeholder="Write a review..."
+                      className="min-h-[120px] w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm outline-none transition focus:border-orange-300 focus:bg-white dark:border-slate-600 dark:bg-[#2D3236] dark:text-gray-100"
+                      value={newReview.comment}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleReviewSubmit();
+                        }
+                      }}
+                      onChange={(e) =>
+                        setNewReview({ ...newReview, comment: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div className="mt-5">
+                    <div className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                      Rating
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      {starClicked.map((clicked, index) => (
+                        <StarIcon
+                          key={index}
+                          sx={{
+                            fontSize: 34,
+                            color: clicked ? "#f59e0b" : "#cbd5e1",
+                          }}
+                          onClick={() => handleStarClick(index)}
+                          className="cursor-pointer transition hover:scale-105"
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={isSending}
+                    className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-70"
+                    onClick={() => handleReviewSubmit()}
+                  >
+                    {isSending && (
+                      <CircularProgress sx={{ color: "white" }} size={24} />
+                    )}
+                    {isSending ? "Submitting..." : "Submit Review"}
+                    <Send size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <ScrollArea className="h-[72vh] bg-white dark:bg-[#2D3236]">
+              <div className="p-3 md:p-4">
+                <SidebarmainReviews recipientUid={recipient._id} uid={uid} />
+              </div>
+            </ScrollArea>
+          </div>
+
+          <div className="mt-6 lg:hidden">
+            <SellerProfileReviews
               user={recipient}
               loggedId={uid}
               userId={recipient._id}
               handleOpenReview={handleOpenReview}
               handleOpenChatId={handleOpenChatId}
               handleOpenSettings={handleOpenSettings}
-              handlePay={handlePay} />
-          </div>
-        </div>
-
-        <div className="flex-1 h-screen">
-
-          <div className="rounded-lg mb-20 h-full lg:mb-0 max-w-6xl mx-auto flex flex-col">
-            <div className="lg:flex-1 h-screen p-1 w-full">
-              <div className="flex w-full p-2 justify-between bg-white rounded-t-lg border-b dark:bg-[#2D3236] items-center">
-                <div className="flex flex-col">
-
-                  <div className="text-xs lg:text-base flex gap-1 items-center">
-                    <Ratingsmobile recipientUid={recipient._id} user={recipient} handleOpenReview={handleOpenReview} />
-                  </div>
-                </div>
-
-                {/* Leave a Review Button (Fixed) */}
-                {currentUser ? (<button
-                  className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
-                  onClick={() => setShowForm(true)}
-                >
-                  Leave a Review
-                </button>) : (<button
-                  className="text-sm lg:text-base bg-green-600 text-white py-1 px-2 lg:px-5 lg:py-2 rounded-full shadow-lg"
-                  onClick={() => {
-
-                    router.push("/sign-in");
-                  }}
-                >
-                  Leave a Review
-                </button>)}
-
-
-
-                {/* Review Form Popup */}
-                {showForm && (
-                  <div className="fixed z-20 inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-                      <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-medium dark:text-gray-300 text-gray-700">
-                          Leave a Review
-                        </h3>
-                        <button onClick={() => setShowForm(false)}>
-                          <X size={20} />
-                        </button>
-                      </div>
-
-                      <textarea
-                        placeholder="Write a review..."
-                        className="w-full p-2 border rounded-md mb-2 dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 bg-white"
-                        value={newReview.comment}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault(); // prevent newline
-                            handleReviewSubmit(); // trigger message send
-                          }
-                        }}
-                        onChange={(e) =>
-                          setNewReview({ ...newReview, comment: e.target.value })}
-                      />
-                      <div className="flex gap-2 items-center">
-                        <span className="dark:text-gray-300 text-gray-700">Rating:</span>
-
-                        {starClicked.map((clicked, index) => (
-                          <StarIcon
-                            key={index}
-                            sx={{ fontSize: 36, color: clicked ? "gold" : "gray" }} // Change color based on clicked state
-                            onClick={() => handleStarClick(index)} // Call handleStarClick function on click
-                            className="ml-1 lg:ml-0 cursor-pointer mb-1"
-                          />
-                        ))}
-                      </div>
-                      <button
-                        disabled={isSending}
-                        className="w-full mt-3 bg-green-600 text-white p-2 rounded-lg flex items-center justify-center gap-2"
-                        onClick={() => handleReviewSubmit()}
-                      >
-                        {isSending && (
-                          <CircularProgress sx={{ color: "white" }} size={30} />
-                        )}
-                        {isSending ? " Submitting..." : " Submit"}
-                        <Send size={16} />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-              <ScrollArea className="h-[75vh] p-1 bg-white rounded-b-lg dark:bg-[#2D3236]">
-
-                <SidebarmainReviews recipientUid={recipient._id} uid={uid} />
-              </ScrollArea>
-              <Toaster />
-            </div>
+              handlePay={handlePay}
+            // daysRemaining={0}
+            // pack={""}
+            // color={""}
+            // handleOpenPlan={function (): void { }}
+            />
           </div>
         </div>
       </div>
-      <footer>
-        <div className="hidden lg:inline">
-          <Footersub
-            handleOpenAbout={handleOpenAbout}
-            handleOpenTerms={handleOpenTerms}
-            handleOpenPrivacy={handleOpenPrivacy}
-            handleOpenSafety={handleOpenSafety} />
-        </div>
 
+      <footer className="hidden lg:block">
+        <Footersub
+          handleOpenAbout={handleOpenAbout}
+          handleOpenTerms={handleOpenTerms}
+          handleOpenPrivacy={handleOpenPrivacy}
+          handleOpenSafety={handleOpenSafety}
+        />
       </footer>
+
+      <Toaster />
     </div>
   );
 };
 
 export default ReviewsComponent;
-
-
