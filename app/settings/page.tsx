@@ -1,7 +1,4 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "@/lib/actions/user.actions";
 import SettingsPageClient from "./SettingsPageClient";
 
 export const metadata: Metadata = {
