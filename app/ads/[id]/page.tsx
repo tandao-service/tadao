@@ -7,8 +7,8 @@ import CopyLinkButton from "@/components/shared/CopyLinkButton";
 import TopBar from "@/components/home/TopBar.client";
 import MobileBackPill from "@/components/home/MobileBackPill.client";
 import RelatedPropertiesInfinite from "@/components/home/RelatedPropertiesInfinite";
-import PropertyGallery from "@/app/property/PropertyGallery";
 import { IoCall, IoChatboxOutline, IoChatbubbleOutline, IoCreateOutline, IoMail, IoShareSocialOutline } from "react-icons/io5";
+import PropertyGallery from "./PropertyGallery";
 
 type Props = {
     params: {
@@ -196,7 +196,7 @@ export default async function AdDetailsPage({ params }: Props) {
 
     const organizerId = safeStr(organizer?._id);
     const chatHref = organizerId
-        ? `/profile-messages/${encodeURIComponent(organizerId)}`
+        ? `/profile-messages/${encodeURIComponent(organizerId)}?adId=${encodeURIComponent(String(ad._id))}&title=${encodeURIComponent(title)}&price=${encodeURIComponent(priceText)}&image=${encodeURIComponent(cover || "")}`
         : "/profile-messages";
 
     const specs = buildSpecs(data);

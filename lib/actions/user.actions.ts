@@ -40,7 +40,7 @@ export async function createUserr(user: CreateUserParams) {
     handleError(error)
   }
 }
-export async function getUserByClerkId(clerkId: string) {
+export async function getUserByClerkId_(clerkId: string) {
   try {
     await connectToDatabase()
 
@@ -122,11 +122,28 @@ export async function getUserByClerkId(clerkId: string) {
     }
   }
 }
-export async function getUserById(clerkId: string) {
+
+export async function getUserByClerkId(clerkId: string) {
   try {
     await connectToDatabase();
 
     const user = await User.findOne({ clerkId }).lean();
+
+    if (!user) {
+      return null;
+    }
+
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+    return null;
+  }
+}
+export async function getUserById(_id: string) {
+  try {
+    await connectToDatabase();
+
+    const user = await User.findOne({ _id }).lean();
 
     if (!user) {
       return null;

@@ -9,7 +9,7 @@ import {
 } from "react";
 import { onAuthStateChanged, User, signOut } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase";
-import { getUserById } from "@/lib/actions/user.actions";
+import { getUserByClerkId } from "@/lib/actions/user.actions";
 
 type AppUser = {
     _id: string;
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfileLoading(true);
 
         try {
-            const data = await getUserById(current.uid);
+            const data = await getUserByClerkId(current.uid);
 
             if (data) {
                 setAppUser(data);

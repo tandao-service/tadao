@@ -134,7 +134,7 @@ export default function ProfileMessagesPage() {
                                 Sign in to view your conversations.
                             </p>
                             <Link
-                                href="/sign-in"
+                                href="/auth"
                                 className="mt-5 inline-flex rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600"
                             >
                                 Sign In
@@ -228,6 +228,7 @@ export default function ProfileMessagesPage() {
                                     {hasConversations ? (
                                         <ul className="px-2 pb-3">
                                             {filteredConversations.map((conversation) => {
+                                                console.log(filteredConversations);
                                                 const otherUserId = conversation.members?.find(
                                                     (id: string) => id !== currentUserId
                                                 );
