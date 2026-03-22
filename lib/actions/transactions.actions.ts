@@ -549,13 +549,18 @@ export async function getpayTransaction_(merchantId: string) {
   }
 }
 export async function getpayTransaction(orderTrackingId: string) {
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-  const tx = await Transaction.find({ orderTrackingId })
-    .populate("planId") // so trans[0].planId.list etc works
-    .limit(1);
+    const tx = await Transaction.findOne({ orderTrackingId }).populate("planId");
 
-  return JSON.parse(JSON.stringify(tx));
+    if (!tx) return null;
+
+    return JSON.parse(JSON.stringify(tx));
+  } catch (error) {
+    handleError(error);
+    return null;
+  }
 }
 
 /**

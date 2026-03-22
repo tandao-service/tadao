@@ -49,7 +49,7 @@ export async function GET() {
   const dynamicAdUrls = ads
     .filter((ad: any) => ad && ad._id)
     .map((ad: any) => ({
-      loc: `${baseUrl}/property/${ad._id}`,
+      loc: `${baseUrl}/ads/${ad._id}`,
       lastmod: safeDateISO(ad.updatedAt) || safeDateISO(ad.createdAt),
       changefreq: "weekly",
       priority: "0.7",

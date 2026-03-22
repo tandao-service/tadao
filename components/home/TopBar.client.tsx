@@ -167,7 +167,7 @@ export default function TopBar() {
                                         type="button"
                                         onClick={() => {
                                             if (authUser) {
-                                                router.push("/chat");
+                                                router.push("/profile-messages");
                                             } else {
                                                 router.push("/auth");
                                             }
@@ -212,7 +212,7 @@ export default function TopBar() {
                         type="button"
                         onClick={() => {
                             if (authUser) {
-                                router.push("/sell");
+                                router.push("/create-ad");
                             } else {
                                 router.push("/auth");
                             }

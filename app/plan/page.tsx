@@ -1,7 +1,4 @@
-// app/packages/page.tsx
-
 import PackagesPageClient from "@/components/home/PackagesPageClient";
-
 
 export const metadata = {
     title: "Packages | Tadao Market",
