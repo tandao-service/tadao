@@ -16,15 +16,7 @@ export const metadata = {
 };
 
 export default async function UpdateAdPage({ params }: Props) {
-    const { user } = await useAuth();
 
-    if (!user) {
-        redirect(`/auth?returnTo=/ads/${params.id}/update`);
-    }
-
-    if (!user) {
-        redirect(`/auth?returnTo=/ads/${params.id}/update`);
-    }
 
     const ad: any = await getAdById(params.id).catch(() => null);
 
@@ -32,17 +24,10 @@ export default async function UpdateAdPage({ params }: Props) {
         redirect("/");
     }
 
-    const organizerId = String(ad?.organizer?._id || ad?.organizer?.id || "").trim();
-    const currentUserId = String(user?._id || "").trim();
-
-    if (!organizerId || organizerId !== currentUserId) {
-        redirect(`/ads/${params.id}`);
-    }
-
     return (
         <UpdateAdClientPage
             ad={ad}
-            user={user}
+
         />
     );
 }

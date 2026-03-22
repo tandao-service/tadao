@@ -3,13 +3,28 @@
 import { useEffect, useState } from "react";
 import DashboardSell from "@/components/home/DashboardSell";
 import { useSellCategoryTree } from "@/app/hooks/useSellCategoryTree";
+import { useAuth } from "@/app/hooks/useAuth";
+import { redirect } from "next/navigation";
 
 type Props = {
     ad: any;
-    user: any;
 };
 
-export default function UpdateAdClientPage({ ad, user }: Props) {
+export default function UpdateAdClientPage({ ad }: Props) {
+    const { authUser, user, appUserId, loading } = useAuth();
+    const organizerId = String(ad?.organizer?._id || ad?.organizer?.id || "").trim();
+
+    if (!organizerId || organizerId !== user?._id) {
+        redirect(`/ads/${ad?._id}`);
+    }
+    if (!user) {
+        redirect(`/auth?returnTo=/ads/${ad._id}/update`);
+    }
+
+    if (!user) {
+        redirect(`/auth?returnTo=/ads/${ad._id}/update`);
+    }
+
     const { subcategoryList, ensureCategoryTree } = useSellCategoryTree();
     const [treeReady, setTreeReady] = useState(
         Array.isArray(subcategoryList) && subcategoryList.length > 0
