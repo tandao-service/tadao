@@ -11,11 +11,12 @@ import { IUser } from "@/lib/database/models/user.model";
 import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 import { useRouter } from "next/navigation";
 import { VerificationPackId } from "@/constants";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface SettingsProp {
   user: any;
   userId: string;
-  fee: string;
+  fee?: string;
   isAdCreator: boolean;
   handlePayNow: (id: string) => void;
 }
@@ -28,9 +29,25 @@ const Verification: React.FC<SettingsProp> = ({
   handlePayNow }:
   SettingsProp) => {
 
-  //const _id = "662b9ab6dd4398a447257e59";
-  const router = useRouter();
-  //const [activationfee, setActivationFee] = useState(user.fee);
+  const [activationfee, setActivationFee] = useState("500");
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const fee = await getVerfiesfee();
+        setActivationFee(fee);
+
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false); // Mark loading as complete
+      }
+
+      fetchData();
+    }
+  }, []);
   function generateRandomOrderId() {
     const timestamp = Date.now(); // Current timestamp in milliseconds
     return `MERCHANT_${userId}_${timestamp}`;
@@ -41,10 +58,7 @@ const Verification: React.FC<SettingsProp> = ({
     periodInput: string,
     priceInput: string
   ) => {
-    // console.log("pay")
-    //console.log("priceInput: "+priceInput+ "packIdInput: "+packIdInput+ "packNameInput: "+packNameInput)
     const referenceId = generateRandomOrderId();
-    // console.log(customerId);
     const trans = {
       orderTrackingId: referenceId,
       amount: Number(priceInput),
@@ -111,13 +125,17 @@ const Verification: React.FC<SettingsProp> = ({
           client confidence and attract more clients.
         </p>
         <div className="flex items-center pt-2">
-          <button
-            onClick={() => handlePay(VerificationPackId, "Verification", "0", fee)}
-            className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
-          >
-            <CheckCircleIcon sx={{ marginRight: "5px" }} />
-            Verify Now
-          </button>
+          {loading ? (<>
+            <CircularProgress sx={{ color: "#D1D5DB" }} />
+          </>) : (<>
+            <button
+              onClick={() => handlePay(VerificationPackId, "Verification", "0", activationfee)}
+              className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
+            >
+              <CheckCircleIcon sx={{ marginRight: "5px" }} />
+              Verify Now
+            </button></>)}
+
         </div>
       </div>
     </div>
@@ -159,13 +177,18 @@ const Verification: React.FC<SettingsProp> = ({
                   Unverified Seller
                 </p>
                 <div className="flex items-center">
-                  <button
-                    onClick={() => handlePay(VerificationPackId, "Verification", "0", fee)}
-                    className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
-                  >
-                    <CheckCircleIcon sx={{ marginRight: "5px" }} />
-                    Verify Now
-                  </button>
+                  {loading ? (<>
+                    <CircularProgress sx={{ color: "#D1D5DB" }} />
+                  </>) : (<>
+                    <button
+                      onClick={() => handlePay(VerificationPackId, "Verification", "0", activationfee)}
+                      className="flex gap-1 items-center hover:bg-black bg-[#30AF5B] text-white text-sm mt-2 p-1 rounded-lg shadow"
+                    >
+                      <CheckCircleIcon sx={{ marginRight: "5px" }} />
+                      Verify Now
+                    </button></>)}
+
+
                 </div>
               </div>
               }

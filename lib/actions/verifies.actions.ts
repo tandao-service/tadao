@@ -62,17 +62,16 @@ export const getVerifyfee = async () => {
     await connectToDatabase();
 
     const verifies = await Verifies.findOne();
-    // console.log(verifies)
     return JSON.parse(JSON.stringify(verifies));
   } catch (error) {
     handleError(error)
   }
 }
-export const getVerfiesfee = async (_id: string) => {
+export const getVerfiesfee = async () => {
   try {
     await connectToDatabase();
 
-    const verifies = await Verifies.findById(_id);
+    const verifies = await Verifies.find().limit(1);
 
     return JSON.parse(JSON.stringify(verifies));
   } catch (error) {

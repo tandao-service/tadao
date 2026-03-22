@@ -1,17 +1,15 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import CircularProgress from "@mui/material/CircularProgress";
-
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -22,15 +20,17 @@ import {
 } from "@/components/ui/accordion";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IUser } from "@/lib/database/models/user.model";
 import { UserDefaultValues } from "@/constants";
 import { UserFormSchema } from "@/lib/validator";
-import { deleteUser, updateUserFromSettings, updateUserPhone, updateUserPhoto } from "@/lib/actions/user.actions";
+import {
+  deleteUser,
+  updateUserFromSettings,
+  updateUserPhone,
+  updateUserPhoto,
+} from "@/lib/actions/user.actions";
 import { useToast } from "@/components/ui/use-toast";
 import { TextField } from "@mui/material";
-
 import { useUploadThing } from "@/lib/uploadthing";
-import { FileuploaderBusiness } from "./FileuploaderBusiness";
 import { verificationStatus } from "@/lib/actions/verificationstatus";
 import PhoneVerification from "./PhoneVerification";
 import { useAuth } from "@/app/hooks/useAuth";
@@ -42,26 +42,23 @@ type setingsProp = {
   userId?: string;
 };
 
-type Businesshours = {
-  openHour: string;
-  openMinute: string;
-  closeHour: string;
-  closeMinute: string;
+const inputSx = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "18px",
+    backgroundColor: "white",
+  },
 };
 
 const SettingsEdit = ({ user, type, userId }: setingsProp) => {
-  //const initialValues = user;
   const { toast } = useToast();
   const { user: currentUser, signOutUser } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
 
     if (query.get("OrderTrackingId")) {
       const orderTrackingId = query.get("OrderTrackingId");
-      console.log(orderTrackingId);
-      // Retrieve transaction values from session storage
       const plan = sessionStorage.getItem("plan");
       const period = sessionStorage.getItem("period");
       const amount = parseInt(sessionStorage.getItem("amount") || "0");
@@ -74,27 +71,23 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
       const email = sessionStorage.getItem("email");
 
       const transaction = {
-        plan: plan,
-        amount: amount,
-        period: period,
-        planId: planId,
-        buyerId: buyerId,
-        phone: phone,
-        firstName: firstName,
-        middleName: middleName,
-        lastName: lastName,
-        email: email,
-        orderTrackingId: orderTrackingId || "", // Provide a default value if null
+        plan,
+        amount,
+        period,
+        planId,
+        buyerId,
+        phone,
+        firstName,
+        middleName,
+        lastName,
+        email,
+        orderTrackingId: orderTrackingId || "",
       };
 
-      //  alert(JSON.stringify(transaction));
       const checkstatus = async ({ transaction }: any) => {
-        console.log("TRA***********: " + transaction);
-
         const response = await verificationStatus(transaction);
 
         if (response === "success") {
-          console.log("RESPONSE    " + response);
           toast({
             title: "Verification successful!",
             description: "You will receive an email confirmation",
@@ -113,51 +106,53 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           });
         }
       };
+
       checkstatus({ transaction });
     }
-  }, []);
+  }, [router, toast]);
 
   const [countryCode, setCountryCode] = useState(
     user?.phone ? user.phone.substring(0, 4) : "+254"
-  ); // Default country code
-
+  );
   const [phoneNumber, setPhoneNumber] = useState(
     user?.phone ? user.phone.substring(user.phone.length - 9) : ""
   );
   const [countryCodeWhatsapp, setCountryCodeWhatsapp] = useState(
     user?.whatsapp ? user?.whatsapp.substring(0, 4) : "+254"
-  ); // Default country code
+  );
   const [whatsappNumber, setWhatsappNumber] = useState(
     user?.whatsapp ? user?.whatsapp.substring(user?.whatsapp.length - 9) : ""
   );
-  const router = useRouter();
+
   const initialValues =
     user && type === "Update"
       ? {
         ...user,
       }
       : UserDefaultValues;
+
   const [selectedDays, setSelectedDays] = useState<string[]>(
     user?.businessworkingdays ?? []
   );
   const [files, setFiles] = useState<File[]>([]);
   const { startUpload } = useUploadThing("imageUploader");
+
   const [startHour, setStartHour] = useState(
     user?.businesshours?.[0]?.openHour ?? "09"
   );
-
   const [startMinute, setStartMinute] = useState(
     user?.businesshours?.[0]?.openMinute ?? "00"
   );
-
   const [endHour, setEndHour] = useState(
     user?.businesshours?.[0]?.closeHour ?? "17"
   );
-
   const [endMinute, setEndMinute] = useState(
     user?.businesshours?.[0]?.closeMinute ?? "00"
   );
-  // 1. Define your form.
+
+  const [changePhone, setChangePhone] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
   const form = useForm<z.infer<typeof UserFormSchema>>({
     resolver: zodResolver(UserFormSchema),
     defaultValues: initialValues,
@@ -170,6 +165,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
           router.back();
           return;
         }
+
         let uploadedImageUrl = values.imageUrl;
 
         if (files.length > 0) {
@@ -178,27 +174,20 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
               try {
                 const uploadedImages = await startUpload([file]);
                 if (uploadedImages && uploadedImages.length > 0) {
-                  // uploadedImageUrl.push(uploadedImages[0].url);
                   uploadedImageUrl = uploadedImages[0].url;
-                  //   alert(uploadedImages[0].url);
                 }
               } catch (error) {
                 console.error("Error uploading file:", error);
               }
             })
           );
-
-          //  alert(uploadedImages[0].url);
         }
-        //   alert(countryCode + removeLeadingZero(phoneNumber));
-        //form.setValue("phone", fullPhoneNumber); // Reset constituency value
+
         const updatedUser = await updateUserFromSettings({
           user: {
             ...values,
             imageUrl: uploadedImageUrl,
-            phone: phoneNumber
-              ? countryCode + removeLeadingZero(phoneNumber)
-              : "",
+            phone: phoneNumber ? countryCode + removeLeadingZero(phoneNumber) : "",
             whatsapp: whatsappNumber
               ? countryCodeWhatsapp + removeLeadingZero(whatsappNumber)
               : "",
@@ -216,40 +205,34 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
         });
 
         if (updatedUser) {
-          // form.reset();
-          //  router.push(`/settings/`);
           toast({
             title: "Successful!",
             description: "You have updated your details successfully",
             duration: 5000,
             className: "bg-[#30AF5B] text-white",
           });
-          // router.push(`/categories`);
         }
       } catch (error) {
         console.log(error);
       }
     }
-    // console.log(values);
   }
 
   const handleDayToggle = (day: string) => {
     if (selectedDays.includes(day)) {
       const noofdays = selectedDays.filter((d: any) => d !== day);
-      form.setValue("businessworkingdays", noofdays); // Reset constituency value
+      form.setValue("businessworkingdays", noofdays);
       setSelectedDays(noofdays);
     } else {
       const noofdays = [...selectedDays, day];
-      form.setValue("businessworkingdays", noofdays); // Reset constituency value
+      form.setValue("businessworkingdays", noofdays);
       setSelectedDays(noofdays);
     }
   };
 
   const formatPhoneNumber = (input: any) => {
-    // Remove all non-digit characters
     const cleaned = input.replace(/\D/g, "");
 
-    // Apply formatting based on length
     if (cleaned.length < 4) {
       return cleaned;
     } else if (cleaned.length < 7) {
@@ -264,16 +247,6 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     }
   };
 
-  const handleCountryCodeChange = (e: any) => {
-    setCountryCode(e.target.value);
-  };
-
-  const handleInputChange = (e: any) => {
-    const input = e.target.value;
-    const formatted = formatPhoneNumber(input);
-    setPhoneNumber(formatted);
-  };
-
   const handleCountryCodeChangeWhatsapp = (e: any) => {
     setCountryCodeWhatsapp(e.target.value);
   };
@@ -283,52 +256,43 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     const formatted = formatPhoneNumber(input);
     setWhatsappNumber(formatted);
   };
-  const fullPhoneNumber = countryCode + removeLeadingZero(phoneNumber);
 
   function removeLeadingZero(numberString: string) {
-    // Check if the first character is '0'
     if (numberString.charAt(0) === "0") {
-      // If yes, return the string without the first character
       return numberString.substring(1);
     } else {
-      // If no, return the original string
       return numberString;
     }
   }
-  const [changePhone, setChangePhone] = useState(false);
-  const handleVerified = async (phone: string) => {
 
-    await updateUserPhone(userId || '', phone);
-    const cleanNumber = phone.startsWith('+') ? phone.slice(1) : phone;
+  const handleVerified = async (phone: string) => {
+    await updateUserPhone(userId || "", phone);
+    const cleanNumber = phone.startsWith("+") ? phone.slice(1) : phone;
     const countryCode = cleanNumber.slice(0, 3);
     const localNumber = cleanNumber.slice(3);
-    setCountryCode('+' + countryCode)
-    setPhoneNumber(localNumber)
-    setChangePhone(false)
-    // You can now save the verified phone to your database
+    setCountryCode("+" + countryCode);
+    setPhoneNumber(localNumber);
+    setChangePhone(false);
   };
-  const [uploading, setUploading] = useState(false);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
     setUploading(true);
 
     try {
-      let uploadedImageUrl = ""; // fallback to existing photo
+      let uploadedImageUrl = "";
       const files = Array.from(e.target.files);
 
       if (files.length > 0) {
         await Promise.all(
           files.map(async (file: File) => {
             try {
-              // ✅ compress before upload
               const compressedFile = await imageCompression(file, {
-                maxSizeMB: 1,           // keep under ~1MB
-                maxWidthOrHeight: 1024, // resize big images
-                useWebWorker: true,     // speed up
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1024,
+                useWebWorker: true,
               });
 
-              // Upload compressed file
               const uploadedImages = await startUpload([compressedFile]);
               if (uploadedImages && uploadedImages.length > 0) {
                 uploadedImageUrl = uploadedImages[0].url;
@@ -340,7 +304,6 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
         );
       }
 
-      // Persist to MongoDB
       const photo = uploadedImageUrl;
       const olderphoto = user?.photo || "";
       const _id = userId || "";
@@ -356,15 +319,18 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     }
   };
 
-
-
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete your account? This action is irreversible.")) return;
+    if (
+      !confirm(
+        "Are you sure you want to delete your account? This action is irreversible."
+      )
+    )
+      return;
 
     try {
-      const olderphoto = user?.photo || ""
-      await deleteUser(user.clerkId, olderphoto); // remove from MongoDB
-      if (currentUser) await firebaseDeleteUser(currentUser); // remove from Firebase
+      const olderphoto = user?.photo || "";
+      await deleteUser(user.clerkId, olderphoto);
+      if (currentUser) await firebaseDeleteUser(currentUser);
       await signOutUser();
       router.push("/auth");
     } catch (err) {
@@ -373,512 +339,204 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
     }
   };
 
+  const sectionCard =
+    "rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-[#1B2225]";
+  const sectionTitle =
+    "mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-orange-500";
+  const rowClass = "grid grid-cols-1 gap-4 md:grid-cols-2";
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="p-0 flex flex-col"
-      >
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Personal Details</AccordionTrigger>
-            <AccordionContent>
-              <div className="rounded-[20px] p-1 dark:bg-[#131B1E] bg-white">
-                <div className="m-1">
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    {/* Profile Image */}
-                    <div className="flex items-center space-x-4">
-                      {/* Avatar */}
-                      {user?.photo ? (
-                        <img
-                          src={user.photo}
-                          alt="Profile"
-                          className="w-20 h-20 rounded-full object-cover border border-gray-300 shadow-sm"
-                        />
-                      ) : (
-                        <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-500">
-                          <span>👤</span>
-                        </div>
-                      )}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full space-y-4"
+          defaultValue="item-1"
+        >
+          <AccordionItem
+            value="item-1"
+            className="overflow-hidden rounded-[24px] border border-slate-200 bg-white px-0 shadow-sm dark:border-slate-700 dark:bg-[#1B2225]"
+          >
+            <AccordionTrigger className="px-5 py-4 text-left text-base font-bold hover:no-underline">
+              Personal Details
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-5">
+              <div className={sectionCard}>
+                <div className={sectionTitle}>Profile Photo</div>
 
-                      {/* Upload button */}
-                      <label className="cursor-pointer flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white text-sm rounded-lg shadow hover:bg-orange-600 transition">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
-                        <span>Upload Photo</span>
-                      </label>
+                <div className="flex flex-col gap-4 md:flex-row md:items-center">
+                  <div className="flex items-center gap-4">
+                    {user?.photo ? (
+                      <img
+                        src={user.photo}
+                        alt="Profile"
+                        className="h-20 w-20 rounded-full border border-orange-100 object-cover shadow-sm"
+                      />
+                    ) : (
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full border border-orange-100 bg-orange-50 text-2xl">
+                        👤
+                      </div>
+                    )}
 
-                      {/* Uploading state */}
-                      {uploading && (
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                          <CircularProgress sx={{ color: "orange" }} size={20} />
-                          <span>Uploading...</span>
-                        </div>
-                      )}
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-orange-500 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-orange-600">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <span>Upload Photo</span>
+                    </label>
+                  </div>
+
+                  {uploading ? (
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                      <CircularProgress sx={{ color: "orange" }} size={20} />
+                      <span>Uploading photo...</span>
                     </div>
+                  ) : null}
+                </div>
+              </div>
 
-                  </div>
+              <div className={`${sectionCard} mt-4`}>
+                <div className={sectionTitle}>Personal Information</div>
 
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row gap-1">
+                <div className={rowClass}>
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="First Name" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="firstName"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Last Name" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              label="LastName"
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              label="Personal Email"
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                <div className="mt-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Personal Email" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger>Business details</AccordionTrigger>
-            <AccordionContent>
-              <div className="rounded-[20px] p-1 dark:bg-[#131B1E] bg-white">
-                <div className="m-1">
-                  {/**
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="imageUrl"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl className="h-72">
-                            <FileuploaderBusiness
-                              onFieldChange={field.onChange}
-                              imageUrl={field?.value ?? ""}
-                              setFiles={setFiles}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div> */}
 
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="businessname"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="Business Name"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="aboutbusiness"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              multiline
-                              rows={5} // You can adjust this number based on your preference
-                              label="About Business*"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "bg-white dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="businessaddress"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="Business Address"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
+          <AccordionItem
+            value="item-2"
+            className="overflow-hidden rounded-[24px] border border-slate-200 bg-white px-0 shadow-sm dark:border-slate-700 dark:bg-[#1B2225]"
+          >
+            <AccordionTrigger className="px-5 py-4 text-left text-base font-bold hover:no-underline">
+              Business Details
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-5">
+              <div className={sectionCard}>
+                <div className={sectionTitle}>Business Profile</div>
+
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="businessname"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Business Name" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="aboutbusiness"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField
+                            {...field}
+                            multiline
+                            rows={5}
+                            label="About Business"
+                            variant="outlined"
+                            fullWidth
+                            sx={inputSx}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="businessaddress"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Business Address" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className={rowClass}>
                     <FormField
                       control={form.control}
                       name="latitude"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormControl>
-                            <TextField
-                              {...field}
-                              label="Latitude"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
+                            <TextField {...field} label="Latitude" variant="outlined" fullWidth sx={inputSx} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+
                     <FormField
                       control={form.control}
                       name="longitude"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <FormControl>
-                            <TextField
-                              {...field}
-                              label="Longitude"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="businesshours"
-                      render={({ field }) => (
-                        <FormItem className="w-full gap-2">
-                          <FormControl>
-                            <div className="w-full flex flex-col">
-                              <div className="w-full flex gap-1 mb-2">
-                                <label>Office Open Time:</label>
-
-                                <select
-                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 rounded-sm"
-                                  value={startHour}
-                                  onChange={(e) => setStartHour(e.target.value)}
-                                >
-                                  {Array.from({ length: 24 }, (_, i) => i).map(
-                                    (hour) => (
-                                      <option
-                                        key={hour}
-                                        value={hour.toString().padStart(2, "0")}
-                                      >
-                                        {hour.toString().padStart(2, "0")}
-                                      </option>
-                                    )
-                                  )}
-                                </select>
-                                <select
-                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 mr-2 rounded-sm"
-                                  value={startMinute}
-                                  onChange={(e) =>
-                                    setStartMinute(e.target.value)
-                                  }
-                                >
-                                  {Array.from({ length: 60 }, (_, i) => i).map(
-                                    (minute) => (
-                                      <option
-                                        key={minute}
-                                        value={minute
-                                          .toString()
-                                          .padStart(2, "0")}
-                                      >
-                                        {minute.toString().padStart(2, "0")}
-                                      </option>
-                                    )
-                                  )}
-                                </select>
-                              </div>
-                              <div className="w-full flex gap-1">
-                                <label>Office Close Time:</label>
-                                <select
-                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 rounded-sm"
-                                  value={endHour}
-                                  onChange={(e) => setEndHour(e.target.value)}
-                                >
-                                  {Array.from({ length: 24 }, (_, i) => i).map(
-                                    (hour) => (
-                                      <option
-                                        key={hour}
-                                        value={hour.toString().padStart(2, "0")}
-                                      >
-                                        {hour.toString().padStart(2, "0")}
-                                      </option>
-                                    )
-                                  )}
-                                </select>
-                                <select
-                                  className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 border ml-2 rounded-sm"
-                                  value={endMinute}
-                                  onChange={(e) => setEndMinute(e.target.value)}
-                                >
-                                  {Array.from({ length: 60 }, (_, i) => i).map(
-                                    (minute) => (
-                                      <option
-                                        key={minute}
-                                        value={minute
-                                          .toString()
-                                          .padStart(2, "0")}
-                                      >
-                                        {minute.toString().padStart(2, "0")}
-                                      </option>
-                                    )
-                                  )}
-                                </select>
-                              </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="businessworkingdays"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div>
-                              <label>Choose Working Days:</label>
-
-                              <>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Sunday")}
-                                    onChange={() => handleDayToggle("Sunday")}
-                                  />
-                                  <label>Sunday</label>
-                                </div>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Monday")}
-                                    onChange={() => handleDayToggle("Monday")}
-                                  />
-                                  <label>Monday</label>
-                                </div>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Tuesday")}
-                                    onChange={() => handleDayToggle("Tuesday")}
-                                  />
-                                  <label>Tuesday</label>
-                                </div>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Wednesday")}
-                                    onChange={() =>
-                                      handleDayToggle("Wednesday")
-                                    }
-                                  />
-                                  <label>Wednesday</label>
-                                </div>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Thursday")}
-                                    onChange={() => handleDayToggle("Thursday")}
-                                  />
-                                  <label>Thursday</label>
-                                </div>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Friday")}
-                                    onChange={() => handleDayToggle("Friday")}
-                                  />
-                                  <label>Friday</label>
-                                </div>
-                                <div className="flex gap-1 w-full items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedDays.includes("Saturday")}
-                                    onChange={() => handleDayToggle("Saturday")}
-                                  />
-                                  <label>Saturday</label>
-                                </div>
-                              </>
-                            </div>
+                            <TextField {...field} label="Longitude" variant="outlined" fullWidth sx={inputSx} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -887,370 +545,341 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
                   </div>
                 </div>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger>Contacts details</AccordionTrigger>
-            <AccordionContent>
-              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
-                <div className="m-1">
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
 
+              <div className={`${sectionCard} mt-4`}>
+                <div className={sectionTitle}>Business Hours</div>
 
-                    {phoneNumber && !changePhone ? (<>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="rounded-2xl bg-slate-50 p-4 dark:bg-[#2D3236]">
+                    <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      Opening Time
+                    </label>
+                    <div className="flex gap-2">
+                      <select
+                        className="h-11 flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-600 dark:bg-[#1B2225]"
+                        value={startHour}
+                        onChange={(e) => setStartHour(e.target.value)}
+                      >
+                        {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                          <option key={hour} value={hour.toString().padStart(2, "0")}>
+                            {hour.toString().padStart(2, "0")}
+                          </option>
+                        ))}
+                      </select>
 
-                      <TextField
-                        disabled // ⛔ Prevent editing
-                        label={`Phone (Verified)`} // ✅ Optional: Indicate it's verified
-                        type="tel"
-                        value={`${countryCode}${phoneNumber}`}
-                        variant="outlined"
-                        InputProps={{
-                          readOnly: true,
-                          classes: {
-                            root: "bg-gray-100 dark:bg-[#2D3236] dark:text-gray-100",
-                            notchedOutline: "border-green-500",
-                            focused: "",
-                          },
-                        }}
-                        InputLabelProps={{
-                          classes: {
-                            root: "text-green-600 dark:text-green-400",
-                            focused: "text-green-600 dark:text-green-400",
-                          },
-                        }}
-                        className="w-full"
-                      />
-                      <div className="flex items-center justify-between mt-1">
-                        <p className="text-green-600 inline-flex text-sm">✅ Phone verified</p>
-                        <button
-                          type="button"
-                          onClick={() => setChangePhone(true)}
-                          className="text-blue-600 text-sm underline ml-2"
-                        >
-                          Change
-                        </button>
-                      </div>
-
-                    </>) : (<>
-                      <div className="p-4">
-                        <h1 className="text-xl font-bold mb-4">Verify Your Phone</h1>
-                        <PhoneVerification onVerified={handleVerified} />
-                      </div>
-                    </>)}
-
+                      <select
+                        className="h-11 flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-600 dark:bg-[#1B2225]"
+                        value={startMinute}
+                        onChange={(e) => setStartMinute(e.target.value)}
+                      >
+                        {Array.from({ length: 60 }, (_, i) => i).map((minute) => (
+                          <option key={minute} value={minute.toString().padStart(2, "0")}>
+                            {minute.toString().padStart(2, "0")}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="whatsapp"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <div className="flex w-full gap-1">
-                              <select
-                                className="dark:bg-[#2D3236] dark:text-gray-100 bg-gray-100 p-1 text-sm lg:text-base border ml-2 rounded-sm w-[120px]"
-                                value={countryCodeWhatsapp}
-                                onChange={handleCountryCodeChangeWhatsapp}
-                              >
-                                <option value="+254">Kenya (+254)</option>
-                                <option value="+213">Algeria (+213)</option>
-                                <option value="+244">Angola (+244)</option>
-                                <option value="+229">Benin (+229)</option>
-                                <option value="+267">Botswana (+267)</option>
-                                <option value="+226">
-                                  Burkina Faso (+226)
-                                </option>
-                                <option value="+257">Burundi (+257)</option>
-                                <option value="+237">Cameroon (+237)</option>
-                                <option value="+238">Cape Verde (+238)</option>
-                                <option value="+236">
-                                  Central African Republic (+236)
-                                </option>
-                                <option value="+235">Chad (+235)</option>
-                                <option value="+269">Comoros (+269)</option>
-                                <option value="+243">
-                                  Democratic Republic of the Congo (+243)
-                                </option>
-                                <option value="+253">Djibouti (+253)</option>
-                                <option value="+20">Egypt (+20)</option>
-                                <option value="+240">
-                                  Equatorial Guinea (+240)
-                                </option>
-                                <option value="+291">Eritrea (+291)</option>
-                                <option value="+268">Eswatini (+268)</option>
-                                <option value="+251">Ethiopia (+251)</option>
-                                <option value="+241">Gabon (+241)</option>
-                                <option value="+220">Gambia (+220)</option>
-                                <option value="+233">Ghana (+233)</option>
-                                <option value="+224">Guinea (+224)</option>
-                                <option value="+245">
-                                  Guinea-Bissau (+245)
-                                </option>
-                                <option value="+225">Ivory Coast (+225)</option>
-                                <option value="+266">Lesotho (+266)</option>
-                                <option value="+231">Liberia (+231)</option>
-                                <option value="+218">Libya (+218)</option>
-                                <option value="+261">Madagascar (+261)</option>
-                                <option value="+265">Malawi (+265)</option>
-                                <option value="+223">Mali (+223)</option>
-                                <option value="+222">Mauritania (+222)</option>
-                                <option value="+230">Mauritius (+230)</option>
-                                <option value="+212">Morocco (+212)</option>
-                                <option value="+258">Mozambique (+258)</option>
-                                <option value="+264">Namibia (+264)</option>
-                                <option value="+227">Niger (+227)</option>
-                                <option value="+234">Nigeria (+234)</option>
-                                <option value="+242">
-                                  Republic of the Congo (+242)
-                                </option>
-                                <option value="+250">Rwanda (+250)</option>
-                                <option value="+239">
-                                  Sao Tome and Principe (+239)
-                                </option>
-                                <option value="+221">Senegal (+221)</option>
-                                <option value="+248">Seychelles (+248)</option>
-                                <option value="+232">
-                                  Sierra Leone (+232)
-                                </option>
-                                <option value="+252">Somalia (+252)</option>
-                                <option value="+27">South Africa (+27)</option>
-                                <option value="+211">South Sudan (+211)</option>
-                                <option value="+249">Sudan (+249)</option>
-                                <option value="+255">Tanzania (+255)</option>
-                                <option value="+228">Togo (+228)</option>
-                                <option value="+216">Tunisia (+216)</option>
-                                <option value="+256">Uganda (+256)</option>
-                                <option value="+260">Zambia (+260)</option>
-                                <option value="+263">Zimbabwe (+263)</option>
-                              </select>
 
-                              <TextField
-                                {...field}
-                                label="Whatsapp number"
-                                type="tel"
-                                value={whatsappNumber}
-                                onChange={handleInputChangeWhatsapp}
-                                variant="outlined"
-                                InputProps={{
-                                  classes: {
-                                    root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                    notchedOutline:
-                                      "border-gray-300 dark:border-gray-600",
-                                    focused: "",
-                                  },
-                                }}
-                                InputLabelProps={{
-                                  classes: {
-                                    root: "text-gray-500 dark:text-gray-400",
-                                    focused:
-                                      "text-green-500 dark:text-green-400",
-                                  },
-                                }}
-                                className="w-full"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="rounded-2xl bg-slate-50 p-4 dark:bg-[#2D3236]">
+                    <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      Closing Time
+                    </label>
+                    <div className="flex gap-2">
+                      <select
+                        className="h-11 flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-600 dark:bg-[#1B2225]"
+                        value={endHour}
+                        onChange={(e) => setEndHour(e.target.value)}
+                      >
+                        {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                          <option key={hour} value={hour.toString().padStart(2, "0")}>
+                            {hour.toString().padStart(2, "0")}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        className="h-11 flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-600 dark:bg-[#1B2225]"
+                        value={endMinute}
+                        onChange={(e) => setEndMinute(e.target.value)}
+                      >
+                        {Array.from({ length: 60 }, (_, i) => i).map((minute) => (
+                          <option key={minute} value={minute.toString().padStart(2, "0")}>
+                            {minute.toString().padStart(2, "0")}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
+                </div>
+              </div>
+
+              <div className={`${sectionCard} mt-4`}>
+                <div className={sectionTitle}>Working Days</div>
+
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                  {days.map((day) => {
+                    const active = selectedDays.includes(day);
+                    return (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => handleDayToggle(day)}
+                        className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${active
+                          ? "border-orange-200 bg-orange-50 text-orange-600"
+                          : "border-slate-200 bg-white text-slate-700 hover:border-orange-200 hover:bg-orange-50"
+                          }`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-4">
-            <AccordionTrigger>Social Media</AccordionTrigger>
-            <AccordionContent>
-              <div className="p-1 rounded-[20px] m-0 dark:bg-[#131B1E] bg-white">
-                <div className="m-1">
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="facebook"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="facebook link"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+
+          <AccordionItem
+            value="item-3"
+            className="overflow-hidden rounded-[24px] border border-slate-200 bg-white px-0 shadow-sm dark:border-slate-700 dark:bg-[#1B2225]"
+          >
+            <AccordionTrigger className="px-5 py-4 text-left text-base font-bold hover:no-underline">
+              Contact Details
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-5">
+              <div className={sectionCard}>
+                <div className={sectionTitle}>Phone Verification</div>
+
+                {phoneNumber && !changePhone ? (
+                  <div className="space-y-3">
+                    <TextField
+                      disabled
+                      label="Phone (Verified)"
+                      type="tel"
+                      value={`${countryCode}${phoneNumber}`}
+                      variant="outlined"
+                      fullWidth
+                      sx={inputSx}
                     />
+                    <div className="flex items-center justify-between rounded-2xl bg-emerald-50 px-4 py-3">
+                      <p className="text-sm font-semibold text-emerald-700">
+                        ✅ Phone verified
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setChangePhone(true)}
+                        className="text-sm font-semibold text-orange-600 underline"
+                      >
+                        Change
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="twitter"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="twitter link"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                ) : (
+                  <div className="rounded-2xl bg-slate-50 p-4 dark:bg-[#2D3236]">
+                    <h3 className="mb-3 text-lg font-bold">Verify Your Phone</h3>
+                    <PhoneVerification onVerified={handleVerified} />
                   </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="instagram"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="instagram link"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="tiktok"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="tiktok link"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 mb-5 md:flex-row">
-                    <FormField
-                      control={form.control}
-                      name="website"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormControl>
-                            <TextField
-                              {...field}
-                              label="Website"
-                              variant="outlined"
-                              InputProps={{
-                                classes: {
-                                  root: "dark:bg-[#2D3236] dark:text-gray-100",
-                                  notchedOutline:
-                                    "border-gray-300 dark:border-gray-600",
-                                  focused: "",
-                                },
-                              }}
-                              InputLabelProps={{
-                                classes: {
-                                  root: "text-gray-500 dark:text-gray-400",
-                                  focused: "text-green-500 dark:text-green-400",
-                                },
-                              }}
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                )}
+              </div>
+
+              <div className={`${sectionCard} mt-4`}>
+                <div className={sectionTitle}>WhatsApp</div>
+
+                <FormField
+                  control={form.control}
+                  name="whatsapp"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="flex flex-col gap-3 md:flex-row">
+                          <select
+                            className="h-12 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none dark:border-slate-600 dark:bg-[#2D3236] md:w-[180px]"
+                            value={countryCodeWhatsapp}
+                            onChange={handleCountryCodeChangeWhatsapp}
+                          >
+                            <option value="+254">Kenya (+254)</option>
+                            <option value="+213">Algeria (+213)</option>
+                            <option value="+244">Angola (+244)</option>
+                            <option value="+229">Benin (+229)</option>
+                            <option value="+267">Botswana (+267)</option>
+                            <option value="+226">Burkina Faso (+226)</option>
+                            <option value="+257">Burundi (+257)</option>
+                            <option value="+237">Cameroon (+237)</option>
+                            <option value="+238">Cape Verde (+238)</option>
+                            <option value="+236">Central African Republic (+236)</option>
+                            <option value="+235">Chad (+235)</option>
+                            <option value="+269">Comoros (+269)</option>
+                            <option value="+243">Democratic Republic of the Congo (+243)</option>
+                            <option value="+253">Djibouti (+253)</option>
+                            <option value="+20">Egypt (+20)</option>
+                            <option value="+240">Equatorial Guinea (+240)</option>
+                            <option value="+291">Eritrea (+291)</option>
+                            <option value="+268">Eswatini (+268)</option>
+                            <option value="+251">Ethiopia (+251)</option>
+                            <option value="+241">Gabon (+241)</option>
+                            <option value="+220">Gambia (+220)</option>
+                            <option value="+233">Ghana (+233)</option>
+                            <option value="+224">Guinea (+224)</option>
+                            <option value="+245">Guinea-Bissau (+245)</option>
+                            <option value="+225">Ivory Coast (+225)</option>
+                            <option value="+266">Lesotho (+266)</option>
+                            <option value="+231">Liberia (+231)</option>
+                            <option value="+218">Libya (+218)</option>
+                            <option value="+261">Madagascar (+261)</option>
+                            <option value="+265">Malawi (+265)</option>
+                            <option value="+223">Mali (+223)</option>
+                            <option value="+222">Mauritania (+222)</option>
+                            <option value="+230">Mauritius (+230)</option>
+                            <option value="+212">Morocco (+212)</option>
+                            <option value="+258">Mozambique (+258)</option>
+                            <option value="+264">Namibia (+264)</option>
+                            <option value="+227">Niger (+227)</option>
+                            <option value="+234">Nigeria (+234)</option>
+                            <option value="+242">Republic of the Congo (+242)</option>
+                            <option value="+250">Rwanda (+250)</option>
+                            <option value="+239">Sao Tome and Principe (+239)</option>
+                            <option value="+221">Senegal (+221)</option>
+                            <option value="+248">Seychelles (+248)</option>
+                            <option value="+232">Sierra Leone (+232)</option>
+                            <option value="+252">Somalia (+252)</option>
+                            <option value="+27">South Africa (+27)</option>
+                            <option value="+211">South Sudan (+211)</option>
+                            <option value="+249">Sudan (+249)</option>
+                            <option value="+255">Tanzania (+255)</option>
+                            <option value="+228">Togo (+228)</option>
+                            <option value="+216">Tunisia (+216)</option>
+                            <option value="+256">Uganda (+256)</option>
+                            <option value="+260">Zambia (+260)</option>
+                            <option value="+263">Zimbabwe (+263)</option>
+                          </select>
+
+                          <TextField
+                            {...field}
+                            label="WhatsApp Number"
+                            type="tel"
+                            value={whatsappNumber}
+                            onChange={handleInputChangeWhatsapp}
+                            variant="outlined"
+                            fullWidth
+                            sx={inputSx}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem
+            value="item-4"
+            className="overflow-hidden rounded-[24px] border border-slate-200 bg-white px-0 shadow-sm dark:border-slate-700 dark:bg-[#1B2225]"
+          >
+            <AccordionTrigger className="px-5 py-4 text-left text-base font-bold hover:no-underline">
+              Social Media
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-5">
+              <div className={sectionCard}>
+                <div className={sectionTitle}>Social Links</div>
+
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="facebook"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Facebook Link" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="twitter"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Twitter Link" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="instagram"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Instagram Link" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="tiktok"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="TikTok Link" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="website"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <TextField {...field} label="Website" variant="outlined" fullWidth sx={inputSx} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <div className="flex justify-between gap-5 mt-6">
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Button
             type="submit"
             size="lg"
             disabled={form.formState.isSubmitting}
-            className="button flex-1 w-full"
+            className="h-12 flex-1 rounded-2xl bg-orange-500 text-sm font-bold text-white hover:bg-orange-600"
           >
-            <div className="flex gap-1 items-center">
+            <div className="flex items-center gap-2">
               {form.formState.isSubmitting && (
-                <CircularProgress sx={{ color: "white" }} size={30} />
+                <CircularProgress sx={{ color: "white" }} size={22} />
               )}
-              {form.formState.isSubmitting ? "Submitting..." : `${type} User `}
+              {form.formState.isSubmitting
+                ? "Saving..."
+                : type === "Update"
+                  ? "Save Changes"
+                  : "Create User"}
             </div>
           </Button>
 
-          <Button type="button" variant="destructive" onClick={handleDelete}>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleDelete}
+            className="h-12 rounded-2xl px-6"
+          >
             Delete Account
           </Button>
         </div>
@@ -1260,7 +889,7 @@ const SettingsEdit = ({ user, type, userId }: setingsProp) => {
 };
 
 export default SettingsEdit;
-function firebaseDeleteUser(currentUser: any) {
+function firebaseDeleteUser(currentUser: { [key: string]: any; _id: string; clerkId: string; email: string; firstName: string; lastName: string; photo?: string; imageUrl?: string; status?: string; businessname?: string; aboutbusiness?: string; businessaddress?: string; latitude?: string; longitude?: string; businesshours?: { openHour: string; openMinute: string; closeHour: string; closeMinute: string; }[]; businessworkingdays?: string[]; phone?: string; whatsapp?: string; website?: string; facebook?: string; twitter?: string; instagram?: string; tiktok?: string; verified?: { accountverified: boolean; verifieddate: string | Date; }[]; token?: string; notifications?: { email: boolean; fcm: boolean; }; fee?: string | number; subscription?: { planId?: string | null; planName?: string; active?: boolean; expiresAt?: string | Date | null; remainingAds?: number; entitlements?: { maxListings?: number; priority?: number; topDays?: number; featuredDays?: number; autoRenewHours?: number | null; }; }; }) {
   throw new Error("Function not implemented.");
 }
 
