@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { IoCamera } from "react-icons/io5";
 
 type Props = {
     title: string;
@@ -159,7 +160,10 @@ export default function PropertyGallery({
                 {/* count (bottom-left) */}
                 {hasMany ? (
                     <div className="absolute bottom-3 left-3 rounded-lg bg-black/60 px-3 py-1 text-[11px] font-semibold text-white">
-                        🖼️ {active + 1}/{list.length}
+
+                        <div className="flex items-center gap-1">
+                            <IoCamera /> {active + 1}/{list.length}
+                        </div>
                     </div>
                 ) : null}
 

@@ -92,18 +92,21 @@ export default function TopBar() {
 
     const showUserLoading = loading || (isLoggedIn && profileLoading);
 
+    const iconButtonClass =
+        "flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] dark:hover:text-orange-300";
+
     return (
         <div
             ref={ref}
-            className="fixed inset-x-0 top-0 z-[500] border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-[#131B1E]/90"
+            className="fixed inset-x-0 top-0 z-[500] border-b border-orange-100 bg-white/95 backdrop-blur-md dark:border-slate-800 dark:bg-[#131B1E]/95"
         >
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3">
-                <div className="flex min-w-0 items-center gap-2">
+            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3 sm:px-4">
+                <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                     {showBackButton ? (
                         <button
                             type="button"
                             onClick={handleGoBack}
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:bg-[#222C31]"
+                            className={iconButtonClass}
                             aria-label="Go back"
                             title="Go back"
                         >
@@ -111,8 +114,8 @@ export default function TopBar() {
                         </button>
                     ) : null}
 
-                    <Link href="/" className="flex min-w-0 items-center gap-2">
-                        <div className="relative h-9 w-9 overflow-hidden rounded-full border bg-white">
+                    <Link href="/" className="flex min-w-0 items-center gap-2.5">
+                        <div className="relative h-10 w-10 overflow-hidden rounded-full border border-orange-100 bg-white shadow-sm ring-1 ring-orange-50">
                             <Image
                                 src="/logo.png"
                                 alt="Tadao Market"
@@ -134,7 +137,7 @@ export default function TopBar() {
                     </Link>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <div className="hidden items-center gap-2 lg:flex">
                         <TooltipProvider>
                             <Tooltip>
@@ -142,14 +145,13 @@ export default function TopBar() {
                                     <button
                                         type="button"
                                         onClick={() => {
-
                                             if (authUser) {
                                                 router.push("/bookmarks");
                                             } else {
                                                 router.push("/auth");
                                             }
                                         }}
-                                        className="flex h-9 w-9 items-center justify-center rounded-full border bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:bg-[#222C31]"
+                                        className={iconButtonClass}
                                     >
                                         <BookmarkIcon fontSize="small" />
                                     </button>
@@ -172,7 +174,7 @@ export default function TopBar() {
                                                 router.push("/auth");
                                             }
                                         }}
-                                        className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:bg-[#222C31]"
+                                        className={`relative ${iconButtonClass}`}
                                     >
                                         <MessageIcon fontSize="small" />
                                         {resolvedUserId ? (
@@ -196,7 +198,7 @@ export default function TopBar() {
                                     <button
                                         type="button"
                                         onClick={() => router.push("/plan")}
-                                        className="flex h-9 w-9 items-center justify-center rounded-full border bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:bg-[#222C31]"
+                                        className={iconButtonClass}
                                     >
                                         <DiamondIcon fontSize="small" />
                                     </button>
@@ -217,7 +219,7 @@ export default function TopBar() {
                                 router.push("/auth");
                             }
                         }}
-                        className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-sm font-extrabold text-white hover:bg-orange-600"
+                        className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-sm font-extrabold text-white shadow-sm transition hover:bg-orange-600 hover:shadow md:px-4"
                     >
                         <SellOutlinedIcon sx={{ fontSize: 18 }} />
                         <span className="hidden sm:inline">Sell</span>
@@ -229,13 +231,29 @@ export default function TopBar() {
                         <button
                             type="button"
                             onClick={() => router.push("/auth")}
-                            className="rounded-full border px-4 py-2 text-sm font-extrabold text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:text-white dark:hover:bg-[#1B2327]"
+                            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-900 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#1B2327] dark:text-white dark:hover:border-orange-500/30 dark:hover:bg-[#222C31]"
                         >
                             Sign in
                         </button>
                     ) : (
                         <div className="flex items-center gap-2">
-                            <div className="hidden items-center gap-2 rounded-full border bg-white px-2 py-1.5 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#1B2327] dark:hover:bg-[#222C31] md:flex">
+                            <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/50 dark:border-slate-700 dark:bg-[#1B2327] dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] md:flex">
+                                {displayPhoto ? (
+                                    <div className="relative h-8 w-8 overflow-hidden rounded-full border border-orange-100 bg-orange-50">
+                                        <Image
+                                            src={displayPhoto}
+                                            alt={displayName}
+                                            fill
+                                            className="object-cover"
+                                            unoptimized
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-orange-100 bg-orange-50 text-xs font-bold text-orange-600">
+                                        {displayName.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+
                                 <div className="max-w-[120px] text-left">
                                     <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">
                                         {displayName}
@@ -252,14 +270,12 @@ export default function TopBar() {
                                         }
                                     }}
                                     handleOpenSettings={() => {
-
                                         if (authUser) {
                                             router.push(`/settings`);
                                         } else {
                                             router.push("/auth");
                                         }
-                                    }
-                                    }
+                                    }}
                                 />
                             </div>
 
@@ -274,7 +290,6 @@ export default function TopBar() {
                                         }
                                     }}
                                     handleOpenSettings={() => {
-
                                         if (authUser) {
                                             router.push(`/settings`);
                                         } else {

@@ -88,24 +88,30 @@ export default function ProfileMessageConversationPage() {
             orderBy("createdAt", "asc")
         );
 
-        const unsub = onSnapshot(q, async (snapshot) => {
-            const items = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
+        const unsub = onSnapshot(
+            q,
+            async (snapshot) => {
+                const items = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
 
-            setMessages(items);
+                setMessages(items);
 
-            try {
-                await markConversationAsRead(conversationId, currentUserId);
-            } catch (error) {
-                console.error("Failed to mark as read:", error);
+                try {
+                    await markConversationAsRead(conversationId, currentUserId);
+                } catch (error) {
+                    console.error("Failed to mark as read:", error);
+                }
+
+                setTimeout(() => {
+                    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+                }, 80);
+            },
+            (error) => {
+                console.error("Conversation snapshot error:", error);
             }
-
-            setTimeout(() => {
-                bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-            }, 80);
-        });
+        );
 
         return () => unsub();
     }, [conversationId, currentUserId]);
@@ -113,7 +119,7 @@ export default function ProfileMessageConversationPage() {
     const handleSend = async () => {
         if (!currentUserId || !chatUserId || !otherUser) return;
         if (!text.trim()) return;
-
+        alert("OK");
         try {
             setSending(true);
 
