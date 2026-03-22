@@ -14,8 +14,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 type Ratingsprop = {
   recipientUid: string;
-  user:any;
-  handleOpenReview: (value:any) => void;
+  user: any;
+  handleOpenReview: (value: any) => void;
 };
 
 interface Review {
@@ -50,7 +50,7 @@ const RatingsCard = ({ recipientUid, user, handleOpenReview }: Ratingsprop) => {
 
           totalClickedStars += reviewData.starClicked
             ? reviewData.starClicked.filter((clicked: boolean) => clicked)
-                .length
+              .length
             : 0;
         });
 
@@ -71,14 +71,14 @@ const RatingsCard = ({ recipientUid, user, handleOpenReview }: Ratingsprop) => {
   const router = useRouter();
   return (
     <div className="flex flex-col items-center justify-center h-full">
-     
+
       <div
         onClick={() => {
           handleOpenReview(user);
           //if (pathname !== `/reviews/${recipientUid}`) {
           //  openLoading();
-           // router.push(`/reviews/${recipientUid}`);
-         // }
+          // router.push(`/reviews/${recipientUid}`);
+          // }
         }}
         className="flex cursor-pointer flex-col  dark:hover:text-green-600 p-1 items-center w-[130px]"
       >
@@ -89,104 +89,100 @@ const RatingsCard = ({ recipientUid, user, handleOpenReview }: Ratingsprop) => {
         <p className="dark:text-gray-300 text-gray-600 hover:underline dark:hover:underline text-sm">Ratings</p>
 
         {averangestar < 1 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 1 && averangestar < 1.5 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 1.5 && averangestar < 2 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarHalfIcon className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 2 && averangestar < 2.5 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 2.5 && averangestar < 3 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarHalfIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 3 && averangestar < 3.5 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 3.5 && averangestar < 4 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarHalfIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 4 && averangestar < 4.5 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
-        </div>
-      )}
-      {averangestar >= 4.5 && averangestar < 5 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarHalfIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-        </div>
-      )}
-      {averangestar >= 5 && (
-        <div className="w-[70px] items-center justify-center">
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-          <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
-        </div>
-      )}
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 1 && averangestar < 1.5 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 1.5 && averangestar < 2 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarHalfIcon className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 2 && averangestar < 2.5 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 2.5 && averangestar < 3 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarHalfIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 3 && averangestar < 3.5 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 3.5 && averangestar < 4 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarHalfIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 4 && averangestar < 4.5 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-gray-400" />
+          </div>
+        )}
+        {averangestar >= 4.5 && averangestar < 5 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarHalfIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+          </div>
+        )}
+        {averangestar >= 5 && (
+          <div className="w-[70px] items-center justify-center">
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+            <StarIcon sx={{ fontSize: 14 }} className="text-amber-400" />
+          </div>
+        )}
 
       </div>
       <div
         onClick={() => {
-          handleOpenReview(user);
-          //if (pathname !== `/reviews/${recipientUid}`) {
-          //  openLoading();
-          //  router.push(`/reviews/${recipientUid}`);
-          //}
+          router.push(`/profile/${user._id}?tab=reviews`);
         }}
         className="flex flex-col cursor-pointer dark:hover:text-green-600 hover:text-green-600 p-1 items-center w-[130px]"
       >

@@ -1,50 +1,36 @@
 "use client";
 
-import { useAuth } from "@/app/hooks/useAuth";
-import DashboardMyads from "@/components/home/dashboardMyads";
-import { useRouter, useSearchParams } from "next/navigation";
+import DashboardPerformance from "@/components/home/dashboardPerfomance";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../hooks/useAuth";
 
-type Props = {
-    profileId: string;
-    shopAcc: any;
-    loans: any;
-};
 
-export default function ProfilePageClient({
-    profileId,
-    shopAcc,
-    loans,
-}: Props) {
+export default function PerformancePageClient() {
     const router = useRouter();
-    const searchParams = useSearchParams();
+
     const { authUser, user, appUserId, loading } = useAuth();
-    const sortby = searchParams.get("sortby") || "Newest";
-
-    const resolveAdId = (ad: any) =>
-        ad?._id || ad?.adId?._id || ad?.adId || ad?.id || "";
-
-    const resolveUserId = String(user?._id || "");
     const userName =
         user?.businessname ||
         `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
         user?.username ||
         "User";
 
+    const userImage = user?.imageUrl || user?.photo || "";
+
     return (
-        <DashboardMyads
-            userId={resolveUserId}
-            shopAcc={shopAcc}
-            sortby={sortby}
-            userImage={user?.imageUrl || user?.photo || ""}
+        <DashboardPerformance
+            userId={user?._id ?? ""}
             userName={userName}
+            userImage={userImage}
+            loggedId={user?._id ?? ""}
+            sortby="Newest"
             user={user}
-            loans={loans}
-            emptyTitle="No ads have been created yet"
-            emptyStateSubtext="This seller has not posted any ads yet."
+            emptyTitle="No ads found"
+            emptyStateSubtext="You have not created any ads yet."
             limit={20}
-            queryObject={{ profileId, sortby }}
             collectionType="Ads_Organized"
-            urlParamName="adsPage"
+            urlParamName="page"
+            isAdCreator={true}
             onClose={() => router.push("/")}
             handleOpenBook={() => router.push("/bookmarks")}
             handleOpenPlan={() => router.push("/plan")}
@@ -55,12 +41,12 @@ export default function ProfilePageClient({
             handleOpenPrivacy={() => router.push("/privacy")}
             handleOpenSafety={() => router.push("/safety")}
             handleAdEdit={(ad: any) => {
-                const id = resolveAdId(ad);
+                const id = ad?._id || ad?.adId?._id || ad?.adId || ad?.id;
                 if (!id) return;
                 router.push(`/ads/${id}/update`);
             }}
             handleAdView={(ad: any) => {
-                const id = resolveAdId(ad);
+                const id = ad?._id || ad?.adId?._id || ad?.adId || ad?.id;
                 if (!id) return;
                 router.push(`/ads/${id}`);
             }}
@@ -68,17 +54,12 @@ export default function ProfilePageClient({
 
                 router.push(`/profile/${value}?tab=reviews`);
             }}
-            handleOpenChatId={(value: string) => {
-                const id = value;
-                if (!id) return;
-                router.push(`/profile-messages/${id}`);
+            handleOpenShop={(shopId: any) => {
+
+                if (!shopId) return;
+                router.push(`/profile/${shopId}`);
             }}
             handleOpenSettings={() => router.push("/settings")}
-            handleOpenShop={(shopId: any) => {
-                const id = shopId;
-                if (!id) return;
-                router.push(`/profile/${id}`);
-            }}
             handleOpenPerfomance={() => router.push("/performance")}
             handlePay={(id: string) => {
                 if (!id) return;

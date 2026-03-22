@@ -166,9 +166,8 @@ const Ratingsmobile = ({ recipientUid, user, handleOpenReview }: Ratingsprop) =>
 
       <div
         onClick={() => {
-          // openLoading();
-          handleOpenReview(user);
-          //router.push(`/reviews/${recipientUid}`);
+          router.push(`/profile/${user._id}?tab=reviews`);
+
         }}
         className="cursor-pointer dark:text-gray-400 text-gray-600 text-sm underline font-bold m-1"
       >

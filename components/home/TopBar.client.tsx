@@ -21,6 +21,7 @@ import {
 import UserMenu from "@/components/shared/UserMenu";
 import { useAuth } from "@/app/hooks/useAuth";
 import Unreadmessages from "../shared/Unreadmessages";
+import MobileNav from "../shared/MobileNav";
 
 function getDisplayName(appUser?: any, authUser?: any) {
     if (appUser?.firstName || appUser?.lastName) {
@@ -33,33 +34,37 @@ function getDisplayName(appUser?: any, authUser?: any) {
     return "Account";
 }
 
-function getPhoto(appUser?: any, authUser?: any) {
-    return appUser?.photo || appUser?.imageUrl || appUser?.avatar || authUser?.photoURL || "";
-}
-
 export default function TopBar() {
     const ref = React.useRef<HTMLDivElement>(null);
     const router = useRouter();
     const pathname = usePathname();
 
-    const { authUser, user: appUser, appUserId, loading, profileLoading } = useAuth();
+    const {
+        authUser,
+        user: appUser,
+        appUserId,
+        loading,
+        profileLoading,
+    } = useAuth();
 
     const isLoggedIn = !!authUser;
     const resolvedUserId = appUserId || "";
     const displayName = getDisplayName(appUser, authUser);
-    const displayPhoto = getPhoto(appUser, authUser);
     const showBackButton = pathname !== "/";
 
-    const requireAuth = React.useCallback(
-        (path: string) => {
-            if (!authUser) {
-                router.push(`/auth?next=${encodeURIComponent(path)}`);
-                return false;
-            }
-            return true;
-        },
-        [authUser, router]
-    );
+    const popup = React.useMemo(() => {
+        if (pathname.startsWith("/create-ad")) return "Sell";
+        if (pathname.startsWith("/bookmarks")) return "Bookmark";
+        if (pathname.startsWith("/profile-messages")) return "Chat";
+        if (pathname.startsWith("/plan")) return "Plan";
+        if (pathname.startsWith("/settings")) return "Profile";
+        if (pathname.startsWith("/performance")) return "Performance";
+        if (pathname.startsWith("/profile")) return "My Shop";
+        if (pathname.startsWith("/home")) return "Admin";
+        return "Home";
+    }, [pathname]);
+
+    const userstatus = appUser?.status || "User";
 
     const handleGoBack = React.useCallback(() => {
         if (typeof window !== "undefined" && window.history.length > 1) {
@@ -75,7 +80,10 @@ export default function TopBar() {
 
         const apply = () => {
             const h = el.getBoundingClientRect().height;
-            document.documentElement.style.setProperty("--topbar-h", `${Math.ceil(h)}px`);
+            document.documentElement.style.setProperty(
+                "--topbar-h",
+                `${Math.ceil(h)}px`
+            );
         };
 
         apply();
@@ -186,7 +194,10 @@ export default function TopBar() {
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <div className="flex items-center gap-2">
-                                        Chats {resolvedUserId ? <Unreadmessages userId={resolvedUserId} /> : null}
+                                        Chats{" "}
+                                        {resolvedUserId ? (
+                                            <Unreadmessages userId={resolvedUserId} />
+                                        ) : null}
                                     </div>
                                 </TooltipContent>
                             </Tooltip>
@@ -228,18 +239,43 @@ export default function TopBar() {
                     {showUserLoading ? (
                         <div className="h-10 w-24 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
                     ) : !isLoggedIn ? (
-                        <button
-                            type="button"
-                            onClick={() => router.push("/auth")}
-                            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-900 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#1B2327] dark:text-white dark:hover:border-orange-500/30 dark:hover:bg-[#222C31]"
-                        >
-                            Sign in
-                        </button>
+                        <>
+                            <button
+                                type="button"
+                                onClick={() => router.push("/auth")}
+                                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-900 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#1B2327] dark:text-white dark:hover:border-orange-500/30 dark:hover:bg-[#222C31]"
+                            >
+                                Sign in
+                            </button>
+
+
+                            <MobileNav
+                                userstatus={userstatus}
+                                userId={resolvedUserId}
+                                popup={popup}
+                                user={appUser}
+                                handleOpenSell={() => router.push("/create-ad")}
+                                handleOpenBook={() => router.push("/bookmarks")}
+                                handleOpenPlan={() => router.push("/plan")}
+                                handleOpenChat={() => router.push("/profile-messages")}
+                                handleOpenShop={(shopId: any) => {
+                                    const id = shopId?._id || shopId?.id || shopId || "";
+                                    if (!id) return;
+                                    router.push(`/profile/${id}`);
+                                }}
+                                handleOpenPerfomance={() => router.push("/performance")}
+                                handleOpenSettings={() => router.push("/settings")}
+                                handleOpenAbout={() => router.push("/about")}
+                                handleOpenTerms={() => router.push("/terms")}
+                                handleOpenPrivacy={() => router.push("/privacy")}
+                                handleOpenSafety={() => router.push("/safety")}
+                                onClose={() => router.push("/")}
+                            />
+
+                        </>
                     ) : (
                         <div className="flex items-center gap-2">
                             <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/50 dark:border-slate-700 dark:bg-[#1B2327] dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] md:flex">
-
-
                                 <div className="max-w-[120px] text-left">
                                     <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">
                                         {displayName}
@@ -284,6 +320,31 @@ export default function TopBar() {
                                     }}
                                 />
                             </div>
+
+
+                            <MobileNav
+                                userstatus={userstatus}
+                                userId={resolvedUserId}
+                                popup={popup}
+                                user={appUser}
+                                handleOpenSell={() => router.push("/create-ad")}
+                                handleOpenBook={() => router.push("/bookmarks")}
+                                handleOpenPlan={() => router.push("/plan")}
+                                handleOpenChat={() => router.push("/profile-messages")}
+                                handleOpenShop={(shopId: any) => {
+                                    const id = shopId?._id || shopId?.id || shopId || "";
+                                    if (!id) return;
+                                    router.push(`/profile/${id}`);
+                                }}
+                                handleOpenPerfomance={() => router.push("/performance")}
+                                handleOpenSettings={() => router.push("/settings")}
+                                handleOpenAbout={() => router.push("/about")}
+                                handleOpenTerms={() => router.push("/terms")}
+                                handleOpenPrivacy={() => router.push("/privacy")}
+                                handleOpenSafety={() => router.push("/safety")}
+                                onClose={() => router.push("/")}
+                            />
+
                         </div>
                     )}
                 </div>
