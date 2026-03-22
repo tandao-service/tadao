@@ -102,7 +102,7 @@ export default function SmartPropertyCardWithDesc({
 
     return (
         <Link
-            href={`/property/${id}`}
+            href={`/ads/${id}`}
             className="group block overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
         >
             {/* Image */}

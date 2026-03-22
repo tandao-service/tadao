@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { mode } from "@/constants";
 import TopBar from "./TopBar.client";
@@ -52,25 +53,29 @@ const DashboardSell = ({
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
+  const resolveAdId = (value: any) =>
+    value?._id || value?.adId?._id || value?.adId || value?.id || "";
+
   if (isDarkMode === null) return null;
 
   return (
-    <div className="h-[100vh] bg-gray-100 p-0 dark:bg-[#131B1E] text-black dark:text-[#F1F3F3] overflow-hidden">
-      <div className="h-full overflow-y-auto bg-gray-100 border">
-        <style jsx>{`
-          @media (max-width: 1024px) {
-            div::-webkit-scrollbar {
-              display: none;
-            }
-          }
-        `}</style>
+    <div className="min-h-screen bg-slate-50 text-black dark:bg-[#131B1E] dark:text-[#F1F3F3]">
+      <TopBar />
 
-        <div className="z-10 top-0 fixed w-full">
-          <TopBar />
-        </div>
+      <div className="mx-auto w-full max-w-5xl px-3 pb-10 pt-[calc(var(--topbar-h,64px)+12px)] lg:px-4">
+        <div className="overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-sm dark:border-[#2D3236] dark:bg-[#1B2225]">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-400 px-5 py-6 text-white lg:px-8 lg:py-8">
+            <h1 className="text-2xl font-extrabold tracking-[-0.02em] lg:text-4xl">
+              {type === "Update" ? "Update Your Ad" : "Create New Ad"}
+            </h1>
+            <p className="mt-2 text-sm text-orange-50 lg:text-base">
+              {type === "Update"
+                ? "Edit your listing details, photos, and pricing, then save your changes."
+                : "Fill in your ad details and publish professionally on Tadao Market."}
+            </p>
+          </div>
 
-        <div className="flex flex-col justify-center w-full h-full mt-[70px]">
-          <div className="p-1 lg:p-2 flex min-h-[100vh] flex-col w-full lg:max-w-3xl lg:mx-auto h-full rounded-lg">
+          <div className="p-2 lg:p-4">
             <EventForm
               userId={userId}
               userImage={userImage}
@@ -84,11 +89,21 @@ const DashboardSell = ({
               packagesList={packagesList}
               payStatus={payStatus}
               tx={tx}
-              handleAdView={(ad: any) => router.push(`/property/${ad._id}`)}
-              handlePay={(ad: any) => router.push(`/pay/${ad._id}`)}
+              handleAdView={(ad: any) => {
+                const id = resolveAdId(ad);
+                if (!id) return;
+                router.push(`/ads/${id}`);
+              }}
+              handlePay={(value: any) => {
+                const orderTrackingId =
+                  value?.orderTrackingId || value?.tx || value?._id || value;
+                if (!orderTrackingId) return;
+                router.push(`/pay/${orderTrackingId}`);
+              }}
               handleOpenShop={(shopId: string) => router.push(`/profile/${shopId}`)}
               handleOpenTerms={() => router.push(`/terms`)}
-              type={"Create"} />
+              type={type === "Update" ? "Update" : "Create"}
+            />
           </div>
         </div>
       </div>
