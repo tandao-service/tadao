@@ -8,7 +8,7 @@ import TopBar from "@/components/home/TopBar.client";
 import MobileBackPill from "@/components/home/MobileBackPill.client";
 import RelatedPropertiesInfinite from "@/components/home/RelatedPropertiesInfinite";
 import PropertyGallery from "@/app/property/PropertyGallery";
-import { IoCall, IoChatboxOutline, IoChatbubbleOutline, IoMail } from "react-icons/io5";
+import { IoCall, IoChatboxOutline, IoChatbubbleOutline, IoCreateOutline, IoMail, IoShareSocialOutline } from "react-icons/io5";
 
 type Props = {
     params: {
@@ -410,13 +410,19 @@ export default async function AdDetailsPage({ params }: Props) {
                                     ) : null}
                                 </div>
 
-                                <div className="mt-5 grid grid-cols-1 gap-2">
+                                <div className="mt-5 grid grid-cols-1 gap-3">
                                     {phone ? (
                                         <a
                                             href={`tel:${phone}`}
-                                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
-                                            <IoCall /> Call {phone}
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
+                                                <IoCall className="h-5 w-5" />
+                                            </span>
+                                            <span className="min-w-0">
+                                                <span className="block text-xs font-medium text-slate-500">Call</span>
+                                                <span className="block truncate font-bold text-slate-900">{phone}</span>
+                                            </span>
                                         </a>
                                     ) : null}
 
@@ -425,40 +431,70 @@ export default async function AdDetailsPage({ params }: Props) {
                                             href={`https://wa.me/${whatsapp.replace(/[^\d]/g, "")}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
-                                            <IoChatbubbleOutline /> WhatsApp {whatsapp}
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600 transition group-hover:bg-green-100">
+                                                <IoChatbubbleOutline className="h-5 w-5" />
+                                            </span>
+                                            <span className="min-w-0">
+                                                <span className="block text-xs font-medium text-slate-500">WhatsApp</span>
+                                                <span className="block truncate font-bold text-slate-900">{whatsapp}</span>
+                                            </span>
                                         </a>
                                     ) : null}
 
                                     {email ? (
                                         <a
                                             href={`mailto:${email}`}
-                                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
-                                            <IoMail /> Email {email}
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition group-hover:bg-sky-100">
+                                                <IoMail className="h-5 w-5" />
+                                            </span>
+                                            <span className="min-w-0">
+                                                <span className="block text-xs font-medium text-slate-500">Email</span>
+                                                <span className="block truncate font-bold text-slate-900">{email}</span>
+                                            </span>
                                         </a>
                                     ) : null}
 
                                     <Link
                                         href={chatHref}
-                                        className="rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 text-center text-sm font-extrabold text-orange-600 hover:bg-orange-100"
+                                        className="group flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-100 hover:shadow-sm"
                                     >
-                                        <IoChatboxOutline /> Chat seller
+                                        <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/80 text-orange-600 transition group-hover:bg-white">
+                                            <IoChatboxOutline className="h-5 w-5" />
+                                        </span>
+                                        <span className="min-w-0">
+                                            <span className="block text-xs font-medium text-orange-500">Message</span>
+                                            <span className="block truncate font-extrabold">Chat seller</span>
+                                        </span>
                                     </Link>
 
                                     <CopyLinkButton
                                         url={canonicalUrl}
-                                        className="rounded-2xl bg-orange-500 px-4 py-3 text-sm font-extrabold text-white hover:bg-orange-600"
+                                        className="group flex items-center gap-3 rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-sm"
                                     >
-                                        Share (copy link)
+                                        <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition group-hover:bg-white/20">
+                                            <IoShareSocialOutline className="h-5 w-5" />
+                                        </span>
+                                        <span className="min-w-0 text-left">
+                                            <span className="block text-xs font-medium text-orange-100">Share</span>
+                                            <span className="block truncate font-extrabold text-white">Copy link</span>
+                                        </span>
                                     </CopyLinkButton>
 
                                     <Link
                                         href={`/ads/${ad._id}/update`}
-                                        className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-900 hover:bg-slate-50"
+                                        className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                     >
-                                        Edit this ad
+                                        <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600 transition group-hover:bg-amber-100">
+                                            <IoCreateOutline className="h-5 w-5" />
+                                        </span>
+                                        <span className="min-w-0">
+                                            <span className="block text-xs font-medium text-slate-500">Manage</span>
+                                            <span className="block truncate font-bold text-slate-900">Edit this ad</span>
+                                        </span>
                                     </Link>
                                 </div>
                             </div>
