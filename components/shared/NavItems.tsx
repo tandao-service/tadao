@@ -20,6 +20,7 @@ import ProgressPopup from "./ProgressPopup";
 import { useAuth } from "@/app/hooks/useAuth";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type NavItemsProps = {
   userstatus: string;
@@ -107,7 +108,7 @@ export default function NavItems({
     "border-slate-200 bg-white text-slate-700 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#2D3236] dark:text-slate-200 dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] dark:hover:text-orange-300";
 
   return (
-    <div className="w-full rounded-[24px] bg-white dark:bg-[#131B1E]">
+    <div className="flex h-full min-h-0 w-full flex-col rounded-[24px] bg-white dark:bg-[#131B1E]">
       <div className="mb-4 px-1">
         <div className="rounded-[22px] border border-orange-100 bg-gradient-to-r from-orange-500 to-orange-400 px-4 py-4 text-white shadow-sm">
           <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-50">
@@ -119,109 +120,111 @@ export default function NavItems({
         </div>
       </div>
 
-      <ul className="space-y-2 px-1">
-        {headerLinks
-          .filter((link) => !(userstatus === "User" && link.label === "Admin"))
-          .map((link) => {
-            const isActive = capitalizeFirstLetter(popup) === link.label;
+      <ScrollArea className="min-h-0 flex-1 pr-1">
+        <ul className="space-y-2 px-1">
+          {headerLinks
+            .filter((link) => !(userstatus === "User" && link.label === "Admin"))
+            .map((link) => {
+              const isActive = capitalizeFirstLetter(popup) === link.label;
 
-            const handleItemClick = () => {
-              if (currentUser) {
-                switch (link.label) {
-                  case "Home":
-                    onClose();
-                    handleclicklink();
-                    break;
-                  case "Sell":
-                    handleOpenSell();
-                    handleclicklink();
-                    break;
-                  case "My Shop":
-                    handleOpenShop(user);
-                    handleclicklink();
-                    break;
-                  case "Chat":
-                    handleOpenChat();
-                    handleclicklink();
-                    break;
-                  case "Performance":
-                    handleOpenPerfomance();
-                    handleclicklink();
-                    break;
-                  case "Bookmark":
-                    handleOpenBook();
-                    handleclicklink();
-                    break;
-                  case "Plan":
-                    handleOpenPlan();
-                    handleclicklink();
-                    break;
-                  case "Profile":
-                    handleOpenSettings();
-                    handleclicklink();
-                    break;
-                  case "Admin":
-                    setIsOpenP(true);
-                    router.push("/home");
-                    break;
-                  default:
-                    break;
+              const handleItemClick = () => {
+                if (currentUser) {
+                  switch (link.label) {
+                    case "Home":
+                      onClose();
+                      handleclicklink();
+                      break;
+                    case "Sell":
+                      handleOpenSell();
+                      handleclicklink();
+                      break;
+                    case "My Shop":
+                      handleOpenShop(user);
+                      handleclicklink();
+                      break;
+                    case "Chat":
+                      handleOpenChat();
+                      handleclicklink();
+                      break;
+                    case "Performance":
+                      handleOpenPerfomance();
+                      handleclicklink();
+                      break;
+                    case "Bookmark":
+                      handleOpenBook();
+                      handleclicklink();
+                      break;
+                    case "Plan":
+                      handleOpenPlan();
+                      handleclicklink();
+                      break;
+                    case "Profile":
+                      handleOpenSettings();
+                      handleclicklink();
+                      break;
+                    case "Admin":
+                      setIsOpenP(true);
+                      router.push("/home");
+                      break;
+                    default:
+                      break;
+                  }
+                } else {
+                  setIsOpenP(true);
+                  router.push("/auth");
                 }
-              } else {
-                setIsOpenP(true);
-                router.push("/auth");
-              }
-            };
+              };
 
-            return (
-              <li key={link.route}>
-                <div
-                  onClick={handleItemClick}
-                  className={`${itemBase} ${isActive ? itemActive : itemInactive}`}
-                >
-                  <span
-                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition ${isActive
-                      ? "bg-white/15 text-white"
-                      : "bg-orange-50 text-orange-600 group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300"
-                      }`}
+              return (
+                <li key={link.route}>
+                  <div
+                    onClick={handleItemClick}
+                    className={`${itemBase} ${isActive ? itemActive : itemInactive}`}
                   >
-                    {iconMap[link.label]}
-                  </span>
+                    <span
+                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition ${isActive
+                        ? "bg-white/15 text-white"
+                        : "bg-orange-50 text-orange-600 group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300"
+                        }`}
+                    >
+                      {iconMap[link.label]}
+                    </span>
 
-                  <span className="flex-1 text-sm font-semibold">
-                    {link.label}
-                  </span>
+                    <span className="flex-1 text-sm font-semibold">
+                      {link.label}
+                    </span>
 
-                  <span
-                    className={`transition ${isActive
-                      ? "text-white/80"
-                      : "text-slate-400 group-hover:text-orange-500 dark:text-slate-500 dark:group-hover:text-orange-300"
-                      }`}
-                  >
-                    <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
-                  </span>
-                </div>
-              </li>
-            );
-          })}
-      </ul>
+                    <span
+                      className={`transition ${isActive
+                        ? "text-white/80"
+                        : "text-slate-400 group-hover:text-orange-500 dark:text-slate-500 dark:group-hover:text-orange-300"
+                        }`}
+                    >
+                      <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+        </ul>
 
-      <div className="mt-4 border-t border-slate-100 px-1 pt-4 dark:border-slate-800">
-        <div
-          onClick={handleShare}
-          className={`${itemBase} ${itemInactive}`}
-        >
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-orange-50 text-orange-600 transition group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300">
-            <ShareOutlinedIcon fontSize="small" />
-          </span>
+        <div className="mt-4 border-t border-slate-100 px-1 pt-4 dark:border-slate-800">
+          <div
+            onClick={handleShare}
+            className={`${itemBase} ${itemInactive}`}
+          >
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-orange-50 text-orange-600 transition group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300">
+              <ShareOutlinedIcon fontSize="small" />
+            </span>
 
-          <span className="flex-1 text-sm font-semibold">Share</span>
+            <span className="flex-1 text-sm font-semibold">Share</span>
 
-          <span className="text-slate-400 transition group-hover:text-orange-500 dark:text-slate-500 dark:group-hover:text-orange-300">
-            <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
-          </span>
+            <span className="text-slate-400 transition group-hover:text-orange-500 dark:text-slate-500 dark:group-hover:text-orange-300">
+              <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+            </span>
+          </div>
         </div>
-      </div>
+      </ScrollArea>
 
       <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
     </div>
