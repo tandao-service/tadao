@@ -48,7 +48,8 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
                         <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#1f1f1f] border dark:border-gray-700 rounded-md shadow-lg z-50">
                             <button
                                 onClick={() => {
-                                    handleOpenSettings();
+
+                                    handleOpenShop(userdata._id)
                                     setMenuOpen(false);
                                 }}
                                 className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"

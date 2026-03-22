@@ -1,24 +1,22 @@
+"use client";
 
 import { format, isToday, isYesterday } from "date-fns";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Phone, MessageCircle, MessageSquare, Mail } from 'lucide-react';
 import {
-    FaStar,
-    FaLock,
     FaEdit,
     FaShareAlt,
     FaLink,
-    FaQrcode,
     FaFacebook,
     FaInstagram,
     FaWhatsapp,
     FaTwitter,
     FaTiktok,
-    FaPhoneAlt,      // Phone icon
-    FaGlobe,         // Website/Internet icon
+    FaPhoneAlt,
+    FaGlobe,
     FaBuilding,
-    FaMapMarkerAlt
+    FaMapMarkerAlt,
+    FaCrown,
 } from "react-icons/fa";
 import Ratingsmobile from "./ratingsmobile";
 import Verification from "./Verification";
@@ -28,6 +26,7 @@ import { createTransaction } from "@/lib/actions/transactions.actions";
 import { v4 as uuidv4 } from "uuid";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
+
 type CollectionProps = {
     userId: string;
     loggedId: string;
@@ -42,26 +41,36 @@ type CollectionProps = {
     handlePay: (id: string) => void;
 };
 
-export default function SellerProfileSidebar({ userId, loggedId, user, daysRemaining, color, pack, handlePay, handleOpenPlan, handleOpenReview, handleOpenChatId, handleOpenSettings }: CollectionProps) {
-
+export default function SellerProfileSidebar({
+    userId,
+    loggedId,
+    user,
+    daysRemaining,
+    color,
+    pack,
+    handlePay,
+    handleOpenPlan,
+    handleOpenReview,
+    handleOpenChatId,
+    handleOpenSettings,
+}: CollectionProps) {
     const [activationfee, setactivationfee] = useState(500);
     const [showphone, setshowphone] = useState(false);
     const pathname = usePathname();
     const [showPhone, setShowPhone] = useState(false);
     const router = useRouter();
     const isAdCreator = userId === loggedId;
-    const handlewhatsappClick = () => {
 
+    const handlewhatsappClick = () => {
         window.location.href = `https://wa.me/${user.whatsapp}/`;
     };
+
     const handleShowPhoneClick = (e: any) => {
         setshowphone(true);
         window.location.href = `tel:${user.phone}`;
     };
-    // console.log(user);
+
     const handleDirectionClick = () => {
-        // Perform navigation or other actions when direction button is clicked
-        // Example: Open a new tab with Google Maps directions
         window.open(
             `https://www.google.com/maps/dir/?api=1&destination=${user.latitude},${user.longitude}`,
             "_blank"
@@ -70,32 +79,23 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
 
     let formattedCreatedAt = "";
     try {
-        const createdAtDate = new Date(user?.verified[0]?.verifieddate); // Convert seconds to milliseconds
-
-        // Get today's date
-        const today = new Date();
-
-        // Check if the message was sent today
+        const createdAtDate = new Date(user?.verified?.[0]?.verifieddate);
         if (isToday(createdAtDate)) {
-            formattedCreatedAt = "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
+            formattedCreatedAt = "Today " + format(createdAtDate, "HH:mm");
         } else if (isYesterday(createdAtDate)) {
-            // Check if the message was sent yesterday
-            formattedCreatedAt = "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
+            formattedCreatedAt = "Yesterday " + format(createdAtDate, "HH:mm");
         } else {
-            // Format the createdAt date with day, month, and year
-            formattedCreatedAt = format(createdAtDate, "dd-MM-yyyy"); // Format as 'day/month/year'
+            formattedCreatedAt = format(createdAtDate, "dd-MM-yyyy");
         }
 
-        // Append hours and minutes if the message is not from today or yesterday
         if (!isToday(createdAtDate) && !isYesterday(createdAtDate)) {
-            formattedCreatedAt += " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
+            formattedCreatedAt += " " + format(createdAtDate, "HH:mm");
         }
-    } catch {
-        // Handle error when formatting date
-    }
-    const [isLoading, setIsLoading] = useState(true);
+    } catch { }
 
+    const [isLoading, setIsLoading] = useState(true);
     const [isOpenP, setIsOpenP] = useState(false);
+
     const handleOpenP = () => {
         setIsOpenP(true);
     };
@@ -107,6 +107,7 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
     const [copied, setCopied] = useState(false);
 
     const adUrl = process.env.NEXT_PUBLIC_DOMAIN_URL + "?Profile=" + user._id;
+
     const handleCopy = () => {
         navigator.clipboard.writeText(adUrl).then(() => {
             setCopied(true);
@@ -117,7 +118,6 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
     const handleShare = async () => {
         try {
             if (Capacitor.isNativePlatform()) {
-                // ✅ Native share (Android/iOS)
                 await Share.share({
                     title: "Check out this Profile!",
                     text: "Have a look at this Profile",
@@ -125,13 +125,11 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
                     dialogTitle: "Share via",
                 });
             } else if (navigator.share) {
-                // ✅ Web share (modern browsers)
                 await navigator.share({
                     title: "Check out this Profile!",
                     url: adUrl,
                 });
             } else {
-                // ❌ Fallback if not supported
                 alert("Sharing is not supported on this device.");
             }
         } catch (error) {
@@ -139,25 +137,24 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
         }
     };
 
-
     const getInitials = (firstName?: string, lastName?: string) => {
-        const first = firstName?.[0]?.toUpperCase() || '';
-        const last = lastName?.[0]?.toUpperCase() || '';
+        const first = firstName?.[0]?.toUpperCase() || "";
+        const last = lastName?.[0]?.toUpperCase() || "";
         return `${first}${last}`;
     };
+
     function isDefaultClerkAvatar(imageUrl: string): boolean {
         try {
             const base64 = imageUrl.split("/").pop();
             if (!base64) return false;
-
-            const json = atob(base64); // decode Base64
+            const json = atob(base64);
             const data = JSON.parse(json);
-
             return data.type === "default";
         } catch (e) {
             return false;
         }
     }
+
     const handlePayNow = async (
         packIdInput: string,
         packNameInput: string,
@@ -178,171 +175,349 @@ export default function SellerProfileSidebar({ userId, loggedId, user, daysRemai
             status: "Pending",
             createdAt: new Date(),
         };
+
         const response = await createTransaction(trans);
         if (response.status === "Pending") {
-            handlePay(response.orderTrackingId)
+            handlePay(response.orderTrackingId);
         }
         setIsOpenP(false);
     };
 
+    const premiumRowClass =
+        "flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3";
+    const socialBtnClass =
+        "inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:-translate-y-0.5 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600";
+    const actionBtnClass =
+        "inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition";
+
     return (
-        <aside className="w-full bg-white shadow-sm rounded-0 lg:rounded-xl p-4 space-y-4 w-full lg:w-[350px]">
-            <div className="text-center">
+        <aside className="w-full lg:w-[350px]">
+            <div className="overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-[0_10px_35px_rgba(15,23,42,0.06)]">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-orange-500 to-orange-400 px-5 py-6 text-white">
+                    <div className="flex flex-col items-center text-center">
+                        {user?.photo ? (
+                            <div className="h-20 w-20 overflow-hidden rounded-full border-4 border-white/70 bg-white shadow-md">
+                                <img
+                                    src={user.photo}
+                                    alt="Organizer avatar"
+                                    className="h-full w-full object-cover"
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-white/70 bg-white text-2xl font-extrabold text-orange-600 shadow-md">
+                                {getInitials(user?.firstName, user?.lastName)}
+                            </div>
+                        )}
 
-                {user?.photo ? (<div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
-                    <img
-                        src={user.photo}
-                        alt="Organizer avatar"
-                        className="w-16 h-16 rounded-full object-cover"
-                    />
-                </div>
+                        <h2 className="mt-4 text-xl font-extrabold">
+                            {user.firstName} {user.lastName}
+                        </h2>
 
-                ) : (
-                    <div className="w-16 h-16 mx-auto bg-orange-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                        {getInitials(user?.firstName, user?.lastName)}
+                        {user?.businessname ? (
+                            <p className="mt-1 text-sm font-medium text-orange-50">
+                                {user.businessname}
+                            </p>
+                        ) : null}
+
+                        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                            <div className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
+                                Seller Profile
+                            </div>
+
+                            {pack && (
+                                <div className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
+                                    <FaCrown className="h-3.5 w-3.5" />
+                                    {pack}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-4 flex items-center justify-center gap-2">
+                            <Ratingsmobile
+                                user={user}
+                                recipientUid={user._id}
+                                handleOpenReview={handleOpenReview}
+                            />
+                        </div>
+
+                        <div className="mt-3 flex items-center justify-center">
+                            <Verification
+                                fee={user.fee}
+                                user={user}
+                                userId={userId}
+                                isAdCreator={isAdCreator}
+                                handlePayNow={handlePay}
+                            />
+                        </div>
+
+                        {user?.businessaddress ? (
+                            <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-orange-50 backdrop-blur-sm">
+                                <FaMapMarkerAlt className="h-3.5 w-3.5" />
+                                <span className="line-clamp-1">{user.businessaddress}</span>
+                            </div>
+                        ) : null}
                     </div>
-                )}
-                <h2 className="text-lg font-semibold mt-2">{user.firstName} {user.lastName}</h2>
-                <div className="text-sm text-gray-600 flex justify-center items-center gap-1">
-                    <Ratingsmobile
-                        user={user}
-                        recipientUid={user._id}
-                        handleOpenReview={handleOpenReview} />
                 </div>
-                <div className="flex items-center justify-center gap-1">
-                    <Verification
-                        fee={user.fee}
-                        user={user}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                        handlePayNow={handlePay}
-                    />
-                </div>
-                {user?.businessaddress && (<><div className="flex gap-1 w-full justify-center items-center text-sm text-gray-500 mt-1"><FaMapMarkerAlt /> {user?.businessaddress}</div></>)}
-            </div>
 
-            {userId === loggedId && (
-                <div className="flex gap-2 justify-center">
-                    {user.verified && user?.verified[0]?.accountverified === false && (<button onClick={() => handlePayNow(VerificationPackId, "Verification", "0", user.fee)} className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-md">Verify Now</button>)}
-                    <button onClick={() => handleOpenSettings()} className="bg-gray-100 text-gray-800 hover:bg-gray-200 text-xs px-3 py-1 rounded-md flex items-center gap-1">
-                        <FaEdit /> Edit Profile
-                    </button>
-                </div>)}
+                <div className="space-y-5 p-5">
+                    {/* Owner actions */}
+                    {userId === loggedId ? (
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                            {user.verified && user?.verified?.[0]?.accountverified === false ? (
+                                <button
+                                    onClick={() =>
+                                        handlePayNow(
+                                            VerificationPackId,
+                                            "Verification",
+                                            "0",
+                                            user.fee
+                                        )
+                                    }
+                                    className="inline-flex flex-1 items-center justify-center rounded-2xl bg-orange-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
+                                >
+                                    Verify Now
+                                </button>
+                            ) : null}
 
-            <div className="mt-4 border-t pt-4">
-                <div className="text-sm text-gray-700 space-y-1">
-                    <p className="flex items-center gap-1"><FaBuilding /> Business: <span className="text-gray-500">{user?.businessname ? (<>{user?.businessname}</>) : (<>Not Provided</>)}</span></p>
-                    <p className="flex items-center gap-1">
-                        <FaGlobe /> Website:{" "}
-                        <span className="text-gray-500">
-                            {user?.website ? (
+                            <button
+                                onClick={() => handleOpenSettings()}
+                                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600"
+                            >
+                                <FaEdit className="h-3.5 w-3.5" />
+                                Edit Profile
+                            </button>
+                        </div>
+                    ) : null}
+
+                    {/* Business info */}
+                    <div className="space-y-3">
+                        <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-500">
+                            Business Information
+                        </div>
+
+                        <div className={premiumRowClass}>
+                            <span className="mt-0.5 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+                                <FaBuilding className="h-4 w-4" />
+                            </span>
+                            <div className="min-w-0">
+                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                                    Business
+                                </p>
+                                <p className="mt-1 text-sm font-bold text-slate-900">
+                                    {user?.businessname ? user.businessname : "Not Provided"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className={premiumRowClass}>
+                            <span className="mt-0.5 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+                                <FaGlobe className="h-4 w-4" />
+                            </span>
+                            <div className="min-w-0">
+                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                                    Website
+                                </p>
+                                <p className="mt-1 text-sm font-bold text-slate-900 break-words">
+                                    {user?.website ? (
+                                        <a
+                                            href={
+                                                user.website.startsWith("http")
+                                                    ? user.website
+                                                    : `https://${user.website}`
+                                            }
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-orange-600 hover:underline"
+                                        >
+                                            {user.website}
+                                        </a>
+                                    ) : (
+                                        "Not Provided"
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className={premiumRowClass}>
+                            <span className="mt-0.5 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                <FaPhoneAlt className="h-4 w-4" />
+                            </span>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                                    Phone
+                                </p>
+                                <div className="mt-1">
+                                    {user?.phone ? (
+                                        showPhone ? (
+                                            <div className="flex flex-col gap-2">
+                                                <span className="text-sm font-bold text-slate-900">
+                                                    {user.phone}
+                                                </span>
+                                                <a
+                                                    href={`tel:${user.phone}`}
+                                                    className="inline-flex w-fit items-center rounded-xl bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-600 hover:bg-orange-100"
+                                                >
+                                                    Call now
+                                                </a>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => setShowPhone(true)}
+                                                className="text-sm font-semibold text-orange-600 hover:underline"
+                                            >
+                                                Click to show number
+                                            </button>
+                                        )
+                                    ) : (
+                                        <span className="text-sm font-medium text-slate-500">
+                                            Not Provided
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {showPhone ? (
+                            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">
+                                ⚠️ Never pay before meeting the seller and verifying the item.
+                                Tadao Market does not offer payment protection. Report fraud:
                                 <a
-                                    href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
+                                    href="mailto:support@tadaomarket.com"
+                                    className="ml-1 font-semibold underline"
+                                >
+                                    support@tadaomarket.com
+                                </a>
+                            </div>
+                        ) : null}
+                    </div>
+
+                    {/* Social */}
+                    <div className="space-y-3 border-t border-slate-100 pt-5">
+                        <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-500">
+                            Social Media
+                        </div>
+
+                        <div className="flex flex-wrap gap-3">
+                            {user?.facebook ? (
+                                <a
+                                    href={user.facebook}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-orange-500 hover:underline"
+                                    className={socialBtnClass}
+                                    aria-label="Facebook"
                                 >
-                                    {user.website}
+                                    <FaFacebook className="h-4 w-4" />
                                 </a>
-                            ) : (
-                                <>Not Provided</>
-                            )}
-                        </span>
-                    </p>
-                    <p className="flex items-center gap-1">
-                        <FaPhoneAlt /> Phone:{" "}
-                        {user?.phone ? (
-                            showPhone ? (
-                                <>
-                                    <span className="text-orange-500 font-medium">{user.phone}</span>
+                            ) : null}
 
-                                </>
-                            ) : (
-                                <button
-                                    onClick={() => setShowPhone(true)}
-                                    className="text-orange-500 hover:underline text-sm"
+                            {user?.instagram ? (
+                                <a
+                                    href={user.instagram}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={socialBtnClass}
+                                    aria-label="Instagram"
                                 >
-                                    Click to show number
-                                </button>
-                            )
-                        ) : (
-                            <span className="text-gray-500">Not Provided</span>
-                        )}
-                    </p>
-                    {showPhone && (
-                        <>
-                            <p className="text-xs bg-gray-100 text-gray-500 mt-1 border rounded-sm p-1">
-                                ⚠️ Never pay before meeting the seller and verifying the property. Tadao Services doesn&apos;t offer payment protection. Report fraud: <a href="mailto:support@tadaomarket.com" className="underline">support@tadaomarket.com</a>
-                            </p>
-                        </>
-                    )}
-                </div>  </div>
+                                    <FaInstagram className="h-4 w-4" />
+                                </a>
+                            ) : null}
 
-            <div className="text-sm text-gray-700 space-y-2 border-t p-1">
-                <p className="font-semibold mt-3">Social Media</p>
-                <div className="flex flex-wrap gap-3 text-xl text-gray-600">
+                            {user?.whatsapp ? (
+                                <a
+                                    href={`https://wa.me/${user.whatsapp}/`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={socialBtnClass}
+                                    aria-label="WhatsApp"
+                                >
+                                    <FaWhatsapp className="h-4 w-4" />
+                                </a>
+                            ) : null}
 
-                    {user?.facebook && (
-                        <a href={`${user?.facebook}`} target="_blank" rel="noopener noreferrer">
-                            <FaFacebook className="hover:text-orange-500" />
-                        </a>
-                    )}
-                    {user?.instagram && (
-                        <a href={`${user?.instagram}`} target="_blank" rel="noopener noreferrer">
-                            <FaInstagram className="hover:text-pink-500" />
-                        </a>
-                    )}
+                            {user?.twitter ? (
+                                <a
+                                    href={user.twitter}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={socialBtnClass}
+                                    aria-label="Twitter"
+                                >
+                                    <FaTwitter className="h-4 w-4" />
+                                </a>
+                            ) : null}
 
-                    {user?.whatsapp && (
-                        <a href={`https://wa.me/${user.whatsapp}/`} target="_blank" rel="noopener noreferrer">
-                            <FaWhatsapp className="hover:text-orange-500" />
-                        </a>
-                    )}
-                    {user?.twitter && (
-                        <a href={`${user?.twitter}`} target="_blank" rel="noopener noreferrer">
-                            <FaTwitter className="hover:text-green-400" />
-                        </a>
-                    )}
-                    {user?.tiktok && (
-                        <a href={`${user?.tiktok}`} target="_blank" rel="noopener noreferrer">
-                            <FaTiktok className="hover:text-black" />
-                        </a>
-                    )}
+                            {user?.tiktok ? (
+                                <a
+                                    href={user.tiktok}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={socialBtnClass}
+                                    aria-label="TikTok"
+                                >
+                                    <FaTiktok className="h-4 w-4" />
+                                </a>
+                            ) : null}
+                        </div>
+                    </div>
 
+                    {/* Share */}
+                    <div className="space-y-3 border-t border-slate-100 pt-5">
+                        <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-500">
+                            Share Profile
+                        </div>
 
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={handleCopy}
+                                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600"
+                            >
+                                <FaLink className="h-3.5 w-3.5" />
+                                {copied ? "Copied!" : "Copy Link"}
+                            </button>
+
+                            <button
+                                onClick={handleShare}
+                                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
+                            >
+                                <FaShareAlt className="h-3.5 w-3.5" />
+                                Share
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Plan */}
+                    {isAdCreator ? (
+                        <div className="border-t border-slate-100 pt-5">
+                            <div className="rounded-2xl border border-orange-100 bg-orange-50 p-4">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-500">
+                                            Current Plan
+                                        </p>
+                                        <p className="mt-1 text-lg font-extrabold text-slate-900">
+                                            {pack}
+                                        </p>
+                                        {pack !== "Free" && daysRemaining && daysRemaining > 0 ? (
+                                            <p className="mt-1 text-sm font-medium text-slate-600">
+                                                {daysRemaining} day{daysRemaining === 1 ? "" : "s"} left
+                                            </p>
+                                        ) : null}
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleOpenPlan()}
+                                        className="inline-flex items-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-orange-600 transition hover:bg-orange-100"
+                                    >
+                                        Upgrade Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
                 </div>
             </div>
-            <div className="mt-4 border-t pt-4">
-                <p className="text-sm font-semibold text-gray-700 mb-2">Share Options</p>
-                <div className="flex justify-around text-sm text-gray-600 pt-3">
-                    <button onClick={handleCopy} className="flex items-center gap-1 hover:text-orange-500">
-                        <FaLink /> {copied ? "Copied!" : "Copy Link"}
-                    </button>
 
-                    <button onClick={handleShare} className="flex items-center gap-1 hover:text-orange-500">
-                        <FaShareAlt /> Share
-                    </button>
-                </div>
-            </div>
-            <div className="flex gap-1 text-center pt-3 border-t text-sm">
-
-                {isAdCreator && (<>
-
-                    {isAdCreator &&
-                        pack !== "Free" &&
-                        daysRemaining &&
-                        daysRemaining > 0 ? (
-                        <>
-                            📈 Plan: <span className="font-semibold">{pack} | {daysRemaining} Days Left</span> | <div onClick={() => handleOpenPlan()} className="cursor-pointer text-orange-500 hover:underline">Upgrade Plan</div>
-                        </>
-                    ) : (
-                        <>
-                            📈 Plan: <span className="font-semibold">{pack}</span> | <div onClick={() => handleOpenPlan()} className="cursor-pointer text-orange-500 hover:underline">Upgrade Plan</div>
-                        </>
-                    )}
-                </>)}
-
-            </div>
             <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
         </aside>
     );

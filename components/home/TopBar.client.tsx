@@ -238,21 +238,7 @@ export default function TopBar() {
                     ) : (
                         <div className="flex items-center gap-2">
                             <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/50 dark:border-slate-700 dark:bg-[#1B2327] dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] md:flex">
-                                {displayPhoto ? (
-                                    <div className="relative h-8 w-8 overflow-hidden rounded-full border border-orange-100 bg-orange-50">
-                                        <Image
-                                            src={displayPhoto}
-                                            alt={displayName}
-                                            fill
-                                            className="object-cover"
-                                            unoptimized
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-orange-100 bg-orange-50 text-xs font-bold text-orange-600">
-                                        {displayName.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
+
 
                                 <div className="max-w-[120px] text-left">
                                     <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">

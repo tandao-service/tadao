@@ -1,30 +1,28 @@
 import { IAd } from "@/lib/database/models/ad.model";
 import React, { useEffect, useRef, useState } from "react";
-import Pagination from "./Pagination";
 import VerticalCard from "./VerticalCard";
 import HorizontalCard from "./HorizontalCard";
 import Image from "next/image";
-import { getAdByUser, getAllBids, getAllBidsGroupedByAd, markWinner, removeBid } from "@/lib/actions/dynamicAd.actions";
+import {
+  getAdByUser,
+  getAllBidsGroupedByAd,
+  markWinner,
+  removeBid,
+} from "@/lib/actions/dynamicAd.actions";
 import Masonry from "react-masonry-css";
-import ProgressPopup from "./ProgressPopup";
-import Skeleton from "@mui/material/Skeleton";
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
-import ChecklistRtlOutlinedIcon from '@mui/icons-material/ChecklistRtlOutlined';
+import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
+import ChecklistRtlOutlinedIcon from "@mui/icons-material/ChecklistRtlOutlined";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import CollectionMyLoans from "./CollectionMyLoans";
 import AdminBidsPage from "./adminbids";
-import { toast } from '@/components/ui/use-toast';
-//import { Icon } from "@iconify/react";
-//import sixDotsScale from "@iconify-icons/svg-spinners/6-dots-scale"; // Correct import
-// Correct import
+import { toast } from "@/components/ui/use-toast";
+
 type CollectionProps = {
   userId: string;
   sortby: string;
-  // data: IAd[];
   emptyTitle: string;
   emptyStateSubtext: string;
   limit: number;
-  //page: number | string;
   loans: any;
   urlParamName?: string;
   isAdCreator: boolean;
@@ -36,6 +34,7 @@ type CollectionProps = {
   handleOpenChatId: (value: any) => void;
   collectionType?: "Ads_Organized" | "My_Tickets" | "All_Ads";
 };
+
 interface Bid {
   _id: string;
   adId: string;
@@ -45,12 +44,14 @@ interface Bid {
   isWinner?: boolean;
   isAbusive?: boolean;
 }
+
 type GroupedBids = {
   adId: string;
   title: string;
   thumbnail?: string;
   bids: Bid[];
 };
+
 const CollectionMyads = ({
   loans,
   userId,
@@ -58,22 +59,16 @@ const CollectionMyads = ({
   emptyStateSubtext,
   sortby,
   handleOpenChatId,
-  collectionType,
-  urlParamName,
   isAdCreator,
   isVertical,
-  loadPopup,
   handleAdEdit,
   handleAdView,
   handleOpenPlan,
 }: CollectionProps) => {
-  const [data, setAds] = useState<IAd[]>([]); // Initialize with an empty array
+  const [data, setAds] = useState<IAd[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-
-  // const [isOpenP, setIsOpenP] = useState(false);
-  // const observer = useRef();
   const observer = useRef<IntersectionObserver | null>(null);
 
   const fetchAds = async () => {
@@ -86,26 +81,20 @@ const CollectionMyads = ({
         sortby: sortby,
         myshop: isAdCreator,
       });
-      // alert(organizedAds);
-      // Update ads state using the latest prevAds for filtering
+
       setAds((prevAds: IAd[]) => {
         const existingAdIds = new Set(prevAds.map((ad) => ad._id));
-
-        // Filter out ads that are already in prevAds
         const newAds = organizedAds?.data.filter(
           (ad: IAd) => !existingAdIds.has(ad._id)
         );
-
-        return [...prevAds, ...newAds]; // Return updated ads
+        return [...prevAds, ...newAds];
       });
+
       setTotalPages(organizedAds?.totalPages || 1);
     } catch (error) {
-      //alert(error);
       console.error("Error fetching ads", error);
     } finally {
       setLoading(false);
-      //setIsInitialLoading(false);
-      //closeLoading();
     }
   };
 
@@ -147,7 +136,11 @@ const CollectionMyads = ({
       );
       toast({ title: "Bid removed", duration: 3000 });
     } else {
-      toast({ title: "Error", description: res.message, variant: "destructive" });
+      toast({
+        title: "Error",
+        description: res.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -165,9 +158,14 @@ const CollectionMyads = ({
         }))
       );
     } else {
-      toast({ title: "Error", description: res.message, variant: "destructive" });
+      toast({
+        title: "Error",
+        description: res.message,
+        variant: "destructive",
+      });
     }
   };
+
   const lastAdRef = (node: any) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
@@ -180,117 +178,118 @@ const CollectionMyads = ({
 
     if (node) observer.current.observe(node);
   };
+
   const breakpointColumns = {
-    default: 3, // 3 columns on large screens
-    1100: 3, // 2 columns for screens <= 1100px
-    700: 2, // 1 column for screens <= 700px
+    default: 4,
+    1280: 3,
+    900: 2,
+    700: 2,
+    520: 1,
   };
 
   const [selectedCategory, setSelectedCategory] = useState("");
+  const categories = Array.from(
+    new Set(data.map((item: any) => item.data.category).filter(Boolean))
+  );
 
-  // Get unique categories
-  const categories = Array.from(new Set(data.map((item: any) => item.data.category)));
-
-  // Filter data
   const filteredAds = selectedCategory
     ? data.filter((item: any) => item.data.category === selectedCategory)
     : data;
-  const [inputMode, setInputMode] = useState<'Ads' | 'Loans' | 'Bids'>('Ads');
+
+  const [inputMode, setInputMode] = useState<"Ads" | "Loans" | "Bids">("Ads");
+
+  const tabBase =
+    "h-12 rounded-2xl px-4 text-sm font-semibold transition flex items-center justify-center gap-2 border";
+  const tabActive =
+    "border-orange-200 bg-orange-50 text-orange-600 shadow-sm";
+  const tabInactive =
+    "border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600";
 
   return (
-    <div>
-      <div className="grid grid-cols-3 gap-1">
-        <button
-          title="Ads"
-          onClick={() => setInputMode("Ads")}
-          className={`h-12 p-3 rounded-tl-0 lg:rounded-tl-xl flex gap-2 justify-center items-center ${inputMode === "Ads"
-            ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-            : "hover:bg-orange-300 bg-gray-200"
-            }`}
-        >
-          <ListOutlinedIcon /> My Ads
-        </button>
+    <div className="space-y-4">
+      {/* Tabs */}
+      <div className="rounded-[24px] border border-orange-100 bg-white p-2 shadow-sm">
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            title="Ads"
+            onClick={() => setInputMode("Ads")}
+            className={`${tabBase} ${inputMode === "Ads" ? tabActive : tabInactive
+              }`}
+          >
+            <ListOutlinedIcon fontSize="small" />
+            <span className="truncate">My Ads</span>
+          </button>
 
+          <button
+            title="Bids"
+            onClick={() => setInputMode("Bids")}
+            className={`${tabBase} ${inputMode === "Bids" ? tabActive : tabInactive
+              }`}
+          >
+            <ChecklistRtlOutlinedIcon fontSize="small" />
+            <span className="truncate">Bids</span>
+          </button>
 
-        <button
-          title="Bids"
-          onClick={() => setInputMode("Bids")}
-          className={`h-12 p-3 rounded-0 flex gap-2 justify-center items-center ${inputMode === "Bids"
-            ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-            : "hover:bg-orange-300 bg-gray-200"
-            }`}
-        >
-          <ChecklistRtlOutlinedIcon /> Bids
-        </button>
-
-        <button
-          title="Loans"
-          onClick={() => setInputMode("Loans")}
-          className={`h-12 p-3 rounded-0 lg:rounded-tr-xl flex gap-2 justify-center items-center ${inputMode === "Loans"
-            ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-            : "hover:bg-orange-300 bg-gray-200"
-            }`}
-        >
-          <ChecklistRtlOutlinedIcon /> Loan Requests
-        </button>
-
+          <button
+            title="Loans"
+            onClick={() => setInputMode("Loans")}
+            className={`${tabBase} ${inputMode === "Loans" ? tabActive : tabInactive
+              }`}
+          >
+            <ChecklistRtlOutlinedIcon fontSize="small" />
+            <span className="truncate">Loan Requests</span>
+          </button>
+        </div>
       </div>
-      {inputMode === "Ads" && (<div
-        className={`rounded-b-lg p-2 flex flex-col min-h-screen ${inputMode === "Ads"
-          ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-          : "bg-[#131B1E]"
-          }`}
-      >
 
-        <div className="flex flex-col lg:flex-row items-center justify-between w-full">
-          <h3 className="font-bold text-[25px] text-center sm:text-left">
-            My Ads
-          </h3>
-          <div className="w-full lg:w-[450px] justify-between lg:justify-end flex items-center gap-4 mb-2 p-1 rounded-md">
-            <label className="text-xs lg:text-base">Filter by Category: </label>
-            <select
-              className="py-2 border dark:text-gray-100 dark:bg-[#2D3236] rounded-md w-[250px]"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">All</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
+      {/* ADS */}
+      {inputMode === "Ads" && (
+        <section className="rounded-[28px] border border-orange-100 bg-white p-4 shadow-sm md:p-5">
+          <div className="mb-5 flex flex-col gap-4 border-b border-slate-100 pb-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h3 className="text-2xl font-extrabold tracking-[-0.02em] text-slate-900">
+                My Ads
+              </h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Manage, review, and track all listings from this seller profile.
+              </p>
+            </div>
+
+            <div className="flex w-full flex-col gap-2 sm:w-auto">
+              <label className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                Filter by category
+              </label>
+              <select
+                className="h-11 min-w-[220px] rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 outline-none transition focus:border-orange-300 focus:bg-white"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option key={String(category)} value={String(category)}>
+                    {String(category)}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-        </div>
-        {filteredAds.length > 0 ? (
-          isVertical ? (
-            <Masonry
-              breakpointCols={breakpointColumns}
-              className="flex gap-1 lg:gap-4"
-              columnClassName="bg-clip-padding"
-            >
-              {filteredAds.map((ad: any, index: number) => {
-                if (filteredAds.length === index + 1) {
+          {filteredAds.length > 0 ? (
+            isVertical ? (
+              <Masonry
+                breakpointCols={breakpointColumns}
+                className="flex -ml-3 md:-ml-4"
+                columnClassName="pl-3 md:pl-4 bg-clip-padding"
+              >
+                {filteredAds.map((ad: any, index: number) => {
+                  const isLast = filteredAds.length === index + 1;
+
                   return (
                     <div
-                      ref={lastAdRef}
+                      ref={isLast ? lastAdRef : null}
                       key={ad._id}
-                      className="flex justify-center"
+                      className="mb-3 md:mb-4"
                     >
-                      {/* Render Ad */}
-                      <VerticalCard
-                        ad={ad}
-                        userId={userId}
-                        isAdCreator={isAdCreator}
-                        handleAdView={handleAdView}
-                        handleAdEdit={handleAdEdit}
-                        handleOpenPlan={handleOpenPlan}
-                        handleOpenChatId={handleOpenChatId} />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={ad._id} className="flex justify-center">
-                      {/* Render Ad */}
                       <VerticalCard
                         ad={ad}
                         userId={userId}
@@ -302,133 +301,120 @@ const CollectionMyads = ({
                       />
                     </div>
                   );
-                }
-              })}
-            </Masonry>
-          ) : (
-            <div className="flex p-1 rounded-lg">
-              <ul className="w-full">
-                {filteredAds.map((ad: any, index: number) => {
-                  if (filteredAds.length === index + 1) {
-                    return (
-                      <div
-                        ref={lastAdRef}
-                        key={ad._id}
-                        className="flex justify-center"
-                      >
-                        {/* Render Ad */}
-                        <HorizontalCard
-                          ad={ad}
-                          userId={userId}
-                          isAdCreator={isAdCreator}
-                          handleAdView={handleAdView}
-                          handleAdEdit={handleAdEdit}
-                          handleOpenPlan={handleOpenPlan}
-                          handleOpenChatId={handleOpenChatId}
-                        />
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div key={ad._id} className="flex justify-center">
-                        {/* Render Ad */}
-                        <HorizontalCard
-                          ad={ad}
-                          userId={userId}
-                          isAdCreator={isAdCreator}
-                          handleAdView={handleAdView}
-                          handleAdEdit={handleAdEdit}
-                          handleOpenPlan={handleOpenPlan}
-                          handleOpenChatId={handleOpenChatId}
-                        />
-                      </div>
-                    );
-                  }
                 })}
-              </ul>
-            </div>
-          )
-        ) : (
-          loading === false && (
-            <>
-              <div className="flex items-center lg:min-h-[200px] w-full flex-col gap-3 rounded-[14px] bg-grey-50 py-5 lg:py-28 text-center">
-                <h3 className="font-bold text-[16px] lg:text-[25px]">
+              </Masonry>
+            ) : (
+              <div className="space-y-3">
+                {filteredAds.map((ad: any, index: number) => {
+                  const isLast = filteredAds.length === index + 1;
+
+                  return (
+                    <div ref={isLast ? lastAdRef : null} key={ad._id}>
+                      <HorizontalCard
+                        ad={ad}
+                        userId={userId}
+                        isAdCreator={isAdCreator}
+                        handleAdView={handleAdView}
+                        handleAdEdit={handleAdEdit}
+                        handleOpenPlan={handleOpenPlan}
+                        handleOpenChatId={handleOpenChatId}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          ) : (
+            !loading && (
+              <div className="flex min-h-[260px] flex-col items-center justify-center rounded-[24px] border border-dashed border-orange-200 bg-orange-50 px-6 py-12 text-center">
+                <div className="mb-4 rounded-full bg-white p-4 shadow-sm">
+                  <ListOutlinedIcon className="text-orange-500" />
+                </div>
+                <h3 className="text-xl font-extrabold text-slate-900">
                   {emptyTitle}
                 </h3>
-                <p className="text-sm lg:p-regular-14">{emptyStateSubtext}</p>
+                <p className="mt-2 max-w-md text-sm text-slate-500">
+                  {emptyStateSubtext}
+                </p>
               </div>
-            </>
-          )
-        )}
-        {loading && (
-          <>
+            )
+          )}
 
-            <div className="w-full mt-10 lg:min-h-[200px] flex flex-col items-center justify-center">
-              <Image
-                src="/assets/icons/loading.gif"
-                alt="loading"
-                width={60}
-                height={60}
-                unoptimized
-              />
+          {loading && (
+            <div className="flex min-h-[220px] w-full flex-col items-center justify-center">
+              <div className="rounded-full bg-orange-50 p-4">
+                <Image
+                  src="/assets/icons/loading.gif"
+                  alt="loading"
+                  width={56}
+                  height={56}
+                  unoptimized
+                />
+              </div>
+              <p className="mt-3 text-sm font-medium text-slate-500">
+                Loading ads...
+              </p>
             </div>
-
-          </>)}
-
-
-
-
-      </div>
+          )}
+        </section>
       )}
-      {inputMode === "Loans" && (<div
-        className={`rounded-b-lg p-2 flex flex-col min-h-screen ${inputMode === "Loans"
-          ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-          : "bg-[#131B1E]"
-          }`}
-      >
 
-        {loans && isAdCreator && (<>
-          <div className="container mx-auto p-1 lg:p-4 rounded-xl">
-            <h1 className="text-2xl font-bold mb-4">Loan Requests</h1>
-            <div className="flex flex-col lg:flex-row gap-3"></div>
-            {/* Date Filter Section */}
+      {/* LOANS */}
+      {inputMode === "Loans" && (
+        <section className="rounded-[28px] border border-orange-100 bg-white p-4 shadow-sm md:p-5">
+          {loans && isAdCreator && (
+            <>
+              <div className="mb-5 border-b border-slate-100 pb-5">
+                <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-slate-900">
+                  Loan Requests
+                </h1>
+                <p className="mt-1 text-sm text-slate-500">
+                  Review all incoming loan requests linked to this seller.
+                </p>
+              </div>
 
-            <ScrollArea className="w-full">
-              <CollectionMyLoans
-                data={loans.data}
-                emptyTitle={`No request`}
-                emptyStateSubtext="(0) Loan Request"
-                limit={200}
-                page={1}
-                userId={userId}
-                totalPages={loans.totalPages}
-                handleOpenChatId={handleOpenChatId}
+              <ScrollArea className="w-full">
+                <CollectionMyLoans
+                  data={loans.data}
+                  emptyTitle="No request"
+                  emptyStateSubtext="(0) Loan Request"
+                  limit={200}
+                  page={1}
+                  userId={userId}
+                  totalPages={loans.totalPages}
+                  handleOpenChatId={handleOpenChatId}
+                />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </>
+          )}
+        </section>
+      )}
+
+      {/* BIDS */}
+      {inputMode === "Bids" && (
+        <section className="rounded-[28px] border border-orange-100 bg-white p-4 shadow-sm md:p-5">
+          {isAdCreator && (
+            <>
+              <div className="mb-5 border-b border-slate-100 pb-5">
+                <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-slate-900">
+                  Bids
+                </h1>
+                <p className="mt-1 text-sm text-slate-500">
+                  Review bids, remove unwanted ones, or mark a winner.
+                </p>
+              </div>
+
+              <AdminBidsPage
+                bidsGrouped={bids}
+                loading={isBidLoading}
+                handleRemoveBid={handleRemove}
+                handleMarkWinner={handleMarkWinner}
               />
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </div>
-        </>)}
-      </div>)}
-      {inputMode === "Bids" && (<div
-        className={`rounded-b-lg p-2 flex flex-col min-h-screen ${inputMode === "Bids"
-          ? "dark:bg-[#222528] dark:text-gray-100 bg-white"
-          : "bg-[#131B1E]"
-          }`}
-      >
-
-
-        {isAdCreator && (<>
-          <div className="container mx-auto p-1 lg:p-4 rounded-xl">
-            <h1 className="text-2xl font-bold mb-4">Bids</h1>
-
-
-            <AdminBidsPage bidsGrouped={bids} loading={isBidLoading} handleRemoveBid={handleRemove} handleMarkWinner={handleMarkWinner} />
-          </div>
-        </>)}
-
-      </div>)}
-
-
+            </>
+          )}
+        </section>
+      )}
     </div>
   );
 };
