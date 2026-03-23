@@ -1,6 +1,7 @@
 // app/search/page.tsx
 import type { Metadata } from "next";
 import SearchPageClient from "./SearchPageClient";
+import { Suspense } from "react";
 type Props = {
     searchParams: {
         query?: string;
@@ -20,14 +21,17 @@ export const metadata: Metadata = {
 
 export default function SearchPage({ searchParams }: Props) {
     return (
-        <SearchPageClient
-            initialQuery={String(searchParams.query || "").trim()}
-            initialRegion={String(searchParams.region || "").trim()}
-            initialCategory={String(searchParams.category || "").trim()}
-            initialPage={Number(searchParams.page || 1)}
-            initialMin={String(searchParams.min || "").trim()}
-            initialMax={String(searchParams.max || "").trim()}
-            initialSort={String(searchParams.sort || "recommended").trim()}
-        />
+        <Suspense fallback={<div className="p-6">Loading...</div>}>
+            <SearchPageClient
+                initialQuery={String(searchParams.query || "").trim()}
+                initialRegion={String(searchParams.region || "").trim()}
+                initialCategory={String(searchParams.category || "").trim()}
+                initialPage={Number(searchParams.page || 1)}
+                initialMin={String(searchParams.min || "").trim()}
+                initialMax={String(searchParams.max || "").trim()}
+                initialSort={String(searchParams.sort || "recommended").trim()}
+            />
+        </Suspense>
+
     );
 }
