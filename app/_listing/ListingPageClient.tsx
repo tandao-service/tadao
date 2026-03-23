@@ -1779,7 +1779,7 @@ export default function ListingPageClient(props: Props) {
                                                         Subcategories
                                                     </div>
 
-                                                    <div className="max-h-[55vh] space-y-1 overflow-auto pr-2">
+                                                    <div className="max-h-[55vh] space-y-1 overflow-auto pr-3">
                                                         {(c.listings || []).map((it) => {
                                                             const isActiveSlug =
                                                                 String(it.slug).toLowerCase() ===
@@ -1809,7 +1809,7 @@ export default function ListingPageClient(props: Props) {
                                                                         );
                                                                     }}
                                                                     className={cn(
-                                                                        "w-full rounded-xl px-3 py-2 text-left hover:bg-orange-50",
+                                                                        "w-full rounded-xl m-1 px-3 py-2 text-left hover:bg-orange-50",
                                                                         isActiveSlug
                                                                             ? "bg-orange-50 ring-1 ring-orange-200"
                                                                             : "bg-white"
