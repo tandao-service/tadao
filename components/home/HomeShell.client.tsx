@@ -16,6 +16,7 @@ import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
 import BottomNav from "@/components/home/BottomNav.client";
 import { getAllPackages } from "@/lib/actions/packages.actions";
+import { console } from "inspector";
 
 function slugify(input: string) {
     return String(input || "")
@@ -110,7 +111,7 @@ export default function HomeShell({
                         </div>
 
                         <div className="mt-5">
-                            <HeroSearchBar />
+                            <HeroSearchBar regions={regions} listingSlug={defaultListingSlug} />
                         </div>
                     </div>
                 </div>

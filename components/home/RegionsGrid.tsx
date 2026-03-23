@@ -29,7 +29,7 @@ export default function RegionsGrid({
                 {regions.map((r) => (
                     <Link
                         key={r.slug}
-                        href={`/r/${r.slug}/${slug}`} // ✅ region listing
+                        href={slug ? `/r/${r.slug}/${slug}` : `/r/${r.slug}`} // ✅ region listing
                         className="rounded-xl border bg-slate-50 px-3 py-3 transition hover:bg-slate-100"
                     >
                         <div className="text-sm font-extrabold">{r.name}</div>
