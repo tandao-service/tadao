@@ -641,7 +641,7 @@ export default function ListingPageClient(props: Props) {
         }
 
         if (!isVerifiedUser) {
-            router.replace(`/auth?redirect_url=/${props.activeListingSlug}&reason=verification-required`);
+            router.replace(`/verify?redirect_url=/${props.activeListingSlug}&reason=verification-required`);
         }
     }, [needsVerifiedAccess, currentUser, isVerifiedUser, router, props.activeListingSlug]);
     const [dyn, setDyn] = React.useState<FiltersState>({});
