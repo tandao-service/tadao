@@ -22,7 +22,7 @@ export default function HeroSearchBar() {
         const query = new URLSearchParams();
         if (q.trim()) query.set("q", q.trim());
         if (region !== "all-kenya") query.set("region", region);
-        router.push(`/search?${query.toString()}`);
+        router.push(`/r/?${query.toString()}`);
     };
 
     return (
