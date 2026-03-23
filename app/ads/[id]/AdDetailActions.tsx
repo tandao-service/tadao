@@ -101,7 +101,7 @@ export default function AdDetailActions({ ad }: Props) {
             {!biddingEnabled && isFinanceCategory ? (
                 <button
                     onClick={handleOpenPopupLoan}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 py-3 text-base font-bold text-white transition hover:bg-orange-600"
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-green-500 px-4 py-3 text-base font-bold text-white transition hover:bg-green-600"
                 >
                     <SellOutlinedIcon />
                     Request Financing for This Property

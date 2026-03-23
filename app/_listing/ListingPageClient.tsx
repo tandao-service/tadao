@@ -1728,7 +1728,7 @@ export default function ListingPageClient(props: Props) {
                                     return (
                                         <div
                                             key={c.name}
-                                            className="overflow-hidden rounded-2xl border border-slate-200"
+                                            className="overflow-hidden rounded-2xl p-2 border border-slate-200"
                                         >
                                             <button
                                                 type="button"
@@ -1774,12 +1774,12 @@ export default function ListingPageClient(props: Props) {
                                             </button>
 
                                             {activeCat ? (
-                                                <div className="border-t border-slate-200 bg-white p-2">
+                                                <div className="border-t border-slate-200 bg-gray-100 p-2">
                                                     <div className="mb-2 px-2 text-[11px] font-extrabold text-slate-600">
                                                         Subcategories
                                                     </div>
 
-                                                    <div className="max-h-[45vh] space-y-1 overflow-auto pr-1">
+                                                    <div className="max-h-[55vh] space-y-1 overflow-auto pr-2">
                                                         {(c.listings || []).map((it) => {
                                                             const isActiveSlug =
                                                                 String(it.slug).toLowerCase() ===
@@ -1809,7 +1809,7 @@ export default function ListingPageClient(props: Props) {
                                                                         );
                                                                     }}
                                                                     className={cn(
-                                                                        "w-full rounded-xl px-3 py-0 text-left hover:bg-orange-50",
+                                                                        "w-full rounded-xl px-3 py-2 text-left hover:bg-orange-50",
                                                                         isActiveSlug
                                                                             ? "bg-orange-50 ring-1 ring-orange-200"
                                                                             : "bg-white"
