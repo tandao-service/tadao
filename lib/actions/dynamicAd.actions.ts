@@ -1577,12 +1577,52 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
     return "sale";
   };
 
+  const normalize = (v: string) => v.trim().toLowerCase();
+
+  const specialListings: Array<{
+    category: string;
+    subcategory: string;
+    slug: string;
+    title: string;
+  }> = [
+      {
+        category: "Donations",
+        subcategory: "Donated Items",
+        slug: "donations",
+        title: "Donations",
+      },
+      {
+        category: "Lost and Found",
+        subcategory: "Lost and Found Items",
+        slug: "lost-and-found",
+        title: "Lost & Found",
+      },
+    ];
+
   for (const s of subcats as any[]) {
     const rawSub = String(s?.subcategory || "").trim();
     const catDoc = s?.category;
     const catName = String(catDoc?.category || catDoc?.name || "").trim();
 
     if (!catName || !rawSub) continue;
+
+    const icon = Array.isArray(s?.imageUrl) ? (s.imageUrl[0] || "") : "";
+
+    const special = specialListings.find(
+      (item) =>
+        normalize(item.category) === normalize(catName) &&
+        normalize(item.subcategory) === normalize(rawSub)
+    );
+
+    if (special) {
+      map[special.slug] = {
+        category: catName,
+        subcategory: rawSub,
+        title: special.title,
+        icon,
+      };
+      continue;
+    }
 
     const mode = detectMode(rawSub);
     const cleanSub = stripIntent(rawSub);
@@ -1593,9 +1633,9 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
 
     map[listingSlug] = {
       category: catName,
-      subcategory: rawSub, // exact DB subcategory
+      subcategory: rawSub,
       title,
-      icon: Array.isArray(s?.imageUrl) ? (s.imageUrl[0] || "") : "",
+      icon,
     };
   }
 

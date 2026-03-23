@@ -31,7 +31,16 @@ function parseNum(v?: string) {
     const n = Number(v);
     return Number.isFinite(n) ? n : undefined;
 }
+function isProtectedVerifiedCategory(categoryName: string) {
+    const c = String(categoryName || "").trim().toLowerCase();
+    return c === "donations" || c === "lost and found";
+}
 
+function isVerifiedUser(user: any) {
+    return Boolean(
+        user?.verified?.some((v: any) => v?.accountverified === true)
+    );
+}
 type ListingSearchParams = {
     page?: string;
     min?: string;

@@ -10,6 +10,8 @@ import { Icons } from "@/constants";
 import DynamicFilters from "@/components/home/DynamicFilters";
 import { HomeRegion } from "@/lib/home/home.data";
 import RegionsGrid from "@/components/home/RegionsGrid";
+import { useAuth } from "../hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 type SidebarData = {
     subcategoryCounts: Record<string, number>;
@@ -98,7 +100,10 @@ function setQS(sp: URLSearchParams, key: string, value: string) {
     if (!value) sp.delete(key);
     else sp.set(key, value);
 }
-
+function isProtectedVerifiedCategory(categoryName: string) {
+    const c = String(categoryName || "").trim().toLowerCase();
+    return c === "donations" || c === "lost and found";
+}
 function initials2(label: string) {
     const s = String(label || "").trim();
     if (!s) return "NA";
@@ -580,6 +585,7 @@ type FetchOverrides = {
 };
 
 export default function ListingPageClient(props: Props) {
+    const router = useRouter();
     const [categoryName, setCategoryName] = React.useState(props.categoryName);
     const [isVehicle, setIsVehicle] = React.useState(props.isVehicle);
     const [categoryListings, setCategoryListings] = React.useState<CategoryListingItem[]>(
@@ -615,7 +621,29 @@ export default function ListingPageClient(props: Props) {
         );
         return (cat?.fieldsBySub?.[activeSubName] || []) as any[];
     }, [props.categories, categoryName, activeSubName]);
+    const { user: currentUser } = useAuth();
 
+    const needsVerifiedAccess = React.useMemo(() => {
+        return isProtectedVerifiedCategory(props.categoryName);
+    }, [props.categoryName]);
+
+    const isVerifiedUser = React.useMemo(() => {
+        return Boolean(
+            currentUser?.verified?.some((v: any) => v?.accountverified === true)
+        );
+    }, [currentUser]);
+    React.useEffect(() => {
+        if (!needsVerifiedAccess) return;
+
+        if (!currentUser) {
+            router.replace(`/auth?redirect_url=/${props.activeListingSlug}`);
+            return;
+        }
+
+        if (!isVerifiedUser) {
+            router.replace(`/auth?redirect_url=/${props.activeListingSlug}&reason=verification-required`);
+        }
+    }, [needsVerifiedAccess, currentUser, isVerifiedUser, router, props.activeListingSlug]);
     const [dyn, setDyn] = React.useState<FiltersState>({});
 
     const dynSubcategory = React.useMemo(
