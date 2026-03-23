@@ -4,7 +4,13 @@
 import * as React from "react";
 import TopBar from "@/components/home/TopBar.client";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, SlidersHorizontal, X, Layers, MapPin } from "lucide-react";
+import {
+    ArrowLeft,
+    SlidersHorizontal,
+    X,
+    Layers,
+    MapPin,
+} from "lucide-react";
 import SmartPropertyCardWithDesc from "@/components/home/SmartPropertyCardWithDesc";
 import { Icons } from "@/constants";
 import DynamicFilters from "@/components/home/DynamicFilters";
@@ -12,6 +18,11 @@ import { HomeRegion } from "@/lib/home/home.data";
 import RegionsGrid from "@/components/home/RegionsGrid";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { IoSearch, IoChevronForward } from "react-icons/io5";
+import {
+    HiOutlineSparkles,
+    HiOutlineAdjustmentsHorizontal,
+} from "react-icons/hi2";
 
 type SidebarData = {
     subcategoryCounts: Record<string, number>;
@@ -21,7 +32,6 @@ type SidebarData = {
     makes: string[];
     models: string[];
     totalInCategory: number;
-
     types?: string[];
     brands?: string[];
 };
@@ -34,7 +44,7 @@ type CategoryListingItem = {
 };
 
 type QuickFilter = {
-    field: string; // "type" | "make-model" | "make" | "brand" | ""
+    field: string;
     options: string[];
 };
 
@@ -90,7 +100,6 @@ type Props = {
         membership: string;
         sort: string;
         layout: "grid" | "list";
-
         type?: string;
         brand?: string;
     };
@@ -100,10 +109,12 @@ function setQS(sp: URLSearchParams, key: string, value: string) {
     if (!value) sp.delete(key);
     else sp.set(key, value);
 }
+
 function isProtectedVerifiedCategory(categoryName: string) {
     const c = String(categoryName || "").trim().toLowerCase();
     return c === "donations" || c === "lost and found";
 }
+
 function initials2(label: string) {
     const s = String(label || "").trim();
     if (!s) return "NA";
@@ -154,12 +165,11 @@ function IconOrInitial(props: { label: string; src?: string; className?: string 
 
 function IconBubble({ src, alt }: { src?: string; alt: string }) {
     return (
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 ring-1 ring-orange-100">
             {src ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img src={src} alt={alt} className="h-5 w-5 object-contain" loading="lazy" />
             ) : (
-                <div className="h-5 w-5 rounded-full bg-gradient-to-br from-slate-200 to-slate-100" />
+                <div className="h-5 w-5 rounded-full bg-gradient-to-br from-orange-200 to-orange-50" />
             )}
         </div>
     );
@@ -175,7 +185,7 @@ function SidebarPanel({
     return (
         <div
             className={cn(
-                "overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
+                "overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_10px_35px_rgba(15,23,42,0.06)]",
                 className
             )}
         >
@@ -196,16 +206,18 @@ function SidebarSection({
     className?: string;
 }) {
     return (
-        <section className={cn("border-b border-slate-200 last:border-b-0", className)}>
-            <div className="flex items-center justify-between px-4 py-3">
-                <h3 className="text-[13px] font-extrabold uppercase tracking-[0.02em] text-slate-700">
+        <section className={cn("border-b border-slate-200/80 last:border-b-0", className)}>
+            <div className="flex items-center justify-between px-4 py-4">
+                <h3 className="text-[12px] font-black uppercase tracking-[0.14em] text-slate-700">
                     {title}
                 </h3>
                 {right ? (
-                    <div className="text-[11px] font-bold text-slate-500">{right}</div>
+                    <div className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-extrabold text-slate-600">
+                        {right}
+                    </div>
                 ) : null}
             </div>
-            <div className="px-3 pb-3">{children}</div>
+            <div className="px-3 pb-4">{children}</div>
         </section>
     );
 }
@@ -230,7 +242,7 @@ function SidebarListItem({
             type="button"
             onClick={onClick}
             className={cn(
-                "group flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left transition",
+                "group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left transition",
                 active ? "bg-orange-50 ring-1 ring-orange-200" : "hover:bg-slate-50"
             )}
         >
@@ -240,9 +252,7 @@ function SidebarListItem({
                 <div
                     className={cn(
                         "truncate text-[13px]",
-                        active
-                            ? "font-extrabold text-orange-700"
-                            : "font-semibold text-slate-900"
+                        active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
                     )}
                 >
                     {title}
@@ -270,7 +280,7 @@ function SidebarListItem({
 
 function SidebarMiniLabel({ children }: { children: React.ReactNode }) {
     return (
-        <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.02em] text-slate-600">
+        <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.08em] text-slate-600">
             {children}
         </div>
     );
@@ -332,16 +342,12 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
 
     return (
         <div className="relative" data-combobox-root="1">
-            {label ? (
-                <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.02em] text-slate-600">
-                    {label}
-                </div>
-            ) : null}
+            {label ? <SidebarMiniLabel>{label}</SidebarMiniLabel> : null}
 
             <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
-                className="flex h-11 w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 text-left text-[13px] font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-orange-200"
+                className="flex h-12 w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-left text-[13px] font-semibold text-slate-900 outline-none transition focus:ring-2 focus:ring-orange-200"
             >
                 <div className="flex min-w-0 items-center gap-3">
                     {iconKey ? (
@@ -380,8 +386,7 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
                         {filtered.length ? (
                             filtered.map((it) => {
                                 const name = String(it[valueKey] || "");
-                                const active =
-                                    name.toLowerCase() === String(value || "").toLowerCase();
+                                const active = name.toLowerCase() === String(value || "").toLowerCase();
                                 const sub = subtitleKey ? Number(it[subtitleKey] || 0) : 0;
 
                                 return (
@@ -404,9 +409,7 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
                                             <div
                                                 className={cn(
                                                     "truncate text-[13px]",
-                                                    active
-                                                        ? "font-extrabold text-orange-700"
-                                                        : "font-semibold text-slate-900"
+                                                    active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
                                                 )}
                                             >
                                                 {name}
@@ -417,13 +420,150 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
                                                 </div>
                                             ) : null}
                                         </div>
-                                        <div
-                                            className={cn(
-                                                "text-slate-400",
-                                                active ? "text-orange-600" : ""
-                                            )}
-                                        >
-                                            ›
+                                        <div className={cn("text-slate-400", active ? "text-orange-600" : "")}>
+                                            <IoChevronForward />
+                                        </div>
+                                    </button>
+                                );
+                            })
+                        ) : (
+                            <div className="px-3 py-8 text-center text-[13px] font-semibold text-slate-500">
+                                No matches
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
+function SearchableSubcategorySelect(props: {
+    items: CategoryListingItem[];
+    value: string;
+    countsBySub?: Record<string, number>;
+    onChange: (item: CategoryListingItem) => void;
+}) {
+    const { items, value, countsBySub, onChange } = props;
+
+    const [open, setOpen] = React.useState(false);
+    const [q, setQ] = React.useState("");
+
+    const selected = React.useMemo(() => {
+        const v = String(value || "").toLowerCase();
+        return items.find((it) => String(it.slug || "").toLowerCase() === v);
+    }, [items, value]);
+
+    const filtered = React.useMemo(() => {
+        const query = q.trim().toLowerCase();
+        if (!query) return items;
+
+        return items.filter((it) => {
+            const title = String(it.title || "").toLowerCase();
+            const sub = String(it.subcategory || "").toLowerCase();
+            return title.includes(query) || sub.includes(query);
+        });
+    }, [items, q]);
+
+    React.useEffect(() => {
+        if (!open) setQ("");
+    }, [open]);
+
+    React.useEffect(() => {
+        if (!open) return;
+
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setOpen(false);
+        };
+
+        const onClick = (e: MouseEvent) => {
+            const t = e.target as HTMLElement;
+            if (!t.closest?.("[data-subcat-combobox='1']")) setOpen(false);
+        };
+
+        document.addEventListener("keydown", onKey);
+        document.addEventListener("mousedown", onClick);
+
+        return () => {
+            document.removeEventListener("keydown", onKey);
+            document.removeEventListener("mousedown", onClick);
+        };
+    }, [open]);
+
+    return (
+        <div className="relative" data-subcat-combobox="1">
+            <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                className="flex h-12 w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-left text-[13px] font-semibold text-slate-900 outline-none transition focus:ring-2 focus:ring-orange-200"
+            >
+                <div className="flex min-w-0 items-center gap-3">
+                    <IconBubble src={String(selected?.icon || "")} alt={String(selected?.title || "Subcategory")} />
+                    <div className="min-w-0">
+                        <div className="truncate">
+                            {selected ? selected.title : "Choose subcategory"}
+                        </div>
+                        {selected ? (
+                            <div className="truncate text-[11px] font-medium text-slate-500">
+                                {Number(countsBySub?.[selected.subcategory] || 0).toLocaleString()} ads
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+                <span className="text-slate-400">▾</span>
+            </button>
+
+            {open ? (
+                <div className="absolute z-[999] mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                    <div className="border-b border-slate-200 p-2">
+                        <input
+                            autoFocus
+                            value={q}
+                            onChange={(e) => setQ(e.target.value)}
+                            placeholder="Search subcategory..."
+                            className="h-10 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                        />
+                    </div>
+
+                    <div className="max-h-[340px] overflow-auto p-2">
+                        {filtered.length ? (
+                            filtered.map((it) => {
+                                const active =
+                                    String(it.slug || "").toLowerCase() === String(value || "").toLowerCase();
+
+                                const count = Number(countsBySub?.[it.subcategory] || 0);
+
+                                return (
+                                    <button
+                                        key={it.slug}
+                                        type="button"
+                                        onClick={() => {
+                                            onChange(it);
+                                            setOpen(false);
+                                        }}
+                                        className={cn(
+                                            "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-slate-50",
+                                            active ? "bg-orange-50 ring-1 ring-orange-200" : ""
+                                        )}
+                                    >
+                                        <IconBubble src={it.icon} alt={it.title} />
+
+                                        <div className="min-w-0 flex-1">
+                                            <div
+                                                className={cn(
+                                                    "truncate text-[13px]",
+                                                    active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
+                                                )}
+                                            >
+                                                {it.title}
+                                            </div>
+                                            <div className="text-[11px] font-medium text-slate-500">
+                                                {count.toLocaleString()} ads
+                                            </div>
+                                        </div>
+
+                                        <div className={cn("text-slate-400", active ? "text-orange-600" : "")}>
+                                            <IoChevronForward />
                                         </div>
                                     </button>
                                 );
@@ -485,9 +625,7 @@ function pickPricePresets(categoryName: string, activeSubTitle: string): PricePr
     const has = (re: RegExp) => re.test(cat) || re.test(sub);
 
     if (
-        has(
-            /\bvehicle\b|\bcars?\b|\btrucks?\b|\bbuses?\b|\bmotorbikes?\b|\bmachinery\b|\bheavy\s*equipment\b/
-        )
+        has(/\bvehicle\b|\bcars?\b|\btrucks?\b|\bbuses?\b|\bmotorbikes?\b|\bmachinery\b|\bheavy\s*equipment\b/)
     ) {
         return [
             preset(undefined, 500_000),
@@ -509,12 +647,8 @@ function pickPricePresets(categoryName: string, activeSubTitle: string): PricePr
     }
 
     const isProperty =
-        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(
-            cat
-        ) ||
-        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(
-            sub
-        );
+        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(cat) ||
+        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(sub);
 
     if (isProperty) {
         const isRent =
@@ -540,11 +674,7 @@ function pickPricePresets(categoryName: string, activeSubTitle: string): PricePr
         ];
     }
 
-    if (
-        has(
-            /\bparts?\b|\bspares?\b|\baccessor(y|ies)\b|\belectronics?\b|\bphones?\b|\blaptops?\b|\bfurniture\b/
-        )
-    ) {
+    if (has(/\bparts?\b|\bspares?\b|\baccessor(y|ies)\b|\belectronics?\b|\bphones?\b|\blaptops?\b|\bfurniture\b/)) {
         return [
             preset(undefined, 1_000),
             preset(1_000, 5_000),
@@ -569,7 +699,6 @@ type FetchOverrides = {
     listingSlug?: string;
     page?: number;
     append?: boolean;
-
     q?: string;
     county?: string;
     town?: string;
@@ -586,6 +715,8 @@ type FetchOverrides = {
 
 export default function ListingPageClient(props: Props) {
     const router = useRouter();
+    const { user: currentUser } = useAuth();
+
     const [categoryName, setCategoryName] = React.useState(props.categoryName);
     const [isVehicle, setIsVehicle] = React.useState(props.isVehicle);
     const [categoryListings, setCategoryListings] = React.useState<CategoryListingItem[]>(
@@ -621,7 +752,6 @@ export default function ListingPageClient(props: Props) {
         );
         return (cat?.fieldsBySub?.[activeSubName] || []) as any[];
     }, [props.categories, categoryName, activeSubName]);
-    const { user: currentUser } = useAuth();
 
     const needsVerifiedAccess = React.useMemo(() => {
         return isProtectedVerifiedCategory(props.categoryName);
@@ -632,6 +762,7 @@ export default function ListingPageClient(props: Props) {
             currentUser?.verified?.some((v: any) => v?.accountverified === true)
         );
     }, [currentUser]);
+
     React.useEffect(() => {
         if (!needsVerifiedAccess) return;
 
@@ -644,6 +775,7 @@ export default function ListingPageClient(props: Props) {
             router.replace(`/verify?redirect_url=/${props.activeListingSlug}&reason=verification-required`);
         }
     }, [needsVerifiedAccess, currentUser, isVerifiedUser, router, props.activeListingSlug]);
+
     const [dyn, setDyn] = React.useState<FiltersState>({});
 
     const dynSubcategory = React.useMemo(
@@ -655,22 +787,16 @@ export default function ListingPageClient(props: Props) {
         [activeListing?.title, activeListing?.subcategory, activeFields]
     );
 
-    const [layout, setLayout] = React.useState<"grid" | "list">(
-        props.selected.layout || "grid"
-    );
+    const [layout, setLayout] = React.useState<"grid" | "list">(props.selected.layout || "grid");
     const [county, setCounty] = React.useState(props.selected.county || "");
     const [town, setTown] = React.useState(props.selected.town || "");
     const [q, setQ] = React.useState(props.selected.q || "");
-
     const [make, setMake] = React.useState(props.selected.make || "");
     const [model, setModel] = React.useState(props.selected.model || "");
-
     const [type, setType] = React.useState(props.selected.type || "");
     const [brand, setBrand] = React.useState(props.selected.brand || "");
-
     const [min, setMin] = React.useState(props.selected.min || "");
     const [max, setMax] = React.useState(props.selected.max || "");
-
     const [membership, setMembership] = React.useState(props.selected.membership || "");
     const [sort, setSort] = React.useState(props.selected.sort || "recommeded");
     const [mobileCatName, setMobileCatName] = React.useState<string>("");
@@ -687,8 +813,7 @@ export default function ListingPageClient(props: Props) {
     React.useEffect(() => {
         if (!county) return;
         if (town && !townsForCounty.includes(town)) setTown("");
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [county]);
+    }, [county, town, townsForCounty]);
 
     const [allItems, setAllItems] = React.useState<any[]>(props.items || []);
     const [currentPage, setCurrentPage] = React.useState<number>(props.page || 1);
@@ -702,10 +827,8 @@ export default function ListingPageClient(props: Props) {
         setCategoryName(props.categoryName);
         setIsVehicle(props.isVehicle);
         setCategoryListings(props.categoryListings);
-
         setSidebar(props.sidebar);
         setQuickFilterState(props.quickFilter);
-
         setAllItems(props.items || []);
         setCurrentPage(props.page || 1);
         setTp(props.totalPages || 1);
@@ -714,8 +837,19 @@ export default function ListingPageClient(props: Props) {
         setCountsBySubFallback(props.homeCountsBySub || {});
         setTotalFallback(props.homeTotalInCategory || 0);
         setMobileCatName(props.categoryName || "");
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.activeListingSlug, props.items, props.page, props.totalPages]);
+    }, [
+        props.activeListingSlug,
+        props.categoryName,
+        props.isVehicle,
+        props.categoryListings,
+        props.sidebar,
+        props.quickFilter,
+        props.items,
+        props.page,
+        props.totalPages,
+        props.homeCountsBySub,
+        props.homeTotalInCategory,
+    ]);
 
     const buildPathForSlug = React.useCallback(
         (slug: string) => {
@@ -742,7 +876,6 @@ export default function ListingPageClient(props: Props) {
             const append = Boolean(opts.append);
 
             const listingSlug = String(opts.listingSlug || activeSlug || props.activeListingSlug);
-
             const q2 = opts.q ?? q;
             const county2 = opts.county ?? county;
             const town2 = opts.town ?? town;
@@ -751,17 +884,14 @@ export default function ListingPageClient(props: Props) {
             const membership2 = opts.membership ?? membership;
             const sort2 = opts.sort ?? sort;
             const layout2 = opts.layout ?? layout;
-
             const make2 = opts.make ?? make;
             const model2 = opts.model ?? model;
-
             const type2 = opts.type ?? type;
             const brand2 = opts.brand ?? brand;
 
             const sp = new URLSearchParams();
             sp.set("page", String(pageToFetch));
             sp.set("limit", "24");
-
             sp.set("listingSlug", listingSlug);
             if (props.regionSlug) sp.set("regionSlug", props.regionSlug);
 
@@ -872,7 +1002,6 @@ export default function ListingPageClient(props: Props) {
             setModel("");
             setType("");
             setBrand("");
-
             setCurrentPage(1);
             setTp(1);
             setAllItems([]);
@@ -902,8 +1031,7 @@ export default function ListingPageClient(props: Props) {
 
     const onCategoryPick = React.useCallback(
         async (cat: ClientCategory) => {
-            if (!cat?.name) return;
-            if (!cat.listings?.length) return;
+            if (!cat?.name || !cat.listings?.length) return;
 
             const nextCategoryName = String(cat.name).trim();
             const nextIsVehicle = nextCategoryName.toLowerCase() === "vehicle";
@@ -919,7 +1047,6 @@ export default function ListingPageClient(props: Props) {
             setModel("");
             setType("");
             setBrand("");
-
             setActiveSlug(nextSlug);
             setCurrentPage(1);
             setTp(1);
@@ -950,7 +1077,6 @@ export default function ListingPageClient(props: Props) {
 
     const onSortChange = React.useCallback(
         async (v: string) => {
-
             setCurrentPage(1);
             setSort(v);
             setTp(1);
@@ -1098,9 +1224,7 @@ export default function ListingPageClient(props: Props) {
     }, [sidebar?.totalInCategory, sidebar?.subcategoryCounts, totalFallback, countsBySubFallback]);
 
     const quickField = String(quickFilterState?.field || "").trim();
-    const quickOptions = Array.isArray(quickFilterState?.options)
-        ? quickFilterState.options
-        : [];
+    const quickOptions = Array.isArray(quickFilterState?.options) ? quickFilterState.options : [];
 
     const makeModelParsed = React.useMemo(() => {
         if (quickField !== "make-model") return [];
@@ -1132,8 +1256,7 @@ export default function ListingPageClient(props: Props) {
                 const field =
                     quickFilterState?.field === "brand"
                         ? "brand"
-                        : quickFilterState?.field === "type" ||
-                            /type/i.test(quickFilterState?.field || "")
+                        : quickFilterState?.field === "type" || /type/i.test(quickFilterState?.field || "")
                             ? "type"
                             : "q";
 
@@ -1216,6 +1339,22 @@ export default function ListingPageClient(props: Props) {
         [fetchItems]
     );
 
+    const activeFilters = React.useMemo(() => {
+        const out: { label: string; onClear: () => void }[] = [];
+
+        if (q) out.push({ label: q, onClear: () => setQ("") });
+        if (county) out.push({ label: county, onClear: () => { setCounty(""); setTown(""); } });
+        if (town) out.push({ label: town, onClear: () => setTown("") });
+        if (membership) out.push({ label: membership, onClear: () => setMembership("") });
+        if (make) out.push({ label: make, onClear: () => { setMake(""); setModel(""); } });
+        if (model) out.push({ label: model, onClear: () => setModel("") });
+        if (type) out.push({ label: type, onClear: () => setType("") });
+        if (brand) out.push({ label: brand, onClear: () => setBrand("") });
+        if (min || max) out.push({ label: `KSh ${min || "0"} - ${max || "Any"}`, onClear: () => { setMin(""); setMax(""); } });
+
+        return out;
+    }, [q, county, town, membership, make, model, type, brand, min, max]);
+
     const FiltersContent = (
         <div className="space-y-4">
             <div>
@@ -1226,14 +1365,14 @@ export default function ListingPageClient(props: Props) {
                         onChange={(e) => setMin(e.target.value)}
                         placeholder="Min"
                         inputMode="numeric"
-                        className="h-10 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                        className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
                     />
                     <input
                         value={max}
                         onChange={(e) => setMax(e.target.value)}
                         placeholder="Max"
                         inputMode="numeric"
-                        className="h-10 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                        className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
                     />
                 </div>
             </div>
@@ -1244,10 +1383,10 @@ export default function ListingPageClient(props: Props) {
                 <button
                     type="button"
                     onClick={() => setRegionsOpen(true)}
-                    className="flex h-10 w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 text-left outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                    className="flex h-11 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 text-left outline-none transition focus:ring-2 focus:ring-orange-200 hover:bg-slate-50"
                 >
                     <div className="flex min-w-0 items-center gap-2">
-                        <MapPin className="h-4 w-4 text-slate-500" />
+                        <MapPin className="h-4 w-4 text-orange-500" />
                         <div className="min-w-0">
                             <div className="truncate text-[13px] font-semibold text-slate-900">
                                 {props.regionSlug ? props.regionLabel : "All Kenya"}
@@ -1266,7 +1405,7 @@ export default function ListingPageClient(props: Props) {
                 <select
                     value={membership}
                     onChange={(e) => setMembership(e.target.value)}
-                    className="h-10 w-full rounded-lg border border-slate-200 px-3 text-[13px] font-medium outline-none focus:ring-2 focus:ring-orange-200 md:h-10"
+                    className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] font-medium outline-none focus:ring-2 focus:ring-orange-200"
                 >
                     <option value="">Show all</option>
                     <option value="verified">Verified</option>
@@ -1300,9 +1439,7 @@ export default function ListingPageClient(props: Props) {
             <div
                 className={cn(
                     "fixed left-3 z-[650] transition-all duration-200 md:hidden",
-                    showStickyBack
-                        ? "translate-y-0 opacity-100"
-                        : "pointer-events-none -translate-y-2 opacity-0"
+                    showStickyBack ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
                 )}
                 style={{ top: "calc(var(--topbar-h, 64px) + 10px)" }}
             >
@@ -1317,7 +1454,7 @@ export default function ListingPageClient(props: Props) {
             </div>
 
             <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
-                <main className="mx-auto max-w-7xl p-4">
+                <main className="mx-auto max-w-[1440px] px-3 pb-8 sm:px-4 lg:px-5">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[290px_minmax(0,1fr)]">
                         <aside className="hidden md:block">
                             <SidebarPanel>
@@ -1325,15 +1462,19 @@ export default function ListingPageClient(props: Props) {
                                     title="Category"
                                     right={`${Number(totalCategoryAds || 0).toLocaleString()} ads`}
                                 >
-                                    <SearchableSelect
-                                        items={props.categories}
-                                        valueKey="name"
-                                        subtitleKey="count"
-                                        iconKey="icon"
-                                        value={categoryName}
-                                        placeholder="Choose category"
-                                        onChange={(cat) => onCategoryPick(cat)}
-                                    />
+                                    <div className="space-y-3">
+                                        <SearchableSelect
+                                            items={props.categories}
+                                            valueKey="name"
+                                            subtitleKey="count"
+                                            iconKey="icon"
+                                            value={categoryName}
+                                            placeholder="Choose category"
+                                            onChange={(cat) => onCategoryPick(cat)}
+                                        />
+
+
+                                    </div>
                                 </SidebarSection>
 
                                 <SidebarSection
@@ -1342,30 +1483,20 @@ export default function ListingPageClient(props: Props) {
                                 >
                                     <div className="max-h-[360px] space-y-1 overflow-auto pr-1">
                                         {categoryListings.map((it) => {
-                                            const active =
-                                                it.slug.toLowerCase() === activeSlug.toLowerCase();
-                                            const live =
-                                                sidebar.subcategoryCounts?.[it.subcategory];
-                                            const fallback =
-                                                countsBySubFallback?.[it.subcategory];
+                                            const active = it.slug.toLowerCase() === activeSlug.toLowerCase();
+                                            const live = sidebar.subcategoryCounts?.[it.subcategory];
+                                            const fallback = countsBySubFallback?.[it.subcategory];
                                             const count = Number(live ?? fallback ?? 0);
 
                                             return (
                                                 <SidebarListItem
                                                     key={it.slug}
                                                     active={active}
-                                                    onClick={() =>
-                                                        onSubcategoryClick(it.slug)
-                                                    }
-                                                    icon={
-                                                        <IconBubble
-                                                            src={it.icon}
-                                                            alt={it.title}
-                                                        />
-                                                    }
+                                                    onClick={() => onSubcategoryClick(it.slug)}
+                                                    icon={<IconBubble src={it.icon} alt={it.title} />}
                                                     title={it.title}
                                                     subtitle={`${count.toLocaleString()} ads`}
-                                                    trailing="›"
+                                                    trailing={<IoChevronForward />}
                                                 />
                                             );
                                         })}
@@ -1379,14 +1510,14 @@ export default function ListingPageClient(props: Props) {
                                         <button
                                             type="button"
                                             onClick={clearAll}
-                                            className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-extrabold text-slate-700 hover:bg-slate-50"
+                                            className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-[13px] font-extrabold text-slate-700 transition hover:bg-slate-50"
                                         >
                                             Clear
                                         </button>
                                         <button
                                             type="button"
                                             onClick={applyFilters}
-                                            className="h-10 rounded-lg bg-orange-500 px-3 text-[13px] font-extrabold text-white hover:bg-orange-600"
+                                            className="h-11 rounded-xl bg-orange-500 px-3 text-[13px] font-extrabold text-white shadow-[0_10px_20px_rgba(249,115,22,0.28)] transition hover:bg-orange-600"
                                         >
                                             Apply
                                         </button>
@@ -1396,133 +1527,163 @@ export default function ListingPageClient(props: Props) {
                         </aside>
 
                         <section className="min-w-0">
-                            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="min-w-0">
-                                        <h1 className="truncate text-2xl font-extrabold text-slate-900">
-                                            {String(activeListing?.title || props.title)} in{" "}
-                                            {props.regionLabel}
-                                        </h1>
-
-                                        <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-600">
-                                            <span className="font-bold">{categoryName}</span>
-                                            <span className="text-slate-400">•</span>
-                                            <a className="underline" href={props.canonical}>
-                                                Canonical
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        onClick={() => setCatsOpen(true)}
-                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-800 hover:bg-orange-50 md:hidden"
-                                    >
-                                        <Layers className="h-4 w-4" />
-                                        Category
-                                    </button>
-                                </div>
-
-                                <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-[220px_1fr_110px]">
-                                    <select
-                                        value={county}
-                                        onChange={(e) => {
-                                            setCounty(e.target.value);
-                                            setTown("");
-                                        }}
-                                        className="h-12 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold outline-none focus:ring-2 focus:ring-orange-200"
-                                    >
-                                        <option value="">All Kenya</option>
-                                        {sidebar.counties.map((c) => (
-                                            <option key={c} value={c}>
-                                                {c}
-                                            </option>
-                                        ))}
-                                    </select>
-
-                                    <input
-                                        value={q}
-                                        onChange={(e) => setQ(e.target.value)}
-                                        placeholder="Search keywords..."
-                                        className="h-12 w-full rounded-xl border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-orange-200"
-                                    />
-
-                                    <button
-                                        onClick={applyFilters}
-                                        className="h-12 rounded-xl bg-orange-500 px-4 text-sm font-extrabold text-white hover:bg-orange-600"
-                                    >
-                                        Search
-                                    </button>
-                                </div>
-
-                                <div className="mt-3 space-y-3">
-                                    <div className="flex flex-wrap gap-2">
-                                        {pricePresets.map((p) => {
-                                            const key = `${p.min ?? ""}-${p.max ?? ""}`;
-                                            const active = key === activePriceKey;
-                                            return (
-                                                <button
-                                                    key={p.label}
-                                                    type="button"
-                                                    onClick={() => onPricePreset(p)}
-                                                    className={cn(
-                                                        "rounded-xl border border-slate-200 px-4 py-2 text-xs font-extrabold",
-                                                        active
-                                                            ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
-                                                            : "bg-white text-slate-700 hover:bg-orange-50"
-                                                    )}
-                                                >
-                                                    {p.label}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-
-                                    {isVehicle ? (
-                                        quickField === "make-model" && makeModelParsed.length ? (
-                                            <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
-                                                {makeModelParsed.slice(0, 7).map((m) => {
-                                                    const active =
-                                                        String(make || "").toLowerCase() ===
-                                                        m.make.toLowerCase();
-
-                                                    return (
-                                                        <button
-                                                            key={m.make}
-                                                            type="button"
-                                                            onClick={() =>
-                                                                onMakeModelChip(m.make)
-                                                            }
-                                                            className={cn(
-                                                                "h-[92px] rounded-xl border border-slate-200 p-2 text-center",
-                                                                active
-                                                                    ? "bg-orange-50 ring-1 ring-orange-200"
-                                                                    : "bg-white hover:bg-orange-50"
-                                                            )}
-                                                        >
-                                                            <div className="flex h-full flex-col items-center justify-center gap-2">
-                                                                <IconOrInitial label={m.make} />
-                                                                <div
-                                                                    className={cn(
-                                                                        "text-[11px] font-extrabold",
-                                                                        active
-                                                                            ? "text-orange-700"
-                                                                            : "text-slate-900"
-                                                                    )}
-                                                                >
-                                                                    {m.make}
-                                                                </div>
-                                                            </div>
-                                                        </button>
-                                                    );
-                                                })}
+                            <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+                                <div className="bg-gradient-to-r from-white via-orange-50/40 to-white px-5 py-5 sm:px-6">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-orange-700">
+                                                <HiOutlineSparkles className="text-sm" />
+                                                Premium Listings
                                             </div>
+
+                                            <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
+                                                {String(activeListing?.title || props.title)} in{" "}
+                                                <span className="text-orange-600">{props.regionLabel}</span>
+                                            </h1>
+
+                                            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                                                <span className="font-bold text-slate-700">{categoryName}</span>
+                                                <span>•</span>
+                                                <span>{Number(totalCategoryAds || 0).toLocaleString()} ads</span>
+                                                <span>•</span>
+                                                <a className="underline hover:text-orange-600" href={props.canonical}>
+                                                    Canonical
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => setCatsOpen(true)}
+                                            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-orange-50 md:hidden"
+                                        >
+                                            <Layers className="h-4 w-4" />
+                                            Category
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-[220px_1fr_140px]">
+                                        <select
+                                            value={county}
+                                            onChange={(e) => {
+                                                setCounty(e.target.value);
+                                                setTown("");
+                                            }}
+                                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                        >
+                                            <option value="">All Kenya</option>
+                                            {sidebar.counties.map((c) => (
+                                                <option key={c} value={c}>
+                                                    {c}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <div className="relative">
+                                            <IoSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
+                                            <input
+                                                value={q}
+                                                onChange={(e) => setQ(e.target.value)}
+                                                onKeyDown={(e) => e.key === "Enter" && applyFilters()}
+                                                placeholder="Search keywords, category, subcategory..."
+                                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                            />
+                                        </div>
+
+                                        <button
+                                            onClick={applyFilters}
+                                            className="h-14 rounded-2xl bg-orange-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(249,115,22,0.28)] transition hover:-translate-y-0.5 hover:bg-orange-600"
+                                        >
+                                            Search
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-4 space-y-3">
+                                        <div className="flex flex-wrap gap-2">
+                                            {pricePresets.map((p) => {
+                                                const key = `${p.min ?? ""}-${p.max ?? ""}`;
+                                                const active = key === activePriceKey;
+                                                return (
+                                                    <button
+                                                        key={p.label}
+                                                        type="button"
+                                                        onClick={() => onPricePreset(p)}
+                                                        className={cn(
+                                                            "rounded-xl border border-slate-200 px-4 py-2 text-xs font-extrabold transition",
+                                                            active
+                                                                ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                                : "bg-white text-slate-700 hover:bg-orange-50"
+                                                        )}
+                                                    >
+                                                        {p.label}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {isVehicle ? (
+                                            quickField === "make-model" && makeModelParsed.length ? (
+                                                <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
+                                                    {makeModelParsed.slice(0, 7).map((m) => {
+                                                        const active = String(make || "").toLowerCase() === m.make.toLowerCase();
+
+                                                        return (
+                                                            <button
+                                                                key={m.make}
+                                                                type="button"
+                                                                onClick={() => onMakeModelChip(m.make)}
+                                                                className={cn(
+                                                                    "h-[92px] rounded-2xl border border-slate-200 p-2 text-center transition",
+                                                                    active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white hover:bg-orange-50"
+                                                                )}
+                                                            >
+                                                                <div className="flex h-full flex-col items-center justify-center gap-2">
+                                                                    <IconOrInitial label={m.make} />
+                                                                    <div className={cn("text-[11px] font-extrabold", active ? "text-orange-700" : "text-slate-900")}>
+                                                                        {m.make}
+                                                                    </div>
+                                                                </div>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            ) : topTypeChips.length ? (
+                                                <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
+                                                    {topTypeChips.map((opt) => {
+                                                        const active =
+                                                            String(make || "").toLowerCase() === String(opt || "").toLowerCase();
+
+                                                        return (
+                                                            <button
+                                                                key={opt}
+                                                                type="button"
+                                                                onClick={() => onQuickChip(opt)}
+                                                                className={cn(
+                                                                    "h-[92px] rounded-2xl border border-slate-200 p-2 text-center transition",
+                                                                    active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white hover:bg-orange-50"
+                                                                )}
+                                                            >
+                                                                <div className="flex h-full flex-col items-center justify-center gap-2">
+                                                                    <IconOrInitial label={opt} />
+                                                                    <div className={cn("text-[11px] font-extrabold", active ? "text-orange-700" : "text-slate-900")}>
+                                                                        {opt}
+                                                                    </div>
+                                                                </div>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            ) : null
                                         ) : topTypeChips.length ? (
                                             <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
                                                 {topTypeChips.map((opt) => {
                                                     const active =
-                                                        String(make || "").toLowerCase() ===
-                                                        String(opt || "").toLowerCase();
+                                                        (quickField === "brand" &&
+                                                            String(brand || "").toLowerCase() === String(opt || "").toLowerCase()) ||
+                                                        ((quickField === "type" || /type/i.test(quickField)) &&
+                                                            String(type || "").toLowerCase() === String(opt || "").toLowerCase()) ||
+                                                        (!quickField &&
+                                                            String(q || "").toLowerCase() === String(opt || "").toLowerCase());
 
                                                     return (
                                                         <button
@@ -1530,22 +1691,13 @@ export default function ListingPageClient(props: Props) {
                                                             type="button"
                                                             onClick={() => onQuickChip(opt)}
                                                             className={cn(
-                                                                "h-[92px] rounded-xl border border-slate-200 p-2 text-center",
-                                                                active
-                                                                    ? "bg-orange-50 ring-1 ring-orange-200"
-                                                                    : "bg-white hover:bg-orange-50"
+                                                                "h-[92px] rounded-2xl border border-slate-200 p-2 text-center transition",
+                                                                active ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white hover:bg-orange-50"
                                                             )}
                                                         >
                                                             <div className="flex h-full flex-col items-center justify-center gap-2">
                                                                 <IconOrInitial label={opt} />
-                                                                <div
-                                                                    className={cn(
-                                                                        "text-[11px] font-extrabold",
-                                                                        active
-                                                                            ? "text-orange-700"
-                                                                            : "text-slate-900"
-                                                                    )}
-                                                                >
+                                                                <div className={cn("text-[11px] font-extrabold", active ? "text-orange-700" : "text-slate-900")}>
                                                                     {opt}
                                                                 </div>
                                                             </div>
@@ -1553,116 +1705,107 @@ export default function ListingPageClient(props: Props) {
                                                     );
                                                 })}
                                             </div>
-                                        ) : null
-                                    ) : topTypeChips.length ? (
-                                        <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
-                                            {topTypeChips.map((opt) => {
-                                                const active =
-                                                    (quickField === "brand" &&
-                                                        String(brand || "").toLowerCase() ===
-                                                        String(opt || "").toLowerCase()) ||
-                                                    ((quickField === "type" ||
-                                                        /type/i.test(quickField)) &&
-                                                        String(type || "").toLowerCase() ===
-                                                        String(opt || "").toLowerCase()) ||
-                                                    (!quickField &&
-                                                        String(q || "").toLowerCase() ===
-                                                        String(opt || "").toLowerCase());
+                                        ) : null}
+                                    </div>
 
-                                                return (
-                                                    <button
-                                                        key={opt}
-                                                        type="button"
-                                                        onClick={() => onQuickChip(opt)}
-                                                        className={cn(
-                                                            "h-[92px] rounded-xl border border-slate-200 p-2 text-center",
-                                                            active
-                                                                ? "bg-orange-50 ring-1 ring-orange-200"
-                                                                : "bg-white hover:bg-orange-50"
-                                                        )}
-                                                    >
-                                                        <div className="flex h-full flex-col items-center justify-center gap-2">
-                                                            <IconOrInitial label={opt} />
-                                                            <div
-                                                                className={cn(
-                                                                    "text-[11px] font-extrabold",
-                                                                    active
-                                                                        ? "text-orange-700"
-                                                                        : "text-slate-900"
-                                                                )}
-                                                            >
-                                                                {opt}
-                                                            </div>
-                                                        </div>
-                                                    </button>
-                                                );
-                                            })}
+                                    {activeFilters.length > 0 ? (
+                                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                                            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-slate-600">
+                                                <HiOutlineAdjustmentsHorizontal className="text-sm" />
+                                                Active Filters
+                                            </div>
+
+                                            {activeFilters.map((filter, index) => (
+                                                <button
+                                                    key={`${filter.label}-${index}`}
+                                                    type="button"
+                                                    onClick={filter.onClear}
+                                                    className="rounded-full border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-bold text-orange-700 transition hover:bg-orange-100"
+                                                >
+                                                    {filter.label} ✕
+                                                </button>
+                                            ))}
+
+                                            <button
+                                                type="button"
+                                                onClick={clearAll}
+                                                className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
+                                            >
+                                                Clear all
+                                            </button>
                                         </div>
                                     ) : null}
-                                </div>
 
-                                <div className="mt-3 flex items-center justify-between gap-2 md:hidden">
-                                    <button
-                                        type="button"
-                                        onClick={() => setFiltersOpen(true)}
-                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
-                                    >
-                                        <SlidersHorizontal className="h-4 w-4" />
-                                        Filters
-                                        {appliedCount > 0 ? (
-                                            <span className="ml-1 rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-extrabold text-orange-700">
-                                                {appliedCount}
-                                            </span>
-                                        ) : null}
-                                    </button>
+                                    <div className="mt-4 flex items-center justify-between gap-2 md:hidden">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFiltersOpen(true)}
+                                            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
+                                        >
+                                            <SlidersHorizontal className="h-4 w-4" />
+                                            Filters
+                                            {appliedCount > 0 ? (
+                                                <span className="ml-1 rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-extrabold text-orange-700">
+                                                    {appliedCount}
+                                                </span>
+                                            ) : null}
+                                        </button>
 
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => setLayout("grid")}
-                                            className={cn(
-                                                "rounded-xl border border-slate-200 px-3 py-3 text-sm font-extrabold",
-                                                layout === "grid"
-                                                    ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
-                                                    : "bg-white text-slate-700 hover:bg-orange-50"
-                                            )}
-                                        >
-                                            Grid
-                                        </button>
-                                        <button
-                                            onClick={() => setLayout("list")}
-                                            className={cn(
-                                                "rounded-xl border border-slate-200 px-3 py-3 text-sm font-extrabold",
-                                                layout === "list"
-                                                    ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
-                                                    : "bg-white text-slate-700 hover:bg-orange-50"
-                                            )}
-                                        >
-                                            List
-                                        </button>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => setLayout("grid")}
+                                                className={cn(
+                                                    "rounded-2xl border border-slate-200 px-3 py-3 text-sm font-extrabold transition",
+                                                    layout === "grid"
+                                                        ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                        : "bg-white text-slate-700 hover:bg-orange-50"
+                                                )}
+                                            >
+                                                Grid
+                                            </button>
+                                            <button
+                                                onClick={() => setLayout("list")}
+                                                className={cn(
+                                                    "rounded-2xl border border-slate-200 px-3 py-3 text-sm font-extrabold transition",
+                                                    layout === "list"
+                                                        ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                        : "bg-white text-slate-700 hover:bg-orange-50"
+                                                )}
+                                            >
+                                                List
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mt-4 flex items-center justify-end gap-2">
-                                <div className="text-sm font-bold text-slate-600">Sort by:</div>
+                            <div className="mt-4 flex flex-col gap-3 rounded-[24px] border border-slate-200/80 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:flex-row sm:items-center sm:justify-between">
+                                <div className="text-sm font-semibold text-slate-500">
+                                    Showing page <span className="font-black text-slate-900">{currentPage}</span> of{" "}
+                                    <span className="font-black text-slate-900">{tp}</span>
+                                </div>
 
-                                <select
-                                    value={sort}
-                                    onChange={(e) => onSortChange(e.target.value)}
-                                    className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-extrabold outline-none focus:ring-2 focus:ring-orange-200"
-                                >
-                                    <option value="recommeded">Recommended</option>
-                                    <option value="new">Newest</option>
-                                    <option value="lowest">Price: Low to High</option>
-                                    <option value="highest">Price: High to Low</option>
-                                </select>
+                                <div className="flex items-center gap-3">
+                                    <div className="text-sm font-black text-slate-700">Sort by:</div>
+
+                                    <select
+                                        value={sort}
+                                        onChange={(e) => onSortChange(e.target.value)}
+                                        className="h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                    >
+                                        <option value="recommeded">Recommended</option>
+                                        <option value="new">Newest</option>
+                                        <option value="lowest">Price: Low to High</option>
+                                        <option value="highest">Price: High to Low</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div
                                 className={cn(
                                     "mt-4 gap-3",
                                     layout === "grid"
-                                        ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
+                                        ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
                                         : "grid grid-cols-1"
                                 )}
                             >
@@ -1679,25 +1822,22 @@ export default function ListingPageClient(props: Props) {
 
                             <div className="mt-4 flex items-center justify-center">
                                 {loadingMore ? (
-                                    <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">
+                                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm">
                                         Loading…
                                     </div>
                                 ) : null}
 
                                 {!loadingMore && currentPage >= tp ? (
-                                    <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">
+                                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm">
                                         You’ve reached the end
                                     </div>
                                 ) : null}
                             </div>
 
                             {loadError ? (
-                                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                                <div className="mt-3 rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                                     Failed to load: {loadError}{" "}
-                                    <button
-                                        className="underline"
-                                        onClick={() => location.reload()}
-                                    >
+                                    <button className="underline" onClick={() => location.reload()}>
                                         Refresh
                                     </button>
                                 </div>
@@ -1720,9 +1860,7 @@ export default function ListingPageClient(props: Props) {
                         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
                         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-                            <div className="text-sm font-extrabold">
-                                Category & Subcategory
-                            </div>
+                            <div className="text-sm font-extrabold">Category & Subcategory</div>
                             <button
                                 type="button"
                                 onClick={() => setCatsOpen(false)}
@@ -1733,19 +1871,16 @@ export default function ListingPageClient(props: Props) {
                         </div>
 
                         <div className="px-4 pt-3">
-                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-extrabold text-slate-700">
+                            <div className="rounded-2xl border border-orange-100 bg-orange-50 px-3 py-2 text-xs font-extrabold text-slate-700">
                                 Selected:{" "}
                                 <span className="text-orange-700">
-                                    {categoryName} •{" "}
-                                    {String(activeListing?.title || props.title)}
+                                    {categoryName} • {String(activeListing?.title || props.title)}
                                 </span>
                             </div>
                         </div>
 
                         <div className="max-h-[74vh] space-y-3 overflow-auto px-4 py-4">
-                            <div className="text-xs font-extrabold text-slate-700">
-                                Categories
-                            </div>
+                            <div className="text-xs font-extrabold text-slate-700">Categories</div>
 
                             <div className="space-y-2">
                                 {props.categories.map((c) => {
@@ -1756,7 +1891,7 @@ export default function ListingPageClient(props: Props) {
                                     return (
                                         <div
                                             key={c.name}
-                                            className="overflow-hidden rounded-2xl p-2 border border-slate-200"
+                                            className="overflow-hidden rounded-2xl border border-slate-200 p-2"
                                         >
                                             <button
                                                 type="button"
@@ -1764,7 +1899,7 @@ export default function ListingPageClient(props: Props) {
                                                     setMobileCatName(String(c.name));
                                                 }}
                                                 className={cn(
-                                                    "w-full px-3 py-0 text-left hover:bg-orange-50",
+                                                    "w-full px-3 py-0 text-left transition hover:bg-orange-50",
                                                     activeCat ? "bg-orange-50" : "bg-white"
                                                 )}
                                             >
@@ -1774,35 +1909,23 @@ export default function ListingPageClient(props: Props) {
                                                         <div
                                                             className={cn(
                                                                 "truncate text-sm",
-                                                                activeCat
-                                                                    ? "font-extrabold text-orange-700"
-                                                                    : "font-semibold text-slate-900"
+                                                                activeCat ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
                                                             )}
                                                         >
                                                             {c.name}
                                                         </div>
                                                         <div className="text-[11px] font-bold text-slate-500">
-                                                            {Number(
-                                                                c.count || 0
-                                                            ).toLocaleString()}{" "}
-                                                            ads
+                                                            {Number(c.count || 0).toLocaleString()} ads
                                                         </div>
                                                     </div>
-                                                    <div
-                                                        className={cn(
-                                                            "text-slate-400",
-                                                            activeCat
-                                                                ? "text-orange-600"
-                                                                : ""
-                                                        )}
-                                                    >
+                                                    <div className={cn("text-slate-400", activeCat ? "text-orange-600" : "")}>
                                                         ▾
                                                     </div>
                                                 </div>
                                             </button>
 
                                             {activeCat ? (
-                                                <div className="border-t border-slate-200 bg-gray-100 p-2">
+                                                <div className="border-t border-slate-200 bg-slate-50 p-2">
                                                     <div className="mb-2 px-2 text-[11px] font-extrabold text-slate-600">
                                                         Subcategories
                                                     </div>
@@ -1810,20 +1933,11 @@ export default function ListingPageClient(props: Props) {
                                                     <div className="max-h-[55vh] space-y-1 overflow-auto pr-3">
                                                         {(c.listings || []).map((it) => {
                                                             const isActiveSlug =
-                                                                String(it.slug).toLowerCase() ===
-                                                                String(activeSlug).toLowerCase();
+                                                                String(it.slug).toLowerCase() === String(activeSlug).toLowerCase();
 
-                                                            const live =
-                                                                sidebar.subcategoryCounts?.[
-                                                                it.subcategory
-                                                                ];
-                                                            const fallback =
-                                                                c.countsBySub?.[
-                                                                it.subcategory
-                                                                ];
-                                                            const count = Number(
-                                                                live ?? fallback ?? 0
-                                                            );
+                                                            const live = sidebar.subcategoryCounts?.[it.subcategory];
+                                                            const fallback = c.countsBySub?.[it.subcategory];
+                                                            const count = Number(live ?? fallback ?? 0);
 
                                                             return (
                                                                 <button
@@ -1832,48 +1946,29 @@ export default function ListingPageClient(props: Props) {
                                                                     onClick={async () => {
                                                                         setCatsOpen(false);
                                                                         await onCategoryPick(c);
-                                                                        await onSubcategoryClick(
-                                                                            it.slug
-                                                                        );
+                                                                        await onSubcategoryClick(it.slug);
                                                                     }}
                                                                     className={cn(
-                                                                        "w-full rounded-xl m-1 px-3 py-2 text-left hover:bg-orange-50",
-                                                                        isActiveSlug
-                                                                            ? "bg-orange-50 ring-1 ring-orange-200"
-                                                                            : "bg-white"
+                                                                        "m-1 w-full rounded-xl px-3 py-2 text-left transition hover:bg-orange-50",
+                                                                        isActiveSlug ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white"
                                                                     )}
                                                                 >
                                                                     <div className="flex items-center gap-3">
-                                                                        <IconBubble
-                                                                            src={it.icon}
-                                                                            alt={it.title}
-                                                                        />
+                                                                        <IconBubble src={it.icon} alt={it.title} />
                                                                         <div className="min-w-0 flex-1">
                                                                             <div
                                                                                 className={cn(
                                                                                     "truncate text-sm",
-                                                                                    isActiveSlug
-                                                                                        ? "font-extrabold text-orange-700"
-                                                                                        : "font-semibold text-slate-900"
+                                                                                    isActiveSlug ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
                                                                                 )}
                                                                             >
                                                                                 {it.title}
                                                                             </div>
                                                                             <div className="text-[11px] font-bold text-slate-500">
-                                                                                {Number(
-                                                                                    count
-                                                                                ).toLocaleString()}{" "}
-                                                                                ads
+                                                                                {Number(count).toLocaleString()} ads
                                                                             </div>
                                                                         </div>
-                                                                        <div
-                                                                            className={cn(
-                                                                                "text-slate-400",
-                                                                                isActiveSlug
-                                                                                    ? "text-orange-600"
-                                                                                    : ""
-                                                                            )}
-                                                                        >
+                                                                        <div className={cn("text-slate-400", isActiveSlug ? "text-orange-600" : "")}>
                                                                             ›
                                                                         </div>
                                                                     </div>
