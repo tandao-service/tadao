@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { Suspense, useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import {
@@ -22,7 +22,7 @@ import { Capacitor } from "@capacitor/core";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
-export default function AuthPage() {
+function AuthPageInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -33,7 +33,6 @@ export default function AuthPage() {
             : "/";
 
     const [isSignUp, setIsSignUp] = useState(false);
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -506,5 +505,26 @@ export default function AuthPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+function AuthPageFallback() {
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-white to-orange-50 flex items-center justify-center px-4 py-10">
+            <div className="w-full max-w-md rounded-2xl bg-white shadow-xl border border-orange-100 p-6 sm:p-8">
+                <div className="flex flex-col items-center">
+                    <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+                    <p className="mt-4 text-sm text-gray-500">Loading authentication...</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function AuthPage() {
+    return (
+        <Suspense fallback={<AuthPageFallback />}>
+            <AuthPageInner />
+        </Suspense>
     );
 }

@@ -43,7 +43,7 @@ const ReportActionWindow: React.FC<ChatWindowProps> = ({
   const page = 1000;
   const sortby = "recommended";
   const [userId] = useState(ad?.organizer);
-  const [organizerAds, setOrganizerAds] = useState<any>([]);
+  const [organizerAds, setOrganizerAds] = useState<any[]>([]);
   const [selectAds, setSelectAds] = useState<any>([]);
   const [isOpenP, setIsOpenP] = useState(false);
   const [isOpenContact, setIsOpenContact] = useState(false);
@@ -144,7 +144,7 @@ const ReportActionWindow: React.FC<ChatWindowProps> = ({
         sortby,
         myshop: isAdCreator,
       });
-      setOrganizerAds(organizedAds);
+      setOrganizerAds(organizedAds || []);
     } catch (error) {
       console.error("Error fetching ads", error);
     }

@@ -106,7 +106,7 @@ export default function TopBar() {
     return (
         <div
             ref={ref}
-            className="fixed inset-x-0 top-0 z-[500] border-b border-orange-100 bg-white/95 backdrop-blur-md dark:border-slate-800 dark:bg-[#131B1E]/95"
+            className="fixed inset-x-0 top-0 z-[50] border-b border-orange-100 bg-white/95 backdrop-blur-md dark:border-slate-800 dark:bg-[#131B1E]/95"
         >
             <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3 sm:px-4">
                 <div className="flex min-w-0 items-center gap-2 sm:gap-3">

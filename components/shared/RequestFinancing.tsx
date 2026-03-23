@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,9 +18,13 @@ import {
 } from "@/components/ui/select";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import {
-  createLoan
-} from "@/lib/actions/loan.actions";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
+import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
+import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import NotesOutlinedIcon from "@mui/icons-material/NotesOutlined";
+import { createLoan } from "@/lib/actions/loan.actions";
 import { useToast } from "../ui/use-toast";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
@@ -29,7 +33,7 @@ import Image from "next/image";
 import sanitizeHtml from "sanitize-html";
 import CircularProgress from "@mui/material/CircularProgress";
 
-interface loanProps {
+interface LoanProps {
   userId: string;
   userName: string;
   userImage: string;
@@ -38,63 +42,82 @@ interface loanProps {
   onClose: () => void;
 }
 
-export const RequestFinancing: React.FC<loanProps> = ({
+export const RequestFinancing: React.FC<LoanProps> = ({
   ad,
   isOpen,
   userId,
-  userImage,
-  userName,
   onClose,
 }) => {
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [deposit, setDeposit] = useState(0);
-  const [LoanAmount, setLoanAmount] = useState(ad.data.price);
+  const [loanAmount] = useState(Number(ad?.data?.price || 0));
   const [loanterm, setLoanterm] = useState("");
   const [loanType] = useState("Property Financing");
   const [employmentStatus, setEmploymentStatus] = useState("");
   const [messageComments, setMessageComments] = useState("");
   const [isSending, setIsSending] = useState(false);
+
   const { toast } = useToast();
   const pathname = usePathname();
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  const truncateDescription = (description: string, charLimit: number) => {
-    const safeMessage = sanitizeHtml(description);
-    const truncatedMessage =
-      safeMessage.length > charLimit
-        ? `${safeMessage.slice(0, charLimit)}...`
-        : safeMessage;
-    return truncatedMessage;
-  };
+  const imageUrl =
+    ad?.data?.imageUrls?.[0] ||
+    ad?.data?.coverThumbUrl ||
+    "/placeholder.svg";
+
+  const adTitle = ad?.data?.title || "Property Listing";
+  const adPrice = Number(ad?.data?.price || 0);
+  const safeDescription = useMemo(() => {
+    const clean = sanitizeHtml(ad?.data?.description || "", {
+      allowedTags: [],
+      allowedAttributes: {},
+    }).trim();
+
+    return clean.length > 120 ? `${clean.slice(0, 120)}...` : clean;
+  }, [ad?.data?.description]);
 
   const formatToCurrency = (value: string | number) => {
-    if (!value) return "0";
+    if (!value) return "";
     const numberValue =
       typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+
+    if (!Number.isFinite(numberValue)) return "";
+
     return new Intl.NumberFormat("en-US", {
       style: "decimal",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(numberValue);
   };
+
   const parseCurrencyToNumber = (value: string): number => {
-    return Number(value.replace(/,/g, ""));
+    const cleaned = value.replace(/[^\d]/g, "");
+    return cleaned ? Number(cleaned) : 0;
+  };
+
+  const resetForm = () => {
+    setDeposit(0);
+    setMonthlyIncome(0);
+    setEmploymentStatus("");
+    setMessageComments("");
+    setLoanterm("");
   };
 
   const handleSubmit = async () => {
     if (!monthlyIncome || !deposit || !loanterm || !employmentStatus) {
       toast({
         variant: "destructive",
-        title: "Failed!",
+        title: "Please complete the form",
         description:
           !monthlyIncome
-            ? "Please enter Monthly Income."
+            ? "Enter your monthly income."
             : !deposit
-              ? "Please enter Deposit Amount."
+              ? "Enter your deposit amount."
               : !loanterm
-                ? "Please select Preferred Loan Term."
-                : "Please enter your Employment Status.",
-        duration: 5000,
+                ? "Select your preferred loan term."
+                : "Select your employment status.",
+        duration: 4000,
       });
       return;
     }
@@ -102,12 +125,12 @@ export const RequestFinancing: React.FC<loanProps> = ({
     try {
       setIsSending(true);
 
-      const newResponse = await createLoan({
+      const response = await createLoan({
         loan: {
           userId,
-          adId: ad._id,
+          adId: ad?._id,
           loanType,
-          LoanAmount,
+          LoanAmount: loanAmount,
           monthlyIncome,
           deposit,
           loanterm,
@@ -118,173 +141,255 @@ export const RequestFinancing: React.FC<loanProps> = ({
         path: pathname,
       });
 
-      if (newResponse === "Property Financing Requested submitted") {
+      if (response === "Property Financing Requested submitted") {
         toast({
-          title: "Alert",
-          description: newResponse,
-          duration: 5000,
-          className: "bg-[#30AF5B] text-white",
+          title: "Request submitted",
+          description: "Your financing request has been sent successfully.",
+          duration: 4000,
+          className: "bg-orange-500 text-white border-0",
         });
+        resetForm();
+        onClose();
       } else {
         toast({
           variant: "destructive",
-          title: "Failed!",
-          description: newResponse,
+          title: "Submission failed",
+          description: String(response || "Something went wrong."),
           duration: 5000,
         });
       }
-
-      // Reset and close
-      setDeposit(0);
-      setMonthlyIncome(0);
-      setEmploymentStatus("");
-      setMessageComments("");
-      setLoanterm("");
-      onClose();
     } catch (error) {
       console.error("Error submitting loan:", error);
+      toast({
+        variant: "destructive",
+        title: "Submission failed",
+        description: "Could not submit your financing request.",
+        duration: 5000,
+      });
     } finally {
       setIsSending(false);
     }
   };
 
+  const labelClass =
+    "mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200";
+  const inputClass =
+    "h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100 dark:border-slate-700 dark:bg-[#131B1E] dark:text-slate-100 dark:placeholder:text-slate-500";
+  const selectClass =
+    "h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 focus:border-orange-400 focus:ring-4 focus:ring-orange-100 dark:border-slate-700 dark:bg-[#131B1E] dark:text-slate-100";
+
   const FormContent = (
-    <>
-      <div className="flex gap-4 w-full items-start">
-        <Image
-          src={ad.data.imageUrls[0]}
-          alt={ad.data.title}
-          className="w-[150px] h-[100px] object-cover rounded"
-          width={150}
-          height={100}
-        />
-        <div className="flex flex-col justify-between h-full">
-          <p className="font-semibold mb-1">
-            {ad?.data?.title?.length > 50
-              ? `${ad.data?.title.substring(0, 50)}...`
-              : ad.data?.title}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-            <span
-              dangerouslySetInnerHTML={{
-                __html: truncateDescription(ad.data.description ?? "", 65),
-              }}
+    <div className="space-y-5">
+      <div className="overflow-hidden rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white shadow-sm dark:border-slate-700 dark:from-[#1B2327] dark:via-[#131B1E] dark:to-[#131B1E]">
+        <div className="flex gap-4 p-4">
+          <div className="relative h-[96px] w-[126px] overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800">
+            <Image
+              src={imageUrl}
+              alt={adTitle}
+              fill
+              className="object-cover"
+              sizes="126px"
             />
-          </p>
-          <span className="font-bold text-green-600 dark:text-green-600 mt-1">
-            {formatKsh(ad.data.price)}
-          </span>
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-orange-700 dark:bg-orange-500/15 dark:text-orange-300">
+              <HomeWorkOutlinedIcon sx={{ fontSize: 14 }} />
+              Financing Request
+            </div>
+
+            <h3 className="mt-3 line-clamp-2 text-base font-extrabold text-slate-900 dark:text-white">
+              {adTitle}
+            </h3>
+
+            {safeDescription ? (
+              <p className="mt-2 line-clamp-2 text-sm leading-5 text-slate-600 dark:text-slate-300">
+                {safeDescription}
+              </p>
+            ) : null}
+
+            <div className="mt-3 text-lg font-extrabold text-orange-600 dark:text-orange-400">
+              {formatKsh(adPrice)}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Form Fields */}
-      {[
-        {
-          label: "Monthly Income: KES",
-          value: monthlyIncome,
-          setter: setMonthlyIncome,
-        },
-        {
-          label: "Deposit Amount: KES",
-          value: deposit,
-          setter: setDeposit,
-        },
-      ].map(({ label, value, setter }) => (
-        <div key={label} className="flex gap-2 items-center w-full mt-2">
-          <label className="text-sm w-[200px]">{label}</label>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label className={labelClass}>
+            <PaymentsOutlinedIcon sx={{ fontSize: 18 }} />
+            Monthly Income (KES)
+          </label>
           <input
             type="text"
-            value={formatToCurrency(value)}
-            onChange={(e) => setter(parseCurrencyToNumber(e.target.value))}
-            className="px-4 py-2 w-full border border-gray-800 rounded-md dark:bg-[#131B1E] dark:text-gray-100"
+            inputMode="numeric"
+            value={formatToCurrency(monthlyIncome)}
+            onChange={(e) => setMonthlyIncome(parseCurrencyToNumber(e.target.value))}
+            placeholder="e.g. 80,000"
+            className={inputClass}
           />
         </div>
-      ))}
 
-      {/* Select Fields */}
-      <div className="flex gap-2 items-center w-full mt-2">
-        <label className="text-sm w-[200px]">Employment Status:</label>
-        <Select onValueChange={setEmploymentStatus}>
-          <SelectTrigger className="w-full text-base border p-2 rounded-md dark:text-gray-300 text-gray-700">
-            <SelectValue placeholder="" />
-          </SelectTrigger>
-          <SelectContent className="text-base dark:bg-[#131B1E]">
-            <SelectItem value="Employed">Employed</SelectItem>
-            <SelectItem value="Self-employed">Self-employed</SelectItem>
-            <SelectItem value="Business Owner">Business Owner</SelectItem>
-            <SelectItem value="Other">Other</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <label className={labelClass}>
+            <AccountBalanceOutlinedIcon sx={{ fontSize: 18 }} />
+            Deposit Amount (KES)
+          </label>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={formatToCurrency(deposit)}
+            onChange={(e) => setDeposit(parseCurrencyToNumber(e.target.value))}
+            placeholder="e.g. 500,000"
+            className={inputClass}
+          />
+        </div>
       </div>
 
-      <div className="flex gap-2 items-center w-full mt-2">
-        <label className="text-sm w-[200px]">Preferred Loan Term:</label>
-        <Select onValueChange={setLoanterm}>
-          <SelectTrigger className="w-full text-base border p-2 rounded-md dark:text-gray-300 text-gray-700">
-            <SelectValue placeholder="" />
-          </SelectTrigger>
-          <SelectContent className="text-base dark:bg-[#131B1E]">
-            {["6", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120", "+120"].map((m) => (
-              <SelectItem key={m} value={`${m} months`}>
-                {m} months
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label className={labelClass}>
+            <WorkOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+            Employment Status
+          </label>
+          <Select value={employmentStatus} onValueChange={setEmploymentStatus}>
+            <SelectTrigger className={selectClass}>
+              <SelectValue placeholder="Select employment status" />
+            </SelectTrigger>
+            <SelectContent className="rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-[#131B1E]">
+              <SelectItem value="Employed">Employed</SelectItem>
+              <SelectItem value="Self-employed">Self-employed</SelectItem>
+              <SelectItem value="Business Owner">Business Owner</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            <CalendarMonthOutlinedIcon sx={{ fontSize: 18 }} />
+            Preferred Loan Term
+          </label>
+          <Select value={loanterm} onValueChange={setLoanterm}>
+            <SelectTrigger className={selectClass}>
+              <SelectValue placeholder="Select loan term" />
+            </SelectTrigger>
+            <SelectContent className="rounded-2xl border border-slate-200 dark:border-slate-700 dark:bg-[#131B1E]">
+              {["6", "12", "24", "36", "48", "60", "72", "84", "96", "108", "120", "+120"].map(
+                (m) => (
+                  <SelectItem key={m} value={`${m} months`}>
+                    {m} months
+                  </SelectItem>
+                )
+              )}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <Textarea
-        value={messageComments}
-        onChange={(e) => setMessageComments(e.target.value)}
-        placeholder="Any comment (optional)"
-        maxLength={300}
-        className="w-full text-base dark:bg-[#131B1E] dark:text-gray-100 p-2 border rounded-md mt-4"
-      />
+      <div>
+        <label className={labelClass}>
+          <NotesOutlinedIcon sx={{ fontSize: 18 }} />
+          Additional Comments
+        </label>
+        <Textarea
+          value={messageComments}
+          onChange={(e) => setMessageComments(e.target.value)}
+          placeholder="Add any useful details for your financing request..."
+          maxLength={300}
+          className="min-h-[120px] rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100 dark:border-slate-700 dark:bg-[#131B1E] dark:text-slate-100 dark:placeholder:text-slate-500"
+        />
+        <div className="mt-2 text-right text-xs text-slate-400">
+          {messageComments.length}/300
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-orange-100 bg-orange-50 px-4 py-3 text-sm text-slate-700 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-slate-200">
+        <span className="font-semibold text-orange-700 dark:text-orange-300">
+          Loan Amount:
+        </span>{" "}
+        {formatKsh(loanAmount)}
+      </div>
 
       <Button
         onClick={handleSubmit}
         disabled={isSending}
-        className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md mt-4"
+        className="h-12 w-full rounded-2xl bg-orange-500 text-sm font-bold text-white shadow-sm transition hover:bg-orange-600 disabled:opacity-70"
       >
         {isSending ? (
           <div className="flex items-center justify-center gap-2">
-            <CircularProgress size={20} color="inherit" />
-            Sending...
+            <CircularProgress size={18} color="inherit" />
+            Submitting Request...
           </div>
         ) : (
-          "Submit Request"
+          "Submit Financing Request"
         )}
       </Button>
-    </>
+    </div>
   );
 
-  return (
-    <>
-      {isMobile && isOpen ? (
-        <div className="fixed inset-0 z-20 bg-[#e4ebeb] dark:bg-[#222528] dark:text-gray-100 p-4 flex flex-col">
-          <div className="flex w-full gap-2 items-centerdark:bg-[#222528] border-b pb-2">
+  if (isMobile && isOpen) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#0F1417]">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-[#0F1417]">
+          <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="flex justify-center p-2 items-center text-gray-600 dark:text-[#e4ebeb] dark:hover:bg-gray-700 hover:text-green-600 rounded-full"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition hover:bg-orange-50 hover:text-orange-600 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               <ArrowBackOutlinedIcon />
             </button>
-            <p className="font-bold">Financing Request Form</p>
+            <div>
+              <p className="text-base font-extrabold text-slate-900 dark:text-white">
+                Financing Request
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Complete the form below
+              </p>
+            </div>
           </div>
-          <div className="overflow-y-auto mt-4 flex flex-col gap-3">
-            {FormContent}
+
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-300">
+            <AccountBalanceOutlinedIcon />
           </div>
         </div>
-      ) : (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className="max-w-xl dark:bg-[#2D3236] dark:text-gray-300 max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Financing Request Form</DialogTitle>
-            </DialogHeader>
-            <div className="mt-2 flex flex-col gap-3">{FormContent}</div>
-          </DialogContent>
-        </Dialog>
-      )}
-    </>
+
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          {FormContent}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="z-[200] h-[90vh] max-h-[90vh] w-[95vw] max-w-2xl overflow-hidden rounded-[28px] border border-orange-100 bg-white p-0 shadow-2xl dark:border-slate-700 dark:bg-[#11181C] dark:text-slate-100">
+        <DialogHeader className="border-b border-orange-100 bg-gradient-to-r from-orange-50 to-white px-6 py-5 dark:border-slate-700 dark:from-[#1B2327] dark:to-[#11181C]">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-orange-700 dark:bg-orange-500/15 dark:text-orange-300">
+                <AccountBalanceOutlinedIcon sx={{ fontSize: 14 }} />
+                Theme Financing
+              </div>
+
+              <DialogTitle className="mt-3 text-left text-2xl font-extrabold text-slate-900 dark:text-white">
+                Request Financing
+              </DialogTitle>
+
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Submit your request and our team will review your financing details.
+              </p>
+            </div>
+
+
+          </div>
+        </DialogHeader>
+
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          {FormContent}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -7,8 +7,16 @@ import CopyLinkButton from "@/components/shared/CopyLinkButton";
 import TopBar from "@/components/home/TopBar.client";
 import MobileBackPill from "@/components/home/MobileBackPill.client";
 import RelatedPropertiesInfinite from "@/components/home/RelatedPropertiesInfinite";
-import { IoCall, IoChatboxOutline, IoChatbubbleOutline, IoCreateOutline, IoMail, IoShareSocialOutline } from "react-icons/io5";
+import {
+    IoCall,
+    IoChatboxOutline,
+    IoChatbubbleOutline,
+    IoCreateOutline,
+    IoMail,
+    IoShareSocialOutline,
+} from "react-icons/io5";
 import PropertyGallery from "./PropertyGallery";
+import AdDetailActions from "./AdDetailActions";
 
 type Props = {
     params: {
@@ -92,9 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     const data = ad?.data || {};
-    const titleText = data?.title
-        ? `${data.title} | Tadao Market`
-        : "Listing | Tadao Market";
+    const titleText = data?.title ? `${data.title} | Tadao Market` : "Listing | Tadao Market";
 
     const description =
         (data?.description ? stripHtml(data.description).slice(0, 160) : "") ||
@@ -137,12 +143,8 @@ export default async function AdDetailsPage({ params }: Props) {
                 <TopBar />
                 <main className="mx-auto max-w-4xl px-4 pt-[calc(var(--topbar-h,64px)+18px)] pb-10 text-center">
                     <div className="rounded-[28px] border border-orange-100 bg-white p-10 shadow-sm">
-                        <h1 className="text-2xl font-extrabold text-slate-900">
-                            Listing not found
-                        </h1>
-                        <p className="mt-2 text-slate-500">
-                            Please check the URL or search again.
-                        </p>
+                        <h1 className="text-2xl font-extrabold text-slate-900">Listing not found</h1>
+                        <p className="mt-2 text-slate-500">Please check the URL or search again.</p>
                         <div className="mt-6">
                             <Link
                                 href="/"
@@ -185,8 +187,7 @@ export default async function AdDetailsPage({ params }: Props) {
         `${safeStr(organizer?.firstName)} ${safeStr(organizer?.lastName)}`.trim() ||
         "Seller";
 
-    const sellerPhoto =
-        safeStr(organizer?.photo) || safeStr(organizer?.imageUrl) || "";
+    const sellerPhoto = safeStr(organizer?.photo) || safeStr(organizer?.imageUrl) || "";
 
     const isVerified =
         organizer?.verified?.accountverified === true ||
@@ -196,7 +197,11 @@ export default async function AdDetailsPage({ params }: Props) {
 
     const organizerId = safeStr(organizer?._id);
     const chatHref = organizerId
-        ? `/profile-messages/${encodeURIComponent(organizerId)}?adId=${encodeURIComponent(String(ad._id))}&title=${encodeURIComponent(title)}&price=${encodeURIComponent(priceText)}&image=${encodeURIComponent(cover || "")}`
+        ? `/profile-messages/${encodeURIComponent(
+            organizerId
+        )}?adId=${encodeURIComponent(String(ad._id))}&title=${encodeURIComponent(
+            title
+        )}&price=${encodeURIComponent(priceText)}&image=${encodeURIComponent(cover || "")}`
         : "/profile-messages";
 
     const specs = buildSpecs(data);
@@ -277,11 +282,7 @@ export default async function AdDetailsPage({ params }: Props) {
                             <PropertyGallery
                                 title={title}
                                 images={galleryImages}
-                                badgeText={
-                                    safeStr(data?.subcategory) ||
-                                    safeStr(data?.category) ||
-                                    "Listing"
-                                }
+                                badgeText={safeStr(data?.subcategory) || safeStr(data?.category) || "Listing"}
                             />
 
                             <div className="p-5 md:p-6">
@@ -330,9 +331,7 @@ export default async function AdDetailsPage({ params }: Props) {
 
                                 {specs.length > 0 ? (
                                     <div className="mt-6">
-                                        <h2 className="text-lg font-extrabold text-slate-900">
-                                            Key details
-                                        </h2>
+                                        <h2 className="text-lg font-extrabold text-slate-900">Key details</h2>
 
                                         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                                             {specs.map((item) => (
@@ -354,9 +353,7 @@ export default async function AdDetailsPage({ params }: Props) {
 
                                 {description ? (
                                     <div className="mt-6">
-                                        <h2 className="text-lg font-extrabold text-slate-900">
-                                            Description
-                                        </h2>
+                                        <h2 className="text-lg font-extrabold text-slate-900">Description</h2>
                                         <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
                                             {description}
                                         </p>
@@ -395,9 +392,7 @@ export default async function AdDetailsPage({ params }: Props) {
                                     </div>
 
                                     <div className="min-w-0">
-                                        <div className="truncate font-extrabold text-slate-900">
-                                            {sellerName}
-                                        </div>
+                                        <div className="truncate font-extrabold text-slate-900">{sellerName}</div>
                                         <div className="mt-0.5 text-xs text-slate-500">
                                             {isVerified ? "Verified Seller" : "Seller"}
                                         </div>
@@ -496,6 +491,10 @@ export default async function AdDetailsPage({ params }: Props) {
                                             <span className="block truncate font-bold text-slate-900">Edit this ad</span>
                                         </span>
                                     </Link>
+                                </div>
+
+                                <div className="mt-5 border-t border-slate-200 pt-5">
+                                    <AdDetailActions ad={ad} />
                                 </div>
                             </div>
                         </div>
