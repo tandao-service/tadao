@@ -15,6 +15,7 @@ import Footer from "./Footer.client";
 import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
 import BottomNav from "@/components/home/BottomNav.client";
+import { getAllPackages } from "@/lib/actions/packages.actions";
 
 function slugify(input: string) {
     return String(input || "")
@@ -74,16 +75,25 @@ export default function HomeShell({
         () => getDefaultListingSlugFromTree(categoryTree as any[]),
         [categoryTree]
     );
+    const [packagesList, setPackagesList] = React.useState<any[]>([]);
 
+    React.useEffect(() => {
+        const loadPackages = async () => {
+            const data = (await getAllPackages()) || [];
+            setPackagesList(data);
+        };
+
+        loadPackages();
+    }, []);
     return (
         <div className="min-h-screen bg-white">
             <TopBar />
 
             <div
                 className="mx-auto max-w-6xl px-3 pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
-                style={{ paddingTop: "var(--topbar-h, 64px)" }}
+                style={{ paddingTop: "var(--topbar-h, 0px)" }}
             >
-                <div className="relative mt-3 overflow-hidden rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
+                <div className="relative mt-[-20px] overflow-hidden rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
                     <div className="absolute inset-0 opacity-25">
                         <div className="h-full w-full bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,.35),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,.25),transparent_45%)]" />
                     </div>
@@ -121,7 +131,7 @@ export default function HomeShell({
                     </div>
 
                     <section className="min-w-0 space-y-5">
-                        <QuickChips />
+                        <QuickChips packagesList={packagesList} />
 
                         {featured === undefined ? (
                             <FeaturedRowSkeleton />

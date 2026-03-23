@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import {
     createUserWithEmailAndPassword,
@@ -21,8 +21,16 @@ import { createUser as createUserInDB } from "@/lib/actions/user.actions";
 import { Capacitor } from "@capacitor/core";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+
 export default function AuthPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const redirectParam = searchParams.get("redirect_url");
+    const redirectTo =
+        redirectParam && redirectParam.startsWith("/")
+            ? redirectParam
+            : "/";
 
     const [isSignUp, setIsSignUp] = useState(false);
 
@@ -159,7 +167,7 @@ export default function AuthPage() {
             });
         }
 
-        router.replace("/");
+        router.replace(redirectTo);
     };
 
     const handleForgotPassword = async () => {
@@ -246,7 +254,7 @@ export default function AuthPage() {
                 ],
             });
 
-            router.replace("/");
+            router.replace(redirectTo);
         } catch (err: any) {
             console.error("Sign up error:", err);
             setError(getFriendlyError(err?.code || err?.message));
@@ -277,7 +285,7 @@ export default function AuthPage() {
         try {
             await setPersistence(authBundle.auth, browserLocalPersistence);
             await signInWithEmailAndPassword(authBundle.auth, cleanEmail, password);
-            router.replace("/");
+            router.replace(redirectTo);
         } catch (err: any) {
             console.error("Firebase sign-in error:", {
                 code: err?.code,
@@ -436,7 +444,7 @@ export default function AuthPage() {
 
                     <button
                         type="button"
-                        onClick={() => router.push("/")}
+                        onClick={() => router.push(redirectTo)}
                         disabled={loading}
                         className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
                     >

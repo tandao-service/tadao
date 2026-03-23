@@ -32,21 +32,29 @@ const Verification: React.FC<SettingsProp> = ({
   const [activationfee, setActivationFee] = useState("500");
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
+    let mounted = true;
 
     const fetchData = async () => {
       try {
         setLoading(true);
         const fee = await getVerfiesfee();
-        setActivationFee(fee);
-
+        if (mounted && fee != null) {
+          setActivationFee(String(fee));
+        }
       } catch (error) {
         console.error("Failed to fetch data", error);
       } finally {
-        setLoading(false); // Mark loading as complete
+        if (mounted) {
+          setLoading(false);
+        }
       }
+    };
 
-      fetchData();
-    }
+    fetchData();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
   function generateRandomOrderId() {
     const timestamp = Date.now(); // Current timestamp in milliseconds
