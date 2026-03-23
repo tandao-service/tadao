@@ -28,13 +28,16 @@ export default function HeroSearchBar({
     const go = () => {
         const query = new URLSearchParams();
 
-        if (q.trim()) query.set("q", q.trim());
+        if (q.trim()) query.set("query", q.trim());
 
-        if (selectedRegion?.slug) {
+        if (listingSlug) query.set("listingSlug", listingSlug);
+
+        if (selectedRegion?.slug && selectedRegion.slug !== "all-kenya") {
             query.set("region", selectedRegion.slug);
         }
 
-        router.push(`/r/${listingSlug ? `${listingSlug}/` : ""}?${query.toString()}`);
+        const queryString = query.toString();
+        router.push(queryString ? `/search?${queryString}` : "/search");
     };
 
     useEffect(() => {
