@@ -51,8 +51,8 @@ export default function SearchPageClient({
     const [query, setQuery] = React.useState(initialQuery);
     const [region, setRegion] = React.useState(initialRegion);
     const [category, setCategory] = React.useState(initialCategory);
-    const [min] = React.useState(initialMin);
-    const [max] = React.useState(initialMax);
+    const min = initialMin;
+    const max = initialMax;
     const [sort, setSort] = React.useState(initialSort || "recommended");
 
     const [items, setItems] = React.useState<SearchItem[]>([]);
@@ -184,7 +184,7 @@ export default function SearchPageClient({
 
                                         <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
                                             Search results for{" "}
-                                            <span className="text-orange-600">"{query || "All ads"}"</span>
+                                            <span className="text-orange-600">&quot;{query || "All ads"}&quot;</span>
                                         </h1>
 
                                         <p className="mt-2 text-sm font-medium text-slate-500">
