@@ -96,23 +96,6 @@ export default function SellerProfileClient({
         setVisibleCount(PAGE_SIZE);
     }, [query, category, sortBy]);
 
-    if (!seller) {
-        return (
-            <div className="rounded-[24px] border border-orange-100 bg-white p-8 text-center shadow-sm">
-                <h1 className="text-xl font-black text-slate-900">Seller not found</h1>
-                <p className="mt-2 text-sm text-slate-500">
-                    This seller may have no active ads right now.
-                </p>
-                <Link
-                    href="/"
-                    className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-orange-500 px-4 text-sm font-extrabold text-white hover:bg-orange-600"
-                >
-                    Go Home
-                </Link>
-            </div>
-        );
-    }
-
     const sellerName =
         safeStr(seller?.businessname) ||
         `${safeStr(seller?.firstName)} ${safeStr(seller?.lastName)}`.trim() ||
@@ -178,6 +161,23 @@ export default function SellerProfileClient({
 
     const visibleAds = filteredAds.slice(0, visibleCount);
     const canLoadMore = visibleCount < filteredAds.length;
+
+    if (!seller) {
+        return (
+            <div className="rounded-[24px] border border-orange-100 bg-white p-8 text-center shadow-sm">
+                <h1 className="text-xl font-black text-slate-900">Seller not found</h1>
+                <p className="mt-2 text-sm text-slate-500">
+                    This seller may have no active ads right now.
+                </p>
+                <Link
+                    href="/"
+                    className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-orange-500 px-4 text-sm font-extrabold text-white hover:bg-orange-600"
+                >
+                    Go Home
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
@@ -354,7 +354,10 @@ export default function SellerProfileClient({
                             </div>
                             <div className="mt-1 text-lg font-black text-slate-900">
                                 {ratingSummary.totalRatings > 0
-                                    ? `${getPercent(ratingSummary.fiveStar + ratingSummary.fourStar, ratingSummary.totalRatings)}% positive`
+                                    ? `${getPercent(
+                                        ratingSummary.fiveStar + ratingSummary.fourStar,
+                                        ratingSummary.totalRatings
+                                    )}% positive`
                                     : "No reviews yet"}
                             </div>
                         </div>
@@ -644,13 +647,9 @@ export default function SellerProfileClient({
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <LeaveSellerReview
-                    sellerId={sellerId}
-                    sellerName={sellerName}
-                />
 
+                <LeaveSellerReview sellerId={sellerId} sellerName={sellerName} />
                 <SellerReviewsList reviews={reviews} />
             </aside>
         </div>
