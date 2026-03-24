@@ -10,10 +10,7 @@ import {
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";
 
-function parseNum(v?: string | null) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
-}
+
 
 function normalizeSlug(s: string) {
   return String(s || "").trim().toLowerCase();
@@ -55,7 +52,11 @@ async function getQuickFilterForSubcategory(args: {
     return { field: "", options: [] as string[] };
   }
 }
-
+function parseNum(v: string | null) {
+  if (v == null || String(v).trim() === "") return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -87,8 +88,8 @@ export async function GET(req: Request) {
 
     // accept both sort and sortby
     const sortRaw = String(
-      searchParams.get("sort") || searchParams.get("sortby") || "recommeded"
-    ).trim();
+      searchParams.get("sort") || searchParams.get("sortby") || "recommended"
+    ).trim().toLowerCase();
 
     const sort =
       sortRaw === "lowest"
@@ -101,7 +102,7 @@ export async function GET(req: Request) {
               ? "price_desc"
               : sortRaw === "new"
                 ? "new"
-                : "recommeded";
+                : "recommended";
 
     const LISTING_MAP = await getListingMapFromDB();
     const listing = LISTING_MAP[listingSlug];
@@ -157,6 +158,7 @@ export async function GET(req: Request) {
     ]);
 
     if (regionSlug) {
+
       const res = await getAdsForRegionListing({
         regionSlug,
         category: categoryName,

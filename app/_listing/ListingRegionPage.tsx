@@ -337,15 +337,18 @@ export default async function ListingPageUI(args: {
         totalPages = Number(res?.totalPages || 1);
         regionLabel = res?.regionName || regionName;
     } else {
-
         const queryObject: any = {
-            sort,
-            category: listing.category,
-            subcategory: listing.subcategory,
+            sortby: sort,
+            category: categoryName,
+            subcategory: String(listing.subcategory || "").trim(),
         };
 
         if (membership) queryObject.membership = membership;
-        if (minN !== undefined || maxN !== undefined) queryObject.price = `${minN || 0}-${maxN || 999999999}`;
+
+        if (minN !== undefined || maxN !== undefined) {
+            queryObject.price = `${minN || 0}-${maxN || 999999999}`;
+        }
+
         if (county) queryObject.county = county;
         if (town) queryObject.town = town;
         if (q) queryObject.q = q;
@@ -353,7 +356,6 @@ export default async function ListingPageUI(args: {
         if (isVehicle && make) queryObject.make = make;
         if (isVehicle && model) queryObject.model = model;
 
-        // ✅ NEW for non-vehicle
         if (!isVehicle && type) queryObject.type = type;
         if (!isVehicle && brand) queryObject.brand = brand;
 

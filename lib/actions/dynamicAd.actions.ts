@@ -228,13 +228,13 @@ export async function getAlldynamicAd({
     // 2) Top (active) next
     // 3) priority desc
     // 4) then sortby: new/lowest/highest/default
-    const sortby = String(queryObject?.sortby || "recommeded");
+    const sortby = String(queryObject?.sortby || "recommended");
 
     let tailSort: any = { createdAt: -1 }; // default newest
 
     if (sortby === "lowest") tailSort = { "data.price": 1, createdAt: -1 };
     else if (sortby === "highest") tailSort = { "data.price": -1, createdAt: -1 };
-    else if (sortby === "new" || sortby === "recommeded") tailSort = { createdAt: -1 };
+    else if (sortby === "new" || sortby === "recommended") tailSort = { createdAt: -1 };
 
     const pipeline: any[] = [
       { $match: conditions },
@@ -378,7 +378,7 @@ export async function getAlldynamicAd_({ limit = 20, page, queryObject
 
     const skipAmount = (Number(page) - 1) * limit
     let AdQuery: any = [];
-    if (queryObject.sortby === "recommeded") {
+    if (queryObject.sortby === "recommended") {
       AdQuery = DynamicAd.find(conditions)
         .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
@@ -468,7 +468,7 @@ export async function getAdByUser({ userId, limit = 20, page, sortby, myshop }: 
 
     const skipAmount = (page - 1) * limit
     let AdQuery: any = [];
-    if (sortby === "recommeded") {
+    if (sortby === "recommended") {
       AdQuery = DynamicAd.find(conditions)
         .sort({ priority: -1, createdAt: -1 }) // Both sorted in descending order
         .skip(skipAmount)
@@ -1458,11 +1458,6 @@ export const markWinner = async (bidId: string) => {
   }
 };
 
-function unslugify(slug: string) {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-
 type ListingQuery = {
   regionSlug: string;
   category?: string;
@@ -1471,8 +1466,16 @@ type ListingQuery = {
   limit?: number;
   min?: number;
   max?: number;
-  sort?: "recommeded" | "new" | "lowest" | "highest" | "price_asc" | "price_desc";
+  sort?: "recommended" | "new" | "lowest" | "highest" | "price_asc" | "price_desc";
   membership?: "verified" | "unverified";
+
+  county?: string;
+  town?: string;
+  make?: string;
+  model?: string;
+  q?: string;
+  type?: string;
+  brand?: string;
 };
 
 export async function getAdsForRegionListing({
@@ -1483,16 +1486,23 @@ export async function getAdsForRegionListing({
   limit = 24,
   min,
   max,
-  sort = "recommeded",
+  sort = "recommended",
   membership,
+  county,
+  town,
+  make,
+  model,
+  q,
+  type,
+  brand,
 }: ListingQuery) {
   await connectToDatabase();
 
-  const regionNames = regionCandidates(regionSlug); // ✅ key fix
+  const regionNames = regionCandidates(regionSlug);
 
-  let conditions: any = {
+  const conditions: any = {
     adstatus: "Active",
-    "data.region": { $in: regionNames }, // ✅ match both hyphen + space versions
+    "data.region": { $in: regionNames },
   };
 
   if (category) conditions["data.category"] = category;
@@ -1505,21 +1515,60 @@ export async function getAdsForRegionListing({
   }
 
   if (membership === "verified") {
-    const verifiedUsers = await User.find({ "verified.accountverified": true }).select("_id");
+    const verifiedUsers = await User.find({
+      "verified.accountverified": true,
+    }).select("_id");
     conditions.organizer = { $in: verifiedUsers.map((u) => u._id) };
   } else if (membership === "unverified") {
-    const unverifiedUsers = await User.find({ "verified.accountverified": false }).select("_id");
+    const unverifiedUsers = await User.find({
+      "verified.accountverified": false,
+    }).select("_id");
     conditions.organizer = { $in: unverifiedUsers.map((u) => u._id) };
+  }
+
+  if (county) conditions["data.county"] = county;
+
+  if (town) {
+    conditions.$and = conditions.$and || [];
+    conditions.$and.push({
+      $or: [{ "data.town": town }, { "data.area": town }],
+    });
+  }
+
+  if (make) conditions["data.make"] = make;
+  if (model) conditions["data.model"] = model;
+
+  if (type) conditions["data.type"] = type;
+  if (brand) conditions["data.brand"] = brand;
+
+  if (q) {
+    conditions.$and = conditions.$and || [];
+    conditions.$and.push({
+      $or: [
+        { "data.title": { $regex: q, $options: "i" } },
+        { "data.description": { $regex: q, $options: "i" } },
+      ],
+    });
   }
 
   const skipAmount = (page - 1) * limit;
 
   let sortObj: any = { priority: -1, createdAt: -1 };
-  if (sort === "lowest" || sort === "price_asc") sortObj = { priority: -1, "data.price": 1, createdAt: -1 };
-  if (sort === "highest" || sort === "price_desc") sortObj = { priority: -1, "data.price": -1, createdAt: -1 };
-  if (sort === "new") sortObj = { priority: -1, createdAt: -1 };
 
-  const query = DynamicAd.find(conditions).sort(sortObj).skip(skipAmount).limit(limit);
+  if (sort === "lowest" || sort === "price_asc") {
+    sortObj = { priority: -1, "data.price": 1, createdAt: -1 };
+  } else if (sort === "highest" || sort === "price_desc") {
+    sortObj = { priority: -1, "data.price": -1, createdAt: -1 };
+  } else if (sort === "new") {
+    sortObj = { priority: -1, createdAt: -1 };
+  } else {
+    sortObj = { priority: -1, createdAt: -1 };
+  }
+
+  const query = DynamicAd.find(conditions)
+    .sort(sortObj)
+    .skip(skipAmount)
+    .limit(limit);
 
   const [items, total] = await Promise.all([
     populateAd(query),
@@ -1530,7 +1579,7 @@ export async function getAdsForRegionListing({
     items: JSON.parse(JSON.stringify(items)),
     total,
     totalPages: Math.max(1, Math.ceil(total / limit)),
-    regionName: regionNames[0], // just for display
+    regionName: regionNames[0],
   };
 }
 

@@ -798,7 +798,7 @@ export default function ListingPageClient(props: Props) {
     const [min, setMin] = React.useState(props.selected.min || "");
     const [max, setMax] = React.useState(props.selected.max || "");
     const [membership, setMembership] = React.useState(props.selected.membership || "");
-    const [sort, setSort] = React.useState(props.selected.sort || "recommeded");
+    const [sort, setSort] = React.useState(props.selected.sort || "recommended");
     const [mobileCatName, setMobileCatName] = React.useState<string>("");
 
     const townsForCounty = React.useMemo(() => {
@@ -1122,7 +1122,7 @@ export default function ListingPageClient(props: Props) {
         setModel("");
         setBrand("");
         setType("");
-        setSort("recommeded");
+        setSort("recommended");
         setLayout("grid");
         setDyn({});
 
@@ -1141,7 +1141,7 @@ export default function ListingPageClient(props: Props) {
                 model: "",
                 brand: "",
                 type: "",
-                sort: "recommeded",
+                sort: "recommended",
                 layout: "grid",
             });
         } catch (e: any) {
@@ -1793,7 +1793,7 @@ export default function ListingPageClient(props: Props) {
                                         onChange={(e) => onSortChange(e.target.value)}
                                         className="h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
                                     >
-                                        <option value="recommeded">Recommended</option>
+                                        <option value="recommended">Recommended</option>
                                         <option value="new">Newest</option>
                                         <option value="lowest">Price: Low to High</option>
                                         <option value="highest">Price: High to Low</option>
