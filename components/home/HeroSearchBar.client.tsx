@@ -168,7 +168,7 @@ export default function HeroSearchBar({
                         </span>
                     </button>
 
-                    <div className="relative z-[120] w-full">
+                    <div className="relative w-full">
                         <input
                             value={q}
                             onChange={(e) => {
