@@ -1,8 +1,10 @@
-// lib/actions/subscription.guard.ts
 "use server";
 
 import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
+import DynamicAd from "@/lib/database/models/dynamicAd.model";
+
+const FREE_MAX_LISTINGS = 3;
 
 export type CanPostReason =
     | "FREE"
@@ -10,22 +12,28 @@ export type CanPostReason =
     | "INACTIVE_SUBSCRIPTION"
     | "EXPIRED"
     | "LIMIT_REACHED"
+    | "FREE_LIMIT_REACHED"
     | "NO_SUBSCRIPTION"
     | "MISSING_PLAN";
 
 export type CanPostResult =
-    | { allowed: true; reason: "FREE" | "OK" }
+    | {
+        allowed: true;
+        reason: "FREE" | "OK";
+        planId?: string;
+        activeAdsCount?: number;
+        allowedListings?: number;
+        remainingAds?: number;
+    }
     | {
         allowed: false;
         reason: Exclude<CanPostReason, "FREE" | "OK">;
         planId?: string;
+        activeAdsCount?: number;
+        allowedListings?: number;
+        remainingAds?: number;
     };
 
-/**
- * ✅ Single source of truth: user.subscription
- * - Free users (or no subscription) are allowed by default
- * - Paid plans require: active=true, expiresAt not passed, remainingAds > 0
- */
 export async function requireCanPostAd(userId: string): Promise<CanPostResult> {
     await connectToDatabase();
 
@@ -33,50 +41,132 @@ export async function requireCanPostAd(userId: string): Promise<CanPostResult> {
     if (!user) throw new Error("User not found");
 
     const sub = user.subscription;
+    const now = new Date();
 
-    // 🟢 No subscription object at all -> treat as FREE (or return NO_SUBSCRIPTION if you prefer)
+    const activeAdsCount = await DynamicAd.countDocuments({
+        organizer: user._id,
+        adstatus: { $in: ["Active", "Pending", "Published"] },
+        expirely: { $gt: now },
+    });
+
+    // No subscription object => treat as free, but LIMITED
     if (!sub) {
-        return { allowed: true, reason: "FREE" };
-        // If you want to force subscription object existence, use:
-        // return { allowed: false, reason: "NO_SUBSCRIPTION" };
+        if (activeAdsCount >= FREE_MAX_LISTINGS) {
+            return {
+                allowed: false,
+                reason: "FREE_LIMIT_REACHED",
+                activeAdsCount,
+                allowedListings: FREE_MAX_LISTINGS,
+                remainingAds: 0,
+            };
+        }
+
+        return {
+            allowed: true,
+            reason: "FREE",
+            activeAdsCount,
+            allowedListings: FREE_MAX_LISTINGS,
+            remainingAds: 0,
+        };
     }
 
     const planName = String(sub.planName || "").trim();
     const planId = sub.planId ? String(sub.planId) : undefined;
 
-    // 🟢 Free plan -> always allowed
+    // Free plan => LIMITED
     if (!planName || planName.toLowerCase() === "free") {
-        return { allowed: true, reason: "FREE" };
+        if (activeAdsCount >= FREE_MAX_LISTINGS) {
+            return {
+                allowed: false,
+                reason: "FREE_LIMIT_REACHED",
+                planId,
+                activeAdsCount,
+                allowedListings: FREE_MAX_LISTINGS,
+                remainingAds: 0,
+            };
+        }
+
+        return {
+            allowed: true,
+            reason: "FREE",
+            planId,
+            activeAdsCount,
+            allowedListings: FREE_MAX_LISTINGS,
+            remainingAds: 0,
+        };
     }
 
-    // ❌ Missing planId for a paid plan (data inconsistency)
+    // Paid plan but missing plan id
     if (!planId) {
         return { allowed: false, reason: "MISSING_PLAN" };
     }
 
-    // ❌ Inactive subscription
     if (!sub.active) {
-        return { allowed: false, reason: "INACTIVE_SUBSCRIPTION", planId };
+        return {
+            allowed: false,
+            reason: "INACTIVE_SUBSCRIPTION",
+            planId,
+            activeAdsCount,
+            allowedListings: Number(sub?.entitlements?.maxListings ?? 0),
+            remainingAds: Number(sub?.remainingAds ?? 0),
+        };
     }
 
-    // ⏳ Expired
     if (sub.expiresAt) {
         const expiresAt = new Date(sub.expiresAt);
+
         if (!Number.isFinite(expiresAt.getTime())) {
-            // bad date stored: fail safe (block) or allow — choose your policy
             return { allowed: false, reason: "EXPIRED", planId };
         }
-        if (new Date() > expiresAt) {
-            return { allowed: false, reason: "EXPIRED", planId };
+
+        if (now > expiresAt) {
+            // optional DB cleanup
+            await User.findByIdAndUpdate(user._id, {
+                $set: { "subscription.active": false },
+            });
+
+            return {
+                allowed: false,
+                reason: "EXPIRED",
+                planId,
+                activeAdsCount,
+                allowedListings: Number(sub?.entitlements?.maxListings ?? 0),
+                remainingAds: Number(sub?.remainingAds ?? 0),
+            };
         }
     }
 
-    // 📦 Quota reached
-    // remainingAds is your runtime counter. If you prefer, you can recompute using ads count,
-    // but remainingAds is the clean SaaS approach.
-    if (typeof sub.remainingAds === "number" && sub.remainingAds <= 0) {
-        return { allowed: false, reason: "LIMIT_REACHED", planId };
+    const maxListings = Number(sub?.entitlements?.maxListings ?? 0);
+    const remainingAds = Number(sub?.remainingAds ?? 0);
+
+    if (remainingAds <= 0) {
+        return {
+            allowed: false,
+            reason: "LIMIT_REACHED",
+            planId,
+            activeAdsCount,
+            allowedListings: maxListings,
+            remainingAds,
+        };
     }
 
-    return { allowed: true, reason: "OK" };
+    if (maxListings > 0 && activeAdsCount >= maxListings) {
+        return {
+            allowed: false,
+            reason: "LIMIT_REACHED",
+            planId,
+            activeAdsCount,
+            allowedListings: maxListings,
+            remainingAds,
+        };
+    }
+
+    return {
+        allowed: true,
+        reason: "OK",
+        planId,
+        activeAdsCount,
+        allowedListings: maxListings,
+        remainingAds,
+    };
 }

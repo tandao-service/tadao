@@ -334,7 +334,7 @@ export default function TopBar() {
                                 handleOpenShop={(user: any) => {
                                     router.push(`/seller/${user._id}`);
                                 }}
-                                handleOpenPerfomance={() => { alert("YES"); router.push("/dashboard/ads"); }}
+                                handleOpenPerfomance={() => router.push("/dashboard/ads")}
                                 handleOpenSettings={() => router.push("/settings")}
                                 handleOpenAbout={() => router.push("/about")}
                                 handleOpenTerms={() => router.push("/terms")}

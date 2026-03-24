@@ -170,7 +170,22 @@ function parseCurrencyToNumber(value: string): number {
   const cleaned = String(value || "").replace(/[^0-9.-]+/g, "");
   return Number(cleaned || 0);
 }
-
+function getGateMessage(reason?: string | null) {
+  switch (reason) {
+    case "FREE_LIMIT_REACHED":
+      return "You have reached the free ad limit. Choose a package to continue posting.";
+    case "EXPIRED":
+      return "Your subscription has expired. Renew your package to continue posting.";
+    case "INACTIVE_SUBSCRIPTION":
+      return "Your subscription is inactive. Activate a package to continue posting.";
+    case "LIMIT_REACHED":
+      return "You have used all ads available in your package.";
+    case "MISSING_PLAN":
+      return "Your package information is incomplete. Please choose a package again.";
+    default:
+      return "Choose a package to continue posting your ad.";
+  }
+}
 function formatToCurrency(value: string | number) {
   if (value === null || value === undefined || value === "") return "0";
   const numberValue =
@@ -619,7 +634,7 @@ const AdForm = ({
 
       toast({
         title: "Subscription required",
-        description: gate?.reason || "Choose a package to continue posting your ad.",
+        description: getGateMessage(gate?.reason),
         duration: 5000,
         className: "bg-red-600 text-white",
       });
@@ -1012,7 +1027,7 @@ const AdForm = ({
 
           toast({
             title: "Subscription required",
-            description: "Choose a package to continue posting your ad.",
+            description: result?.reason || "Choose a package to continue posting your ad.",
             duration: 5000,
             className: "bg-red-600 text-white",
           });

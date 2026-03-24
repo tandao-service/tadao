@@ -27,6 +27,9 @@ export async function getSellPostGate(userId: string) {
             allowed: gate.allowed,
             reason: gate.reason || null,
             planId: gate.planId || null,
+            activeAdsCount: gate.activeAdsCount ?? 0,
+            allowedListings: gate.allowedListings ?? 0,
+            remainingAds: gate.remainingAds ?? 0,
         };
     } catch (error) {
         handleError(error);
@@ -34,6 +37,9 @@ export async function getSellPostGate(userId: string) {
             allowed: false,
             reason: "Unable to verify posting eligibility.",
             planId: null,
+            activeAdsCount: 0,
+            allowedListings: 0,
+            remainingAds: 0,
         };
     }
 }

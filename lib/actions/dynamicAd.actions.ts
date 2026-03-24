@@ -14,14 +14,15 @@ import DynamicAd from "../database/models/dynamicAd.model"
 import User from "../database/models/user.model"
 import { createTransaction } from "./transactions.actions"
 import Subcategory from "../database/models/subcategory.model"
-import { PipelineStage } from "mongoose"
+import { PipelineStage, Types } from "mongoose"
 import { requireCanPostAd } from "@/lib/actions/subscription.guard"
 
 
 const populateAd = (query: any) => {
   return query
     .populate({ path: 'subcategory', model: Subcategory, select: 'fields' })
-    .populate({
+    .
+    populate({
       path: 'organizer',
       model: User,
       select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications createdAt'
@@ -120,13 +121,13 @@ export const createData = async ({
     };
     // 🔒 HARD GATE — server decides
     const gate = await requireCanPostAd(userId);
-
     if (!gate.allowed) {
-      // create a transaction ONLY, do NOT create ad
       return {
         blocked: true,
         reason: gate.reason,
-        planId: gate.planId,
+        activeAdsCount: gate.activeAdsCount ?? 0,
+        allowedListings: gate.allowedListings ?? 0,
+        remainingAds: gate.remainingAds ?? 0,
       };
     }
 
@@ -2072,5 +2073,284 @@ export async function getListingSidebarOptions(args: {
     makes,
     models,
     totalInCategory,
+  };
+}
+
+type BoostIntent = "boost" | "featured";
+
+function isValidObjectId(id: string) {
+  return Types.ObjectId.isValid(id);
+}
+
+function toDate(value: any): Date | null {
+  if (!value) return null;
+  const d = new Date(value);
+  return Number.isFinite(d.getTime()) ? d : null;
+}
+
+//function addDays(from: Date, days: number) {
+// return new Date(from.getTime() + days * 24 * 60 * 60 * 1000);
+//}
+
+function getSubscriptionSnapshot(user: any) {
+  const sub = user?.subscription || {};
+  const expiresAt = toDate(sub?.expiresAt);
+  const now = new Date();
+
+  const expired = !!expiresAt && expiresAt.getTime() <= now.getTime();
+  const active = Boolean(sub?.active) && !expired;
+
+  return {
+    active,
+    expired,
+    planId: sub?.planId ? String(sub.planId) : null,
+    planName: String(sub?.planName || ""),
+    remainingAds: Number(sub?.remainingAds ?? 0),
+    entitlements: {
+      maxListings: Number(sub?.entitlements?.maxListings ?? 0),
+      priority: Number(sub?.entitlements?.priority ?? 0),
+      topDays: Number(sub?.entitlements?.topDays ?? 0),
+      featuredDays: Number(sub?.entitlements?.featuredDays ?? 0),
+      autoRenewHours:
+        sub?.entitlements?.autoRenewHours == null
+          ? null
+          : Number(sub?.entitlements?.autoRenewHours),
+    },
+  };
+}
+
+async function getOwnedAdOrThrow(adId: string, userId: string) {
+  if (!isValidObjectId(adId)) throw new Error("Invalid ad id");
+  if (!isValidObjectId(userId)) throw new Error("Invalid user id");
+
+  const ad = await DynamicAd.findOne({
+    _id: adId,
+    organizer: userId,
+  });
+
+  if (!ad) throw new Error("Ad not found");
+  return ad;
+}
+
+async function getUserOrThrow(userId: string) {
+  if (!isValidObjectId(userId)) throw new Error("Invalid user id");
+
+  const user = await User.findById(userId).select("subscription");
+  if (!user) throw new Error("User not found");
+  return user;
+}
+
+export async function getAdBoostGate(userId: string, adId: string, intent: BoostIntent) {
+  await connectToDatabase();
+
+  const user = await getUserOrThrow(userId);
+  const ad = await getOwnedAdOrThrow(adId, userId);
+  const sub = getSubscriptionSnapshot(user);
+
+  if (!sub.active) {
+    return {
+      allowed: false,
+      reason: sub.expired ? "EXPIRED" : "INACTIVE_SUBSCRIPTION",
+      message: sub.expired
+        ? "Your subscription has expired."
+        : "Your subscription is inactive.",
+    };
+  }
+
+  if (!["Active", "Pending", "Published"].includes(String(ad?.adstatus || ""))) {
+    return {
+      allowed: false,
+      reason: "INVALID_AD_STATUS",
+      message: "Only active ads can be boosted or featured.",
+    };
+  }
+
+  if (intent === "boost" && sub.entitlements.topDays <= 0) {
+    return {
+      allowed: false,
+      reason: "BOOST_NOT_INCLUDED",
+      message: "Your package does not include boost.",
+    };
+  }
+
+  if (intent === "featured" && sub.entitlements.featuredDays <= 0) {
+    return {
+      allowed: false,
+      reason: "FEATURED_NOT_INCLUDED",
+      message: "Your package does not include featured ads.",
+    };
+  }
+
+  return {
+    allowed: true,
+    reason: "OK",
+    message: "Allowed",
+    entitlements: sub.entitlements,
+    current: {
+      isTop: Boolean(ad?.boost?.isTop),
+      topUntil: ad?.boost?.topUntil || null,
+      isFeatured: Boolean(ad?.boost?.isFeatured),
+      featuredUntil: ad?.boost?.featuredUntil || null,
+    },
+  };
+}
+
+export async function boostAd({
+  adId,
+  userId,
+  path = "/dashboard/ads",
+}: {
+  adId: string;
+  userId: string;
+  path?: string;
+}) {
+  await connectToDatabase();
+
+  const gate = await getAdBoostGate(userId, adId, "boost");
+  if (!gate.allowed) {
+    return {
+      ok: false,
+      reason: gate.reason,
+      message: gate.message,
+    };
+  }
+
+  const user = await getUserOrThrow(userId);
+  const ad = await getOwnedAdOrThrow(adId, userId);
+  const sub = getSubscriptionSnapshot(user);
+
+  const now = new Date();
+  const currentTopUntil = toDate(ad?.boost?.topUntil);
+  const startBase =
+    currentTopUntil && currentTopUntil.getTime() > now.getTime()
+      ? currentTopUntil
+      : now;
+
+  const topUntil = addDays(startBase, sub.entitlements.topDays);
+
+  ad.boost = {
+    ...(ad.boost || {}),
+    isTop: true,
+    topUntil,
+    autoRenewHours: sub.entitlements.autoRenewHours,
+    isFeatured: Boolean(ad?.boost?.isFeatured),
+    featuredUntil: ad?.boost?.featuredUntil || null,
+  };
+
+  ad.priority = Math.max(
+    Number(ad?.priority ?? 0),
+    Number(sub.entitlements.priority ?? 0)
+  );
+
+  await ad.save();
+
+  revalidatePath(path);
+  revalidatePath("/");
+  revalidatePath(`/ads/${String(ad._id)}`);
+
+  return {
+    ok: true,
+    message: "Ad boosted successfully.",
+    adId: String(ad._id),
+    topUntil,
+  };
+}
+
+export async function featureAd({
+  adId,
+  userId,
+  path = "/dashboard/ads",
+}: {
+  adId: string;
+  userId: string;
+  path?: string;
+}) {
+  await connectToDatabase();
+
+  const gate = await getAdBoostGate(userId, adId, "featured");
+  if (!gate.allowed) {
+    return {
+      ok: false,
+      reason: gate.reason,
+      message: gate.message,
+    };
+  }
+
+  const user = await getUserOrThrow(userId);
+  const ad = await getOwnedAdOrThrow(adId, userId);
+  const sub = getSubscriptionSnapshot(user);
+
+  const now = new Date();
+  const currentFeaturedUntil = toDate(ad?.boost?.featuredUntil);
+  const startBase =
+    currentFeaturedUntil && currentFeaturedUntil.getTime() > now.getTime()
+      ? currentFeaturedUntil
+      : now;
+
+  const featuredUntil = addDays(startBase, sub.entitlements.featuredDays);
+
+  ad.boost = {
+    ...(ad.boost || {}),
+    isTop: Boolean(ad?.boost?.isTop),
+    topUntil: ad?.boost?.topUntil || null,
+    isFeatured: true,
+    featuredUntil,
+    autoRenewHours: sub.entitlements.autoRenewHours,
+  };
+
+  ad.priority = Math.max(
+    Number(ad?.priority ?? 0),
+    Number(sub.entitlements.priority ?? 0)
+  );
+
+  await ad.save();
+
+  revalidatePath(path);
+  revalidatePath("/");
+  revalidatePath(`/ads/${String(ad._id)}`);
+
+  return {
+    ok: true,
+    message: "Ad featured successfully.",
+    adId: String(ad._id),
+    featuredUntil,
+  };
+}
+
+export async function cleanupExpiredBoosts() {
+  await connectToDatabase();
+
+  const now = new Date();
+
+  const topRes = await DynamicAd.updateMany(
+    {
+      "boost.isTop": true,
+      "boost.topUntil": { $ne: null, $lte: now },
+    },
+    {
+      $set: {
+        "boost.isTop": false,
+        "boost.topUntil": null,
+      },
+    }
+  );
+
+  const featuredRes = await DynamicAd.updateMany(
+    {
+      "boost.isFeatured": true,
+      "boost.featuredUntil": { $ne: null, $lte: now },
+    },
+    {
+      $set: {
+        "boost.isFeatured": false,
+        "boost.featuredUntil": null,
+      },
+    }
+  );
+
+  return {
+    ok: true,
+    topExpired: topRes.modifiedCount ?? 0,
+    featuredExpired: featuredRes.modifiedCount ?? 0,
   };
 }

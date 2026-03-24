@@ -66,6 +66,7 @@ const dynamicAdSchema = new Schema({
 
     // optional: if you want auto-renew
     autoRenewHours: { type: Number, default: null }, // 24, 12, null
+    lastAutoRenewedAt: { type: Date, default: null },
   },
 },
   { timestamps: false });

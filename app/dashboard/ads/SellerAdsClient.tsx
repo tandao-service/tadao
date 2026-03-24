@@ -28,6 +28,7 @@ import {
 import { useAuth } from "@/app/hooks/useAuth";
 import { deleteAd } from "@/lib/actions/dynamicAd.actions";
 import Verification from "@/components/shared/Verification";
+import { boostAd, featureAd } from "@/lib/actions/dynamicAd.actions";
 
 type Props = {
     ads: any[];
@@ -107,7 +108,8 @@ export default function SellerAdsClient({ ads, totals }: Props) {
     const [deletingId, setDeletingId] = useState<string>("");
     const [deleteError, setDeleteError] = useState<string>("");
     const [isPending, startTransition] = useTransition();
-
+    const [actioningId, setActioningId] = useState<string>("");
+    const [actionError, setActionError] = useState<string>("");
     useEffect(() => {
         setItems(ads || []);
     }, [ads]);
@@ -126,7 +128,97 @@ export default function SellerAdsClient({ ads, totals }: Props) {
         safeStr(currentUser?.imageUrl) ||
         safeStr(authUser?.photoURL) ||
         "";
+    const handleBoost = (ad: any) => {
+        const adId = String(ad?._id || "");
+        if (!adId || !appUserId) return;
 
+        setActionError("");
+        setActioningId(adId);
+
+        startTransition(async () => {
+            try {
+                const result = await boostAd({
+                    adId,
+                    userId: appUserId,
+                    path: "/dashboard/ads",
+                });
+
+                if (!result?.ok) {
+                    setActionError(result?.message || "Unable to boost ad.");
+                    return;
+                }
+
+                setItems((prev) =>
+                    prev.map((item) =>
+                        String(item?._id) === adId
+                            ? {
+                                ...item,
+                                priority: Number(item?.priority || 0) + 1,
+                                boost: {
+                                    ...(item?.boost || {}),
+                                    isTop: true,
+                                    topUntil: result?.topUntil || null,
+                                },
+                            }
+                            : item
+                    )
+                );
+
+                router.refresh();
+            } catch (error) {
+                console.error("Failed to boost ad:", error);
+                setActionError("Failed to boost ad. Please try again.");
+            } finally {
+                setActioningId("");
+            }
+        });
+    };
+
+    const handleFeature = (ad: any) => {
+        const adId = String(ad?._id || "");
+        if (!adId || !appUserId) return;
+
+        setActionError("");
+        setActioningId(adId);
+
+        startTransition(async () => {
+            try {
+                const result = await featureAd({
+                    adId,
+                    userId: appUserId,
+                    path: "/dashboard/ads",
+                });
+
+                if (!result?.ok) {
+                    setActionError(result?.message || "Unable to feature ad.");
+                    return;
+                }
+
+                setItems((prev) =>
+                    prev.map((item) =>
+                        String(item?._id) === adId
+                            ? {
+                                ...item,
+                                priority: Number(item?.priority || 0) + 1,
+                                boost: {
+                                    ...(item?.boost || {}),
+                                    isFeatured: true,
+                                    featuredUntil: result?.featuredUntil || null,
+                                },
+                            }
+                            : item
+                    )
+                );
+
+                router.refresh();
+            } catch (error) {
+                console.error("Failed to feature ad:", error);
+                setActionError("Failed to feature ad. Please try again.");
+            } finally {
+                setActioningId("");
+            }
+        });
+    };
     const sellerEmail = safeStr(currentUser?.email) || safeStr(authUser?.email) || "";
     const sellerPhone = safeStr(currentUser?.phone);
     const sellerWhatsapp = safeStr(currentUser?.whatsapp);
@@ -781,7 +873,11 @@ export default function SellerAdsClient({ ads, totals }: Props) {
                         {deleteError}
                     </div>
                 ) : null}
-
+                {actionError ? (
+                    <div className="border-b border-amber-100 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-700">
+                        {actionError}
+                    </div>
+                ) : null}
                 {items.length === 0 ? (
                     <div className="px-4 py-10 text-center">
                         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange-50 text-orange-500">
@@ -822,7 +918,16 @@ export default function SellerAdsClient({ ads, totals }: Props) {
                                         (Array.isArray(ad?.data?.imageUrls) ? ad.data.imageUrls[0] : "");
 
                                     const isDeletingThis = deletingId === adId && isPending;
+                                    const isActioningThis = actioningId === adId;
+                                    const isFeaturedNow =
+                                        Boolean(ad?.boost?.isFeatured) &&
+                                        ad?.boost?.featuredUntil &&
+                                        new Date(ad.boost.featuredUntil).getTime() > Date.now();
 
+                                    const isBoostedNow =
+                                        Boolean(ad?.boost?.isTop) &&
+                                        ad?.boost?.topUntil &&
+                                        new Date(ad.boost.topUntil).getTime() > Date.now();
                                     return (
                                         <tr
                                             key={adId}
@@ -850,7 +955,19 @@ export default function SellerAdsClient({ ads, totals }: Props) {
                                                         <div className="line-clamp-1 text-xs font-black text-slate-900 md:text-sm">
                                                             {safeStr(ad?.data?.title) || "Listing"}
                                                         </div>
+                                                        <div className="mt-1 flex flex-wrap gap-1.5">
+                                                            {isFeaturedNow ? (
+                                                                <span className="inline-flex items-center rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-extrabold text-violet-700">
+                                                                    Featured until {new Date(ad.boost.featuredUntil).toLocaleDateString()}
+                                                                </span>
+                                                            ) : null}
 
+                                                            {isBoostedNow ? (
+                                                                <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-extrabold text-sky-700">
+                                                                    Boosted until {new Date(ad.boost.topUntil).toLocaleDateString()}
+                                                                </span>
+                                                            ) : null}
+                                                        </div>
                                                         <div className="mt-1 text-xs font-extrabold text-orange-600 md:text-sm">
                                                             {ad?.data?.contact === "contact"
                                                                 ? "Contact for price"
@@ -907,26 +1024,30 @@ export default function SellerAdsClient({ ads, totals }: Props) {
                                                         Edit
                                                     </Link>
 
-                                                    <Link
-                                                        href={`/plan?adId=${adId}&intent=boost`}
-                                                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-2.5 text-[11px] font-bold text-sky-700 transition hover:bg-sky-100"
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleBoost(ad)}
+                                                        disabled={isPending || isActioningThis || isDeletingThis}
+                                                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-2.5 text-[11px] font-bold text-sky-700 transition hover:bg-sky-100 disabled:cursor-not-allowed disabled:opacity-70"
                                                     >
                                                         <IoFlashOutline className="text-sm" />
-                                                        Boost
-                                                    </Link>
+                                                        {isActioningThis ? "Please wait..." : isBoostedNow ? "Boosted" : "Boost"}
+                                                    </button>
 
-                                                    <Link
-                                                        href={`/plan?adId=${adId}&intent=featured`}
-                                                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-2.5 text-[11px] font-bold text-violet-700 transition hover:bg-violet-100"
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleFeature(ad)}
+                                                        disabled={isPending || isActioningThis || isDeletingThis}
+                                                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-2.5 text-[11px] font-bold text-violet-700 transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-70"
                                                     >
                                                         <IoSparklesOutline className="text-sm" />
-                                                        Feature
-                                                    </Link>
+                                                        {isActioningThis ? "Please wait..." : isFeaturedNow ? "Featured" : "Feature"}
+                                                    </button>
 
                                                     <button
                                                         type="button"
                                                         onClick={() => handleDelete(ad)}
-                                                        disabled={isDeletingThis}
+                                                        disabled={isDeletingThis || isActioningThis}
                                                         className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-70"
                                                     >
                                                         <IoTrashOutline className="text-sm" />
