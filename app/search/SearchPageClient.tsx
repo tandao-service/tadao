@@ -184,7 +184,7 @@ export default function SearchPageClient({
 
                                         <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
                                             Search results for{" "}
-                                            <span className="text-orange-600">&quot;{query || "All ads"}&quot;</span>
+                                            <span className="text-orange-600">{query || "All ads"}</span>
                                         </h1>
 
                                         <p className="mt-2 text-sm font-medium text-slate-500">

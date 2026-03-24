@@ -94,7 +94,7 @@ export default function HomeShell({
                 className="mx-auto max-w-6xl px-3 pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
                 style={{ paddingTop: "var(--topbar-h, 0px)" }}
             >
-                <div className="relative mt-[-20px] overflow-hidden rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
+                <div className="relative mt-[-20px] overflow-visible rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
                     <div className="absolute inset-0 opacity-25">
                         <div className="h-full w-full bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,.35),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,.25),transparent_45%)]" />
                     </div>
@@ -111,7 +111,8 @@ export default function HomeShell({
                         </div>
 
                         <div className="mt-5">
-                            <HeroSearchBar regions={regions} listingSlug={defaultListingSlug} />
+                            <HeroSearchBar regions={regions} listingSlug={defaultListingSlug} featured={featured}
+                                trending={trending} />
                         </div>
                     </div>
                 </div>
