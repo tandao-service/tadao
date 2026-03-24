@@ -84,7 +84,7 @@ const MobileNav = ({
           <NavItems
             userstatus={userstatus}
             user={user}
-            userId={userId}
+            //userId={userId}
             onClose={onClose}
             handleclicklink={handleclicklink}
             handleOpenSell={handleOpenSell}

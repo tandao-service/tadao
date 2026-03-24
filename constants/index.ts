@@ -237,12 +237,12 @@ export const headerLinks = [
   },
   {
     label: 'Sell',
-    route: '/ads/create',
+    route: '/create-ad',
 
   },
   {
-    label: 'My Shop',
-    route: '/shop',
+    label: 'Public Profile',
+    route: '/seller',
 
   },
   {
@@ -251,8 +251,8 @@ export const headerLinks = [
 
   },
   {
-    label: 'Performance',
-    route: '/performance',
+    label: 'My dashboard',
+    route: '/dashboard/ads',
 
   },
   {
@@ -265,8 +265,8 @@ export const headerLinks = [
 
   },
   {
-    label: 'Profile',
-    route: '/profile',
+    label: 'Settings',
+    route: '/settings',
 
   }, {
     label: 'Admin',

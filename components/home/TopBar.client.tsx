@@ -331,10 +331,10 @@ export default function TopBar() {
                                 handleOpenBook={() => router.push("/bookmarks")}
                                 handleOpenPlan={() => router.push("/plan")}
                                 handleOpenChat={() => router.push("/profile-messages")}
-                                handleOpenShop={(shopId: any) => {
-                                    router.push(`//dashboard/ads`);
+                                handleOpenShop={(user: any) => {
+                                    router.push(`/seller/${user._id}`);
                                 }}
-                                handleOpenPerfomance={() => router.push("/performance")}
+                                handleOpenPerfomance={() => { alert("YES"); router.push("/dashboard/ads"); }}
                                 handleOpenSettings={() => router.push("/settings")}
                                 handleOpenAbout={() => router.push("/about")}
                                 handleOpenTerms={() => router.push("/terms")}

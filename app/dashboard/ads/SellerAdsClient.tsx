@@ -27,6 +27,7 @@ import {
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { deleteAd } from "@/lib/actions/dynamicAd.actions";
+import Verification from "@/components/shared/Verification";
 
 type Props = {
     ads: any[];
@@ -306,6 +307,7 @@ export default function SellerAdsClient({ ads, totals }: Props) {
                         </div>
 
                         <div className="flex flex-wrap gap-2">
+
                             <Link
                                 href="/create-ad"
                                 className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 text-xs font-extrabold text-orange-600 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-50"
@@ -639,8 +641,13 @@ export default function SellerAdsClient({ ads, totals }: Props) {
                             <div className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">
                                 Verification
                             </div>
-                            <div className="mt-1 text-xs font-extrabold text-slate-900">
-                                {verified ? "Verified seller" : "Not verified"}
+                            <div>
+                                <Verification
+                                    user={currentUser}
+                                    userId={currentUser?._id ?? ""}
+                                    isAdCreator={true}
+                                    handlePayNow={() => router.push("/verify/?redirect_url=dashboard/ads")}
+                                />
                             </div>
                         </div>
                     </div>

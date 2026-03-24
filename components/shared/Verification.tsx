@@ -77,20 +77,18 @@ const Verification: React.FC<SettingsProp> = ({
   );
 
   const unverifiedContentAdCreator = (
-    <div className="w-full max-w-sm rounded-2xl border border-orange-200 bg-gradient-to-br from-white via-orange-50 to-orange-100/60 p-4 shadow-[0_14px_40px_rgba(249,115,22,0.12)] dark:border-orange-900/30 dark:from-[#1a1d20] dark:via-[#233338] dark:to-[#1e2a2f] dark:text-gray-200">
+    <div className="w-full max-w-xl rounded-2xl border border-orange-200 bg-gradient-to-br from-white via-orange-50 to-orange-100/60 p-4 shadow-[0_14px_40px_rgba(249,115,22,0.12)] dark:border-orange-900/30 dark:from-[#1a1d20] dark:via-[#233338] dark:to-[#1e2a2f] dark:text-gray-200">
       <div className="flex items-start gap-3">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400">
           <ShieldOutlinedIcon sx={{ fontSize: 24 }} />
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="flex-1">
           <div className="flex items-center gap-2">
             <h4 className="text-sm font-extrabold tracking-tight text-orange-700 dark:text-orange-400">
               Unverified Seller
             </h4>
-            <span className="rounded-full bg-orange-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-              Upgrade
-            </span>
+
           </div>
 
           <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-gray-300">

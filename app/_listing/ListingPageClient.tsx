@@ -438,147 +438,6 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
     );
 }
 
-function SearchableSubcategorySelect(props: {
-    items: CategoryListingItem[];
-    value: string;
-    countsBySub?: Record<string, number>;
-    onChange: (item: CategoryListingItem) => void;
-}) {
-    const { items, value, countsBySub, onChange } = props;
-
-    const [open, setOpen] = React.useState(false);
-    const [q, setQ] = React.useState("");
-
-    const selected = React.useMemo(() => {
-        const v = String(value || "").toLowerCase();
-        return items.find((it) => String(it.slug || "").toLowerCase() === v);
-    }, [items, value]);
-
-    const filtered = React.useMemo(() => {
-        const query = q.trim().toLowerCase();
-        if (!query) return items;
-
-        return items.filter((it) => {
-            const title = String(it.title || "").toLowerCase();
-            const sub = String(it.subcategory || "").toLowerCase();
-            return title.includes(query) || sub.includes(query);
-        });
-    }, [items, q]);
-
-    React.useEffect(() => {
-        if (!open) setQ("");
-    }, [open]);
-
-    React.useEffect(() => {
-        if (!open) return;
-
-        const onKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") setOpen(false);
-        };
-
-        const onClick = (e: MouseEvent) => {
-            const t = e.target as HTMLElement;
-            if (!t.closest?.("[data-subcat-combobox='1']")) setOpen(false);
-        };
-
-        document.addEventListener("keydown", onKey);
-        document.addEventListener("mousedown", onClick);
-
-        return () => {
-            document.removeEventListener("keydown", onKey);
-            document.removeEventListener("mousedown", onClick);
-        };
-    }, [open]);
-
-    return (
-        <div className="relative" data-subcat-combobox="1">
-            <button
-                type="button"
-                onClick={() => setOpen((v) => !v)}
-                className="flex h-12 w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-left text-[13px] font-semibold text-slate-900 outline-none transition focus:ring-2 focus:ring-orange-200"
-            >
-                <div className="flex min-w-0 items-center gap-3">
-                    <IconBubble src={String(selected?.icon || "")} alt={String(selected?.title || "Subcategory")} />
-                    <div className="min-w-0">
-                        <div className="truncate">
-                            {selected ? selected.title : "Choose subcategory"}
-                        </div>
-                        {selected ? (
-                            <div className="truncate text-[11px] font-medium text-slate-500">
-                                {Number(countsBySub?.[selected.subcategory] || 0).toLocaleString()} ads
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
-                <span className="text-slate-400">▾</span>
-            </button>
-
-            {open ? (
-                <div className="absolute z-[999] mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                    <div className="border-b border-slate-200 p-2">
-                        <input
-                            autoFocus
-                            value={q}
-                            onChange={(e) => setQ(e.target.value)}
-                            placeholder="Search subcategory..."
-                            className="h-10 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
-                        />
-                    </div>
-
-                    <div className="max-h-[340px] overflow-auto p-2">
-                        {filtered.length ? (
-                            filtered.map((it) => {
-                                const active =
-                                    String(it.slug || "").toLowerCase() === String(value || "").toLowerCase();
-
-                                const count = Number(countsBySub?.[it.subcategory] || 0);
-
-                                return (
-                                    <button
-                                        key={it.slug}
-                                        type="button"
-                                        onClick={() => {
-                                            onChange(it);
-                                            setOpen(false);
-                                        }}
-                                        className={cn(
-                                            "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-slate-50",
-                                            active ? "bg-orange-50 ring-1 ring-orange-200" : ""
-                                        )}
-                                    >
-                                        <IconBubble src={it.icon} alt={it.title} />
-
-                                        <div className="min-w-0 flex-1">
-                                            <div
-                                                className={cn(
-                                                    "truncate text-[13px]",
-                                                    active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
-                                                )}
-                                            >
-                                                {it.title}
-                                            </div>
-                                            <div className="text-[11px] font-medium text-slate-500">
-                                                {count.toLocaleString()} ads
-                                            </div>
-                                        </div>
-
-                                        <div className={cn("text-slate-400", active ? "text-orange-600" : "")}>
-                                            <IoChevronForward />
-                                        </div>
-                                    </button>
-                                );
-                            })
-                        ) : (
-                            <div className="px-3 py-8 text-center text-[13px] font-semibold text-slate-500">
-                                No matches
-                            </div>
-                        )}
-                    </div>
-                </div>
-            ) : null}
-        </div>
-    );
-}
 
 function parsePlainTextToMakeModels(text: string) {
     const blocks = String(text || "")
@@ -715,8 +574,11 @@ type FetchOverrides = {
 
 export default function ListingPageClient(props: Props) {
     const router = useRouter();
-    const { user: currentUser } = useAuth();
 
+    const { user: currentUser, loading: authLoading } = useAuth();
+    // if your hook uses isLoaded instead, use that instead of loading
+
+    const [accessChecking, setAccessChecking] = React.useState(true);
     const [categoryName, setCategoryName] = React.useState(props.categoryName);
     const [isVehicle, setIsVehicle] = React.useState(props.isVehicle);
     const [categoryListings, setCategoryListings] = React.useState<CategoryListingItem[]>(
@@ -764,7 +626,16 @@ export default function ListingPageClient(props: Props) {
     }, [currentUser]);
 
     React.useEffect(() => {
-        if (!needsVerifiedAccess) return;
+        if (!needsVerifiedAccess) {
+            setAccessChecking(false);
+            return;
+        }
+
+        // still waiting for auth state
+        if (authLoading) {
+            setAccessChecking(true);
+            return;
+        }
 
         if (!currentUser) {
             router.replace(`/auth?redirect_url=/${props.activeListingSlug}`);
@@ -772,10 +643,21 @@ export default function ListingPageClient(props: Props) {
         }
 
         if (!isVerifiedUser) {
-            router.replace(`/verify?redirect_url=/${props.activeListingSlug}&reason=verification-required`);
+            router.replace(
+                `/verify?redirect_url=/${props.activeListingSlug}&reason=verification-required`
+            );
+            return;
         }
-    }, [needsVerifiedAccess, currentUser, isVerifiedUser, router, props.activeListingSlug]);
 
+        setAccessChecking(false);
+    }, [
+        needsVerifiedAccess,
+        authLoading,
+        currentUser,
+        isVerifiedUser,
+        router,
+        props.activeListingSlug,
+    ]);
     const [dyn, setDyn] = React.useState<FiltersState>({});
 
     const dynSubcategory = React.useMemo(
@@ -1431,7 +1313,32 @@ export default function ListingPageClient(props: Props) {
             ) : null}
         </div>
     );
-
+    if (accessChecking) {
+        return (
+            <>
+                <TopBar />
+                <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
+                    <main className="mx-auto max-w-[1440px] px-4 pb-10">
+                        <div className="flex min-h-[60vh] items-center justify-center">
+                            <div className="rounded-[28px] border border-emerald-100 bg-white px-8 py-10 shadow-[0_10px_35px_rgba(15,23,42,0.06)]">
+                                <div className="flex flex-col items-center gap-4 text-center">
+                                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-600" />
+                                    <div>
+                                        <h2 className="text-lg font-extrabold text-slate-900">
+                                            Checking access...
+                                        </h2>
+                                        <p className="mt-1 text-sm text-slate-500">
+                                            Please wait while we verify access to this category.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </>
+        );
+    }
     return (
         <>
             <TopBar />

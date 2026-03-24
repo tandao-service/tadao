@@ -106,7 +106,11 @@ export default function VerifyClientPage() {
 
     const handlePay = async () => {
         if (!user) {
-            router.push(`/auth?redirect_url=${encodeURIComponent(`/verify?redirect_url=${encodeURIComponent(redirectTo)}`)}`);
+            router.push(
+                `/auth?redirect_url=${encodeURIComponent(
+                    `/verify?redirect_url=${encodeURIComponent(redirectTo)}`
+                )}`
+            );
             return;
         }
 
@@ -132,7 +136,11 @@ export default function VerifyClientPage() {
             const response = await createTransaction(trans);
 
             if (response?.status === "Pending") {
-                router.push(`/pay/${response.merchantId}?redirect_url=${encodeURIComponent(redirectTo)}`);
+                router.push(
+                    `/pay/${response.merchantId}?redirect_url=${encodeURIComponent(
+                        redirectTo
+                    )}`
+                );
             }
         } catch (error) {
             console.error("Verification payment error:", error);
@@ -146,11 +154,11 @@ export default function VerifyClientPage() {
             <TopBar />
 
             <main className="mx-auto max-w-6xl px-4 pt-[calc(var(--topbar-h,64px)+18px)] pb-10">
-                <section className="overflow-hidden rounded-[32px] border border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white shadow-[0_18px_60px_rgba(15,23,42,0.05)]">
+                <section className="overflow-hidden rounded-[32px] border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-green-50 shadow-[0_18px_60px_rgba(16,185,129,0.10)]">
                     <div className="grid gap-6 px-5 py-6 lg:grid-cols-[1.15fr_.85fr] lg:px-8 lg:py-8">
                         <div className="flex flex-col justify-between">
                             <div>
-                                <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-orange-700">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-emerald-700">
                                     <WorkspacePremiumOutlinedIcon sx={{ fontSize: 14 }} />
                                     Account Verification
                                 </div>
@@ -160,11 +168,13 @@ export default function VerifyClientPage() {
                                 </h1>
 
                                 <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
-                                    Verified accounts look more trustworthy, unlock protected areas like donations and lost & found, and help you attract more confident buyers and sellers.
+                                    Verified accounts look more trustworthy, unlock protected
+                                    areas like donations and lost &amp; found, and help you
+                                    attract more confident buyers and sellers.
                                 </p>
 
                                 <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                                    <div className="rounded-2xl border border-orange-100 bg-white px-4 py-4 shadow-sm">
+                                    <div className="rounded-2xl border border-emerald-100 bg-white/90 px-4 py-4 shadow-sm">
                                         <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
                                             Status
                                         </div>
@@ -173,16 +183,18 @@ export default function VerifyClientPage() {
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl border border-orange-100 bg-white px-4 py-4 shadow-sm">
+                                    <div className="rounded-2xl border border-emerald-100 bg-white/90 px-4 py-4 shadow-sm">
                                         <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
                                             Verification fee
                                         </div>
                                         <div className="mt-2 text-sm font-extrabold text-slate-900">
-                                            {loadingFee ? "Loading..." : `KSh ${Number(activationFee).toLocaleString()}`}
+                                            {loadingFee
+                                                ? "Loading..."
+                                                : `KSh ${Number(activationFee).toLocaleString()}`}
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl border border-orange-100 bg-white px-4 py-4 shadow-sm">
+                                    <div className="rounded-2xl border border-emerald-100 bg-white/90 px-4 py-4 shadow-sm">
                                         <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
                                             Redirect after verify
                                         </div>
@@ -193,29 +205,35 @@ export default function VerifyClientPage() {
                                 </div>
 
                                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
                                         <div className="flex items-start gap-3">
-                                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-700">
+                                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
                                                 <GppGoodOutlinedIcon />
                                             </div>
                                             <div>
-                                                <h3 className="font-extrabold text-slate-900">Protected access</h3>
+                                                <h3 className="font-extrabold text-slate-900">
+                                                    Protected access
+                                                </h3>
                                                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                                                    Access verified-only sections like Donations and Lost &amp; Found.
+                                                    Access verified-only sections like Donations and Lost
+                                                    &amp; Found.
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
                                         <div className="flex items-start gap-3">
-                                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-700">
+                                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-700">
                                                 <LockOutlinedIcon />
                                             </div>
                                             <div>
-                                                <h3 className="font-extrabold text-slate-900">Higher confidence</h3>
+                                                <h3 className="font-extrabold text-slate-900">
+                                                    Higher confidence
+                                                </h3>
                                                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                                                    Let users know your account is genuine and trusted on the platform.
+                                                    Let users know your account is genuine and trusted on
+                                                    the platform.
                                                 </p>
                                             </div>
                                         </div>
@@ -224,8 +242,9 @@ export default function VerifyClientPage() {
                             </div>
                         </div>
 
-                        <div className="relative overflow-hidden rounded-[28px] border border-orange-100 bg-white p-6 shadow-sm">
-                            <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-orange-200/40 blur-2xl" />
+                        <div className="relative overflow-hidden rounded-[28px] border border-emerald-100 bg-white p-6 shadow-sm">
+                            <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-emerald-200/40 blur-2xl" />
+                            <div className="pointer-events-none absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-green-200/30 blur-2xl" />
 
                             {isVerified ? (
                                 <div className="relative">
@@ -239,22 +258,26 @@ export default function VerifyClientPage() {
                                     </h2>
 
                                     <p className="mt-2 text-sm leading-6 text-slate-600">
-                                        Your profile has already been verified and can access verified-only features.
+                                        Your profile has already been verified and can access
+                                        verified-only features.
                                     </p>
 
                                     {verifiedDateText ? (
                                         <div className="mt-4 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                                            Verified since <span className="font-bold">{verifiedDateText}</span>
+                                            Verified since{" "}
+                                            <span className="font-bold">{verifiedDateText}</span>
                                         </div>
                                     ) : null}
 
                                     <div className="mt-6 flex flex-wrap gap-3">
                                         <Link
                                             href={redirectTo}
-                                            className="inline-flex h-12 items-center justify-center rounded-2xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600"
+                                            className="inline-flex h-12 items-center justify-center rounded-2xl bg-emerald-600 px-5 text-sm font-bold text-white transition hover:bg-emerald-700"
                                         >
                                             Continue
-                                            <ArrowForwardOutlinedIcon sx={{ fontSize: 18, marginLeft: "8px" }} />
+                                            <ArrowForwardOutlinedIcon
+                                                sx={{ fontSize: 18, marginLeft: "8px" }}
+                                            />
                                         </Link>
 
                                         <Link
@@ -267,7 +290,7 @@ export default function VerifyClientPage() {
                                 </div>
                             ) : (
                                 <div className="relative">
-                                    <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-orange-700">
+                                    <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-emerald-700">
                                         <ShieldOutlinedIcon sx={{ fontSize: 14 }} />
                                         Unverified Account
                                     </div>
@@ -277,12 +300,13 @@ export default function VerifyClientPage() {
                                     </h2>
 
                                     <p className="mt-2 text-sm leading-6 text-slate-600">
-                                        Complete verification once and continue using protected platform features with more trust and visibility.
+                                        Complete verification once and continue using protected
+                                        platform features with more trust and visibility.
                                     </p>
 
                                     <div className="mt-5 space-y-3">
-                                        <div className="flex items-start gap-3 rounded-2xl bg-orange-50 px-4 py-3">
-                                            <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">
+                                        <div className="flex items-start gap-3 rounded-2xl bg-emerald-50 px-4 py-3">
+                                            <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-extrabold text-emerald-700">
                                                 1
                                             </div>
                                             <p className="text-sm leading-6 text-slate-700">
@@ -290,17 +314,18 @@ export default function VerifyClientPage() {
                                             </p>
                                         </div>
 
-                                        <div className="flex items-start gap-3 rounded-2xl bg-orange-50 px-4 py-3">
-                                            <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">
+                                        <div className="flex items-start gap-3 rounded-2xl bg-emerald-50 px-4 py-3">
+                                            <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-extrabold text-emerald-700">
                                                 2
                                             </div>
                                             <p className="text-sm leading-6 text-slate-700">
-                                                Your account gets marked as verified after successful processing.
+                                                Your account gets marked as verified after successful
+                                                processing.
                                             </p>
                                         </div>
 
-                                        <div className="flex items-start gap-3 rounded-2xl bg-orange-50 px-4 py-3">
-                                            <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">
+                                        <div className="flex items-start gap-3 rounded-2xl bg-emerald-50 px-4 py-3">
+                                            <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-extrabold text-emerald-700">
                                                 3
                                             </div>
                                             <p className="text-sm leading-6 text-slate-700">
@@ -309,12 +334,14 @@ export default function VerifyClientPage() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 rounded-2xl border border-orange-100 bg-orange-50 px-4 py-4">
-                                        <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600">
+                                    <div className="mt-6 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-50 px-4 py-4">
+                                        <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700">
                                             Verification fee
                                         </div>
                                         <div className="mt-2 text-2xl font-extrabold text-slate-900">
-                                            {loadingFee ? "Loading..." : `KSh ${Number(activationFee).toLocaleString()}`}
+                                            {loadingFee
+                                                ? "Loading..."
+                                                : `KSh ${Number(activationFee).toLocaleString()}`}
                                         </div>
                                     </div>
 
@@ -324,11 +351,13 @@ export default function VerifyClientPage() {
                                                 onClick={() =>
                                                     router.push(
                                                         `/auth?redirect_url=${encodeURIComponent(
-                                                            `/verify?redirect_url=${encodeURIComponent(redirectTo)}`
+                                                            `/verify?redirect_url=${encodeURIComponent(
+                                                                redirectTo
+                                                            )}`
                                                         )}`
                                                     )
                                                 }
-                                                className="inline-flex h-12 items-center justify-center rounded-2xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600"
+                                                className="inline-flex h-12 items-center justify-center rounded-2xl bg-emerald-600 px-5 text-sm font-bold text-white transition hover:bg-emerald-700"
                                             >
                                                 Sign in to verify
                                             </button>
@@ -336,7 +365,7 @@ export default function VerifyClientPage() {
                                             <button
                                                 onClick={handlePay}
                                                 disabled={isSending || loadingFee}
-                                                className="inline-flex h-12 items-center justify-center rounded-2xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-70"
+                                                className="inline-flex h-12 items-center justify-center rounded-2xl bg-emerald-600 px-5 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:opacity-70"
                                             >
                                                 {isSending ? (
                                                     <>
@@ -345,7 +374,9 @@ export default function VerifyClientPage() {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <CheckCircleIcon sx={{ fontSize: 18, marginRight: "8px" }} />
+                                                        <CheckCircleIcon
+                                                            sx={{ fontSize: 18, marginRight: "8px" }}
+                                                        />
                                                         Verify Now
                                                     </>
                                                 )}

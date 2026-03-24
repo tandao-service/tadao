@@ -21,6 +21,9 @@ import {
     IoStorefrontOutline,
     IoTimeOutline,
 } from "react-icons/io5";
+import Verification from "@/components/shared/Verification";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 type Props = {
     seller: any;
@@ -91,7 +94,9 @@ export default function SellerProfileClient({
     const [category, setCategory] = useState("all");
     const [sortBy, setSortBy] = useState("new");
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-
+    const router = useRouter();
+    const { authUser, user: currentUser, appUserId, loading, profileLoading } = useAuth();
+    const iSowner = currentUser?._id === sellerId;
     useEffect(() => {
         setVisibleCount(PAGE_SIZE);
     }, [query, category, sortBy]);
@@ -219,6 +224,7 @@ export default function SellerProfileClient({
                                                 Seller
                                             </span>
                                         )}
+
                                     </div>
 
                                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-white/85 md:text-xs">
@@ -242,6 +248,7 @@ export default function SellerProfileClient({
                             </div>
 
                             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+
                                 {sellerPhone ? (
                                     <a
                                         href={`tel:${sellerPhone}`}
@@ -505,10 +512,19 @@ export default function SellerProfileClient({
 
             <aside className="space-y-4 lg:sticky lg:top-[calc(var(--topbar-h,64px)+12px)] lg:self-start">
                 <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+                    <div className="flex items-center mb-2">
+                        <Verification
+                            user={currentUser ?? []}
+                            userId={currentUser?._id ?? ""}
+                            isAdCreator={iSowner}
+                            handlePayNow={() => router.push("/verify/?redirect_url=")}
+                        />
+                    </div>
                     <div className="flex items-center gap-2">
                         <div className="rounded-xl bg-orange-50 p-2 text-orange-600">
                             <IoSparklesOutline className="text-lg" />
                         </div>
+
                         <div>
                             <h3 className="text-sm font-black text-slate-900">Contact seller</h3>
                             <p className="text-xs text-slate-500">Quick ways to reach this seller</p>

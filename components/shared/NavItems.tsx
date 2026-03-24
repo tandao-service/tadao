@@ -1,7 +1,7 @@
 "use client";
 
 import { headerLinks } from "@/constants";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { ArrowForwardIos as ArrowForwardIosIcon } from "@mui/icons-material";
 import {
@@ -24,7 +24,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 type NavItemsProps = {
   userstatus: string;
-  userId: string;
   popup: string;
   user: any;
   onClose: () => void;
@@ -40,7 +39,6 @@ type NavItemsProps = {
 
 export default function NavItems({
   userstatus,
-  userId,
   user,
   popup,
   onClose,
@@ -53,16 +51,11 @@ export default function NavItems({
   handleOpenSell,
   handleOpenShop,
 }: NavItemsProps) {
-  const pathname = usePathname();
   const router = useRouter();
   const [isOpenP, setIsOpenP] = useState(false);
   const handleCloseP = () => setIsOpenP(false);
 
   const { user: currentUser } = useAuth();
-
-  function capitalizeFirstLetter(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
 
   const shareUrl = "https://tadaomarket.com";
 
@@ -91,12 +84,12 @@ export default function NavItems({
   const iconMap: Record<string, React.ReactNode> = {
     Home: <HomeIcon fontSize="small" />,
     Sell: <SellOutlinedIcon fontSize="small" />,
-    "My Shop": <FormatListBulletedOutlinedIcon fontSize="small" />,
+    "Public Profile": <FormatListBulletedOutlinedIcon fontSize="small" />,
     Chat: <CommentOutlinedIcon fontSize="small" />,
-    Performance: <StackedLineChartOutlinedIcon fontSize="small" />,
+    "My dashboard": <StackedLineChartOutlinedIcon fontSize="small" />,
     Bookmark: <BookmarkIcon fontSize="small" />,
     Plan: <DiamondIcon fontSize="small" />,
-    Profile: <PersonOutlineOutlinedIcon fontSize="small" />,
+    Settings: <PersonOutlineOutlinedIcon fontSize="small" />,
     Admin: <ManageAccountsOutlinedIcon fontSize="small" />,
   };
 
@@ -125,7 +118,7 @@ export default function NavItems({
           {headerLinks
             .filter((link) => !(userstatus === "User" && link.label === "Admin"))
             .map((link) => {
-              const isActive = capitalizeFirstLetter(popup) === link.label;
+              const isActive = popup === link.label;
 
               const handleItemClick = () => {
                 if (currentUser) {
@@ -138,7 +131,7 @@ export default function NavItems({
                       handleOpenSell();
                       handleclicklink();
                       break;
-                    case "My Shop":
+                    case "Public Profile":
                       handleOpenShop(user);
                       handleclicklink();
                       break;
@@ -146,7 +139,7 @@ export default function NavItems({
                       handleOpenChat();
                       handleclicklink();
                       break;
-                    case "Performance":
+                    case "My dashboard":
                       handleOpenPerfomance();
                       handleclicklink();
                       break;
@@ -158,12 +151,11 @@ export default function NavItems({
                       handleOpenPlan();
                       handleclicklink();
                       break;
-                    case "Profile":
+                    case "Settings":
                       handleOpenSettings();
                       handleclicklink();
                       break;
                     case "Admin":
-                      setIsOpenP(true);
                       router.push("/home");
                       break;
                     default:
