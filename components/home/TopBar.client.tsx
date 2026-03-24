@@ -286,7 +286,7 @@ export default function TopBar() {
                                     userdata={appUser}
                                     handleOpenShop={(shopId) => {
                                         if (authUser) {
-                                            router.push(`/profile/${shopId}`);
+                                            router.push(`/dashboard/ads`);
                                         } else {
                                             router.push("/auth");
                                         }
@@ -306,7 +306,7 @@ export default function TopBar() {
                                     userdata={appUser}
                                     handleOpenShop={(shopId) => {
                                         if (authUser) {
-                                            router.push(`/profile/${shopId}`);
+                                            router.push(`/dashboard/ads`);
                                         } else {
                                             router.push("/auth");
                                         }
@@ -332,9 +332,7 @@ export default function TopBar() {
                                 handleOpenPlan={() => router.push("/plan")}
                                 handleOpenChat={() => router.push("/profile-messages")}
                                 handleOpenShop={(shopId: any) => {
-                                    const id = shopId?._id || shopId?.id || shopId || "";
-                                    if (!id) return;
-                                    router.push(`/profile/${id}`);
+                                    router.push(`//dashboard/ads`);
                                 }}
                                 handleOpenPerfomance={() => router.push("/performance")}
                                 handleOpenSettings={() => router.push("/settings")}

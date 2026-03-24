@@ -21,7 +21,11 @@ import { requireCanPostAd } from "@/lib/actions/subscription.guard"
 const populateAd = (query: any) => {
   return query
     .populate({ path: 'subcategory', model: Subcategory, select: 'fields' })
-    .populate({ path: 'organizer', model: User, select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications' })
+    .populate({
+      path: 'organizer',
+      model: User,
+      select: '_id clerkId email firstName lastName photo businessname aboutbusiness businessaddress latitude longitude businesshours businessworkingdays phone whatsapp website facebook twitter instagram tiktok imageUrl verified token notifications createdAt'
+    })
     .populate({ path: 'plan', model: Packages, select: '_id name color imageUrl' })
 }
 

@@ -4,6 +4,7 @@ import { getUserById } from "@/lib/actions/user.actions";
 
 import ProfilePageClient from "./ProfilePageClient";
 import ReviewsPageClient from "./ReviewsPageClient";
+import { getByUserIdLaons } from "@/lib/actions/loan.actions";
 
 
 type Props = {
@@ -32,9 +33,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProfilePage({ params, searchParams }: Props) {
     const tab = searchParams?.tab || "ads";
+    const loans = {
+        data: [],
+        totalPages: 0,
+    };
 
     const [appUser] = await Promise.all([
-        getUserById(params.profileId).catch(() => null),
+        getUserById(params.profileId).catch(() => null)
     ]);
 
     if (!appUser) {
@@ -54,10 +59,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             user: null,
         };
 
-    const loans = {
-        data: [],
-        totalPages: 0,
-    };
 
     // ✅ NEW: Reviews route handling
     if (tab === "reviews") {

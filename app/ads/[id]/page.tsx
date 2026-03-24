@@ -373,7 +373,11 @@ export default async function AdDetailsPage({ params }: Props) {
                             </div>
 
                             <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
-                                <div className="flex items-center gap-3">
+
+                                <Link
+                                    href={`/seller/${organizerId}`}
+                                    className="group flex items-center gap-3 rounded-2xl transition hover:bg-slate-50"
+                                >
                                     <div className="h-14 w-14 overflow-hidden rounded-full border border-orange-100 bg-orange-50">
                                         {sellerPhoto ? (
                                             <Image
@@ -391,19 +395,23 @@ export default async function AdDetailsPage({ params }: Props) {
                                         )}
                                     </div>
 
-                                    <div className="min-w-0">
-                                        <div className="truncate font-extrabold text-slate-900">{sellerName}</div>
-                                        <div className="mt-0.5 text-xs text-slate-500">
-                                            {isVerified ? "Verified Seller" : "Seller"}
+                                    <div className="min-w-0 flex-1">
+                                        <div className="truncate font-extrabold text-slate-900 group-hover:text-orange-600">
+                                            {sellerName}
+                                        </div>
+                                        <div className="mt-0.5 flex items-center gap-2 text-xs text-slate-500">
+                                            <span>{isVerified ? "Verified Seller" : "Seller"}</span>
+                                            <span>•</span>
+                                            <span>View profile</span>
                                         </div>
                                     </div>
 
                                     {isVerified ? (
-                                        <span className="ml-auto rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-extrabold text-emerald-700">
+                                        <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-extrabold text-emerald-700">
                                             VERIFIED
                                         </span>
                                     ) : null}
-                                </div>
+                                </Link>
 
                                 <div className="mt-5 grid grid-cols-1 gap-3">
                                     {phone ? (

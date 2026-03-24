@@ -101,6 +101,7 @@ const UserSchema = new Schema({
       featuredDays: { type: Number, default: 0 },
       autoRenewHours: { type: Number, default: null },
     },
+    createdAt: { type: Date, default: Date.now },
   }
 });
 delete mongoose.models.User;

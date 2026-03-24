@@ -189,7 +189,7 @@ const ReviewsComponent = ({
                     <Ratingsmobile
                       recipientUid={recipient._id}
                       user={recipient}
-                      handleOpenReview={handleOpenReview}
+                      handleOpenReview={function (): void { }}
                     />
                   </div>
                 </div>
