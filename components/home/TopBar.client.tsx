@@ -60,7 +60,7 @@ export default function TopBar() {
         if (pathname.startsWith("/settings")) return "Profile";
         if (pathname.startsWith("/performance")) return "Performance";
         if (pathname.startsWith("/profile")) return "My Shop";
-        if (pathname.startsWith("/home")) return "Admin";
+        if (pathname.startsWith("/admin")) return "Admin";
         return "Home";
     }, [pathname]);
 

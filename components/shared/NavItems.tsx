@@ -156,7 +156,7 @@ export default function NavItems({
                       handleclicklink();
                       break;
                     case "Admin":
-                      router.push("/home");
+                      router.push("/admin");
                       break;
                     default:
                       break;
