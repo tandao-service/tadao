@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoCamera } from "react-icons/io5";
 import sanitizeHtml from "sanitize-html";
+import { buildAdPath, toListingSlugFromName } from "@/app/_ad/ad-url";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -51,11 +52,13 @@ type Props = {
     ad: any;
     regionFallback?: string;
     descLimit?: number;
+    listingSlug?: string;
 };
 
 export default function SmartPropertyCardWithDesc({
     ad,
     regionFallback,
+    listingSlug,
     descLimit = 90,
 }: Props) {
     const id = String(ad?._id || "");
@@ -102,7 +105,7 @@ export default function SmartPropertyCardWithDesc({
 
     return (
         <Link
-            href={`/ads/${id}`}
+            href={buildAdPath(ad, listingSlug)}
             className="group block overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
         >
             {/* Image */}

@@ -9,6 +9,7 @@ type Props = {
     currentAdId: string;
     regionFallback?: string;
     pageSize?: number;
+    listingSlug?: string;
 };
 
 export default function RelatedPropertiesInfinite({
@@ -16,6 +17,7 @@ export default function RelatedPropertiesInfinite({
     subcategory,
     currentAdId,
     regionFallback,
+    listingSlug,
     pageSize = 8,
 }: Props) {
     const [items, setItems] = React.useState<any[]>(Array.isArray(initial) ? initial : []);
@@ -115,6 +117,7 @@ export default function RelatedPropertiesInfinite({
                             <SmartPropertyCardWithDesc
                                 key={String(r?._id || "")}
                                 ad={r}
+                                listingSlug={listingSlug}
                                 regionFallback={(r?.data?.region as string) || regionFallback}
                                 descLimit={90}
                             />

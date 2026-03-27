@@ -10,15 +10,15 @@ import { useAuth } from "@/app/hooks/useAuth";
 import Bidding from "@/components/shared/Bidding";
 import ProgressPopup from "@/components/shared/ProgressPopup";
 import { ReportUnavailable } from "@/components/shared/ReportUnavailable";
-
 import { RequestFinancing } from "@/components/shared/RequestFinancing";
 import { ReportAbuse } from "@/components/shared/ReportAbuseProps";
 
 type Props = {
     ad: any;
+    adPath: string;
 };
 
-export default function AdDetailActions({ ad }: Props) {
+export default function AdDetailActions({ ad, adPath }: Props) {
     const router = useRouter();
     const { user: currentUser } = useAuth();
 
@@ -62,7 +62,7 @@ export default function AdDetailActions({ ad }: Props) {
     const requireAuth = () => {
         if (!currentUser) {
             setIsOpenP(true);
-            router.push(`/auth?redirect_url=${encodeURIComponent(`/ads/${ad?._id}`)}`);
+            router.push(`/auth?redirect_url=${encodeURIComponent(adPath)}`);
             return false;
         }
         return true;

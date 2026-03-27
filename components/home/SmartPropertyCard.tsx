@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { IoCamera } from "react-icons/io5";
+import { buildAdPath, generateListingSlug } from "@/app/_ad/ad-url";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -105,7 +106,7 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
 
     return (
         <Link
-            href={`/ads/${id}`}
+            href={buildAdPath(ad, ad.listingSlug)}
             className="block overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
         >
             {/* Image */}

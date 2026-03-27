@@ -393,7 +393,7 @@ export default async function ListingPageUI(args: {
         categoryName,
         subcategoryName: String(listing.subcategory || "").trim(),
     });
-    const { regions } = await getRegionsForListing(listingSlug);
+    const regions = await getRegionsForListing(listingSlug);
     return (
         <ListingPageClient
             title={String(listing.title || "Listings")}

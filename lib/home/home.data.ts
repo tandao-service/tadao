@@ -12,7 +12,7 @@ import { getCategoryTreeForHome } from "./home.categories";
 export type HomeCategory = {
     id: string;
     name: string;
-    icon?: string; // emoji for now
+    icon?: string;
     count: number;
 };
 
@@ -27,6 +27,9 @@ export type HomeAd = {
     isTop?: boolean;
     isVerifiedSeller?: boolean;
     imagesCount?: number;
+    category?: string;
+    subcategory?: string;
+    listingSlug?: string;
 };
 
 export type HomeRegion = {
@@ -45,7 +48,29 @@ function slugify(input: string) {
         .replace(/^-+|-+$/g, "");
 }
 
-// basic emoji map (you can expand later or store icons in DB)
+function stripIntent(name: string) {
+    return String(name ?? "")
+        .replace(/for\s+rent/gi, "")
+        .replace(/for\s+sale/gi, "")
+        .replace(/to\s+let/gi, "")
+        .replace(/rent(al)?/gi, "")
+        .replace(/lease/gi, "")
+        .trim();
+}
+
+function detectMode(name: string): "rent" | "sale" {
+    const s = String(name ?? "").toLowerCase();
+    return /\b(rent|rental|to let|letting|lease)\b/.test(s) ? "rent" : "sale";
+}
+
+function toListingSlugFromName(name: string) {
+    const mode = detectMode(name);
+    const base = stripIntent(name);
+    const suffix = mode === "rent" ? "for-rent" : "for-sale";
+    return `${slugify(base)}-${suffix}`;
+}
+
+// basic emoji map
 const CATEGORY_EMOJI: Record<string, string> = {
     Vehicle: "🚗",
     Property: "🏠",
@@ -56,6 +81,26 @@ const CATEGORY_EMOJI: Record<string, string> = {
     Fashion: "👕",
     "Home, Furniture & Appliances": "🛋️",
 };
+
+function generateListingSlugForHome(data: any) {
+    const category = String(data?.category || "").trim().toLowerCase();
+    const subcategory = String(data?.subcategory || "").trim();
+
+    if (subcategory) {
+        const s = subcategory.toLowerCase();
+
+
+
+        return toListingSlugFromName(subcategory);
+    }
+
+    if (category) {
+
+        return toListingSlugFromName(category);
+    }
+
+    return "ads";
+}
 
 function toHomeAd(doc: any): HomeAd {
     const data = doc?.data || {};
@@ -68,9 +113,11 @@ function toHomeAd(doc: any): HomeAd {
         (typeof imageUrls?.[0] === "string" && imageUrls[0]) ||
         null;
 
-    const isVerifiedSeller = Boolean(organizer?.verified?.accountverified);
+    const isVerifiedSeller = Boolean(
+        organizer?.verified?.accountverified === true ||
+        organizer?.verified?.[0]?.accountverified === true
+    );
 
-    // "Active now" flags (same rule as your pipelines)
     const now = Date.now();
     const featuredUntil = boost?.featuredUntil ? new Date(boost.featuredUntil).getTime() : 0;
     const topUntil = boost?.topUntil ? new Date(boost.topUntil).getTime() : 0;
@@ -92,6 +139,9 @@ function toHomeAd(doc: any): HomeAd {
         isTop: topActive,
         isVerifiedSeller,
         imagesCount: imageUrls?.length || 0,
+        category: String(data?.category || ""),
+        subcategory: String(data?.subcategory || ""),
+        listingSlug: generateListingSlugForHome(data),
     };
 }
 
@@ -101,8 +151,7 @@ export async function getHomePageData() {
 
     const now = new Date();
 
-    // 1) CATEGORIES (left rail) from active ads grouped by data.category
-    // Note: this is the cleanest + fastest because your ads already store category as string.
+    // 1) CATEGORIES
     const catAgg = await DynamicAd.aggregate([
         { $match: { adstatus: "Active" } },
         {
@@ -127,8 +176,7 @@ export async function getHomePageData() {
             };
         });
 
-    // 2) FEATURED (promoted feed) — Featured active first, then Top active, then priority/new
-    // This matches your existing boosted logic.
+    // 2) FEATURED
     const promotedPipeline: any[] = [
         { $match: { adstatus: "Active" } },
         {
@@ -163,14 +211,12 @@ export async function getHomePageData() {
 
     const featuredRaw = await DynamicAd.aggregate(promotedPipeline);
 
-    // populate after aggregate
     const populateSpec = [
         { path: "subcategory", model: Subcategory, select: "fields" },
         {
             path: "organizer",
             model: User,
-            select:
-                "_id firstName lastName businessname photo imageUrl verified",
+            select: "_id firstName lastName businessname photo imageUrl verified",
         },
         { path: "plan", model: Packages, select: "_id name color imageUrl" },
     ];
@@ -178,8 +224,7 @@ export async function getHomePageData() {
     const featuredPop = await DynamicAd.populate(featuredRaw, populateSpec);
     const featured: HomeAd[] = (featuredPop || []).map(toHomeAd);
 
-    // 3) TRENDING (grid) — most viewed first (fallback to newest)
-    // uses your DynamicAd top-level "views" field.
+    // 3) TRENDING
     const trendingQuery = DynamicAd.find(
         { adstatus: "Active" },
         {
@@ -197,7 +242,7 @@ export async function getHomePageData() {
     const trendingDocs = await trendingQuery.populate(populateSpec);
     const trending: HomeAd[] = (trendingDocs || []).map(toHomeAd);
 
-    // 4) REGIONS — group by data.region
+    // 4) REGIONS
     const regionAgg = await DynamicAd.aggregate([
         { $match: { adstatus: "Active", "data.region": { $type: "string" } } },
         { $group: { _id: "$data.region", count: { $sum: 1 } } },
@@ -215,65 +260,46 @@ export async function getHomePageData() {
                 count: Number(x.count || 0),
             };
         });
+
     const categoryTree = await getCategoryTreeForHome(12, 12);
+
     return { categories, featured, trending, regions, categoryTree };
 }
-// lib/home/home.data.ts
+
+// ---------- LISTING REGIONS ----------
 export async function getRegionsForListing(listingSlug: string) {
     await connectToDatabase();
 
     const slug = String(listingSlug || "").trim().toLowerCase();
 
-    // ✅ Find the subcategory by slug
     const sub: any = await Subcategory.findOne(
         { slug },
         { _id: 1, subcategory: 1 }
     ).lean();
 
-    // If slug not found, return national regions (fallback)
-    if (!sub?._id) {
-        const regionAgg = await DynamicAd.aggregate([
-            { $match: { adstatus: "Active", "data.region": { $type: "string" } } },
-            { $group: { _id: "$data.region", count: { $sum: 1 } } },
-            { $sort: { count: -1 } },
-        ]);
+    if (!sub?._id) return [] as HomeRegion[];
 
-        const regions: HomeRegion[] = regionAgg
-            .filter((x: any) => x?._id)
-            .map((x: any) => {
-                const name = String(x._id).trim();
-                return { slug: slugify(name), name, count: Number(x.count || 0) };
-            });
-
-        const total = regions.reduce((a, b) => a + (b.count || 0), 0);
-        return { regions, total, subcategoryName: "" };
-    }
-
-    // ✅ Filter ads by subcategory ref
     const regionAgg = await DynamicAd.aggregate([
         {
             $match: {
                 adstatus: "Active",
-                subcategory: sub._id,
+                "data.subcategory": String(sub.subcategory || "").trim(),
                 "data.region": { $type: "string" },
             },
         },
         { $group: { _id: "$data.region", count: { $sum: 1 } } },
-        { $sort: { count: -1 } },
+        { $sort: { count: -1, _id: 1 } },
+        { $limit: 50 },
     ]);
 
-    const regions: HomeRegion[] = regionAgg
+    return regionAgg
         .filter((x: any) => x?._id)
         .map((x: any) => {
             const name = String(x._id).trim();
-            return { slug: slugify(name), name, count: Number(x.count || 0) };
+            return {
+                slug: slugify(name),
+                name,
+                count: Number(x.count || 0),
+            };
         });
-
-    const total = regions.reduce((a, b) => a + (b.count || 0), 0);
-
-    return {
-        regions,
-        total,
-        subcategoryName: String(sub.subcategory || ""),
-    };
 }
