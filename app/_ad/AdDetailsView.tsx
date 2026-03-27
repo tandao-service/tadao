@@ -376,6 +376,8 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
 
                                     <CopyLinkButton
                                         url={canonicalUrl}
+                                        title={title}
+                                        text={`Check out this ad on Tadao Market: ${title}`}
                                         className="group flex items-center gap-3 rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-sm"
                                     >
                                         <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition group-hover:bg-white/20">
@@ -383,7 +385,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                         </span>
                                         <span className="min-w-0 text-left">
                                             <span className="block text-xs font-medium text-orange-100">Share</span>
-                                            <span className="block truncate font-extrabold text-white">Copy link</span>
+                                            <span className="block truncate font-extrabold text-white">Share ad</span>
                                         </span>
                                     </CopyLinkButton>
 

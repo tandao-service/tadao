@@ -1,6 +1,6 @@
-// app/sitemap.xml/route.ts
 import { NextResponse } from "next/server";
 import { getAllAds, getListingMapFromDB } from "@/lib/actions/dynamicAd.actions";
+import { buildAdPath } from "@/app/_ad/ad-url";
 
 const baseUrl = "https://tadaomarket.com";
 
@@ -17,7 +17,7 @@ function normalizeSlug(input: string) {
   return String(input || "")
     .trim()
     .toLowerCase()
-    .replace(/^\/+|\/+$/g, ""); // remove leading/trailing slashes
+    .replace(/^\/+|\/+$/g, "");
 }
 
 function safeDateISO(v: any) {
@@ -42,14 +42,18 @@ export async function GET() {
     { loc: `${baseUrl}/privacy-policy`, changefreq: "monthly", priority: "0.5" },
   ];
 
-  const [adsRaw, listingMap] = await Promise.all([getAllAds(), getListingMapFromDB()]);
+  const [adsRaw, listingMap] = await Promise.all([
+    getAllAds(),
+    getListingMapFromDB(),
+  ]);
+
   const ads = Array.isArray(adsRaw) ? adsRaw : [];
 
-  // 1) Dynamic ad pages (/property/:id)
+  // 1) Dynamic ad pages -> new SEO URLs
   const dynamicAdUrls = ads
     .filter((ad: any) => ad && ad._id)
     .map((ad: any) => ({
-      loc: `${baseUrl}/ads/${ad._id}`,
+      loc: `${baseUrl}${buildAdPath(ad)}`,
       lastmod: safeDateISO(ad.updatedAt) || safeDateISO(ad.createdAt),
       changefreq: "weekly",
       priority: "0.7",
@@ -66,19 +70,19 @@ export async function GET() {
     )
   );
 
-  // 3) Listing slugs from DB map (source of truth)
+  // 3) Listing slugs from DB map
   const listingSlugs = Array.from(
     new Set(Object.keys(listingMap || {}).map(normalizeSlug).filter(Boolean))
   );
 
-  // 3b) National listing landing pages: /cars-for-sale
+  // 4) National listing landing pages
   const nationalListingUrls = listingSlugs.map((listingSlug) => ({
     loc: `${baseUrl}/${listingSlug}`,
     changefreq: "daily",
     priority: "0.8",
   }));
 
-  // 4) Region + listing landing pages: /r/nairobi/cars-for-sale
+  // 5) Region + listing landing pages
   const regionListingUrls = regions.flatMap((regionSlug) =>
     listingSlugs.map((listingSlug) => ({
       loc: `${baseUrl}/r/${regionSlug}/${listingSlug}`,
@@ -94,9 +98,13 @@ export async function GET() {
     ...dynamicAdUrls,
   ];
 
+  const unique = Array.from(
+    new Map(all.map((item) => [item.loc, item])).values()
+  );
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${all
+${unique
       .map(
         (u: any) => `  <url>
     <loc>${xmlEscape(u.loc)}</loc>
