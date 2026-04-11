@@ -200,7 +200,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl bg-orange-50 px-4 py-3">
+                                    <div className="rounded-2xl bg-orange-50 px-4 py-1">
                                         <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
                                             Price
                                         </div>
@@ -317,7 +317,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                     {phone ? (
                                         <a
                                             href={`tel:${phone}`}
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
                                             <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
                                                 <IoCall className="h-5 w-5" />
@@ -334,7 +334,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                             href={`https://wa.me/${whatsapp.replace(/[^\d]/g, "")}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
                                             <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600 transition group-hover:bg-green-100">
                                                 <IoChatbubbleOutline className="h-5 w-5" />
@@ -349,7 +349,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                     {email ? (
                                         <a
                                             href={`mailto:${email}`}
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
                                             <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition group-hover:bg-sky-100">
                                                 <IoMail className="h-5 w-5" />
@@ -363,7 +363,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
 
                                     <Link
                                         href={chatHref}
-                                        className="group flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-100 hover:shadow-sm"
+                                        className="group flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-1 text-sm font-semibold text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-100 hover:shadow-sm"
                                     >
                                         <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/80 text-orange-600 transition group-hover:bg-white">
                                             <IoChatboxOutline className="h-5 w-5" />
@@ -378,7 +378,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                         url={canonicalUrl}
                                         title={title}
                                         text={`Check out this ad on Tadao Market: ${title}`}
-                                        className="group flex items-center gap-3 rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-sm"
+                                        className="group flex items-center gap-3 rounded-2xl bg-orange-500 px-4 py-1 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-sm"
                                     >
                                         <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition group-hover:bg-white/20">
                                             <IoShareSocialOutline className="h-5 w-5" />
@@ -391,7 +391,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
 
                                     <Link
                                         href={`/ads/${ad._id}/update`}
-                                        className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
+                                        className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                     >
                                         <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600 transition group-hover:bg-amber-100">
                                             <IoCreateOutline className="h-5 w-5" />

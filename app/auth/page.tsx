@@ -169,28 +169,6 @@ function AuthPageInner() {
         router.replace(redirectTo);
     };
 
-    const handleForgotPassword = async () => {
-        if (!authBundle || loading) return;
-
-        clearMessages();
-
-        const cleanEmail = email.trim().toLowerCase();
-        if (!cleanEmail) {
-            setError("Please enter your email address first.");
-            return;
-        }
-
-        setLoading(true);
-        try {
-            await sendPasswordResetEmail(authBundle.auth, cleanEmail);
-            setSuccess("Password reset link sent. Please check your email.");
-        } catch (err: any) {
-            console.error("Password reset error:", err);
-            setError(getFriendlyError(err?.code || err?.message));
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -482,7 +460,9 @@ function AuthPageInner() {
                     <div className="mt-3 text-center text-sm">
                         <button
                             type="button"
-                            onClick={handleForgotPassword}
+                            onClick={() =>
+                                router.push(`/forgot-password?redirect_url=${encodeURIComponent(redirectTo)}`)
+                            }
                             disabled={loading}
                             className="text-blue-600 underline underline-offset-2 disabled:opacity-60"
                         >

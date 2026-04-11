@@ -1,20 +1,56 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+function getMongoUri(): string {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("MONGODB_URI is missing");
+  }
+  return uri;
+}
 
-let cached = (global as any).mongoose || { conn: null, promise: null };
+const MONGODB_URI = getMongoUri();
 
-export const connectToDatabase = async () => {
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
+
+declare global {
+  var mongooseCache: MongooseCache | undefined;
+}
+
+const cached: MongooseCache = global.mongooseCache || {
+  conn: null,
+  promise: null,
+};
+
+global.mongooseCache = cached;
+
+export async function connectToDatabase() {
   if (cached.conn) return cached.conn;
 
+<<<<<<< HEAD
   if (!MONGODB_URI) throw new Error('MONGODB_URI is missing');
 
   cached.promise = cached.promise || mongoose.connect(MONGODB_URI, {
     dbName: 'Tadaomarket',
     bufferCommands: false,
   })
+=======
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URI, {
+        dbName: "Tadaomarket",
+        bufferCommands: false,
+        maxPoolSize: 10,
+      })
+      .catch((error) => {
+        cached.promise = null;
+        throw error;
+      });
+  }
+>>>>>>> 893b46f (first commit)
 
   cached.conn = await cached.promise;
-
   return cached.conn;
 }
