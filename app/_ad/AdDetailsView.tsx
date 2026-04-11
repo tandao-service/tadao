@@ -238,7 +238,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                             {specs.map((item) => (
                                                 <div
                                                     key={item.label}
-                                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                                                    className="rounded-2xl border border-slate-200 bg-slate-50 py-1 px-4"
                                                 >
                                                     <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                                                         {item.label}
