@@ -3,6 +3,7 @@ import nextPwa from "next-pwa";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   images: {
     domains: ["utfs.io", "img.clerk.com", "lh3.googleusercontent.com"],
     remotePatterns: [{ protocol: "https", hostname: "utfs.io", port: "" }],
