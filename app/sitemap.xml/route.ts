@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAllAds, getListingMapFromDB } from "@/lib/actions/dynamicAd.actions";
 import { buildAdPath } from "@/app/_ad/ad-url";
-
+export const dynamic = "force-dynamic";
 const baseUrl = "https://tadaomarket.com";
 
 function slugify(input: string) {
