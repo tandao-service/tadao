@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import DynamicAd from "@/lib/database/models/dynamicAd.model";
 import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
-
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
     try {
         await connectToDatabase();

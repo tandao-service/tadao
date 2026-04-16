@@ -6,7 +6,7 @@ import {
   getListingMapFromDB,
   getListingSidebarOptions,
 } from "@/lib/actions/dynamicAd.actions";
-
+export const dynamic = "force-dynamic";
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";
 
