@@ -6,7 +6,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import TopProgressBar from "@/components/home/TopProgressBar";
 import { SellCategoryTreeProvider } from "./hooks/useSellCategoryTree";
 import { getGlobalCategoryTree } from "@/lib/home/home-tree-cache";
-
+export const dynamic = "force-dynamic";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
