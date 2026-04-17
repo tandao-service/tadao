@@ -220,7 +220,7 @@ export default function PropertyGallery({
 
     return (
         <>
-            <div className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+            <div className="relative overflow-hidden lg:rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
                 <div className="relative">
                     <div
                         ref={trackRef}
@@ -242,7 +242,7 @@ export default function PropertyGallery({
                                     resetZoomState();
                                     setIsFs(true);
                                 }}
-                                className="relative h-[260px] w-full shrink-0 snap-start bg-slate-100 md:h-[460px]"
+                                className="relative h-[460px] lg:h-[360px] w-full shrink-0 snap-start bg-slate-100"
                                 aria-label={`Open photo ${idx + 1} fullscreen`}
                             >
                                 <Image

@@ -135,51 +135,51 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
             <TopBar />
             <MobileBackPill label="Back" />
 
-            <main className="mx-auto max-w-6xl px-4 pt-[calc(var(--topbar-h,64px)+12px)] pb-8">
+            <main className="w-full lg:mx-auto lg:max-w-6xl lg:px-4 lg:pt-[calc(var(--topbar-h,64px)+12px)] pb-8">
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
                 />
+                <div className="hidden lg:inline">
+                    <div className="mb-4 rounded-2xl border border-orange-100 bg-white p-3 text-sm text-slate-600 shadow-sm">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Link href="/" className="font-bold text-slate-900 hover:underline">
+                                Home
+                            </Link>
 
-                <div className="mb-4 rounded-2xl border border-orange-100 bg-white p-3 text-sm text-slate-600 shadow-sm">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Link href="/" className="font-bold text-slate-900 hover:underline">
-                            Home
-                        </Link>
+                            {safeStr(data?.subcategory) ? (
+                                <>
+                                    <span className="text-slate-400">/</span>
+                                    <Link
+                                        href={`/${toListingSlugFromName(safeStr(data.subcategory))}`}
+                                        className="font-bold text-slate-900 hover:underline"
+                                    >
+                                        {safeStr(data.subcategory)}
+                                    </Link>
+                                </>
+                            ) : null}
 
-                        {safeStr(data?.subcategory) ? (
-                            <>
-                                <span className="text-slate-400">/</span>
-                                <Link
-                                    href={`/${toListingSlugFromName(safeStr(data.subcategory))}`}
-                                    className="font-bold text-slate-900 hover:underline"
-                                >
-                                    {safeStr(data.subcategory)}
-                                </Link>
-                            </>
-                        ) : null}
+                            <span className="text-slate-400">/</span>
+                            <span className="text-slate-500">{region}</span>
 
-                        <span className="text-slate-400">/</span>
-                        <span className="text-slate-500">{region}</span>
+                            {area ? (
+                                <>
+                                    <span className="text-slate-400">/</span>
+                                    <span className="text-slate-500">{area}</span>
+                                </>
+                            ) : null}
 
-                        {area ? (
-                            <>
-                                <span className="text-slate-400">/</span>
-                                <span className="text-slate-500">{area}</span>
-                            </>
-                        ) : null}
-
-                        <span className="ml-auto">
-                            <a className="underline" href={canonicalUrl}>
-                                Canonical
-                            </a>
-                        </span>
+                            <span className="ml-auto">
+                                <a className="underline" href={canonicalUrl}>
+                                    Canonical
+                                </a>
+                            </span>
+                        </div>
                     </div>
                 </div>
-
-                <section className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+                <section className="grid grid-cols-1 lg:gap-4 lg:grid-cols-12">
                     <div className="lg:col-span-8">
-                        <div className="overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-sm">
+                        <div className="overflow-hidden lg:rounded-[28px] border border-orange-100 bg-white shadow-sm">
                             <PropertyGallery
                                 title={title}
                                 images={galleryImages}

@@ -104,7 +104,7 @@ export default function RelatedPropertiesInfinite({
     const title = "Related Properties";
 
     return (
-        <section className="mt-8">
+        <section className="mt-8 p-2 lg:p-0">
             <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-extrabold text-gray-900">{title}</h2>
                 {subcategory ? <span className="text-xs text-gray-500">{subcategory}</span> : null}

@@ -2,23 +2,32 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-import { Home, Search, PlusCircle, MessageCircle, User, Settings } from "lucide-react";
+import { Home, Search, PlusCircle, MessageCircle, Settings } from "lucide-react";
+import { useAuth } from "@/app/hooks/useAuth";
 
 type Item = {
     href: string;
     label: string;
     icon: React.ReactNode;
+    protected?: boolean;
 };
 
 export default function BottomNav() {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const {
+        authUser,
+        user: appUser,
+        appUserId,
+        loading,
+        profileLoading,
+    } = useAuth();
 
     const ref = React.useRef<HTMLElement | null>(null);
 
-    // ✅ expose nav height to the page so we pad correctly (no big gap)
     React.useEffect(() => {
         const el = ref.current;
         if (!el) return;
@@ -39,7 +48,6 @@ export default function BottomNav() {
         };
     }, []);
 
-    // show/hide on scroll direction
     const [hidden, setHidden] = React.useState(false);
     const lastYRef = React.useRef(0);
     const tickingRef = React.useRef(false);
@@ -56,9 +64,7 @@ export default function BottomNav() {
                 const last = lastYRef.current;
                 const delta = y - last;
 
-                // ignore tiny moves
                 if (Math.abs(delta) > 8) {
-                    // down => hide, up => show
                     setHidden(delta > 0);
                     lastYRef.current = y;
                 }
@@ -74,14 +80,24 @@ export default function BottomNav() {
     const items: Item[] = [
         { href: "/", label: "Home", icon: <Home className="h-5 w-5" /> },
         { href: "/search", label: "Search", icon: <Search className="h-5 w-5" /> },
-        { href: "/create-ad", label: "Sell", icon: <PlusCircle className="h-6 w-6" /> },
-        { href: "/profile-messages", label: "Chat", icon: <MessageCircle className="h-5 w-5" /> },
-        { href: "/settings", label: "Settings", icon: <Settings className="h-5 w-5" /> },
+        { href: "/create-ad", label: "Sell", icon: <PlusCircle className="h-6 w-6" />, protected: true },
+        { href: "/profile-messages", label: "Chat", icon: <MessageCircle className="h-5 w-5" />, protected: true },
+        { href: "/settings", label: "Settings", icon: <Settings className="h-5 w-5" />, protected: true },
     ];
 
     const isActive = (href: string) => {
         if (href === "/") return pathname === "/";
         return pathname === href || pathname.startsWith(href + "/");
+    };
+
+    const handleNavClick = (
+        e: React.MouseEvent<HTMLAnchorElement>,
+        item: Item
+    ) => {
+        if (item.protected && !authUser) {
+            e.preventDefault();
+            router.push("/auth");
+        }
     };
 
     return (
@@ -104,6 +120,7 @@ export default function BottomNav() {
                         <Link
                             key={it.href}
                             href={it.href}
+                            onClick={(e) => handleNavClick(e, it)}
                             className={cn(
                                 "flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-0",
                                 "text-[11px] font-bold",

@@ -132,7 +132,7 @@ export default function HomeShell({
                         <CategoryRail tree={categoryTree} compact />
                     </div>
 
-                    <section className="p-1 lg:p-0 min-w-0 space-y-5">
+                    <section className="p-2 lg:p-0 min-w-0 space-y-5">
                         <QuickChips packagesList={packagesList} />
 
                         {featured === undefined ? (

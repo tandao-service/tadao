@@ -155,7 +155,7 @@ export default function HeroSearchBar({
     }, []);
     return (
         <>
-            <div className="search-wrapper relative overflow-visible rounded-2xl lg:bg-white p-2 lg:shadow-lg">
+            <div className="search-wrapper relative overflow-visible rounded-2xl lg:bg-white lg:p-2 lg:shadow-lg">
                 <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[200px_minmax(0,1fr)_52px]">
                     <button
                         type="button"
@@ -212,7 +212,7 @@ export default function HeroSearchBar({
                                 }
                             }}
                             placeholder="Search keywords..."
-                            className="w-full rounded-sm lg:rounded-xl border px-3  py-4 lg:py-2 text-sm outline-none"
+                            className="w-full rounded-sm lg:rounded-xl border px-3 py-4 lg:py-2 text-sm outline-none"
                         />
 
                         {showSuggestions && suggestions.length > 0 && (
