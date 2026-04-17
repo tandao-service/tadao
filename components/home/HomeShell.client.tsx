@@ -87,14 +87,14 @@ export default function HomeShell({
         loadPackages();
     }, []);
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen W-full bg-white">
             <TopBar />
 
             <div
-                className="mx-auto max-w-6xl px-3 pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
+                className="w-full lg:mx-auto lg:max-w-6xl lg:px-3 lg:pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
                 style={{ paddingTop: "var(--topbar-h, 0px)" }}
             >
-                <div className="relative mt-[-20px] overflow-visible rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
+                <div className="relative mt-[-20px] overflow-visible lg:rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
                     <div className="absolute inset-0 opacity-25">
                         <div className="h-full w-full bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,.35),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,.25),transparent_45%)]" />
                     </div>
@@ -117,7 +117,7 @@ export default function HomeShell({
                     </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
+                <div className="w-full mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
                     <aside className="hidden min-w-0 lg:block">
                         <CategoryRail
                             tree={categoryTree}
@@ -132,7 +132,7 @@ export default function HomeShell({
                         <CategoryRail tree={categoryTree} compact />
                     </div>
 
-                    <section className="min-w-0 space-y-5">
+                    <section className="p-1 lg:p-0 min-w-0 space-y-5">
                         <QuickChips packagesList={packagesList} />
 
                         {featured === undefined ? (

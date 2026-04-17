@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-import { Home, Search, PlusCircle, MessageCircle, User } from "lucide-react";
+import { Home, Search, PlusCircle, MessageCircle, User, Settings } from "lucide-react";
 
 type Item = {
     href: string;
@@ -74,9 +74,9 @@ export default function BottomNav() {
     const items: Item[] = [
         { href: "/", label: "Home", icon: <Home className="h-5 w-5" /> },
         { href: "/search", label: "Search", icon: <Search className="h-5 w-5" /> },
-        { href: "/sell", label: "Sell", icon: <PlusCircle className="h-6 w-6" /> },
-        { href: "/chat", label: "Chat", icon: <MessageCircle className="h-5 w-5" /> },
-        { href: "/profile", label: "Profile", icon: <User className="h-5 w-5" /> },
+        { href: "/create-ad", label: "Sell", icon: <PlusCircle className="h-6 w-6" /> },
+        { href: "/profile-messages", label: "Chat", icon: <MessageCircle className="h-5 w-5" /> },
+        { href: "/settings", label: "Settings", icon: <Settings className="h-5 w-5" /> },
     ];
 
     const isActive = (href: string) => {

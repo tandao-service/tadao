@@ -126,7 +126,7 @@ type Props = {
 
 function CategoryRailCompact({ tree }: { tree: HomeCategoryNode[] }) {
     return (
-        <div className="rounded-2xl border bg-white p-3 dark:border-gray-700 dark:bg-[#2D3236]">
+        <div className="rounded-2xl lg:border bg-white p-1 lg:p-3 dark:border-gray-700 dark:bg-[#2D3236]">
             <div className="flex items-center justify-between">
                 <div className="text-sm font-extrabold">Categories</div>
                 <div className="text-[11px] font-bold text-slate-500">

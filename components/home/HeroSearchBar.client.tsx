@@ -155,12 +155,12 @@ export default function HeroSearchBar({
     }, []);
     return (
         <>
-            <div className="search-wrapper relative overflow-visible rounded-2xl bg-white p-2 shadow-lg">
+            <div className="search-wrapper relative overflow-visible rounded-2xl lg:bg-white p-2 lg:shadow-lg">
                 <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[200px_minmax(0,1fr)_52px]">
                     <button
                         type="button"
                         onClick={() => setOpenRegionModal(true)}
-                        className="flex items-center gap-2 rounded-xl border px-3 py-2 text-left transition hover:bg-slate-50"
+                        className="flex items-center gap-2 rounded-sm lg:rounded-xl border px-3 py-4 lg:py-2 text-left transition bg-white hover:bg-slate-50"
                     >
                         <HiOutlineLocationMarker className="shrink-0 text-base text-orange-500" />
                         <span className="truncate text-sm font-medium text-slate-800">
@@ -212,7 +212,7 @@ export default function HeroSearchBar({
                                 }
                             }}
                             placeholder="Search keywords..."
-                            className="w-full rounded-xl border px-3 py-2 text-sm outline-none"
+                            className="w-full rounded-sm lg:rounded-xl border px-3  py-4 lg:py-2 text-sm outline-none"
                         />
 
                         {showSuggestions && suggestions.length > 0 && (
@@ -245,7 +245,7 @@ export default function HeroSearchBar({
                     <button
                         type="button"
                         onClick={go}
-                        className="flex items-center justify-center rounded-xl bg-orange-500 p-2 font-extrabold text-white hover:bg-orange-600"
+                        className="flex items-center justify-center px-2 lg:px-2 py-4 lg:py-2 rounded-sm lg:rounded-xl bg-black lg:bg-orange-500 font-extrabold text-white hover:bg-orange-600"
                         aria-label="Search"
                     >
                         <IoSearch />
