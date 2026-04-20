@@ -365,7 +365,7 @@ export function FileUploader({
           ) : (
             <>
               <small className="dark:text-gray-500 text-[#464b4f]">
-                Add at least 3 photos for this category
+                Add at least 1 photo for this category
               </small>
               <br />
               <small className="dark:text-gray-500 text-[#464b4f]">

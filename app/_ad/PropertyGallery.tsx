@@ -242,14 +242,14 @@ export default function PropertyGallery({
                                     resetZoomState();
                                     setIsFs(true);
                                 }}
-                                className="relative h-[460px] lg:h-[360px] w-full shrink-0 snap-start bg-slate-100"
+                                className="relative h-[460px] w-full shrink-0 snap-start bg-black"
                                 aria-label={`Open photo ${idx + 1} fullscreen`}
                             >
                                 <Image
                                     src={src}
                                     alt={`${title} ${idx + 1}`}
                                     fill
-                                    className="object-cover transition duration-300 hover:scale-[1.02]"
+                                    className="object-contain transition duration-300 hover:scale-[1.02]"
                                     unoptimized
                                     priority={idx === 0}
                                 />

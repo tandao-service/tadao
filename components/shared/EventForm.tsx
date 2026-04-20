@@ -598,29 +598,27 @@ const AdForm = ({
     let i = 0;
 
     if (coverThumbFile) {
-      try {
-        const up = await startUpload([coverThumbFile]);
-        if (up?.[0]?.url) coverThumbUrl = up[0].url;
-      } catch (e) {
-        console.error("Cover thumb upload failed:", e);
+      const up = await startUpload([coverThumbFile]);
+      if (!up?.[0]?.url) {
+        throw new Error("Cover thumbnail upload failed");
       }
+      coverThumbUrl = up[0].url;
     }
 
     for (const file of files) {
-      try {
-        i++;
-        const uploadedImages = await startUpload([file]);
-        if (uploadedImages?.[0]?.url) {
-          uploadedUrls.push(uploadedImages[0].url);
-          setUploadProgress(Math.round((i / files.length) * 100));
-        }
-      } catch (error) {
-        console.error("Error uploading file:", error);
+      i++;
+      const uploadedImages = await startUpload([file]);
+
+      if (!uploadedImages?.[0]?.url) {
+        throw new Error(`Upload failed for ${file.name}`);
       }
+
+      uploadedUrls.push(uploadedImages[0].url);
+      setUploadProgress(Math.round((i / files.length) * 100));
     }
 
     return {
-      fullUrls: uploadedUrls.filter((url) => !url.includes("blob:")),
+      fullUrls: uploadedUrls,
       coverThumbUrl,
     };
   };
@@ -999,18 +997,31 @@ const AdForm = ({
 
         const { fullUrls, coverThumbUrl } = await uploadFiles();
 
+        if (files.length > 0 && fullUrls.length !== files.length) {
+          toast({
+            title: "Image upload failed",
+            description: "Please wait for all images to upload successfully and try again.",
+            duration: 5000,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const safeExistingUrls = Array.isArray(formData.imageUrls)
+          ? formData.imageUrls.filter(
+            (url: string) => typeof url === "string" && !url.startsWith("blob:")
+          )
+          : [];
+
         const baseData = {
           ...formData,
-          imageUrls:
-            fullUrls.length > 0
-              ? fullUrls
-              : Array.isArray(formData.imageUrls)
-                ? formData.imageUrls
-                : [],
+          imageUrls: files.length > 0 ? fullUrls : safeExistingUrls,
           coverThumbUrl: coverThumbUrl || null,
           price: formData.price ? parseCurrencyToNumber(formData.price.toString()) : 0,
           phone,
         };
+
+
 
         const result: any = await createData({
           userId,
