@@ -3,8 +3,7 @@
 import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
 import DynamicAd from "@/lib/database/models/dynamicAd.model";
-
-const FREE_MAX_LISTINGS = 3;
+import Packages from "@/lib/database/models/packages.model";
 
 export type CanPostReason =
     | "FREE"
@@ -34,6 +33,27 @@ export type CanPostResult =
         remainingAds?: number;
     };
 
+async function getFreePackageBenefits() {
+    const freePkg: any = await Packages.findOne({
+        name: { $regex: /^free$/i },
+    }).select("_id name list entitlements");
+
+    const maxListings = Number(
+        freePkg?.entitlements?.maxListings ?? freePkg?.list ?? 0
+    );
+
+    const priority = Number(
+        freePkg?.entitlements?.priority ?? freePkg?.priority ?? 0
+    );
+
+    return {
+        packageId: freePkg?._id ? String(freePkg._id) : undefined,
+        packageName: freePkg?.name || "Free",
+        maxListings: maxListings > 0 ? maxListings : 100,
+        priority,
+    };
+}
+
 export async function requireCanPostAd(userId: string): Promise<CanPostResult> {
     await connectToDatabase();
 
@@ -49,56 +69,71 @@ export async function requireCanPostAd(userId: string): Promise<CanPostResult> {
         expirely: { $gt: now },
     });
 
-    // No subscription object => treat as free, but LIMITED
+    const freeBenefits = await getFreePackageBenefits();
+    const freeMaxListings = freeBenefits.maxListings;
+
+    // No subscription object => treat as Free package from DB
     if (!sub) {
-        if (activeAdsCount >= FREE_MAX_LISTINGS) {
+        const remainingAds = Math.max(0, freeMaxListings - activeAdsCount);
+
+        if (activeAdsCount >= freeMaxListings) {
             return {
                 allowed: false,
                 reason: "FREE_LIMIT_REACHED",
+                planId: freeBenefits.packageId,
                 activeAdsCount,
-                allowedListings: FREE_MAX_LISTINGS,
-                remainingAds: 0,
+                allowedListings: freeMaxListings,
+                remainingAds,
             };
         }
 
         return {
             allowed: true,
             reason: "FREE",
+            planId: freeBenefits.packageId,
             activeAdsCount,
-            allowedListings: FREE_MAX_LISTINGS,
-            remainingAds: 0,
+            allowedListings: freeMaxListings,
+            remainingAds,
         };
     }
 
     const planName = String(sub.planName || "").trim();
     const planId = sub.planId ? String(sub.planId) : undefined;
 
-    // Free plan => LIMITED
+    // Free plan => use Free package benefits from DB
     if (!planName || planName.toLowerCase() === "free") {
-        if (activeAdsCount >= FREE_MAX_LISTINGS) {
+        const remainingAds = Math.max(0, freeMaxListings - activeAdsCount);
+
+        if (activeAdsCount >= freeMaxListings) {
             return {
                 allowed: false,
                 reason: "FREE_LIMIT_REACHED",
-                planId,
+                planId: planId || freeBenefits.packageId,
                 activeAdsCount,
-                allowedListings: FREE_MAX_LISTINGS,
-                remainingAds: 0,
+                allowedListings: freeMaxListings,
+                remainingAds,
             };
         }
 
         return {
             allowed: true,
             reason: "FREE",
-            planId,
+            planId: planId || freeBenefits.packageId,
             activeAdsCount,
-            allowedListings: FREE_MAX_LISTINGS,
-            remainingAds: 0,
+            allowedListings: freeMaxListings,
+            remainingAds,
         };
     }
 
     // Paid plan but missing plan id
     if (!planId) {
-        return { allowed: false, reason: "MISSING_PLAN" };
+        return {
+            allowed: false,
+            reason: "MISSING_PLAN",
+            activeAdsCount,
+            allowedListings: Number(sub?.entitlements?.maxListings ?? 0),
+            remainingAds: Number(sub?.remainingAds ?? 0),
+        };
     }
 
     if (!sub.active) {
@@ -116,11 +151,17 @@ export async function requireCanPostAd(userId: string): Promise<CanPostResult> {
         const expiresAt = new Date(sub.expiresAt);
 
         if (!Number.isFinite(expiresAt.getTime())) {
-            return { allowed: false, reason: "EXPIRED", planId };
+            return {
+                allowed: false,
+                reason: "EXPIRED",
+                planId,
+                activeAdsCount,
+                allowedListings: Number(sub?.entitlements?.maxListings ?? 0),
+                remainingAds: Number(sub?.remainingAds ?? 0),
+            };
         }
 
         if (now > expiresAt) {
-            // optional DB cleanup
             await User.findByIdAndUpdate(user._id, {
                 $set: { "subscription.active": false },
             });

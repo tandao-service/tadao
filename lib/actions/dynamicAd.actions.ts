@@ -133,7 +133,7 @@ export const createData = async ({
 
     const response = await DynamicAd.create({
       data: formData,
-      priority: pkg.priority,
+      priority: Number(pkg.entitlements?.priority ?? pkg.priority ?? 0),
       expirely: expirelyDate,
       adstatus: adstatusFinal,
       organizer: userId,
