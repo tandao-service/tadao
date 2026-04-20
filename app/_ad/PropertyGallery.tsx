@@ -242,14 +242,16 @@ export default function PropertyGallery({
                                     resetZoomState();
                                     setIsFs(true);
                                 }}
-                                className="relative h-[460px] w-full shrink-0 snap-start bg-black"
+                                className="relative aspect-[4/3] sm:aspect-[16/10] md:h-[460px] md:aspect-auto w-full shrink-0 snap-start overflow-hidden bg-black"
                                 aria-label={`Open photo ${idx + 1} fullscreen`}
                             >
                                 <Image
                                     src={src}
                                     alt={`${title} ${idx + 1}`}
                                     fill
-                                    className="object-contain transition duration-300 hover:scale-[1.02]"
+                                    sizes="100vw"
+                                    className="object-contain"
+                                    style={{ objectPosition: "center center" }}
                                     unoptimized
                                     priority={idx === 0}
                                 />

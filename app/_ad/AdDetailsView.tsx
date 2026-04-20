@@ -135,7 +135,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
             <TopBar />
             <MobileBackPill label="Back" />
 
-            <main className="w-full lg:mx-auto lg:max-w-6xl lg:px-4 lg:pt-[calc(var(--topbar-h,64px)+12px)] pb-8">
+            <main className="w-full lg:mx-auto lg:max-w-6xl lg:px-4 pt-[calc(var(--topbar-h,64px)+0px)] pb-8">
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
