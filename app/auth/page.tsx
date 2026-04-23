@@ -15,6 +15,7 @@ import {
     browserLocalPersistence,
     updateProfile,
     fetchSignInMethodsForEmail,
+    signOut,
 } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase";
 import { createUser as createUserInDB } from "@/lib/actions/user.actions";
@@ -35,9 +36,11 @@ function AuthPageInner() {
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
@@ -91,6 +94,8 @@ function AuthPageInner() {
         setIsSignUp((prev) => !prev);
         setError("");
         setSuccess("");
+        setPassword("");
+        setConfirmPassword("");
     };
 
     const clearMessages = () => {
@@ -169,7 +174,6 @@ function AuthPageInner() {
         router.replace(redirectTo);
     };
 
-
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!authBundle || loading) return;
@@ -192,6 +196,16 @@ function AuthPageInner() {
 
         if (password.length < 6) {
             setError("Password should be at least 6 characters.");
+            return;
+        }
+
+        if (!confirmPassword) {
+            setError("Please confirm your password.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
             return;
         }
 
@@ -231,7 +245,12 @@ function AuthPageInner() {
                 ],
             });
 
-            router.replace(redirectTo);
+            await signOut(authBundle.auth);
+
+            setIsSignUp(false);
+            setPassword("");
+            setConfirmPassword("");
+            setSuccess("Account created successfully. Please sign in.");
         } catch (err: any) {
             console.error("Sign up error:", err);
             setError(getFriendlyError(err?.code || err?.message));
@@ -407,6 +426,31 @@ function AuthPageInner() {
                             {showPassword ? <IoEyeOffOutline size={22} /> : <IoEyeOutline size={22} />}
                         </button>
                     </div>
+
+                    {isSignUp && (
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                autoComplete="new-password"
+                                required
+                                className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 outline-none focus:border-[#f97316] focus:ring-2 focus:ring-orange-200"
+                                disabled={loading}
+                            />
+
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-[#f97316]"
+                                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                                disabled={loading}
+                            >
+                                {showConfirmPassword ? <IoEyeOffOutline size={22} /> : <IoEyeOutline size={22} />}
+                            </button>
+                        </div>
+                    )}
 
                     <button
                         type="submit"
