@@ -60,7 +60,17 @@ export default function PhoneVerification({
     }
 
     setError("");
-    const fullPhone = `${countryCode}${phone.trim()}`;
+    let clean = phone.trim();
+
+    // remove leading 0 if exists
+    if (clean.startsWith("0")) {
+      clean = clean.substring(1);
+    }
+
+    // remove spaces or symbols
+    clean = clean.replace(/\D/g, "");
+
+    const fullPhone = `${countryCode}${clean}`;
 
     if (!phone.match(/^\d{7,12}$/)) {
       setError("Enter a valid phone number.");
