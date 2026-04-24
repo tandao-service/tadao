@@ -996,7 +996,25 @@ const AdForm = ({
         if (!canContinue) return;
 
         const { fullUrls, coverThumbUrl } = await uploadFiles();
+        if (!selectedSubCategoryId) {
+          toast({
+            title: "Missing subcategory",
+            description: "Please select category and subcategory again.",
+            duration: 5000,
+            variant: "destructive",
+          });
+          return;
+        }
 
+        if (!planId) {
+          toast({
+            title: "Package not ready",
+            description: "Please wait a moment and try again.",
+            duration: 5000,
+            variant: "destructive",
+          });
+          return;
+        }
         if (files.length > 0 && fullUrls.length !== files.length) {
           toast({
             title: "Image upload failed",
@@ -1021,17 +1039,39 @@ const AdForm = ({
           phone,
         };
 
+        let result: any;
 
+        try {
+          result = await createData({
+            userId,
+            subcategory: selectedSubCategoryId,
+            formData: baseData,
+            planId,
+            periodPack: periodInput || activeButtonTitle || "1 month",
+            path: "/create",
+          });
+        } catch (err: any) {
+          console.error("CREATE AD FAILED AFTER UPLOAD:", err);
 
-        const result: any = await createData({
-          userId,
-          subcategory: selectedSubCategoryId,
-          formData: baseData,
-          planId,
-          periodPack: periodInput || activeButtonTitle || "1 month",
-          path: "/create",
-        });
+          toast({
+            title: "Ad creation failed",
+            description: err?.message || "Photo uploaded, but ad details were not saved.",
+            duration: 7000,
+            variant: "destructive",
+          });
 
+          return;
+        }
+
+        if (!result) {
+          toast({
+            title: "Ad creation failed",
+            description: "Server did not return the created ad.",
+            duration: 7000,
+            variant: "destructive",
+          });
+          return;
+        }
         if (result?.blocked) {
           saveSellDraft();
           setSubscriptionModalOpen(true);
