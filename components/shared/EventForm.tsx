@@ -593,37 +593,10 @@ const AdForm = ({
   };
   const uploadFiles = async () => {
     const uploadedUrls: string[] = [];
-    let i = 0;
-    for (const file of files) {
-      try {
-        i++;
-        const uploadedImages = await startUpload([file]);
-        if (uploadedImages && uploadedImages.length > 0) {
-          uploadedUrls.push(uploadedImages[0].url);
-          setUploadProgress(Math.round((i / files.length) * 100));
-        }
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    }
-    return uploadedUrls.filter((url) => !url.includes("blob:"));
-  };
-
-  const uploadFiles_ = async () => {
-    const uploadedUrls: string[] = [];
     let coverThumbUrl: string | null = null;
 
     try {
-      alert(`Files to upload: ${files.length}, cover: ${coverThumbFile ? "yes" : "no"}`);
-
-      // TEMPORARILY SKIP COVER THUMB ON MOBILE TEST
-      // if (coverThumbFile) {
-      //   alert("Uploading cover thumbnail...");
-      //   const up = await startUpload([coverThumbFile]);
-      //   alert("Cover upload response: " + JSON.stringify(up));
-      //   if (!up?.[0]?.url) throw new Error("Cover thumbnail upload failed");
-      //   coverThumbUrl = up[0].url;
-      // }
+      alert(`Files to upload: ${files.length}`);
 
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
@@ -632,18 +605,33 @@ const AdForm = ({
           `Uploading image ${index + 1}/${files.length}\n` +
           `Name: ${file.name}\n` +
           `Size: ${Math.round(file.size / 1024)} KB\n` +
-          `Type: ${file.type}`
+          `Type: ${file.type || "unknown"}`
         );
 
-        const uploadedImages = await startUpload([file]);
+        const uploadedImages: any = await startUpload([file]);
 
         alert("UploadThing response: " + JSON.stringify(uploadedImages));
 
-        if (!uploadedImages?.[0]?.url) {
-          throw new Error(`Upload failed for ${file.name}`);
+        if (!uploadedImages || uploadedImages.length === 0) {
+          throw new Error("UploadThing returned empty/undefined response");
         }
 
-        uploadedUrls.push(uploadedImages[0].url);
+        const uploadedFile = uploadedImages[0];
+
+        const fileUrl =
+          uploadedFile?.url ||
+          uploadedFile?.ufsUrl ||
+          uploadedFile?.appUrl ||
+          uploadedFile?.serverData?.url;
+
+        if (!fileUrl) {
+          throw new Error(
+            "Uploaded but no URL returned: " + JSON.stringify(uploadedFile)
+          );
+        }
+
+        uploadedUrls.push(fileUrl);
+
         setUploadProgress(Math.round(((index + 1) / files.length) * 100));
       }
 
@@ -1029,20 +1017,20 @@ const AdForm = ({
 
         const canContinue = await checkPostingGateBeforeUpload();
         if (!canContinue) return;
-        const uploadedUrls = await uploadFiles();
-        if (!uploadedUrls) return;
+        const { fullUrls,
+          coverThumbUrl } = await uploadFiles();
+        if (!fullUrls) return;
 
-        // const safeExistingUrls = Array.isArray(formData.imageUrls)
-        //  ? formData.imageUrls.filter(
-        //    (url: string) => typeof url === "string" && !url.startsWith("blob:")
-        //  )
-        //  : [];
+        const safeExistingUrls = Array.isArray(formData.imageUrls)
+          ? formData.imageUrls.filter(
+            (url: string) => typeof url === "string" && !url.startsWith("blob:")
+          )
+          : [];
 
         const baseData = {
           ...formData,
-          imageUrls: uploadedUrls,
-          //imageUrls: files.length > 0 ? fullUrls : safeExistingUrls,
-          coverThumbUrl: null,
+          imageUrls: files.length > 0 ? fullUrls : safeExistingUrls,
+          coverThumbUrl: coverThumbUrl || null,
           price: formData.price ? parseCurrencyToNumber(formData.price.toString()) : 0,
           phone,
         };
@@ -1146,14 +1134,14 @@ const AdForm = ({
           return;
         }
 
-        // const { fullUrls, coverThumbUrl } = await uploadFiles();
-        const uploadedUrls = await uploadFiles();
-        if (!uploadedUrls) return;
+        const { fullUrls, coverThumbUrl } = await uploadFiles();
+
+        if (!fullUrls) return;
         const finalData = {
           ...formData,
-          imageUrls: uploadedUrls.length > 0 ? uploadedUrls : formData.imageUrls || [],
-          // coverThumbUrl: coverThumbUrl || formData.coverThumbUrl || null,
-          coverThumbUrl: formData.coverThumbUrl || null,
+          imageUrls: fullUrls.length > 0 ? fullUrls : formData.imageUrls || [],
+          coverThumbUrl: coverThumbUrl || formData.coverThumbUrl || null,
+          // coverThumbUrl: formData.coverThumbUrl || null,
           price: formData.price ? parseCurrencyToNumber(formData.price.toString()) : 0,
           phone,
         };
