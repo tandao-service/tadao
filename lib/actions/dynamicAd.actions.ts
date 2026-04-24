@@ -16,6 +16,7 @@ import { createTransaction } from "./transactions.actions"
 import Subcategory from "../database/models/subcategory.model"
 import { PipelineStage, Types } from "mongoose"
 import { requireCanPostAd } from "@/lib/actions/subscription.guard"
+import getFirebaseAdmin from "../firebaseAdmin"
 
 
 const populateAd = (query: any) => {
@@ -1170,33 +1171,77 @@ export async function getTotalProducts() {
   }
 }
 
+function getFirebaseFilePathFromUrl(url: string): string | null {
+  try {
+    if (!url) return null;
+
+    if (url.includes("firebasestorage.googleapis.com")) {
+      const match = url.match(/\/o\/([^?]+)/);
+
+      if (!match?.[1]) return null;
+
+      return decodeURIComponent(match[1]);
+    }
+
+    return url;
+  } catch {
+    return null;
+  }
+}
 export async function deleteAd({ adId, deleteImages, path }: DeleteAdParams) {
   try {
     await connectToDatabase();
 
-    // 1) Delete the DB record first (so we can read its coverThumbUrl safely)
     const deletedAd = await DynamicAd.findByIdAndDelete(adId);
 
-    // 2) Collect file keys to delete (UploadThing keys, not URLs)
-    const keysToDelete: string[] = [];
+    const urlsToDelete: string[] = [];
 
     if (Array.isArray(deleteImages) && deleteImages.length > 0) {
-      keysToDelete.push(...deleteImages.filter(Boolean));
+      urlsToDelete.push(...deleteImages.filter(Boolean));
     }
 
-    const coverKey = deletedAd?.data?.coverThumbUrl;
-    if (coverKey) keysToDelete.push(coverKey);
+    const coverThumbUrl = deletedAd?.data?.coverThumbUrl;
+    if (coverThumbUrl) urlsToDelete.push(coverThumbUrl);
 
-    // 3) Deduplicate + delete
-    const uniqueKeys = Array.from(new Set(keysToDelete));
+    const dbImages =
+      deletedAd?.data?.images ||
+      deletedAd?.data?.imageUrls ||
+      deletedAd?.data?.image ||
+      [];
 
-    if (uniqueKeys.length > 0) {
-      const utapi = new UTApi();
-      await utapi.deleteFiles(uniqueKeys);
+    if (Array.isArray(dbImages)) {
+      urlsToDelete.push(...dbImages.filter(Boolean));
+    }
+
+    const uniqueUrls = Array.from(new Set(urlsToDelete));
+
+    if (uniqueUrls.length > 0) {
+      const admin = getFirebaseAdmin();
+
+      const bucket = admin
+        .storage()
+        .bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+
+      await Promise.all(
+        uniqueUrls.map(async (url) => {
+          try {
+            const filePath = getFirebaseFilePathFromUrl(url);
+
+            if (!filePath) return;
+
+            await bucket.file(filePath).delete({
+              ignoreNotFound: true,
+            });
+          } catch (err) {
+            console.error("Failed to delete Firebase image:", url, err);
+          }
+        })
+      );
     }
 
     if (deletedAd) revalidatePath(path);
-    return deletedAd;
+
+    return JSON.parse(JSON.stringify(deletedAd));
   } catch (error) {
     handleError(error);
   }
