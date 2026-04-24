@@ -591,8 +591,25 @@ const AdForm = ({
     setFormErrors({});
     return true;
   };
-
   const uploadFiles = async () => {
+    const uploadedUrls: string[] = [];
+    let i = 0;
+    for (const file of files) {
+      try {
+        i++;
+        const uploadedImages = await startUpload([file]);
+        if (uploadedImages && uploadedImages.length > 0) {
+          uploadedUrls.push(uploadedImages[0].url);
+          setUploadProgress(Math.round((i / files.length) * 100));
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+    return uploadedUrls.filter((url) => !url.includes("blob:"));
+  };
+
+  const uploadFiles_ = async () => {
     const uploadedUrls: string[] = [];
     let coverThumbUrl: string | null = null;
 
@@ -1012,49 +1029,20 @@ const AdForm = ({
 
         const canContinue = await checkPostingGateBeforeUpload();
         if (!canContinue) return;
-        alert("start Uploading");
-        const { fullUrls, coverThumbUrl } = await uploadFiles();
-        alert("Done Uploading");
-        alert(coverThumbUrl);
-        if (!selectedSubCategoryId) {
-          toast({
-            title: "Missing subcategory",
-            description: "Please select category and subcategory again.",
-            duration: 5000,
-            variant: "destructive",
-          });
-          return;
-        }
+        const uploadedUrls = await uploadFiles();
+        if (!uploadedUrls) return;
 
-        if (!planId) {
-          toast({
-            title: "Package not ready",
-            description: "Please wait a moment and try again.",
-            duration: 5000,
-            variant: "destructive",
-          });
-          return;
-        }
-        if (files.length > 0 && fullUrls.length !== files.length) {
-          toast({
-            title: "Image upload failed",
-            description: "Please wait for all images to upload successfully and try again.",
-            duration: 5000,
-            variant: "destructive",
-          });
-          return;
-        }
+        // const safeExistingUrls = Array.isArray(formData.imageUrls)
+        //  ? formData.imageUrls.filter(
+        //    (url: string) => typeof url === "string" && !url.startsWith("blob:")
+        //  )
+        //  : [];
 
-        const safeExistingUrls = Array.isArray(formData.imageUrls)
-          ? formData.imageUrls.filter(
-            (url: string) => typeof url === "string" && !url.startsWith("blob:")
-          )
-          : [];
-        alert("baseData");
         const baseData = {
           ...formData,
-          imageUrls: files.length > 0 ? fullUrls : safeExistingUrls,
-          coverThumbUrl: coverThumbUrl || null,
+          imageUrls: uploadedUrls,
+          //imageUrls: files.length > 0 ? fullUrls : safeExistingUrls,
+          coverThumbUrl: null,
           price: formData.price ? parseCurrencyToNumber(formData.price.toString()) : 0,
           phone,
         };
@@ -1158,12 +1146,14 @@ const AdForm = ({
           return;
         }
 
-        const { fullUrls, coverThumbUrl } = await uploadFiles();
-
+        // const { fullUrls, coverThumbUrl } = await uploadFiles();
+        const uploadedUrls = await uploadFiles();
+        if (!uploadedUrls) return;
         const finalData = {
           ...formData,
-          imageUrls: fullUrls.length > 0 ? fullUrls : formData.imageUrls || [],
-          coverThumbUrl: coverThumbUrl || formData.coverThumbUrl || null,
+          imageUrls: uploadedUrls.length > 0 ? uploadedUrls : formData.imageUrls || [],
+          // coverThumbUrl: coverThumbUrl || formData.coverThumbUrl || null,
+          coverThumbUrl: formData.coverThumbUrl || null,
           price: formData.price ? parseCurrencyToNumber(formData.price.toString()) : 0,
           phone,
         };
