@@ -994,7 +994,7 @@ const AdForm = ({
 
         const canContinue = await checkPostingGateBeforeUpload();
         if (!canContinue) return;
-
+        alert("start Uploading");
         const { fullUrls, coverThumbUrl } = await uploadFiles();
         alert("Done Uploading");
         alert(coverThumbUrl);
