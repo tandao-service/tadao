@@ -4,6 +4,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { BellIcon } from "lucide-react";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 
 import {
   CircularProgress,
@@ -591,46 +593,47 @@ const AdForm = ({
     setFormErrors({});
     return true;
   };
+
+  const uploadSingleFile = (file: File, path: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const storageRef = ref(storage, path);
+
+      const uploadTask = uploadBytesResumable(storageRef, file, {
+        contentType: file.type || "image/jpeg",
+      });
+
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => {
+          console.error("Firebase upload error:", error);
+          reject(error);
+        },
+        async () => {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadUrl);
+        }
+      );
+    });
+  };
+
   const uploadFiles = async () => {
     const uploadedUrls: string[] = [];
     let coverThumbUrl: string | null = null;
 
     try {
-      alert(`Files to upload: ${files.length}`);
+      //alert(`Files to upload: ${files.length}`);
 
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
 
-        alert(
-          `Uploading image ${index + 1}/${files.length}\n` +
-          `Name: ${file.name}\n` +
-          `Size: ${Math.round(file.size / 1024)} KB\n` +
-          `Type: ${file.type || "unknown"}`
-        );
 
-        const uploadedImages: any = await startUpload([file]);
+        const safeName = file.name.replace(/\s+/g, "-");
+        const filePath = `ads/${userId}/${Date.now()}-${index}-${safeName}`;
 
-        alert("UploadThing response: " + JSON.stringify(uploadedImages));
+        const downloadUrl = await uploadSingleFile(file, filePath);
 
-        if (!uploadedImages || uploadedImages.length === 0) {
-          throw new Error("UploadThing returned empty/undefined response");
-        }
-
-        const uploadedFile = uploadedImages[0];
-
-        const fileUrl =
-          uploadedFile?.url ||
-          uploadedFile?.ufsUrl ||
-          uploadedFile?.appUrl ||
-          uploadedFile?.serverData?.url;
-
-        if (!fileUrl) {
-          throw new Error(
-            "Uploaded but no URL returned: " + JSON.stringify(uploadedFile)
-          );
-        }
-
-        uploadedUrls.push(fileUrl);
+        uploadedUrls.push(downloadUrl);
 
         setUploadProgress(Math.round(((index + 1) / files.length) * 100));
       }
@@ -640,12 +643,11 @@ const AdForm = ({
         coverThumbUrl,
       };
     } catch (err: any) {
-      alert("UPLOAD ERROR: " + (err?.message || JSON.stringify(err)));
-      console.error("UPLOAD ERROR:", err);
+      //  alert("FIREBASE UPLOAD ERROR: " + (err?.message || JSON.stringify(err)));
+      console.error("FIREBASE UPLOAD ERROR:", err);
       throw err;
     }
   };
-
   const checkPostingGateBeforeUpload = async () => {
     const gate = await getSellPostGate(userId);
 
@@ -1038,21 +1040,8 @@ const AdForm = ({
         let result: any;
 
         try {
-          const debugPayload = {
-            userId,
-            subcategory: selectedSubCategoryId,
-            planId,
-            periodPack: periodInput || activeButtonTitle || "1 month",
-            imageUrlsCount: baseData?.imageUrls?.length || 0,
-            imageUrls: baseData?.imageUrls,
-            //category: baseData?.category,
-            //subcategoryName: baseData?.subcategory,
-            phone: baseData?.phone,
-            price: baseData?.price,
-          };
 
-          alert(JSON.stringify(debugPayload, null, 2));
-          alert("CreateData");
+
           result = await createData({
             userId,
             subcategory: selectedSubCategoryId,
@@ -1061,7 +1050,7 @@ const AdForm = ({
             periodPack: periodInput || activeButtonTitle || "1 month",
             path: "/create",
           });
-          alert("createData result: " + JSON.stringify(result, null, 2));
+
         } catch (err: any) {
           console.error("CREATE AD FAILED AFTER UPLOAD:", err);
 
