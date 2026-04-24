@@ -595,32 +595,50 @@ const AdForm = ({
   const uploadFiles = async () => {
     const uploadedUrls: string[] = [];
     let coverThumbUrl: string | null = null;
-    let i = 0;
 
-    if (coverThumbFile) {
-      const up = await startUpload([coverThumbFile]);
-      if (!up?.[0]?.url) {
-        throw new Error("Cover thumbnail upload failed");
+    try {
+      alert(`Files to upload: ${files.length}, cover: ${coverThumbFile ? "yes" : "no"}`);
+
+      // TEMPORARILY SKIP COVER THUMB ON MOBILE TEST
+      // if (coverThumbFile) {
+      //   alert("Uploading cover thumbnail...");
+      //   const up = await startUpload([coverThumbFile]);
+      //   alert("Cover upload response: " + JSON.stringify(up));
+      //   if (!up?.[0]?.url) throw new Error("Cover thumbnail upload failed");
+      //   coverThumbUrl = up[0].url;
+      // }
+
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+
+        alert(
+          `Uploading image ${index + 1}/${files.length}\n` +
+          `Name: ${file.name}\n` +
+          `Size: ${Math.round(file.size / 1024)} KB\n` +
+          `Type: ${file.type}`
+        );
+
+        const uploadedImages = await startUpload([file]);
+
+        alert("UploadThing response: " + JSON.stringify(uploadedImages));
+
+        if (!uploadedImages?.[0]?.url) {
+          throw new Error(`Upload failed for ${file.name}`);
+        }
+
+        uploadedUrls.push(uploadedImages[0].url);
+        setUploadProgress(Math.round(((index + 1) / files.length) * 100));
       }
-      coverThumbUrl = up[0].url;
+
+      return {
+        fullUrls: uploadedUrls,
+        coverThumbUrl,
+      };
+    } catch (err: any) {
+      alert("UPLOAD ERROR: " + (err?.message || JSON.stringify(err)));
+      console.error("UPLOAD ERROR:", err);
+      throw err;
     }
-
-    for (const file of files) {
-      i++;
-      const uploadedImages = await startUpload([file]);
-
-      if (!uploadedImages?.[0]?.url) {
-        throw new Error(`Upload failed for ${file.name}`);
-      }
-
-      uploadedUrls.push(uploadedImages[0].url);
-      setUploadProgress(Math.round((i / files.length) * 100));
-    }
-
-    return {
-      fullUrls: uploadedUrls,
-      coverThumbUrl,
-    };
   };
 
   const checkPostingGateBeforeUpload = async () => {
