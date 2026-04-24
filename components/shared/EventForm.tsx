@@ -996,6 +996,8 @@ const AdForm = ({
         if (!canContinue) return;
 
         const { fullUrls, coverThumbUrl } = await uploadFiles();
+        alert("Done Uploading");
+        alert(coverThumbUrl);
         if (!selectedSubCategoryId) {
           toast({
             title: "Missing subcategory",
@@ -1030,7 +1032,7 @@ const AdForm = ({
             (url: string) => typeof url === "string" && !url.startsWith("blob:")
           )
           : [];
-
+        alert("baseData");
         const baseData = {
           ...formData,
           imageUrls: files.length > 0 ? fullUrls : safeExistingUrls,
@@ -1042,6 +1044,21 @@ const AdForm = ({
         let result: any;
 
         try {
+          const debugPayload = {
+            userId,
+            subcategory: selectedSubCategoryId,
+            planId,
+            periodPack: periodInput || activeButtonTitle || "1 month",
+            imageUrlsCount: baseData?.imageUrls?.length || 0,
+            imageUrls: baseData?.imageUrls,
+            //category: baseData?.category,
+            //subcategoryName: baseData?.subcategory,
+            phone: baseData?.phone,
+            price: baseData?.price,
+          };
+
+          alert(JSON.stringify(debugPayload, null, 2));
+          alert("CreateData");
           result = await createData({
             userId,
             subcategory: selectedSubCategoryId,
@@ -1050,6 +1067,7 @@ const AdForm = ({
             periodPack: periodInput || activeButtonTitle || "1 month",
             path: "/create",
           });
+          alert("createData result: " + JSON.stringify(result, null, 2));
         } catch (err: any) {
           console.error("CREATE AD FAILED AFTER UPLOAD:", err);
 
