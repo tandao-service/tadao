@@ -64,7 +64,7 @@ const DashboardSell = ({
 
       <div className="mx-auto w-full max-w-5xl px-3 pb-10 pt-[calc(var(--topbar-h,64px)+12px)] lg:px-4">
         <div className="overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-sm dark:border-[#2D3236] dark:bg-[#1B2225]">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-400 px-5 py-6 text-white lg:px-8 lg:py-8">
+          {/**  <div className="bg-gradient-to-r from-orange-500 to-orange-400 px-5 py-6 text-white lg:px-8 lg:py-8">
             <h1 className="text-2xl font-extrabold tracking-[-0.02em] lg:text-4xl">
               {type === "Update" ? "Update Your Ad" : "Create New Ad"}
             </h1>
@@ -73,7 +73,7 @@ const DashboardSell = ({
                 ? "Edit your listing details, photos, and pricing, then save your changes."
                 : "Fill in your ad details and publish professionally on Tadao Market."}
             </p>
-          </div>
+          </div>*/}
 
           <div className="p-2 lg:p-4">
             <EventForm

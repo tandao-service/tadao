@@ -1734,15 +1734,13 @@ const AdForm = ({
       </div>
 
       {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
-          <div className="justify-center items-center dark:text-gray-300 rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
-            <div className="flex gap-1 text-[#D1D5DB] items-center">
-              <CircularProgress sx={{ color: "#D1D5DB" }} />
-              {type === "Update" ? "Updating Ad..." : "Creating Ad..."}
-              {uploadProgress > 0 ? ` ${uploadProgress}%` : ""}
-            </div>
-          </div>
-        </div>
+        <div
+          className="fixed inset-0 z-50 bg-transparent cursor-wait"
+          aria-busy="true"
+          aria-live="polite"
+          onClick={(e) => e.preventDefault()}
+          onKeyDown={(e) => e.preventDefault()}
+        />
       )}
 
       <SubscriptionRequiredModal

@@ -72,7 +72,7 @@ export default function PhoneVerification({
 
     const fullPhone = `${countryCode}${clean}`;
 
-    if (!phone.match(/^\d{7,12}$/)) {
+    if (!clean.match(/^\d{7,12}$/)) {
       setError("Enter a valid phone number.");
       return;
     }

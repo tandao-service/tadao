@@ -44,7 +44,7 @@ function AuthPageInner() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
-
+    const [navigating, setNavigating] = useState(false);
     const [authBundle, setAuthBundle] = useState<{
         auth: any;
         googleProvider: GoogleAuthProvider;
@@ -171,6 +171,7 @@ function AuthPageInner() {
             });
         }
 
+        setNavigating(true);
         router.replace(redirectTo);
     };
 
@@ -255,17 +256,22 @@ function AuthPageInner() {
             console.error("Sign up error:", err);
             setError(getFriendlyError(err?.code || err?.message));
         } finally {
-            setLoading(false);
+            if (!navigating) {
+                setLoading(false);
+            }
         }
     };
 
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!authBundle || loading) return;
+        if (!authBundle || loading || navigating) return;
+
+        let didStartNavigation = false;
 
         clearMessages();
 
         const cleanEmail = email.trim().toLowerCase();
+
         if (!cleanEmail) {
             setError("Please enter your email address.");
             return;
@@ -281,15 +287,21 @@ function AuthPageInner() {
         try {
             await setPersistence(authBundle.auth, browserLocalPersistence);
             await signInWithEmailAndPassword(authBundle.auth, cleanEmail, password);
+
+            didStartNavigation = true;
+            setNavigating(true);
             router.replace(redirectTo);
         } catch (err: any) {
             console.error("Firebase sign-in error:", {
                 code: err?.code,
                 message: err?.message,
             });
+
             setError(getFriendlyError(err?.code || err?.message));
         } finally {
-            setLoading(false);
+            if (!didStartNavigation) {
+                setLoading(false);
+            }
         }
     };
 
@@ -324,7 +336,9 @@ function AuthPageInner() {
             console.error("Google sign-in error:", err);
             setError(getFriendlyError(err?.code || err?.message));
         } finally {
-            setLoading(false);
+            if (!navigating) {
+                setLoading(false);
+            }
         }
     };
 
@@ -514,7 +528,16 @@ function AuthPageInner() {
                         </button>
                     </div>
                 )}
-
+                {(loading || navigating) && (
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/90 backdrop-blur-sm">
+                        <div className="flex flex-col items-center rounded-2xl bg-white px-8 py-6 shadow-xl border border-orange-100">
+                            <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-500 border-t-transparent" />
+                            <p className="mt-4 text-sm font-semibold text-gray-700">
+                                {navigating ? "Opening home..." : "Signing you in..."}
+                            </p>
+                        </div>
+                    </div>
+                )}
                 <p className="mt-6 text-center text-xs text-gray-500 leading-5">
                     By continuing, you agree to our{" "}
                     <a

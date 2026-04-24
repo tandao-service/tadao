@@ -79,14 +79,15 @@ export const createData = async ({
 }: CreateAdShopParams) => {
   try {
     await connectToDatabase();
-
+    console.error("formData:", formData);
+    console.error("userId:", userId);
     const organizer = await User.findById(userId);
     if (!organizer) throw new Error("Organizer not found");
-
+    console.error("planId:", planId);
     const pkg = await Packages.findById(planId);
     if (!pkg) throw new Error("Package not found");
 
-
+    console.error("found : free");
     const now = new Date();
     const isFree = String(pkg.name).toLowerCase() === "free";
 
@@ -147,6 +148,7 @@ export const createData = async ({
     const populatedResponse = await populateAd(DynamicAd.findById(response._id));
     return JSON.parse(JSON.stringify(await populatedResponse));
   } catch (error) {
+    console.error("CREATE DATA ERROR:", error);
     handleError(error);
   }
 };
