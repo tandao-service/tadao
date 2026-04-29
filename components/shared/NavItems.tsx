@@ -102,16 +102,6 @@ export default function NavItems({
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col rounded-[24px] bg-white dark:bg-[#131B1E]">
-      <div className="mb-4 px-1">
-        <div className="rounded-[22px] border border-orange-100 bg-gradient-to-r from-black to-orange-400 px-4 py-4 text-white shadow-sm">
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-50">
-            Navigation
-          </p>
-          <p className="mt-1 text-sm font-medium text-white/90">
-            Quick access to your marketplace actions
-          </p>
-        </div>
-      </div>
 
       <ScrollArea className="min-h-0 flex-1 pr-1">
         <ul className="space-y-2 px-1">
