@@ -92,7 +92,7 @@ export default function NavItems({
   };
 
   const itemBase =
-    "group flex items-center gap-2 border-b px-3 py-2 transition-all duration-200 cursor-pointer";
+    "group flex items-center gap-2 border-b px-3 py-1 transition-all duration-200 cursor-pointer";
 
   const itemActive =
     "border-orange-200 bg-orange-500 text-white shadow-sm";
