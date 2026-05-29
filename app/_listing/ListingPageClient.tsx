@@ -1451,10 +1451,7 @@ export default function ListingPageClient(props: Props) {
                                                 <span className="font-bold text-slate-700">{categoryName}</span>
                                                 <span>•</span>
                                                 <span>{Number(totalCategoryAds || 0).toLocaleString()} ads</span>
-                                                <span>•</span>
-                                                <a className="underline hover:text-orange-600" href={props.canonical}>
-                                                    Canonical
-                                                </a>
+
                                             </div>
                                         </div>
 
