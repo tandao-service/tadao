@@ -37,12 +37,18 @@ function toListingSlugFromName(name: string) {
     return `${slugify(base)}-${suffix}`;
 }
 
-/** Hide scrollbar */
+/** Hide scrollbar 
 const scrollbarNone = `
   .scrollbar-none::-webkit-scrollbar { display:none; }
   .scrollbar-none { -ms-overflow-style:none; scrollbar-width:none; }
+`;*/
+const scrollbarThin = `
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
 `;
-
 function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
     return (
         <div className="rounded-full bg-gray-100 p-1 dark:bg-[#131B1E]">
@@ -273,17 +279,17 @@ function CategoryRailDesktop({
 
     const outerStyle: React.CSSProperties =
         mode === "fixed"
-            ? { position: "fixed", top: fixedTop, width: 256, zIndex: 60 }
+            ? { position: "fixed", top: fixedTop, width: 256, zIndex: 20 }
             : mode === "stopped"
-                ? { position: "absolute", top: stoppedTop, width: 256, zIndex: 60 }
+                ? { position: "absolute", top: stoppedTop, width: 256, zIndex: 20 }
                 : { position: "relative", width: 256 };
 
     const flyoutStyle: React.CSSProperties =
         mode === "fixed"
-            ? { position: "fixed", top: fixedTop, left: "calc(50% - 24rem)", zIndex: 70 }
+            ? { position: "fixed", top: fixedTop, left: "calc(50% - 24rem)", zIndex: 25 }
             : mode === "stopped"
-                ? { position: "absolute", top: stoppedTop, left: 256 + 12, zIndex: 70 }
-                : { position: "absolute", top: 0, left: 256 + 12, zIndex: 70 };
+                ? { position: "absolute", top: stoppedTop, left: 256 + 12, zIndex: 25 }
+                : { position: "absolute", top: 0, left: 256 + 12, zIndex: 25 };
 
     const [flyoutLeft, setFlyoutLeft] = React.useState<number>(0);
 
@@ -312,7 +318,7 @@ function CategoryRailDesktop({
 
     return (
         <div ref={wrapRef} className="relative">
-            <style jsx>{scrollbarNone}</style>
+            <style jsx>{scrollbarThin}</style>
 
             {/* LEFT */}
             <div style={outerStyle}>
@@ -320,7 +326,7 @@ function CategoryRailDesktop({
                     ref={railRef}
                     className="w-64 rounded-2xl border bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]"
                 >
-                    {categoryScroll.showUp && (
+                    {/*    {categoryScroll.showUp && (
                         <button
                             onClick={categoryScroll.toTop}
                             className="absolute top-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-l from-orange-400 to-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-lg"
@@ -336,7 +342,7 @@ function CategoryRailDesktop({
                         >
                             ↓ Bottom
                         </button>
-                    )}
+                    )}*/}
 
                     <div className="border-b p-2 dark:border-gray-600">
                         <h2 className="text-sm font-extrabold">Categories</h2>
@@ -399,7 +405,7 @@ function CategoryRailDesktop({
                         <h2 className="text-sm font-extrabold">{activeCat.name}</h2>
                     </div>
 
-                    {subcategoryScroll.showUp && (
+                    {/*  {subcategoryScroll.showUp && (
                         <button
                             onClick={subcategoryScroll.toTop}
                             className="absolute top-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-l from-orange-400 to-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-lg"
@@ -415,7 +421,7 @@ function CategoryRailDesktop({
                         >
                             ↓ Bottom
                         </button>
-                    )}
+                    )}*/}
 
                     <div
                         ref={subcategoryScroll.scrollRef}

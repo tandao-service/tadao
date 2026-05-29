@@ -177,21 +177,11 @@ export async function requireCanPostAd(userId: string): Promise<CanPostResult> {
         }
     }
 
+
     const maxListings = Number(sub?.entitlements?.maxListings ?? 0);
     const remainingAds = Number(sub?.remainingAds ?? 0);
 
     if (remainingAds <= 0) {
-        return {
-            allowed: false,
-            reason: "LIMIT_REACHED",
-            planId,
-            activeAdsCount,
-            allowedListings: maxListings,
-            remainingAds,
-        };
-    }
-
-    if (maxListings > 0 && activeAdsCount >= maxListings) {
         return {
             allowed: false,
             reason: "LIMIT_REACHED",

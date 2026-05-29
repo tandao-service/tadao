@@ -112,7 +112,7 @@ export default function Navbar({
             <>
               <div
                 className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-[#131B1E] dark:hover:bg-[#2D3236] text-white hover:bg-orange-300 tooltip tooltip-bottom hover:cursor-pointer"
-                data-tip="Bookmark"
+                data-tip="Favorites"
                 onClick={() => {
                   user ? handleOpenBook() : requireAuthRedirect();
                 }}
@@ -123,7 +123,7 @@ export default function Navbar({
                       <BookmarkIcon />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Bookmark</p>
+                      <p>Favorites</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

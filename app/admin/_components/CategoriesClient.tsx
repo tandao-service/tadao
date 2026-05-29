@@ -34,35 +34,28 @@ export default function CategoriesClient() {
     const [isOpenCategory, setIsOpenCategory] = useState(false);
     const [isOpenSubCategory, setIsOpenSubCategory] = useState(false);
 
-    useEffect(() => {
-        let cancelled = false;
+    async function loadData() {
+        try {
+            setLoading(true);
 
-        async function load() {
-            try {
-                setLoading(true);
+            const [categoriesRes, subcategoriesRes, catListRes] = await Promise.all([
+                getAllCategories(),
+                getselectedsubcategories(category),
+                getselectedCategories(),
+            ]);
 
-                const [categoriesRes, subcategoriesRes, catListRes] = await Promise.all([
-                    getAllCategories(),
-                    getselectedsubcategories(category),
-                    getselectedCategories(),
-                ]);
-
-                if (cancelled) return;
-
-                setCategories(categoriesRes || []);
-                setSubcategories(subcategoriesRes || []);
-                setCatList(catListRes || []);
-            } catch (error) {
-                console.error("Failed to load categories:", error);
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
+            setCategories(Array.isArray(categoriesRes) ? categoriesRes : []);
+            setSubcategories(Array.isArray(subcategoriesRes) ? subcategoriesRes : []);
+            setCatList(Array.isArray(catListRes) ? catListRes : []);
+        } catch (error) {
+            console.error("Failed to load categories:", error);
+        } finally {
+            setLoading(false);
         }
+    }
 
-        load();
-        return () => {
-            cancelled = true;
-        };
+    useEffect(() => {
+        loadData();
     }, [category]);
 
     if (loading) {
@@ -74,13 +67,21 @@ export default function CategoriesClient() {
             <AdminPageHeader
                 eyebrow="Categories"
                 title="Categories & Subcategories"
-                subtitle="Manage listing groups with a cleaner route-based admin."
+                subtitle="Manage listing groups, form fields, and category visibility."
             />
 
-            <div className="grid gap-6 xl:grid-cols-1">
+            <div className="grid gap-6">
                 <AdminCard>
                     <div className="mb-5 flex items-center justify-between gap-3">
-                        <h2 className="text-lg font-semibold text-slate-950">Categories</h2>
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-950">
+                                Categories
+                            </h2>
+                            <p className="mt-1 text-sm text-slate-500">
+                                Main listing groups shown to sellers.
+                            </p>
+                        </div>
+
                         <button
                             onClick={() => setIsOpenCategory(true)}
                             className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
@@ -90,14 +91,23 @@ export default function CategoriesClient() {
                         </button>
                     </div>
 
-                    <DisplayCategories categories={categories} />
+                    <DisplayCategories categories={categories} onSaved={loadData} />
                 </AdminCard>
 
                 <AdminCard>
                     <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-lg font-semibold text-slate-950">Subcategories</h2>
-                        <div className="flex items-center gap-3">
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-950">
+                                Subcategories
+                            </h2>
+                            <p className="mt-1 text-sm text-slate-500">
+                                Manage subcategory forms and fields.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                             <CategoryIdFilterSearch catList={catList} />
+
                             <button
                                 onClick={() => setIsOpenSubCategory(true)}
                                 className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
@@ -108,7 +118,10 @@ export default function CategoriesClient() {
                         </div>
                     </div>
 
-                    <DisplaySubCategories subcategories={subcategories} />
+                    <DisplaySubCategories
+                        subcategories={subcategories}
+                        onSaved={loadData}
+                    />
                 </AdminCard>
             </div>
 
@@ -116,11 +129,19 @@ export default function CategoriesClient() {
                 isOpen={isOpenCategory}
                 onClose={() => setIsOpenCategory(false)}
                 type="Create"
+                onSaved={() => {
+                    setIsOpenCategory(false);
+                    loadData();
+                }}
             />
 
             <AddSubCategoryWindow
                 isOpen={isOpenSubCategory}
                 onClose={() => setIsOpenSubCategory(false)}
+                onSaved={() => {
+                    setIsOpenSubCategory(false);
+                    loadData();
+                }}
             />
         </>
     );

@@ -154,7 +154,24 @@ export const createData = async ({
       plan: pkg._id,
       boost,
     });
-
+    // ✅ reduce remaining ads for paid subscriptions
+    // ✅ reduce remaining ads for paid subscriptions only
+    if (
+      organizer?.subscription?.planName &&
+      String(organizer.subscription.planName).toLowerCase() !== "free"
+    ) {
+      await User.findOneAndUpdate(
+        {
+          _id: userId,
+          "subscription.remainingAds": { $gt: 0 },
+        },
+        {
+          $inc: {
+            "subscription.remainingAds": -1,
+          },
+        }
+      );
+    }
     revalidatePath(path);
 
     const populatedResponse = await populateAd(DynamicAd.findById(response._id));
@@ -1685,31 +1702,10 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
   const detectMode = (name: string): "sale" | "rent" => {
     const n = name.toLowerCase();
     if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
-    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) return "sale";
     return "sale";
   };
 
   const normalize = (v: string) => v.trim().toLowerCase();
-
-  const specialListings: Array<{
-    category: string;
-    subcategory: string;
-    slug: string;
-    title: string;
-  }> = [
-      {
-        category: "Donations",
-        subcategory: "Donated Items",
-        slug: "donations",
-        title: "Donations",
-      },
-      {
-        category: "Lost and Found",
-        subcategory: "Lost and Found Items",
-        slug: "lost-and-found",
-        title: "Lost & Found",
-      },
-    ];
 
   for (const s of subcats as any[]) {
     const rawSub = String(s?.subcategory || "").trim();
@@ -1718,19 +1714,30 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
 
     if (!catName || !rawSub) continue;
 
-    const icon = Array.isArray(s?.imageUrl) ? (s.imageUrl[0] || "") : "";
+    const icon = Array.isArray(s?.imageUrl) ? s.imageUrl[0] || "" : "";
 
-    const special = specialListings.find(
-      (item) =>
-        normalize(item.category) === normalize(catName) &&
-        normalize(item.subcategory) === normalize(rawSub)
-    );
-
-    if (special) {
-      map[special.slug] = {
+    // ✅ force special clean routes
+    if (
+      normalize(catName) === "donations" &&
+      normalize(rawSub) === "donated items"
+    ) {
+      map["donations"] = {
         category: catName,
         subcategory: rawSub,
-        title: special.title,
+        title: "Donations",
+        icon,
+      };
+      continue;
+    }
+
+    if (
+      normalize(catName) === "lost and found" &&
+      normalize(rawSub) === "lost and found items"
+    ) {
+      map["lost-and-found"] = {
+        category: catName,
+        subcategory: rawSub,
+        title: "Lost & Found",
         icon,
       };
       continue;
@@ -1748,6 +1755,25 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
       subcategory: rawSub,
       title,
       icon,
+    };
+  }
+
+  // ✅ fallback, so route never shows Category not found
+  if (!map["donations"]) {
+    map["donations"] = {
+      category: "Donations",
+      subcategory: "Donated Items",
+      title: "Donations",
+      icon: "",
+    };
+  }
+
+  if (!map["lost-and-found"]) {
+    map["lost-and-found"] = {
+      category: "Lost and Found",
+      subcategory: "Lost and Found Items",
+      title: "Lost & Found",
+      icon: "",
     };
   }
 

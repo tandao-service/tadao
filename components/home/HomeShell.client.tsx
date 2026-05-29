@@ -101,7 +101,7 @@ export default function HomeShell({
 
                     <div className="relative p-5 sm:p-8">
                         <div className="text-white">
-                            <div className="text-sm font-semibold opacity-95">Tadao Market</div>
+
                             <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
                                 What are you looking for?
                             </h1>

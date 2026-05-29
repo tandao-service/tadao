@@ -134,7 +134,7 @@ export default function TopBar() {
                             />
                         </div>
 
-                        <div className="hidden min-w-0 sm:block">
+                        <div className="">
                             <div className="truncate text-sm font-extrabold leading-tight text-slate-900 dark:text-white">
                                 Tadao Market
                             </div>
@@ -154,7 +154,7 @@ export default function TopBar() {
                                         type="button"
                                         onClick={() => {
                                             if (authUser) {
-                                                router.push("/bookmarks");
+                                                router.push("/favorites");
                                             } else {
                                                 router.push("/auth");
                                             }
@@ -165,7 +165,7 @@ export default function TopBar() {
                                     </button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Bookmarks</p>
+                                    <p>Favorites</p>
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
@@ -219,22 +219,23 @@ export default function TopBar() {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (authUser) {
+                                    router.push("/create-ad");
+                                } else {
+                                    router.push("/auth");
+                                }
+                            }}
+                            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-sm font-extrabold text-white shadow-sm transition hover:bg-orange-600 hover:shadow md:px-4"
+                        >
+                            <SellOutlinedIcon sx={{ fontSize: 18 }} />
+                            <span>Sell</span>
+                        </button>
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={() => {
-                            if (authUser) {
-                                router.push("/create-ad");
-                            } else {
-                                router.push("/auth");
-                            }
-                        }}
-                        className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-sm font-extrabold text-white shadow-sm transition hover:bg-orange-600 hover:shadow md:px-4"
-                    >
-                        <SellOutlinedIcon sx={{ fontSize: 18 }} />
-                        <span className="hidden sm:inline">Sell</span>
-                    </button>
+
 
                     {showUserLoading ? (
                         <div className="h-10 w-24 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
@@ -328,7 +329,7 @@ export default function TopBar() {
                                 popup={popup}
                                 user={appUser}
                                 handleOpenSell={() => router.push("/create-ad")}
-                                handleOpenBook={() => router.push("/bookmarks")}
+                                handleOpenBook={() => router.push("/favorites")}
                                 handleOpenPlan={() => router.push("/plan")}
                                 handleOpenChat={() => router.push("/profile-messages")}
                                 handleOpenShop={(user: any) => {

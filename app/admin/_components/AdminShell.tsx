@@ -77,7 +77,7 @@ export default function AdminShell({
                 <Navbardashboard userstatus="User" userId={appUserId || ""} />
             </div>
 
-            <div className="flex min-h-screen pt-[60px]">
+            <div className="flex min-h-screen pt-[50px]">
                 {mobileOpen && (
                     <div
                         className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm lg:hidden"
@@ -87,7 +87,7 @@ export default function AdminShell({
 
                 <aside
                     className={[
-                        "fixed left-0 top-[60px] z-50 h-[calc(100vh-60px)] w-[290px] border-r border-white/10",
+                        "fixed left-0 top-[50px] z-0 h-[calc(100vh-60px)] w-[290px] border-r border-white/10",
                         "bg-slate-950 text-white transition-transform duration-300",
                         "lg:translate-x-0",
                         mobileOpen ? "translate-x-0" : "-translate-x-full",
@@ -97,9 +97,7 @@ export default function AdminShell({
                         <div className="border-b border-white/10 p-5">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-sm font-bold text-white shadow-lg">
-                                        TM
-                                    </div>
+
                                     <div>
                                         <p className="text-sm font-semibold tracking-wide text-white">
                                             Tadao Market
@@ -145,14 +143,14 @@ export default function AdminShell({
                             </div>
                         </div>
 
-                        <ScrollArea className="flex-1 px-3 py-4">
+                        <ScrollArea className="flex-1 bg-black px-0 py-0">
                             <AdminSidebarLinks onNavigate={() => setMobileOpen(false)} />
                         </ScrollArea>
                     </div>
                 </aside>
 
                 <main className="min-w-0 flex-1 lg:pl-[290px]">
-                    <header className="sticky top-[60px] z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
+                    <header className="sticky top-[50px] z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
                         <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
                             <div className="flex items-center gap-3">
                                 <button

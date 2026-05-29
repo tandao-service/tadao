@@ -227,14 +227,14 @@ export default function SmartPropertyCardWithDesc({
                     {isContactPrice ? "Contact for price" : price > 0 ? moneyKsh(price) : "KSh 0"}
                 </div>
 
-                <div className="mt-3 flex flex-wrap gap-2">
+                {/**<div className="mt-3 flex flex-wrap gap-2">
                     {isRent && chip("Rent")}
                     {condition && chip(condition)}
                     {landType && chip(landType)}
                     {landArea && chip(landArea)}
                     {hasBulk && chip("Bulk Price")}
                     {hasDelivery && chip("Delivery")}
-                </div>
+                </div> */}
             </div>
         </Link>
     );

@@ -256,8 +256,8 @@ export const headerLinks = [
 
   },
   {
-    label: 'Bookmark',
-    route: '/bookmark',
+    label: 'Favorites',
+    route: '/favorites',
 
   }, {
     label: 'Plan',

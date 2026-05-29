@@ -65,6 +65,49 @@ export async function updateCategory(_id: string, categoryId: string, subcategor
     handleError(error)
   }
 }
+export async function updateSubCategory(
+  _id: string,
+  categoryId: string,
+  subcategoryName: string,
+  imageUrl: any,
+  oldurl: any,
+  editFields: any
+) {
+  try {
+    await connectToDatabase();
+
+    const normalizedImageUrl = Array.isArray(imageUrl) ? imageUrl : [imageUrl];
+
+    const updatedSubCat = await Subcategory.findByIdAndUpdate(
+      _id,
+      {
+        category: categoryId,
+        subcategory: subcategoryName,
+        imageUrl: normalizedImageUrl,
+        fields: editFields || [],
+      },
+      { new: true }
+    );
+
+    if (oldurl) {
+      try {
+        const url = new URL(oldurl);
+        const filename = url.pathname.split("/").pop();
+
+        if (filename) {
+          const utapi = new UTApi();
+          await utapi.deleteFiles(filename);
+        }
+      } catch { }
+    }
+
+    revalidatePath("/admin/categories");
+
+    return JSON.parse(JSON.stringify(updatedSubCat));
+  } catch (error) {
+    handleError(error);
+  }
+}
 export const getallcategories = async () => {
   try {
     await connectToDatabase();

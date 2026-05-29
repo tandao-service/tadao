@@ -231,21 +231,21 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                 )}
 
                                 {specs.length > 0 ? (
-                                    <div className="mt-6">
+                                    <div className="mt-5">
                                         <h2 className="text-lg font-extrabold text-slate-900">Key details</h2>
 
-                                        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                        <div className="mt-3 flex flex-wrap gap-2">
                                             {specs.map((item) => (
                                                 <div
                                                     key={item.label}
-                                                    className="rounded-2xl border border-slate-200 bg-slate-50 py-1 px-4"
+                                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2"
                                                 >
-                                                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                                                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
                                                         {item.label}
-                                                    </div>
-                                                    <div className="mt-1 text-sm font-bold text-slate-900">
+                                                    </span>
+                                                    <span className="text-sm font-extrabold text-slate-900">
                                                         {item.value}
-                                                    </div>
+                                                    </span>
                                                 </div>
                                             ))}
                                         </div>

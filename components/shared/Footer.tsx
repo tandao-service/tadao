@@ -130,7 +130,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
                 />
               </Link>
             </li>
-            <li>
+            {/**   <li>
               <Image
                 src="/assets/images/app-store.svg"
                 alt="App Store"
@@ -138,7 +138,7 @@ const Footer = ({ handleOpenFaq, handleOpenAbout, handleOpenTerms, handleOpenPri
                 width={20}
                 height={40}
               />
-            </li>
+            </li>*/}
           </ul>
         </div>
         <div className="flex-1">

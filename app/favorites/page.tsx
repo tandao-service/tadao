@@ -49,7 +49,7 @@ export default function BookmarksPage() {
                                     <DiamondIcon />
                                 </div>
                                 <h2 className="mt-4 text-xl font-bold text-slate-900">
-                                    Loading bookmarks
+                                    Loading favorites
                                 </h2>
                                 <p className="mt-2 text-sm text-slate-500">
                                     Please wait while we fetch your saved ads.
@@ -74,7 +74,7 @@ export default function BookmarksPage() {
                             </div>
 
                             <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-slate-900">
-                                My Bookmarks
+                                My Favorites
                             </h1>
 
                             <p className="mt-3 text-sm text-slate-500 md:text-base">
@@ -121,11 +121,11 @@ export default function BookmarksPage() {
                                     </div>
 
                                     <h1 className="mt-4 text-3xl font-extrabold tracking-[-0.03em] md:text-5xl">
-                                        My Bookmarks
+                                        My Favorites
                                     </h1>
 
                                     <p className="mt-3 max-w-2xl text-sm text-orange-50 md:text-base">
-                                        Keep track of your favourite listings and quickly return to
+                                        Keep track of your favorites listings and quickly return to
                                         ads you want to compare, contact, or buy later.
                                     </p>
                                 </div>
@@ -150,20 +150,20 @@ export default function BookmarksPage() {
                                     Saved listings
                                 </h2>
                                 <p className="mt-1 text-sm text-slate-500">
-                                    Ads you bookmark will appear here for quick access.
+                                    Ads you favorites will appear here for quick access.
                                 </p>
                             </div>
 
                             <div className="inline-flex w-fit items-center gap-2 rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-600">
                                 <BookmarkIcon className="h-4 w-4" />
-                                Tadao Market favourites
+                                Tadao Market favorites
                             </div>
                         </div>
 
                         <CollectionBookmark
                             userId={userId}
                             emptyTitle="No saved ads yet"
-                            emptyStateSubtext="Ads you bookmark will appear here."
+                            emptyStateSubtext="Ads you favorites will appear here."
                             limit={12}
                             isAdCreator={false}
                             isVertical={true}

@@ -15,7 +15,9 @@ import {
     MessageSquare,
     HandCoins,
     CalendarClock,
+    Boxes,
 } from "lucide-react";
+import { icon } from "leaflet";
 
 export type AdminNavItem = {
     href: string;
@@ -38,6 +40,12 @@ export const adminNavItems: AdminNavItem[] = [
         description: "Manage accounts",
     },
     {
+        href: "/admin/products",
+        label: "Products",
+        icon: Boxes,
+        description: "Posted listings",
+    },
+    {
         href: "/admin/subscription",
         label: "Subscriptions",
         icon: CalendarClock,
@@ -49,12 +57,12 @@ export const adminNavItems: AdminNavItem[] = [
         icon: ReceiptText,
         description: "Orders and status",
     },
-    {
-        href: "/admin/payments",
-        label: "Payments",
-        icon: CreditCard,
-        description: "Recorded payments",
-    },
+    // {
+    //   href: "/admin/payments",
+    //    label: "Payments",
+    //    icon: CreditCard,
+    //     description: "Recorded payments",
+    // },
     {
         href: "/admin/categories",
         label: "Categories",

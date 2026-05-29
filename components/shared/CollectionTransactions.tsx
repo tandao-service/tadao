@@ -90,17 +90,6 @@ const CollectionTransactions = ({
           </div>
         </div>
 
-        {/* Total for pending orders */}
-        <div className="flex gap-2 items-center bg-yellow-100 text-yellow-600 p-1 text-xs rounded-sm">
-          <div>Pending</div>
-          <div className="font-bold">
-            KES{" "}
-            {newdata
-              .filter((txs: any) => txs.status === "Pending")
-              .reduce((total: any, txs: any) => total + txs.amount, 0)
-              .toLocaleString()}
-          </div>
-        </div>
       </div>
 
       {newdata.length > 0 ? (

@@ -1048,14 +1048,16 @@ export default function ListingPageClient(props: Props) {
 
     const [filtersOpen, setFiltersOpen] = React.useState(false);
     const [catsOpen, setCatsOpen] = React.useState(false);
+    const [subsOpen, setSubsOpen] = React.useState(false);
 
     React.useEffect(() => {
-        if (!filtersOpen && !catsOpen && !regionsOpen) return;
+        if (!filtersOpen && !catsOpen && !subsOpen && !regionsOpen) return;
 
         const onKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
                 setFiltersOpen(false);
                 setCatsOpen(false);
+                setSubsOpen(false);
                 setRegionsOpen(false);
             }
         };
@@ -1437,13 +1439,10 @@ export default function ListingPageClient(props: Props) {
                             <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
                                 <div className="bg-gradient-to-r from-white via-orange-50/40 to-white px-5 py-5 sm:px-6">
                                     <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-orange-700">
-                                                <HiOutlineSparkles className="text-sm" />
-                                                Premium Listings
-                                            </div>
+                                        <div className="min-w-0 flex-1">
 
-                                            <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
+
+                                            <h1 className="mt-2 font-black tracking-tight text-slate-950 sm:text-4xl">
                                                 {String(activeListing?.title || props.title)} in{" "}
                                                 <span className="text-orange-600">{props.regionLabel}</span>
                                             </h1>
@@ -1767,7 +1766,7 @@ export default function ListingPageClient(props: Props) {
                         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
                         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-                            <div className="text-sm font-extrabold">Category & Subcategory</div>
+                            <div className="text-sm font-extrabold">Choose Category</div>
                             <button
                                 type="button"
                                 onClick={() => setCatsOpen(false)}
@@ -1786,106 +1785,51 @@ export default function ListingPageClient(props: Props) {
                             </div>
                         </div>
 
-                        <div className="max-h-[74vh] space-y-3 overflow-auto px-4 py-4">
-                            <div className="text-xs font-extrabold text-slate-700">Categories</div>
-
+                        <div className="max-h-[72vh] overflow-auto px-4 py-4">
                             <div className="space-y-2">
                                 {props.categories.map((c) => {
                                     const activeCat =
                                         String(c.name).toLowerCase() ===
-                                        String(mobileCatName || categoryName).toLowerCase();
+                                        String(categoryName).toLowerCase();
 
                                     return (
-                                        <div
+                                        <button
                                             key={c.name}
-                                            className="overflow-hidden rounded-2xl border border-slate-200 p-2"
+                                            type="button"
+                                            onClick={() => {
+                                                setMobileCatName(String(c.name));
+                                                setCatsOpen(false);
+                                                setSubsOpen(true);
+                                            }}
+                                            className={[
+                                                "w-full rounded-2xl border px-3 py-3 text-left transition",
+                                                activeCat
+                                                    ? "border-orange-200 bg-orange-50"
+                                                    : "border-slate-200 bg-white hover:bg-orange-50",
+                                            ].join(" ")}
                                         >
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setMobileCatName(String(c.name));
-                                                }}
-                                                className={cn(
-                                                    "w-full px-3 py-0 text-left transition hover:bg-orange-50",
-                                                    activeCat ? "bg-orange-50" : "bg-white"
-                                                )}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <IconBubble src={c.icon} alt={c.name} />
-                                                    <div className="min-w-0 flex-1">
-                                                        <div
-                                                            className={cn(
-                                                                "truncate text-sm",
-                                                                activeCat ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
-                                                            )}
-                                                        >
-                                                            {c.name}
-                                                        </div>
-                                                        <div className="text-[11px] font-bold text-slate-500">
-                                                            {Number(c.count || 0).toLocaleString()} ads
-                                                        </div>
+                                            <div className="flex items-center gap-3">
+                                                <IconBubble src={c.icon} alt={c.name} />
+
+                                                <div className="min-w-0 flex-1">
+                                                    <div
+                                                        className={[
+                                                            "truncate text-sm",
+                                                            activeCat
+                                                                ? "font-extrabold text-orange-700"
+                                                                : "font-semibold text-slate-900",
+                                                        ].join(" ")}
+                                                    >
+                                                        {c.name}
                                                     </div>
-                                                    <div className={cn("text-slate-400", activeCat ? "text-orange-600" : "")}>
-                                                        ▾
+                                                    <div className="text-[11px] font-bold text-slate-500">
+                                                        {Number(c.count || 0).toLocaleString()} ads
                                                     </div>
                                                 </div>
-                                            </button>
 
-                                            {activeCat ? (
-                                                <div className="border-t border-slate-200 bg-slate-50 p-2">
-                                                    <div className="mb-2 px-2 text-[11px] font-extrabold text-slate-600">
-                                                        Subcategories
-                                                    </div>
-
-                                                    <div className="max-h-[55vh] space-y-1 overflow-auto pr-3">
-                                                        {(c.listings || []).map((it) => {
-                                                            const isActiveSlug =
-                                                                String(it.slug).toLowerCase() === String(activeSlug).toLowerCase();
-
-                                                            const live = sidebar.subcategoryCounts?.[it.subcategory];
-                                                            const fallback = c.countsBySub?.[it.subcategory];
-                                                            const count = Number(live ?? fallback ?? 0);
-
-                                                            return (
-                                                                <button
-                                                                    key={it.slug}
-                                                                    type="button"
-                                                                    onClick={async () => {
-                                                                        setCatsOpen(false);
-                                                                        await onCategoryPick(c);
-                                                                        await onSubcategoryClick(it.slug);
-                                                                    }}
-                                                                    className={cn(
-                                                                        "m-1 w-full rounded-xl px-3 py-2 text-left transition hover:bg-orange-50",
-                                                                        isActiveSlug ? "bg-orange-50 ring-1 ring-orange-200" : "bg-white"
-                                                                    )}
-                                                                >
-                                                                    <div className="flex items-center gap-3">
-                                                                        <IconBubble src={it.icon} alt={it.title} />
-                                                                        <div className="min-w-0 flex-1">
-                                                                            <div
-                                                                                className={cn(
-                                                                                    "truncate text-sm",
-                                                                                    isActiveSlug ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
-                                                                                )}
-                                                                            >
-                                                                                {it.title}
-                                                                            </div>
-                                                                            <div className="text-[11px] font-bold text-slate-500">
-                                                                                {Number(count).toLocaleString()} ads
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className={cn("text-slate-400", isActiveSlug ? "text-orange-600" : "")}>
-                                                                            ›
-                                                                        </div>
-                                                                    </div>
-                                                                </button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            ) : null}
-                                        </div>
+                                                <div className="text-slate-400">›</div>
+                                            </div>
+                                        </button>
                                     );
                                 })}
                             </div>
@@ -1893,7 +1837,122 @@ export default function ListingPageClient(props: Props) {
                     </div>
                 </div>
             ) : null}
+            {subsOpen ? (
+                <div className="fixed inset-0 z-[910] md:hidden">
+                    <button
+                        aria-label="Close subcategories"
+                        className="absolute inset-0 bg-black/40"
+                        onClick={() => setSubsOpen(false)}
+                    />
 
+                    <div
+                        className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl"
+                        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+                    >
+                        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSubsOpen(false);
+                                    setCatsOpen(true);
+                                }}
+                                className="rounded-full border border-slate-200 px-3 py-2 text-xs font-extrabold hover:bg-orange-50"
+                            >
+                                Back
+                            </button>
+
+                            <div className="text-sm font-extrabold">
+                                {mobileCatName || categoryName}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setSubsOpen(false)}
+                                className="rounded-full border border-slate-200 p-2 hover:bg-orange-50"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        <div className="px-4 pt-3">
+                            <div className="rounded-2xl border border-orange-100 bg-orange-50 px-3 py-2 text-xs font-extrabold text-slate-700">
+                                Choose subcategory under{" "}
+                                <span className="text-orange-700">
+                                    {mobileCatName || categoryName}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="max-h-[72vh] overflow-auto px-4 py-4">
+                            <div className="space-y-2">
+                                {props.categories
+                                    .find(
+                                        (c) =>
+                                            String(c.name).toLowerCase() ===
+                                            String(mobileCatName || categoryName).toLowerCase()
+                                    )
+                                    ?.listings?.map((it) => {
+                                        const selectedCat = props.categories.find(
+                                            (c) =>
+                                                String(c.name).toLowerCase() ===
+                                                String(mobileCatName || categoryName).toLowerCase()
+                                        );
+
+                                        const isActiveSlug =
+                                            String(it.slug).toLowerCase() ===
+                                            String(activeSlug).toLowerCase();
+
+                                        const live = sidebar.subcategoryCounts?.[it.subcategory];
+                                        const fallback = selectedCat?.countsBySub?.[it.subcategory];
+                                        const count = Number(live ?? fallback ?? 0);
+
+                                        return (
+                                            <button
+                                                key={it.slug}
+                                                type="button"
+                                                onClick={async () => {
+                                                    if (!selectedCat) return;
+
+                                                    setSubsOpen(false);
+                                                    await onCategoryPick(selectedCat);
+                                                    await onSubcategoryClick(it.slug);
+                                                }}
+                                                className={[
+                                                    "w-full rounded-2xl border px-3 py-3 text-left transition",
+                                                    isActiveSlug
+                                                        ? "border-orange-200 bg-orange-50"
+                                                        : "border-slate-200 bg-white hover:bg-orange-50",
+                                                ].join(" ")}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <IconBubble src={it.icon} alt={it.title} />
+
+                                                    <div className="min-w-0 flex-1">
+                                                        <div
+                                                            className={[
+                                                                "truncate text-sm",
+                                                                isActiveSlug
+                                                                    ? "font-extrabold text-orange-700"
+                                                                    : "font-semibold text-slate-900",
+                                                            ].join(" ")}
+                                                        >
+                                                            {it.title}
+                                                        </div>
+                                                        <div className="text-[11px] font-bold text-slate-500">
+                                                            {count.toLocaleString()} ads
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="text-slate-400">›</div>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
             {regionsOpen ? (
                 <div className="fixed inset-0 z-[950]">
                     <button

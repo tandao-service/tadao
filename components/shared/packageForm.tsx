@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { Plus, Trash2, Save } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,25 +18,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
-import { ScrollArea } from "../ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "../ui/use-toast";
 
 import { packageFormSchema } from "@/lib/validator";
 import { PackagesDefaultValues } from "@/constants";
 import { useUploadThing } from "@/lib/uploadthing";
-//import { IPackages } from "@/lib/database/models/packages.model";
 import { createPackage, updatePackage } from "@/lib/actions/packages.actions";
 import { FileUploaderPackage } from "./FileuploaderPackage";
 
-type packageFormProps = {
+type PackageFormProps = {
   type: "Create" | "Update";
   pack?: any;
   packageId?: string;
+  onSaved?: () => void;
 };
 
-const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
-  const router = useRouter();
+const PackageForm = ({ type, pack, packageId, onSaved }: PackageFormProps) => {
   const { toast } = useToast();
   const { startUpload } = useUploadThing("imageUploader");
 
@@ -44,27 +42,28 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
   const [showmessage, setmessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
 
-  // ✅ Normalize initial values (support old packages that don't have entitlements/price2 yet)
+  const [newFeatureTitle, setNewFeatureTitle] = useState("");
+  const [newFeatureChecked, setNewFeatureChecked] = useState(true);
+
+  const [newPeriod, setNewPeriod] = useState("");
+  const [newAmount, setNewAmount] = useState("");
+
+  const [newPeriod2, setNewPeriod2] = useState("");
+  const [newAmount2, setNewAmount2] = useState("");
+
   const initialValues =
     pack && type === "Update"
       ? ({
         ...pack,
-        features: (pack as any)?.features ?? [],
-        price: (pack as any)?.price ?? [],
-        price2: (pack as any)?.price2 ?? [],
+        features: pack?.features ?? [],
+        price: pack?.price ?? [],
+        price2: pack?.price2 ?? [],
         entitlements: {
-          maxListings:
-            (pack as any)?.entitlements?.maxListings ??
-            (pack as any)?.list ??
-            0,
-          priority:
-            (pack as any)?.entitlements?.priority ??
-            (pack as any)?.priority ??
-            0,
-          topDays: (pack as any)?.entitlements?.topDays ?? 0,
-          featuredDays: (pack as any)?.entitlements?.featuredDays ?? 0,
-          autoRenewHours:
-            (pack as any)?.entitlements?.autoRenewHours ?? null,
+          maxListings: pack?.entitlements?.maxListings ?? pack?.list ?? 0,
+          priority: pack?.entitlements?.priority ?? pack?.priority ?? 0,
+          topDays: pack?.entitlements?.topDays ?? 0,
+          featuredDays: pack?.entitlements?.featuredDays ?? 0,
+          autoRenewHours: pack?.entitlements?.autoRenewHours ?? null,
         },
       } as any)
       : ({
@@ -84,53 +83,14 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
     defaultValues: initialValues,
   });
 
-  // ------------ Color picker ------------
-  interface ColorPickerProps {
-    value: string;
-    onChange: (color: string) => void;
-  }
-  const ColorPicker: React.FC<ColorPickerProps> = ({ onChange, value }) => {
-    return (
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    );
-  };
-
-  // ------------ Feature add row state ------------
-  const [newListingTitle, setNewListingTitle] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleInputChange = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setNewListingTitle(event.target.value);
-  };
-
-  // ------------ Price add row state (price) ------------
-  const [newListingPeriod, setNewListingPeriod] = useState("");
-  const [newListingAmount, setNewListingAmount] = useState("");
-
-  const handleInputChangePeriod = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setNewListingPeriod(event.target.value);
-  };
-
-  const handleInputChangeAmount = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setNewListingAmount(event.target.value);
-  };
-
-  // ------------ Price add row state (price2) ------------
-  const [newListingPeriod2, setNewListingPeriod2] = useState("");
-  const [newListingAmount2, setNewListingAmount2] = useState("");
-
-  // ✅ Sync "X Allowed Listings" with entitlements.maxListings (new upgrade)
   const maxListingsValue = form.watch("entitlements.maxListings");
+  const watchName = form.watch("name");
+  const watchDescription = form.watch("description");
+  const watchColor = form.watch("color");
+  const watchPrice = form.watch("price");
+  const watchFeatures = form.watch("features");
+  const watchEntitlements = form.watch("entitlements");
+
   useEffect(() => {
     const currentFeatures = form.getValues("features") || [];
     const numericList = Number(maxListingsValue) || 0;
@@ -146,6 +106,7 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
           title: `${numericList} Allowed Listings`,
         };
       }
+
       return f;
     });
 
@@ -156,25 +117,22 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
     let uploadedImageUrl = values.imageUrl;
 
     try {
+      setShowAlert(false);
+
       if (files.length > 0) {
         const uploadedImages = await startUpload(files);
         if (!uploadedImages) return;
         uploadedImageUrl = uploadedImages[0].url;
       }
 
-      // ✅ mirror legacy fields from entitlements (backward compatibility)
       const maxListings = Number(values.entitlements?.maxListings ?? 0);
       const entPriority = Number(values.entitlements?.priority ?? 0);
 
       const payload = {
         ...values,
         imageUrl: uploadedImageUrl,
-
-        // ✅ legacy mirror fields used elsewhere in your app
         list: maxListings,
         priority: entPriority,
-
-        // ✅ ensure entitlements is clean
         entitlements: {
           maxListings,
           priority: entPriority,
@@ -186,8 +144,6 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
               ? null
               : Number(values.entitlements.autoRenewHours),
         },
-
-        // ✅ ensure arrays exist
         features: values.features ?? [],
         price: values.price ?? [],
         price2: (values as any).price2 ?? [],
@@ -196,11 +152,12 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
       if (type === "Create") {
         const newPack = await createPackage({
           pack: payload as any,
-          path: "/profile",
+          path: "/admin/packages",
         });
 
         if (newPack) {
           form.reset();
+          onSaved?.();
           toast({
             title: "Created",
             description: "Package created successfully.",
@@ -208,22 +165,21 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
             className: "bg-[#30AF5B] text-white",
           });
         }
-      } else if (type === "Update") {
-        if (!packageId) {
-          router.back();
-          return;
-        }
+      }
+
+      if (type === "Update") {
+        if (!packageId) return;
 
         const updatedPack = await updatePackage({
           pack: {
             ...(payload as any),
             _id: packageId,
           },
-          path: `/packages/${packageId}`,
+          path: "/admin/packages",
         });
 
         if (updatedPack) {
-          form.reset();
+          onSaved?.();
           toast({
             title: "Updated",
             description: "Package updated successfully.",
@@ -240,658 +196,524 @@ const PackageForm = ({ type, pack, packageId }: packageFormProps) => {
   }
 
   return (
-    <ScrollArea className="h-[400px] w-full p-3">
+    <div className="flex h-full min-h-0 flex-col">
       {showAlert && (
-        <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{showmessage}</AlertDescription>
-        </Alert>
+        <div className="mb-4">
+          <Alert variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{showmessage}</AlertDescription>
+          </Alert>
+        </div>
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          {/* Package name */}
-          <div className="flex flex-col p-2 w-full">
-            <div className="flex items-center font-bold">
-              <h1>Package name</h1>
-            </div>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Input
-                      placeholder="Name"
-                      {...field}
-                      className="input-field dark:bg-[#2D3236] bg-white"
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_320px]">
+              <div className="space-y-5">
+                <Section title="Basic Details" subtitle="Package name, description, color and image.">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Label>Package Name</Label>
+                          <FormControl>
+                            <Input placeholder="e.g. Gold" {...field} className="h-11 rounded-2xl bg-white" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
 
-          {/* Description */}
-          <div className="flex flex-col p-2 w-full">
-            <div className="flex items-center font-bold">
-              <h1>Package Description</h1>
-            </div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl className="h-30">
-                    <Textarea
-                      placeholder="Description"
-                      {...field}
-                      className="textarea rounded-xl dark:bg-[#2D3236] bg-white"
+                    <FormField
+                      control={form.control}
+                      name="color"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Label>Package Color</Label>
+                          <FormControl>
+                            <div className="flex h-11 items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3">
+                              <input
+                                type="color"
+                                value={field.value}
+                                onChange={(e) => field.onChange(e.target.value)}
+                                className="h-7 w-10 cursor-pointer rounded"
+                              />
+                              <span className="text-sm text-slate-500">{field.value}</span>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                  </div>
 
-          {/* ✅ Entitlements (new upgrade) */}
-          <div className="flex rounded-xl border mt-3 flex-col p-2 w-full">
-            <div className="flex items-center font-bold px-2">
-              <h1>Entitlements (New Upgrade)</h1>
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>Description</Label>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Short package description"
+                            {...field}
+                            className="min-h-[90px] rounded-2xl bg-white"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            {/* Max Listings */}
-            <div className="flex flex-col p-2 w-full">
-              <div className="flex items-center font-bold">
-                <h1>Max Listings</h1>
-              </div>
-              <FormField
-                control={form.control}
-                name="entitlements.maxListings"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Max Listings"
-                        {...field}
-                        className="input-field dark:bg-[#2D3236] bg-white"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>Package Image</Label>
+                        <FormControl>
+                          <FileUploaderPackage
+                            onFieldChange={field.onChange}
+                            imageUrl={field.value}
+                            setFiles={setFiles}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </Section>
 
-            {/* Priority */}
-            <div className="flex flex-col p-2 w-full">
-              <div className="flex items-center font-bold">
-                <h1>Priority</h1>
-              </div>
-              <FormField
-                control={form.control}
-                name="entitlements.priority"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Priority"
-                        {...field}
-                        className="input-field dark:bg-[#2D3236] bg-white"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                <Section title="Entitlements" subtitle="Controls posting limits and advert visibility.">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <NumberField form={form} name="entitlements.maxListings" label="Max Listings" />
+                    <NumberField form={form} name="entitlements.priority" label="Priority" />
+                    <NumberField form={form} name="entitlements.topDays" label="Top Days" />
+                    <NumberField form={form} name="entitlements.featuredDays" label="Featured Days" />
 
-            {/* Top Days */}
-            <div className="flex flex-col p-2 w-full">
-              <div className="flex items-center font-bold">
-                <h1>Top Days</h1>
-              </div>
-              <FormField
-                control={form.control}
-                name="entitlements.topDays"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Top Days"
-                        {...field}
-                        className="input-field dark:bg-[#2D3236] bg-white"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    <FormField
+                      control={form.control}
+                      name="entitlements.autoRenewHours"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Label>Auto Renew Hours</Label>
+                          <FormControl>
+                            <Input
+                              value={field.value === null ? "" : String(field.value)}
+                              onChange={(e) =>
+                                field.onChange(e.target.value === "" ? null : Number(e.target.value))
+                              }
+                              placeholder="Leave empty for none"
+                              className="h-11 rounded-2xl bg-white"
+                              type="number"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </Section>
 
-            {/* Featured Days */}
-            <div className="flex flex-col p-2 w-full">
-              <div className="flex items-center font-bold">
-                <h1>Featured Days</h1>
-              </div>
-              <FormField
-                control={form.control}
-                name="entitlements.featuredDays"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Featured Days"
-                        {...field}
-                        className="input-field dark:bg-[#2D3236] bg-white"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Auto Renew Hours */}
-            <div className="flex flex-col p-2 w-full">
-              <div className="flex items-center font-bold">
-                <h1>Auto Renew Hours (optional)</h1>
-              </div>
-              <FormField
-                control={form.control}
-                name="entitlements.autoRenewHours"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        value={field.value === null ? "" : String(field.value)}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : Number(e.target.value)
-                          )
-                        }
-                        placeholder="24 / 12 (leave empty for none)"
-                        className="input-field dark:bg-[#2D3236] bg-white"
-                        type="number"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-
-          {/* ---------- Features Listings ---------- */}
-          <div className="flex rounded-xl border mt-3 flex-col p-2 w-full">
-            <FormField
-              control={form.control}
-              name="features"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <div className="flex flex-col w-full rounded-2xl bg-grey-50">
-                      <div>
-                        <div className="flex items-center font-bold">
-                          <h1>Features Listings</h1>
-                        </div>
-                        <ul className="space-y-2">
-                          {field.value &&
-                            field.value.map((feature: any, index: number) => {
+                <Section title="Features" subtitle="Features shown to users on package cards.">
+                  <FormField
+                    control={form.control}
+                    name="features"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="space-y-3">
+                            {(field.value || []).map((feature: any, index: number) => {
                               const isAllowedListingFeature =
                                 typeof feature.title === "string" &&
-                                feature.title
-                                  .toLowerCase()
-                                  .includes("allowed listings");
-
-                              const numericList =
-                                Number(maxListingsValue) || 0;
-                              const displayTitle = isAllowedListingFeature
-                                ? `${numericList} Allowed Listings`
-                                : feature.title;
-
-                              // Special row: allowed listings
-                              if (isAllowedListingFeature) {
-                                return (
-                                  <li
-                                    key={index}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <span className="flex-1 text-sm font-medium">
-                                      {displayTitle}
-                                    </span>
-                                  </li>
-                                );
-                              }
+                                feature.title.toLowerCase().includes("allowed listings");
 
                               return (
-                                <li
+                                <div
                                   key={index}
-                                  className="flex items-center gap-2"
+                                  className="grid grid-cols-[1fr_auto_auto] items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3"
                                 >
-                                  <Input
-                                    className="flex-1 dark:bg-[#2D3236] bg-white"
-                                    value={feature.title}
-                                    onChange={(e) => {
-                                      const updatedFeatures = [
-                                        ...(field.value || []),
-                                      ];
-                                      updatedFeatures[index] = {
-                                        ...updatedFeatures[index],
-                                        title: e.target.value,
-                                      };
-                                      field.onChange(updatedFeatures);
-                                    }}
-                                    placeholder="Feature title"
-                                  />
+                                  {isAllowedListingFeature ? (
+                                    <p className="text-sm font-medium text-slate-700">{feature.title}</p>
+                                  ) : (
+                                    <Input
+                                      value={feature.title}
+                                      onChange={(e) => {
+                                        const updated = [...(field.value || [])];
+                                        updated[index] = {
+                                          ...updated[index],
+                                          title: e.target.value,
+                                        };
+                                        field.onChange(updated);
+                                      }}
+                                      placeholder="Feature title"
+                                      className="h-10 rounded-xl border-slate-200"
+                                    />
+                                  )}
 
-                                  <input
-                                    type="checkbox"
-                                    checked={feature.checked}
-                                    onChange={(e) => {
-                                      const updatedFeatures = [
-                                        ...(field.value || []),
-                                      ];
-                                      updatedFeatures[index] = {
-                                        ...updatedFeatures[index],
-                                        checked: e.target.checked,
-                                      };
-                                      field.onChange(updatedFeatures);
-                                    }}
-                                    className="ml-2 p-2 cursor-pointer"
-                                  />
+                                  <label className="flex items-center gap-2 text-sm text-slate-600">
+                                    <Checkbox
+                                      checked={Boolean(feature.checked)}
+                                      onCheckedChange={(checked) => {
+                                        const updated = [...(field.value || [])];
+                                        updated[index] = {
+                                          ...updated[index],
+                                          checked: Boolean(checked),
+                                        };
+                                        field.onChange(updated);
+                                      }}
+                                    />
+                                    Enabled
+                                  </label>
 
-                                  <Image
-                                    src="/assets/icons/delete.svg"
-                                    alt="delete"
-                                    className="p-2 cursor-pointer"
-                                    width={35}
-                                    height={35}
+                                  <button
+                                    type="button"
                                     onClick={() => {
-                                      const updatedFeatures =
-                                        field.value.filter(
-                                          (_: any, i: number) => i !== index
-                                        );
-                                      field.onChange(updatedFeatures);
+                                      const updated = (field.value || []).filter(
+                                        (_: any, i: number) => i !== index
+                                      );
+                                      field.onChange(updated);
                                     }}
-                                  />
-                                </li>
+                                    className="rounded-xl border border-rose-200 p-2 text-rose-600 hover:bg-rose-50"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
                               );
                             })}
-                        </ul>
 
-                        {/* Add new feature row */}
-                        <div className="flex items-center justify-between h-[54px] w-full overflow-hidden mt-2">
-                          <Input
-                            className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                            value={newListingTitle}
-                            onChange={handleInputChange}
-                            placeholder="Enter Feature title"
-                          />
-                          <div className="flex items-center">
-                            <label className="whitespace-nowrap pr-3 leading-none">
-                              Enabled
-                            </label>
-                            <Checkbox
-                              onCheckedChange={() => setIsChecked(!isChecked)}
-                              checked={isChecked}
-                              id="recommended"
-                              className="mr-2 h-5 w-5 border-2 border-primary-500"
-                            />
+                            <div className="grid grid-cols-1 gap-3 rounded-2xl border border-dashed border-slate-300 bg-white p-3 md:grid-cols-[1fr_auto_auto]">
+                              <Input
+                                value={newFeatureTitle}
+                                onChange={(e) => setNewFeatureTitle(e.target.value)}
+                                placeholder="Add feature title"
+                                className="h-10 rounded-xl"
+                              />
+
+                              <label className="flex items-center gap-2 text-sm text-slate-600">
+                                <Checkbox
+                                  checked={newFeatureChecked}
+                                  onCheckedChange={(checked) => setNewFeatureChecked(Boolean(checked))}
+                                />
+                                Enabled
+                              </label>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (!newFeatureTitle.trim()) return;
+                                  field.onChange([
+                                    ...(field.value || []),
+                                    {
+                                      title: newFeatureTitle.trim(),
+                                      checked: newFeatureChecked,
+                                    },
+                                  ]);
+                                  setNewFeatureTitle("");
+                                  setNewFeatureChecked(true);
+                                }}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
+                              >
+                                <Plus className="h-4 w-4" />
+                                Add
+                              </button>
+                            </div>
                           </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </Section>
 
-                          <Image
-                            src="/assets/icons/add.svg"
-                            alt="add"
-                            className="p-0 cursor-pointer"
-                            width={45}
-                            height={45}
-                            onClick={() => {
-                              if (newListingTitle.trim() !== "") {
-                                const updatedFeatures = [
-                                  ...(field.value || []),
-                                  {
-                                    title: newListingTitle.trim(),
-                                    checked: isChecked,
-                                  },
-                                ];
-                                field.onChange(updatedFeatures);
-                                setNewListingTitle("");
-                                setIsChecked(false);
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                <PriceSection
+                  title="Normal Package Prices"
+                  subtitle="Used for normal categories."
+                  form={form}
+                  fieldName="price"
+                  newPeriod={newPeriod}
+                  setNewPeriod={setNewPeriod}
+                  newAmount={newAmount}
+                  setNewAmount={setNewAmount}
+                />
 
-          {/* ---------- Price Listings (price) ---------- */}
-          <div className="flex mt-3 rounded-xl border flex-col p-2 w-full">
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <div className="flex flex-col gap-5 md:flex-row rounded-2xl bg-grey-50">
-                      <div className="w-full">
-                        <div className="flex items-center font-bold">
-                          <h1>Price Listings</h1>
-                        </div>
+                <PriceSection
+                  title="Financing Package Prices"
+                  subtitle="Used for Assets Financing packages."
+                  form={form}
+                  fieldName="price2"
+                  newPeriod={newPeriod2}
+                  setNewPeriod={setNewPeriod2}
+                  newAmount={newAmount2}
+                  setNewAmount={setNewAmount2}
+                />
+              </div>
 
-                        <ul>
-                          {field.value &&
-                            field.value.map((price: any, index: number) => (
-                              <li
-                                key={index}
-                                className="flex items-center mt-2 gap-5 w-full"
-                              >
-                                <Input
-                                  className="flex-1 ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                                  value={price.period}
-                                  onChange={(e) => {
-                                    const updatedPrice = [
-                                      ...(field.value || []),
-                                    ];
-                                    updatedPrice[index] = {
-                                      ...updatedPrice[index],
-                                      period: e.target.value,
-                                    };
-                                    field.onChange(updatedPrice);
-                                  }}
-                                  placeholder="Period"
-                                />
+              <aside className="hidden xl:block">
+                <div className="sticky top-0 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">
+                    Preview
+                  </p>
 
-                                <Input
-                                  className="flex-1 ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                                  value={price.amount}
-                                  type="number"
-                                  onChange={(e) => {
-                                    const updatedPrice = [
-                                      ...(field.value || []),
-                                    ];
-                                    updatedPrice[index] = {
-                                      ...updatedPrice[index],
-                                      amount:
-                                        e.target.value === ""
-                                          ? 0
-                                          : Number(e.target.value),
-                                    };
-                                    field.onChange(updatedPrice);
-                                  }}
-                                  placeholder="Amount"
-                                />
+                  <div
+                    className="mt-4 rounded-3xl p-5 text-white"
+                    style={{ backgroundColor: watchColor || "#f97316" }}
+                  >
+                    <p className="text-xl font-semibold">{watchName || "Package Name"}</p>
+                    <p className="mt-2 text-sm text-white/85">
+                      {watchDescription || "Package description will appear here."}
+                    </p>
+                  </div>
 
-                                <Image
-                                  src="/assets/icons/delete.svg"
-                                  alt="delete"
-                                  className="p-2 cursor-pointer"
-                                  width={35}
-                                  height={35}
-                                  onClick={() => {
-                                    const updatedPrice =
-                                      field.value.filter(
-                                        (_: any, i: number) => i !== index
-                                      );
-                                    field.onChange(updatedPrice);
-                                  }}
-                                />
-                              </li>
-                            ))}
-                        </ul>
-
-                        <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
-                          <Input
-                            className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                            value={newListingPeriod}
-                            onChange={handleInputChangePeriod}
-                            placeholder="Period"
-                          />
-                          <Input
-                            className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                            value={newListingAmount}
-                            onChange={handleInputChangeAmount}
-                            placeholder="Amount"
-                            type="number"
-                          />
-
-                          <Image
-                            src="/assets/icons/add.svg"
-                            alt="add"
-                            className="p-0 cursor-pointer"
-                            width={45}
-                            height={45}
-                            onClick={() => {
-                              if (newListingPeriod.trim() !== "") {
-                                const updatedPrice = [
-                                  ...(field.value || []),
-                                  {
-                                    period: newListingPeriod.trim(),
-                                    amount: parseFloat(
-                                      (newListingAmount || "0").trim()
-                                    ),
-                                  },
-                                ];
-                                field.onChange(updatedPrice);
-                                setNewListingPeriod("");
-                                setNewListingAmount("");
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* ---------- Price Listings (price2) NEW ---------- */}
-          <div className="flex mt-3 rounded-xl border flex-col p-2 w-full">
-            <FormField
-              control={form.control}
-              name="price2"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <div className="flex flex-col gap-5 md:flex-row rounded-2xl bg-grey-50">
-                      <div className="w-full">
-                        <div className="flex items-center font-bold">
-                          <h1>Price Listings 2</h1>
-                        </div>
-
-                        <ul>
-                          {field.value &&
-                            field.value.map((price: any, index: number) => (
-                              <li
-                                key={index}
-                                className="flex items-center mt-2 gap-5 w-full"
-                              >
-                                <Input
-                                  className="flex-1 ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                                  value={price.period}
-                                  onChange={(e) => {
-                                    const updatedPrice = [
-                                      ...(field.value || []),
-                                    ];
-                                    updatedPrice[index] = {
-                                      ...updatedPrice[index],
-                                      period: e.target.value,
-                                    };
-                                    field.onChange(updatedPrice);
-                                  }}
-                                  placeholder="Period"
-                                />
-
-                                <Input
-                                  className="flex-1 ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                                  value={price.amount}
-                                  type="number"
-                                  onChange={(e) => {
-                                    const updatedPrice = [
-                                      ...(field.value || []),
-                                    ];
-                                    updatedPrice[index] = {
-                                      ...updatedPrice[index],
-                                      amount:
-                                        e.target.value === ""
-                                          ? 0
-                                          : Number(e.target.value),
-                                    };
-                                    field.onChange(updatedPrice);
-                                  }}
-                                  placeholder="Amount"
-                                />
-
-                                <Image
-                                  src="/assets/icons/delete.svg"
-                                  alt="delete"
-                                  className="p-2 cursor-pointer"
-                                  width={35}
-                                  height={35}
-                                  onClick={() => {
-                                    const updatedPrice =
-                                      field.value.filter(
-                                        (_: any, i: number) => i !== index
-                                      );
-                                    field.onChange(updatedPrice);
-                                  }}
-                                />
-                              </li>
-                            ))}
-                        </ul>
-
-                        <div className="flex items-center justify-between h-[54px] w-full overflow-hidden">
-                          <Input
-                            className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                            value={newListingPeriod2}
-                            onChange={(e) => setNewListingPeriod2(e.target.value)}
-                            placeholder="Period"
-                          />
-                          <Input
-                            className="ml-2 mr-2 dark:bg-[#2D3236] bg-white"
-                            value={newListingAmount2}
-                            onChange={(e) => setNewListingAmount2(e.target.value)}
-                            placeholder="Amount"
-                            type="number"
-                          />
-
-                          <Image
-                            src="/assets/icons/add.svg"
-                            alt="add"
-                            className="p-0 cursor-pointer"
-                            width={45}
-                            height={45}
-                            onClick={() => {
-                              if (newListingPeriod2.trim() !== "") {
-                                const updatedPrice = [
-                                  ...(field.value || []),
-                                  {
-                                    period: newListingPeriod2.trim(),
-                                    amount: parseFloat(
-                                      (newListingAmount2 || "0").trim()
-                                    ),
-                                  },
-                                ];
-                                field.onChange(updatedPrice);
-                                setNewListingPeriod2("");
-                                setNewListingAmount2("");
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* ---------- Color ---------- */}
-          <div className="flex rounded-xl border mt-3 flex-col p-2 w-full">
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <div className="flex h-[54px] w-full overflow-hidden rounded-full bg-grey-50 px-4 py-2">
-                      <Image
-                        src="/assets/icons/link.svg"
-                        alt="link"
-                        width={24}
-                        height={24}
-                      />
-
-                      <label className="whitespace-nowrap p-3 leading-none">
-                        Choose Color
-                      </label>
-                      <div className="mr-2 p-2">
-                        <ColorPicker
-                          value={field.value}
-                          onChange={(color: any) => field.onChange(color)}
-                        />
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* ---------- Image & Submit ---------- */}
-          <div className="flex flex-col mt-2 w-full">
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl className="h-50">
-                    <FileUploaderPackage
-                      onFieldChange={field.onChange}
-                      imageUrl={field.value}
-                      setFiles={setFiles}
+                  <div className="mt-4 space-y-3 text-sm text-slate-700">
+                    <PreviewRow label="Listings" value={watchEntitlements?.maxListings ?? 0} />
+                    <PreviewRow label="Priority" value={watchEntitlements?.priority ?? 0} />
+                    <PreviewRow label="Top Days" value={watchEntitlements?.topDays ?? 0} />
+                    <PreviewRow label="Featured Days" value={watchEntitlements?.featuredDays ?? 0} />
+                    <PreviewRow
+                      label="Auto Renew"
+                      value={
+                        watchEntitlements?.autoRenewHours
+                          ? `${watchEntitlements.autoRenewHours} hrs`
+                          : "-"
+                      }
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </div>
 
-            <div className="p-2">
-              <Button
-                type="submit"
-                size="lg"
-                disabled={form.formState.isSubmitting}
-                className="button col-span-2 mt-3 w-full"
-              >
-                {form.formState.isSubmitting
-                  ? "Submitting..."
-                  : `${type} Package`}
-              </Button>
+                  <div className="mt-5">
+                    <p className="mb-2 text-sm font-semibold text-slate-900">Prices</p>
+                    <div className="space-y-2">
+                      {(watchPrice || []).slice(0, 4).map((p: any, i: number) => (
+                        <div
+                          key={i}
+                          className="flex justify-between rounded-xl bg-slate-50 px-3 py-2 text-sm"
+                        >
+                          <span>{p.period}</span>
+                          <span className="font-semibold">
+                            KES {Number(p.amount || 0).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-5">
+                    <p className="mb-2 text-sm font-semibold text-slate-900">Features</p>
+                    <ul className="space-y-2">
+                      {(watchFeatures || []).slice(0, 5).map((f: any, i: number) => (
+                        <li key={i} className="text-sm text-slate-600">
+                          {f.checked ? "✓" : "✕"} {f.title}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </aside>
             </div>
+          </div>
+
+          <div className="mt-4 border-t border-slate-200 bg-white pt-4">
+            <Button
+              type="submit"
+              size="lg"
+              disabled={form.formState.isSubmitting}
+              className="w-full rounded-2xl bg-slate-950 hover:bg-orange-500"
+            >
+              <Save className="mr-2 h-4 w-4" />
+              {form.formState.isSubmitting
+                ? "Saving..."
+                : type === "Create"
+                  ? "Create Package"
+                  : "Save Package Changes"}
+            </Button>
           </div>
         </form>
       </Form>
-    </ScrollArea>
+    </div>
   );
 };
+
+function Section({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-[28px] border border-slate-200 bg-slate-50/70 p-5">
+      <div className="mb-4">
+        <h2 className="text-base font-semibold text-slate-950">{title}</h2>
+        {subtitle ? <p className="mt-1 text-sm text-slate-500">{subtitle}</p> : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Label({ children }: { children: React.ReactNode }) {
+  return <p className="mb-2 text-sm font-medium text-slate-700">{children}</p>;
+}
+
+function NumberField({ form, name, label }: { form: any; name: any; label: string }) {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <Label>{label}</Label>
+          <FormControl>
+            <Input
+              {...field}
+              value={field.value ?? ""}
+              onChange={(e) => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
+              className="h-11 rounded-2xl bg-white"
+              type="number"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+function PriceSection({
+  title,
+  subtitle,
+  form,
+  fieldName,
+  newPeriod,
+  setNewPeriod,
+  newAmount,
+  setNewAmount,
+}: {
+  title: string;
+  subtitle: string;
+  form: any;
+  fieldName: "price" | "price2";
+  newPeriod: string;
+  setNewPeriod: (value: string) => void;
+  newAmount: string;
+  setNewAmount: (value: string) => void;
+}) {
+  return (
+    <Section title={title} subtitle={subtitle}>
+      <FormField
+        control={form.control}
+        name={fieldName}
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <div className="space-y-3">
+                {(field.value || []).map((price: any, index: number) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-3 md:grid-cols-[1fr_1fr_auto]"
+                  >
+                    <Input
+                      value={price.period}
+                      onChange={(e) => {
+                        const updated = [...(field.value || [])];
+                        updated[index] = {
+                          ...updated[index],
+                          period: e.target.value,
+                        };
+                        field.onChange(updated);
+                      }}
+                      placeholder="Period"
+                      className="h-10 rounded-xl"
+                    />
+
+                    <Input
+                      value={price.amount}
+                      type="number"
+                      onChange={(e) => {
+                        const updated = [...(field.value || [])];
+                        updated[index] = {
+                          ...updated[index],
+                          amount: e.target.value === "" ? 0 : Number(e.target.value),
+                        };
+                        field.onChange(updated);
+                      }}
+                      placeholder="Amount"
+                      className="h-10 rounded-xl"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = (field.value || []).filter(
+                          (_: any, i: number) => i !== index
+                        );
+                        field.onChange(updated);
+                      }}
+                      className="rounded-xl border border-rose-200 p-2 text-rose-600 hover:bg-rose-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+
+                <div className="grid grid-cols-1 gap-3 rounded-2xl border border-dashed border-slate-300 bg-white p-3 md:grid-cols-[1fr_1fr_auto]">
+                  <Input
+                    value={newPeriod}
+                    onChange={(e) => setNewPeriod(e.target.value)}
+                    placeholder="Period e.g. 1 month"
+                    className="h-10 rounded-xl"
+                  />
+
+                  <Input
+                    value={newAmount}
+                    onChange={(e) => setNewAmount(e.target.value)}
+                    placeholder="Amount"
+                    type="number"
+                    className="h-10 rounded-xl"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!newPeriod.trim()) return;
+                      field.onChange([
+                        ...(field.value || []),
+                        {
+                          period: newPeriod.trim(),
+                          amount: Number(newAmount || 0),
+                        },
+                      ]);
+                      setNewPeriod("");
+                      setNewAmount("");
+                    }}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add
+                  </button>
+                </div>
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </Section>
+  );
+}
+
+function PreviewRow({ label, value }: { label: string; value: any }) {
+  return (
+    <div className="flex justify-between rounded-xl bg-slate-50 px-3 py-2">
+      <span className="text-slate-500">{label}</span>
+      <span className="font-semibold text-slate-900">{value}</span>
+    </div>
+  );
+}
 
 export default PackageForm;

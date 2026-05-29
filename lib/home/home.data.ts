@@ -236,7 +236,8 @@ export async function getHomePageData() {
             priority: 1,
         }
     )
-        .sort({ views: -1, priority: -1, createdAt: -1 })
+        .sort({ priority: -1, createdAt: -1 })
+        //.sort({ views: -1, priority: -1, createdAt: -1 })
         .limit(28);
 
     const trendingDocs = await trendingQuery.populate(populateSpec);

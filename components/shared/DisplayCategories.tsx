@@ -1,44 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
-import { TextareaAutosize } from "@mui/material";
+import { useState } from "react";
 import Image from "next/image";
-import {
-  deleteCategory,
-  getAllCategories,
-  updateCategory,
-} from "@/lib/actions/category.actions";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+
 import { DeleteCategory } from "./DeleteCategory";
 import AddCategoryWindow from "./AddCategoryWindow";
 import { ICategory } from "@/lib/database/models/category.model";
-type catProps = {
-  categories: any;
+
+type CatProps = {
+  categories: any[];
+  onSaved?: () => void;
 };
-const DisplayCategories = ({ categories }: catProps) => {
-  // const [categories, setCategories] = useState([]);
-  const [status, setStatus] = useState("");
+
+const DisplayCategories = ({ categories, onSaved }: CatProps) => {
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null
   );
   const [isOpenCategory, setIsOpenCategory] = useState(false);
-  useEffect(() => {
-    //fetchCategories();
-  }, []);
-
-  //const fetchCategories = async () => {
-  //  try {
-  //    const response = await getAllCategories();
-
-  //   setCategories(response);
-  //} catch (error) {
-  //   console.error("Error fetching categories:", error);
-  //}
-  //};
 
   const handleOpenCategory = (category: ICategory) => {
     setSelectedCategory(category);
@@ -49,59 +28,102 @@ const DisplayCategories = ({ categories }: catProps) => {
     setIsOpenCategory(false);
     setSelectedCategory(null);
   };
+
   return (
-    <div className="p-0 text-black dark:text-[#F1F3F3]">
-      {status && (
-        <p className="mb-4 text-sm text-gray-700 dark:text-[#F1F3F3]">
-          {status}
-        </p>
+    <div className="overflow-x-auto">
+      {categories.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
+          No categories available.
+        </div>
+      ) : (
+        <table className="min-w-full border-separate border-spacing-y-3">
+          <thead>
+            <tr>
+              <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Category
+              </th>
+              <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Active Ads
+              </th>
+              <th className="px-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {categories.map((category: any) => {
+              const imageUrl = Array.isArray(category.imageUrl)
+                ? category.imageUrl[0]
+                : category.imageUrl;
+
+              return (
+                <tr key={category._id}>
+                  <td className="rounded-l-2xl bg-slate-50 px-4 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white">
+                        {imageUrl ? (
+                          <Image
+                            src={imageUrl}
+                            alt={category.name || "Category"}
+                            width={30}
+                            height={30}
+                            className="h-7 w-7 object-contain"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="text-xs text-slate-400">No icon</span>
+                        )}
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-semibold text-slate-950">
+                          {category.name || "Unnamed Category"}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          ID: {String(category._id)}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                    {Number(category.adCount || 0).toLocaleString()}
+                  </td>
+
+                  <td className="rounded-r-2xl bg-slate-50 px-4 py-4">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenCategory(category)}
+                        className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-xs font-medium text-white hover:bg-orange-500"
+                      >
+                        <EditOutlinedIcon fontSize="small" />
+                        Edit
+                      </button>
+
+                      <DeleteCategory
+                        categoryId={category._id}
+                        categoryImage={imageUrl || ""}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       )}
 
-      {categories.length === 0 ? (
-        <p>No categories available.</p>
-      ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {categories.map((category: any) => (
-            <div
-              key={category._id}
-              className="border rounded-lg p-4 shadow-sm bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]"
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex gap-1 items-center">
-                  <div className="rounded-full dark:bg-[#2D3236] bg-white p-2">
-                    <Image
-                      className="w-full h-full object-cover"
-                      src={category.imageUrl[0]}
-                      alt={category.name}
-                      width={30}
-                      height={30}
-                      unoptimized
-                    />
-                  </div>
-                  <h2 className="text-sm font-bold">{category.name}</h2>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => handleOpenCategory(category)}
-                    className="text-green-600 hover:text-green-700"
-                  >
-                    <EditOutlinedIcon />
-                  </button>
-                  <DeleteCategory
-                    categoryId={category._id}
-                    categoryImage={category.imageUrl[0]}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
       <AddCategoryWindow
         isOpen={isOpenCategory}
         onClose={handleCloseCategory}
         category={selectedCategory}
-        type={"Update"}
+        type="Update"
+        onSaved={() => {
+          handleCloseCategory();
+          onSaved?.();
+        }}
       />
     </div>
   );

@@ -38,7 +38,7 @@ export default function Navbardashboard({ userstatus }: NavProps) {
           <div
             className="mr-5 w-5 h-8 flex items-center justify-center rounded-sm text-white hover:text-gray-100 hover:cursor-pointer"
             data-tip="Back"
-            onClick={() => router.back()}
+            onClick={() => router.replace("/")}
           >
             <TooltipProvider>
               <Tooltip>
@@ -72,7 +72,7 @@ export default function Navbardashboard({ userstatus }: NavProps) {
         </div>
       </div>
 
-      <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} />
+
     </div>
   );
 }

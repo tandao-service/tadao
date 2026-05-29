@@ -113,11 +113,6 @@ export default function TransactionsClient() {
 
     return (
         <>
-            <AdminPageHeader
-                eyebrow="Transactions"
-                title="Transactions"
-                subtitle="Track orders, subscriptions, and transaction status."
-            />
 
             <AdminCard className="mb-6">
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">

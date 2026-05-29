@@ -1,56 +1,58 @@
-// components/ChatWindow.js
 "use client";
-import React, { useEffect, useState } from "react";
 
+import React from "react";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
-import Image from "next/image";
-import CreateCategoryForm from "./CreateCategoryForm";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import CreateSubCategoryForm from "./CreateSubCategoryForm";
 import PackageForm from "./packageForm";
-//import { IPackages } from "@/lib/database/models/packages.model";
 
-interface ChatWindowProps {
+interface AddPackageWindowProps {
   isOpen: boolean;
   onClose: () => void;
-  type: string;
+  type: "Create" | "Update";
   pack?: any;
   packageId?: string;
+  onSaved?: () => void;
 }
 
-const AddPackageWindow: React.FC<ChatWindowProps> = ({
+const AddPackageWindow: React.FC<AddPackageWindowProps> = ({
   isOpen,
   type,
   pack,
   packageId,
   onClose,
+  onSaved,
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="dark:bg-[#131B1E] dark:text-gray-300 bg-white rounded-lg p-1 lg:p-6 w-full md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col">
-        {/* Header */}
-        <div className="flex justify-end items-center mb-1">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+      <div className="flex h-[90vh] w-full max-w-4xl flex-col rounded-[28px] border border-slate-200 bg-white p-4 shadow-2xl dark:bg-[#131B1E] dark:text-gray-300">
+        <div className="mb-3 flex items-start justify-between gap-4 border-b border-slate-200 pb-3 dark:border-gray-700">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">
+              {type === "Create" ? "New Package" : "Edit Package"}
+            </p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-950 dark:text-gray-100">
+              {type === "Create" ? "Add Package" : "Update Package"}
+            </h2>
+          </div>
+
           <button
+            type="button"
             onClick={onClose}
-            className="flex justify-center items-center h-12 w-12 text-black dark:text-gray-200 dark:hover:bg-gray-700 hover:bg-black hover:text-white rounded-full"
+            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 hover:bg-slate-50 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             <CloseOutlinedIcon />
           </button>
         </div>
-        {type === "Create" ? (
-          <>
-            <PackageForm type="Create" />
-          </>
-        ) : (
-          <>
-            <PackageForm type="Update" pack={pack} packageId={packageId} />
-          </>
-        )}
+
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <PackageForm
+            type={type}
+            pack={pack}
+            packageId={packageId}
+            onSaved={onSaved}
+          />
+        </div>
       </div>
     </div>
   );

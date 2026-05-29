@@ -284,7 +284,9 @@ const AdForm = ({
   const [planId, setPlanId] = useState("");
 
   const isFinancing = selectedCategory === "Financing";
-
+  const isSpecialFixedCategory =
+    type === "Create" &&
+    ["Donations", "Lost and Found"].includes(String(category || selectedCategory));
   const modules = {
     toolbar: [
       [{ list: "ordered" }, { list: "bullet" }],
@@ -293,7 +295,8 @@ const AdForm = ({
       ["clean"],
     ],
   };
-
+  const isDonationOrLostFound =
+    ["Donations", "Lost and Found"].includes(String(selectedCategory));
   const categoryOptions = useMemo(() => {
     return categories.reduce((acc: any[], current: any) => {
       if (!acc.find((item) => item.category.name === current.category.name)) {
@@ -1191,30 +1194,32 @@ const AdForm = ({
         </section>
 
         <div className="flex flex-col w-full mt-2">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <div className="flex flex-col">
-              <CategorySelect
-                selected={selectedCategory}
-                data={categoryOptions}
-                onChange={handleInputCategoryChange}
-              />
-              {formErrors.category && (
-                <p className="text-red-500 text-sm">{formErrors.category}</p>
-              )}
-            </div>
+          {!isSpecialFixedCategory && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="flex flex-col">
+                <CategorySelect
+                  selected={selectedCategory}
+                  data={categoryOptions}
+                  onChange={handleInputCategoryChange}
+                />
+                {formErrors.category && (
+                  <p className="text-red-500 text-sm">{formErrors.category}</p>
+                )}
+              </div>
 
-            <div className="flex flex-col">
-              <SubCategorySelect
-                selected={selectedSubCategory}
-                data={selectedCategory ? filteredSubcategories : []}
-                onChange={handleInputSubCategoryChange}
-              />
+              <div className="flex flex-col">
+                <SubCategorySelect
+                  selected={selectedSubCategory}
+                  data={selectedCategory ? filteredSubcategories : []}
+                  onChange={handleInputSubCategoryChange}
+                />
 
-              {formErrors.subcategory && (
-                <p className="text-red-500 text-sm">{formErrors.subcategory}</p>
-              )}
+                {formErrors.subcategory && (
+                  <p className="text-red-500 text-sm">{formErrors.subcategory}</p>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {selectedSubCategory &&
             !EXCLUDED_BIDDING_CATEGORIES.includes(selectedCategory) && (
@@ -1312,7 +1317,37 @@ const AdForm = ({
               </div>
             </div>
           )}
+          {isDonationOrLostFound && selectedSubCategory && (
+            <div className="mt-3 grid grid-cols-1 gap-3">
+              <TextField
+                required
+                id="title"
+                label="Title"
+                value={formData.title || ""}
+                onChange={(e) => handleInputChange("title", e.target.value)}
+                variant="outlined"
+                placeholder={
+                  selectedCategory === "Donations"
+                    ? "Example: Baby walker to donate"
+                    : "Example: Lost black wallet"
+                }
+                className="w-full"
+              />
 
+              <TextField
+                required
+                id="description"
+                label="Description"
+                value={formData.description || ""}
+                onChange={(e) => handleInputChange("description", e.target.value)}
+                variant="outlined"
+                placeholder="Describe the item clearly"
+                className="w-full"
+                multiline
+                minRows={4}
+              />
+            </div>
+          )}
           {selectedSubCategory && selectedCategory !== "Buyer Requests" && (
             <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border-gray-300 dark:border-gray-600 items-center">
               <FileUploader

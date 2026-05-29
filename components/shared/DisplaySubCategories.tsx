@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -8,292 +8,410 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import { TextareaAutosize } from "@mui/material";
 import Image from "next/image";
+
 import {
   deleteCategory,
-  getallcategories,
-  updateCategory,
+  updateSubCategory,
 } from "@/lib/actions/subcategory.actions";
+
 import { IconUploader } from "./IconUploader";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "../ui/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
-type subcatProps = {
-  subcategories: any;
+
+type Props = {
+  subcategories: any[];
+  onSaved?: () => void;
 };
-const DisplaySubCategories = ({ subcategories }: subcatProps) => {
-  // const [categories, setCategories] = useState([]);
-  const [status, setStatus] = useState("");
+
+const optionTypes = [
+  "select",
+  "multi-select",
+  "radio",
+  "notify",
+  "autocomplete",
+  "checkbox",
+];
+
+const fieldTypes = [
+  "text",
+  "number",
+  "money",
+  "select",
+  "radio",
+  "checkbox",
+  "textarea",
+  "multi-select",
+  "autocomplete",
+  "year",
+  "phone",
+  "price",
+  "rentprice",
+  "priceper",
+  "bulkprice",
+  "serviceprice",
+  "delivery",
+  "youtube-link",
+  "notify",
+  "related-autocompletes",
+];
+
+const DisplaySubCategories = ({ subcategories, onSaved }: Props) => {
   const [editingCategory, setEditingCategory] = useState<any>(null);
-  const [editFields, setEditFields] = useState<any>([]);
+  const [editFields, setEditFields] = useState<any[]>([]);
   const [files, setFiles] = useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [iconUrl, setIconUrl] = useState("");
   const [oldurl, setOldurl] = useState("");
+  const [saving, setSaving] = useState(false);
+
   const { startUpload } = useUploadThing("imageUploader");
   const { toast } = useToast();
 
+  const handleEdit = (subcategory: any) => {
+    setEditingCategory(subcategory);
+    setEditFields(Array.isArray(subcategory.fields) ? subcategory.fields : []);
+    setIconUrl("");
+    setOldurl(
+      Array.isArray(subcategory.imageUrl)
+        ? subcategory.imageUrl[0] || ""
+        : subcategory.imageUrl || ""
+    );
+    setFiles([]);
+  };
+
+  const closeEditModal = () => {
+    setEditingCategory(null);
+    setEditFields([]);
+    setIconUrl("");
+    setOldurl("");
+    setFiles([]);
+  };
+
+  const handleEditFieldChange = (index: number, key: string, value: any) => {
+    const updatedFields = [...editFields];
+    updatedFields[index] = {
+      ...updatedFields[index],
+      [key]: value,
+    };
+    setEditFields(updatedFields);
+  };
+
+  const handleRemoveField = (index: number) => {
+    setEditFields((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const uploadFiles = async () => {
     const uploadedUrls: string[] = [];
-    let i = 0;
+
     for (const file of files) {
-      try {
-        i++;
-        const uploadedImages = await startUpload([file]);
-        if (uploadedImages && uploadedImages.length > 0) {
-          uploadedUrls.push(uploadedImages[0].url);
-          setUploadProgress(Math.round(((i + 1) / files.length) * 100));
-        }
-      } catch (error) {
-        console.error("Error uploading file:", error);
+      const uploadedImages = await startUpload([file]);
+
+      if (uploadedImages?.[0]?.url) {
+        uploadedUrls.push(uploadedImages[0].url);
       }
     }
+
     return uploadedUrls.filter((url) => !url.includes("blob:"));
   };
-  const handleDelete = async (categoryId: string, imageUrl: string) => {
+
+  const handleDelete = async (subcategoryId: string, imageUrl: string) => {
     if (!confirm("Are you sure you want to delete this subcategory?")) return;
-    setStatus("Deleting...");
 
     try {
-      await deleteCategory(categoryId, imageUrl);
-      setStatus("");
+      await deleteCategory(subcategoryId, imageUrl);
 
       toast({
         title: "Deleted",
-        description: "subcategory deleted successfully.",
+        description: "Subcategory deleted successfully.",
         duration: 5000,
         className: "bg-[#30AF5B] text-white",
       });
-      //fetchCategories();
+
+      onSaved?.();
     } catch (error) {
       console.error("Error deleting subcategory:", error);
-      // setStatus("Failed to delete subcategory. Please try again.");
+
       toast({
         variant: "destructive",
-        title: "Failed!",
+        title: "Failed",
         description: "Failed to delete subcategory. Please try again.",
         duration: 5000,
       });
     }
   };
 
-  const handleEdit = (category: any) => {
-    setEditingCategory(category);
-    setEditFields(category.fields);
-  };
-
-  const handleEditFieldChange = (index: any, key: any, value: any) => {
-    const updatedFields: any = [...editFields];
-    updatedFields[index][key] = value;
-    setEditFields(updatedFields);
-  };
-
   const handleSaveEdit = async () => {
+    if (!editingCategory) return;
+
     try {
-      setStatus("Saving edits...");
-      let imageUrl: any = [];
-      if (iconUrl) {
-        imageUrl = await uploadFiles();
-        setOldurl(editingCategory.imageUrl[0]);
+      setSaving(true);
+
+      let imageUrl: any;
+
+      if (files.length > 0 || iconUrl) {
+        const uploadedUrls = await uploadFiles();
+        imageUrl = uploadedUrls.length > 0 ? uploadedUrls : [iconUrl];
       } else {
-        imageUrl = editingCategory.imageUrl[0];
+        imageUrl = Array.isArray(editingCategory.imageUrl)
+          ? editingCategory.imageUrl
+          : [editingCategory.imageUrl];
       }
 
-      const categoryName = editingCategory.name;
-      const subcategoryName = editingCategory.subcategory;
-      const categoryId = editingCategory._id;
-      await updateCategory(
-        categoryId,
-        categoryName,
-        subcategoryName,
+      const subcategoryId = editingCategory._id;
+
+      const parentCategoryId =
+        typeof editingCategory.category === "object"
+          ? editingCategory.category._id
+          : editingCategory.category;
+
+      await updateSubCategory(
+        subcategoryId,
+        parentCategoryId,
+        editingCategory.subcategory,
         imageUrl,
-        oldurl,
+        files.length > 0 || iconUrl ? oldurl : "",
         editFields
       );
-      setStatus("");
+
       toast({
         title: "Updated",
-        description: "Category updated successfully.",
+        description: "Subcategory updated successfully.",
         duration: 5000,
         className: "bg-[#30AF5B] text-white",
       });
-      setEditingCategory(null);
-      // fetchCategories();
-      setIconUrl("");
+
+      closeEditModal();
+      onSaved?.();
     } catch (error) {
       console.error("Error saving edits:", error);
-      // setStatus("Failed to save edits. Please try again.");
+
       toast({
         variant: "destructive",
-        title: "Failed!",
-        description: "Failed to save edits. Please try again..",
+        title: "Failed",
+        description: "Failed to save edits. Please try again.",
         duration: 5000,
       });
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingCategory(null);
-    setEditFields([]);
-  };
-  const handleIconInput = (field: string, value: any) => {
-    if (value) {
-      setIconUrl(value);
-    } else {
-    }
-  };
-  const handleRemoveField = (index: number) => {
-    setEditFields(editFields.filter((_: any, i: any) => i !== index));
-  };
   return (
-    <div className="p-0 text-black dark:text-[#F1F3F3]">
-      {status && (
-        <p className="mb-4 text-sm text-gray-700 dark:text-[#F1F3F3]">
-          {status}
-        </p>
-      )}
+    <>
+      <div className="overflow-x-auto">
+        {subcategories.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
+            No subcategories available.
+          </div>
+        ) : (
+          <table className="min-w-full border-separate border-spacing-y-3">
+            <thead>
+              <tr>
+                <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Subcategory
+                </th>
+                <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Category
+                </th>
+                <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Fields
+                </th>
+                <th className="px-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Actions
+                </th>
+              </tr>
+            </thead>
 
-      {subcategories.length === 0 ? (
-        <p>No categories available.</p>
-      ) : (
-        <div className="text-sm space-y-4 grid grid-cols-1 lg:grid-cols-2 gap-1">
-          {subcategories.map((category: any) => (
-            <div
-              key={category._id}
-              className="border rounded-lg p-1 shadow-sm bg-white dark:bg-[#131B1E] text-black dark:text-[#F1F3F3]"
-            >
-              {editingCategory && editingCategory._id === category._id ? (
-                <div>
-                  <h2 className="font-semibold">
-                    Editing {category.subcategory}
-                    {"("}
-                    {category.category.name}
-                    {")"}
-                  </h2>
-                  <div className="mb-4">
-                    <IconUploader
-                      onFieldChange={(url) => handleIconInput("imageUrl", url)} // Pass the updated imageUrl back to the form
-                      iconUrl={iconUrl || category.imageUrl[0]} // Ensure it's either a string or null
-                      setFile={setFiles}
-                    />
+            <tbody>
+              {subcategories.map((subcategory: any) => {
+                const imageUrl = Array.isArray(subcategory.imageUrl)
+                  ? subcategory.imageUrl[0]
+                  : subcategory.imageUrl;
+
+                return (
+                  <tr key={subcategory._id}>
+                    <td className="rounded-l-2xl bg-slate-50 px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white">
+                          {imageUrl ? (
+                            <Image
+                              className="h-7 w-7 object-contain"
+                              src={imageUrl}
+                              alt={subcategory.subcategory}
+                              width={60}
+                              height={60}
+                              unoptimized
+                            />
+                          ) : (
+                            <span className="text-xs text-slate-400">Icon</span>
+                          )}
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-semibold text-slate-950">
+                            {subcategory.subcategory}
+                          </p>
+                          <p className="mt-1 text-xs text-slate-500">
+                            ID: {String(subcategory._id)}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                      {subcategory.category?.name || "-"}
+                    </td>
+
+                    <td className="bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                      {Array.isArray(subcategory.fields)
+                        ? subcategory.fields.length
+                        : 0}
+                    </td>
+
+                    <td className="rounded-r-2xl bg-slate-50 px-4 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(subcategory)}
+                          className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-xs font-medium text-white hover:bg-orange-500"
+                        >
+                          <EditOutlinedIcon fontSize="small" />
+                          Edit
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDelete(subcategory._id, imageUrl || "")
+                          }
+                          className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
+                        >
+                          <DeleteOutlineOutlinedIcon fontSize="small" />
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {editingCategory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+          <div className="flex h-[90vh] w-full max-w-5xl flex-col rounded-[28px] border border-slate-200 bg-white p-5 shadow-2xl">
+            <div className="mb-4 flex items-start justify-between border-b border-slate-200 pb-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">
+                  Edit Subcategory
+                </p>
+                <h2 className="mt-1 text-xl font-semibold text-slate-950">
+                  {editingCategory.subcategory}
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Parent category: {editingCategory.category?.name || "-"}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeEditModal}
+                className="rounded-2xl border border-slate-200 bg-white p-2 text-slate-600 hover:bg-slate-50"
+              >
+                <CloseOutlinedIcon />
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+              <section className="mb-5 rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Subcategory Icon
+                </label>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <IconUploader
+                    onFieldChange={(url) => setIconUrl(url || "")}
+                    iconUrl={
+                      iconUrl ||
+                      (Array.isArray(editingCategory.imageUrl)
+                        ? editingCategory.imageUrl[0]
+                        : editingCategory.imageUrl) ||
+                      null
+                    }
+                    setFile={setFiles}
+                  />
+                </div>
+              </section>
+
+              <section className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-950">
+                      Form Fields
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Edit fields shown when sellers post under this
+                      subcategory.
+                    </p>
                   </div>
-                  <div className="mt-2">
-                    {editFields.map((field: any, index: number) => (
-                      <div key={index} className="mb-2">
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setEditFields((prev) => [
+                        ...prev,
+                        {
+                          name: "",
+                          type: "text",
+                          required: false,
+                          options: [],
+                          multiSelect: false,
+                        },
+                      ])
+                    }
+                    className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
+                  >
+                    <AddOutlinedIcon fontSize="small" />
+                    Add Field
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {editFields.map((field: any, index: number) => (
+                    <div
+                      key={index}
+                      className="rounded-2xl border border-slate-200 bg-white p-4"
+                    >
+                      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_auto_auto] lg:items-center">
                         <input
                           type="text"
-                          value={field.name}
+                          value={field.name || ""}
                           onChange={(e) =>
                             handleEditFieldChange(index, "name", e.target.value)
                           }
-                          className="border rounded p-2 w-full mb-1 dark:bg-[#2D3236] bg-white"
-                          placeholder="Field Name"
+                          placeholder="Field name"
+                          className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-orange-400"
                         />
 
                         <select
-                          value={field.type}
+                          value={field.type || "text"}
                           onChange={(e) =>
                             handleEditFieldChange(index, "type", e.target.value)
                           }
-                          className="border rounded p-2 w-full mb-1 dark:bg-[#2D3236] bg-white"
+                          className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-orange-400"
                         >
-                          <option value="text">Text</option>
-                          <option value="number">Number</option>
-                          <option value="money">Money</option>
-                          <option value="select">Select</option>
-                          <option value="radio">Radio</option>
-                          <option value="checkbox">Checkbox</option>
-                          <option value="textarea">Textarea</option>
-                          <option value="multi-select">Multi-Select</option>
-                          <option value="autocomplete">AutoComplete</option>
-                          <option value="year">Year</option>
-                          <option value="phone">Phone</option>
-                          <option value="price">Sale Price</option>
-                          <option value="rentprice">Price Per Duration</option>
-                          <option value="priceper">Price Per Space</option>
-                          <option value="bulkprice">Price & BulkPrice</option>
-                          <option value="serviceprice">
-                            Price Per Service
-                          </option>
-                          <option value="delivery">Delivery Option</option>
-                          <option value="youtube-link">YouTube link</option>
-                          <option value="notify">notify</option>
-                          <option value="related-autocompletes">
-                            Related-autocompletes
-                          </option>
+                          {fieldTypes.map((type) => (
+                            <option key={type} value={type}>
+                              {type}
+                            </option>
+                          ))}
                         </select>
-                        {/*   {(field.type === "select" ||
-                          field.type === "radio" ||
-                          field.type === "checkbox" ||
-                          field.type === "autocomplete" ||
-                          field.type === "multi-select") && (
-                          <div>
-                            <input
-                              type="text"
-                              value={field.options.join(", ")}
-                              onChange={(e) =>
-                                handleEditFieldChange(
-                                  index,
-                                  "options",
-                                  e.target.value
-                                    .split(",")
-                                    .map((option) => option.trim())
-                                )
-                              }
-                              className="border rounded p-2 w-full mb-1 dark:bg-[#2D3236] bg-white"
-                              placeholder="Comma-separated options"
-                            />
-                          </div>
-                        )}*/}
-                        {(field.type === "select" ||
-                          field.type === "multi-select" ||
-                          field.type === "radio" ||
-                          field.type === "notify" ||
-                          field.type === "autocomplete" ||
-                          field.type === "checkbox") && (
-                            <input
-                              type="text"
-                              placeholder={field.type === "notify" ? "Notification" : "Comma-separated options"}
-                              value={field.options.join(",")}
-                              onChange={(e) =>
-                                handleEditFieldChange(
-                                  index,
-                                  "options",
-                                  e.target.value
-                                    .split(",")
-                                    .map((option) => option.trim())
-                                )
-                              }
-                              className="border rounded-lg p-2 flex-1 dark:text-gray-300 dark:bg-[#2D3236] bg-white"
-                            />
-                          )}
 
-                        {field.type === "related-autocompletes" && (
-                          <TextareaAutosize
-                            placeholder="Comma-separated options"
-                            value={field.options}
-                            minRows={3} // Minimum number of rows
-                            maxRows={10} // Optional: Maximum number of rows
-                            style={{
-                              width: "100%",
-                              padding: "8px",
-                              fontSize: "16px",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                            }}
-                            onChange={(e) =>
-                              handleEditFieldChange(
-                                index,
-                                "options",
-                                e.target.value
-                              )
-                            }
-                            className="border w-full dark:text-gray-300 rounded-lg p-2 flex-1 dark:bg-[#2D3236] bg-white"
-                          />
-                        )}
-                        <label className="flex items-center mb-1">
+                        <label className="flex items-center gap-2 text-sm text-slate-600">
                           <input
                             type="checkbox"
-                            checked={field.required}
+                            checked={Boolean(field.required)}
                             onChange={(e) =>
                               handleEditFieldChange(
                                 index,
@@ -301,138 +419,95 @@ const DisplaySubCategories = ({ subcategories }: subcatProps) => {
                                 e.target.checked
                               )
                             }
-                            className="mr-2"
                           />
                           Required
                         </label>
+
                         <button
                           type="button"
                           onClick={() => handleRemoveField(index)}
-                          className="bg-red-500 h-8 w-8 text-[#F1F3F3] p-1 rounded-lg"
+                          className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-white px-3 py-2 text-sm text-rose-600 hover:bg-rose-50"
                         >
-                          <DeleteOutlineOutlinedIcon />
+                          <DeleteOutlineOutlinedIcon fontSize="small" />
                         </button>
                       </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setEditFields([
-                          ...editFields,
-                          {
-                            name: "",
-                            type: "text",
-                            required: false,
-                            options: [],
-                            multiSelect: false,
-                          },
-                        ])
-                      }
-                      className="bg-black hover:bg-gray-600 
-    dark:bg-gray-700 dark:hover:bg-gray-600 text-[#F1F3F3] p-2 rounded-lg mt-2"
-                    >
-                      <div className="flex gap-1 items-center">
-                        <AddOutlinedIcon /> Add Field
-                      </div>
-                    </button>
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={handleSaveEdit}
-                      className="bg-black hover:bg-gray-600 
-    dark:bg-gray-700 dark:hover:bg-gray-600 text-[#F1F3F3] p-2 rounded-lg"
-                    >
-                      <div className="flex gap-1 items-center">
-                        <DoneOutlinedIcon /> Save Changes
-                      </div>
-                    </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className="bg-black hover:bg-gray-600 
-    dark:bg-gray-700 dark:hover:bg-gray-600 text-[#F1F3F3] p-2 rounded-lg"
-                    >
-                      <CloseOutlinedIcon />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <ScrollArea className="h-[250px] w-full p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="flex items-center gap-1">
-                        <div className="rounded-full dark:bg-[#2D3236] bg-white p-2">
-                          <Image
-                            className="w-12 h-8 object-cover"
-                            src={category.imageUrl[0]}
-                            alt={category.subcategory}
-                            width={60}
-                            height={60}
-                            unoptimized
-                          />
-                        </div>
-                        <h2 className="text-lg font-semibold">
-                          {category.subcategory} {"("}
-                          {category.category.name}
-                          {")"}
-                        </h2>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleEdit(category)}
-                          className="bg-black hover:bg-gray-600 
-    dark:bg-gray-700 dark:hover:bg-gray-600 text-[#F1F3F3] p-2 rounded-xl"
-                        >
-                          <EditOutlinedIcon />
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleDelete(
-                              category._id,
-                              category.imageUrl[0] ?? ""
+
+                      {optionTypes.includes(field.type) && (
+                        <input
+                          type="text"
+                          placeholder={
+                            field.type === "notify"
+                              ? "Notification"
+                              : "Comma-separated options"
+                          }
+                          value={
+                            Array.isArray(field.options)
+                              ? field.options.join(",")
+                              : field.options || ""
+                          }
+                          onChange={(e) =>
+                            handleEditFieldChange(
+                              index,
+                              "options",
+                              e.target.value
+                                .split(",")
+                                .map((option) => option.trim())
                             )
                           }
-                          className="bg-black hover:bg-gray-600 
-    dark:bg-gray-700 dark:hover:bg-gray-600 text-[#F1F3F3] p-2 rounded-xl"
-                        >
-                          <DeleteOutlineOutlinedIcon />
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Fields:</h3>
-                      <ul className="list-disc pl-5 mt-2">
-                        {category.fields.map((field: any, index: number) => (
-                          <li key={index} className="mb-1">
-                            <strong>{field.name}</strong> ({field.type})
-                            {field.required && (
-                              <span className="text-red-500"> *Required</span>
-                            )}
-                            {(field.type === "select" ||
-                              field.type === "notify" ||
-                              field.type === "autocomplete" ||
-                              field.type === "multi-select") && (
-                                <div className="ml-4 dark:text-gray-400 text-sm text-gray-600">
-                                  Options: {field.options.join(", ")}{" "}
-                                  {field.multiSelect && (
-                                    <span className="dark:text-gray-300 text-blue-500">
-                                      (Multi-Select)
-                                    </span>
-                                  )}
-                                </div>
-                              )}
+                          className="mt-3 h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-orange-400"
+                        />
+                      )}
 
-                          </li>
-                        ))}
-                      </ul>
+                      {field.type === "related-autocompletes" && (
+                        <TextareaAutosize
+                          placeholder="Comma-separated options"
+                          value={
+                            Array.isArray(field.options)
+                              ? field.options.join(",")
+                              : field.options || ""
+                          }
+                          minRows={3}
+                          maxRows={10}
+                          onChange={(e) =>
+                            handleEditFieldChange(
+                              index,
+                              "options",
+                              e.target.value
+                            )
+                          }
+                          className="mt-3 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-orange-400"
+                        />
+                      )}
                     </div>
-                  </ScrollArea>
+                  ))}
                 </div>
-              )}
+              </section>
             </div>
-          ))}
+
+            <div className="mt-4 flex flex-col-reverse gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={closeEditModal}
+                disabled={saving}
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveEdit}
+                disabled={saving}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-orange-500 disabled:opacity-60"
+              >
+                <DoneOutlinedIcon fontSize="small" />
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

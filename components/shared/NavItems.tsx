@@ -45,7 +45,6 @@ export default function NavItems({
   handleclicklink,
   handleOpenSettings,
   handleOpenPlan,
-  handleOpenBook,
   handleOpenPerfomance,
   handleOpenChat,
   handleOpenSell,
@@ -53,10 +52,9 @@ export default function NavItems({
 }: NavItemsProps) {
   const router = useRouter();
   const [isOpenP, setIsOpenP] = useState(false);
-  const handleCloseP = () => setIsOpenP(false);
-
   const { user: currentUser } = useAuth();
 
+  const handleCloseP = () => setIsOpenP(false);
   const shareUrl = "https://tadaomarket.com";
 
   const handleShare = async () => {
@@ -94,17 +92,18 @@ export default function NavItems({
   };
 
   const itemBase =
-    "group flex items-center gap-3 rounded-2xl border px-3 py-3 transition-all duration-200 cursor-pointer";
+    "group flex items-center gap-2 border-b px-3 py-2 transition-all duration-200 cursor-pointer";
+
   const itemActive =
     "border-orange-200 bg-orange-500 text-white shadow-sm";
+
   const itemInactive =
     "border-slate-200 bg-white text-slate-700 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 dark:border-slate-700 dark:bg-[#2D3236] dark:text-slate-200 dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] dark:hover:text-orange-300";
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col rounded-[24px] bg-white dark:bg-[#131B1E]">
-
+    <div className="flex h-full min-h-0 w-full flex-col rounded-[20px] bg-white dark:bg-[#131B1E]">
       <ScrollArea className="min-h-0 flex-1 pr-1">
-        <ul className="space-y-2 px-1">
+        <ul className="space-y-1 px-1">
           {headerLinks
             .filter((link) => !(userstatus === "User" && link.label === "Admin"))
             .map((link) => {
@@ -133,8 +132,9 @@ export default function NavItems({
                       handleOpenPerfomance();
                       handleclicklink();
                       break;
+                    case "Favorites":
                     case "Bookmark":
-                      handleOpenBook();
+                      router.push("/favorites");
                       handleclicklink();
                       break;
                     case "Plan":
@@ -161,10 +161,11 @@ export default function NavItems({
                 <li key={link.route}>
                   <div
                     onClick={handleItemClick}
-                    className={`${itemBase} ${isActive ? itemActive : itemInactive}`}
+                    className={`${itemBase} ${isActive ? itemActive : itemInactive
+                      }`}
                   >
                     <span
-                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition ${isActive
+                      className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition ${isActive
                         ? "bg-white/15 text-white"
                         : "bg-orange-50 text-orange-600 group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300"
                         }`}
@@ -172,7 +173,7 @@ export default function NavItems({
                       {iconMap[link.label]}
                     </span>
 
-                    <span className="flex-1 text-sm font-semibold">
+                    <span className="flex-1 text-[13px] font-semibold">
                       {link.label}
                     </span>
 
@@ -182,7 +183,7 @@ export default function NavItems({
                         : "text-slate-400 group-hover:text-orange-500 dark:text-slate-500 dark:group-hover:text-orange-300"
                         }`}
                     >
-                      <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+                      <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
                     </span>
                   </div>
                 </li>
@@ -190,19 +191,16 @@ export default function NavItems({
             })}
         </ul>
 
-        <div className="mt-4 border-t border-slate-100 px-1 pt-4 dark:border-slate-800">
-          <div
-            onClick={handleShare}
-            className={`${itemBase} ${itemInactive}`}
-          >
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-orange-50 text-orange-600 transition group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300">
+        <div className="mt-2 border-t border-slate-100 px-1 pt-2 dark:border-slate-800">
+          <div onClick={handleShare} className={`${itemBase} ${itemInactive}`}>
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-50 text-orange-600 transition group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300">
               <ShareOutlinedIcon fontSize="small" />
             </span>
 
-            <span className="flex-1 text-sm font-semibold">Share</span>
+            <span className="flex-1 text-[13px] font-semibold">Share</span>
 
             <span className="text-slate-400 transition group-hover:text-orange-500 dark:text-slate-500 dark:group-hover:text-orange-300">
-              <ArrowForwardIosIcon sx={{ fontSize: 16 }} />
+              <ArrowForwardIosIcon sx={{ fontSize: 14 }} />
             </span>
           </div>
         </div>

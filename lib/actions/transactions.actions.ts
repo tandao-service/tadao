@@ -229,42 +229,59 @@ export async function createTransaction(transaction: CreateTransactionParams) {
   }
 }
 
-export async function getallTransactions(transationId: string, start: string, end: string, limit: number, page: number) {
+export async function getallTransactions(
+  transationId: string,
+  start: string,
+  end: string,
+  limit: number,
+  page: number
+) {
   try {
     await connectToDatabase();
+
+    // Auto-delete old unpaid attempts after 24 hours
+    const cutoff = new Date();
+    cutoff.setHours(cutoff.getHours() - 24);
+
+    await Transaction.deleteMany({
+      status: { $in: ["Pending", "pending", "Failed", "failed", "Cancelled", "cancelled"] },
+      createdAt: { $lt: cutoff },
+    });
 
     const startDate = start ? new Date(start) : null;
     const endDate = end ? new Date(end) : null;
 
-    // Build conditions dynamically
-    const conditions: any = {};
+    const conditions: any = {
+      status: { $in: ["Active", "Paid", "Successful", "successful", "completed", "Completed"] },
+    };
+
     if (transationId) {
-      conditions.orderTrackingId = { $regex: transationId, $options: 'i' };
+      conditions.orderTrackingId = { $regex: transationId, $options: "i" };
     }
+
     if (startDate || endDate) {
       conditions.createdAt = {};
-      if (startDate) {
-        conditions.createdAt.$gte = startDate; // Greater than or equal to startDate
-      }
-      if (endDate) {
-        conditions.createdAt.$lte = endDate; // Less than or equal to endDate
-      }
+      if (startDate) conditions.createdAt.$gte = startDate;
+      if (endDate) conditions.createdAt.$lte = endDate;
     }
 
     const skipAmount = (Number(page) - 1) * limit;
 
-    // Fetch filtered orders with pagination
     const trans = await populateAd(
       Transaction.find(conditions)
+        .sort({ createdAt: -1 })
         .skip(skipAmount)
         .limit(limit)
     );
 
-    // Get the count of documents that match the conditions
     const AdCount = await Transaction.countDocuments(conditions);
-    return { data: JSON.parse(JSON.stringify(trans)), totalPages: Math.ceil(AdCount / limit) }
+
+    return {
+      data: JSON.parse(JSON.stringify(trans)),
+      totalPages: Math.max(Math.ceil(AdCount / limit), 1),
+    };
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
 }
 // DELETE

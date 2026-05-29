@@ -217,7 +217,7 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                     {isContactPrice ? "Contact for price" : moneyKsh(price)}
                 </div>
 
-                <div className="mt-3 flex flex-wrap gap-2">
+                {/**  <div className="mt-3 flex flex-wrap gap-2">
                     {isRent && chip("Rent")}
                     {condition && chip(condition)}
                     {transmission && chip(transmission)}
@@ -226,7 +226,7 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                     {landArea && chip(landArea)}
                     {hasBulk && chip("Bulk Price")}
                     {hasDelivery && chip("Delivery")}
-                </div>
+                </div>*/}
             </div>
         </Link>
     );
