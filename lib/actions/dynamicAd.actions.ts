@@ -1742,7 +1742,19 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
       };
       continue;
     }
-
+    // ✅ force clean route for Financing
+    if (
+      normalize(catName) === "financing" &&
+      normalize(rawSub) === "assets financing"
+    ) {
+      map["assets-financing"] = {
+        category: catName,
+        subcategory: rawSub,
+        title: "Assets Financing",
+        icon,
+      };
+      continue;
+    }
     const mode = detectMode(rawSub);
     const cleanSub = stripIntent(rawSub);
     const suffix = mode === "rent" ? "for-rent" : "for-sale";

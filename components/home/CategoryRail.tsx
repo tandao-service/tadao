@@ -30,10 +30,20 @@ function detectMode(name: string): "sale" | "rent" {
     return "sale";
 }
 
-function toListingSlugFromName(name: string) {
-    const mode = detectMode(name);
+function toListingSlugFromName(name: string, categoryName?: string) {
     const base = stripIntent(name);
+
+    // Clean route for financing
+    if (
+        slugify(categoryName || "") === "financing" ||
+        slugify(base) === "assets-financing"
+    ) {
+        return slugify(base);
+    }
+
+    const mode = detectMode(name);
     const suffix = mode === "rent" ? "for-rent" : "for-sale";
+
     return `${slugify(base)}-${suffix}`;
 }
 

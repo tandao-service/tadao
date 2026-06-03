@@ -45,8 +45,8 @@ function normalizeRegion(v: any) {
  * ✅ Region counts: call with regionSlug e.g. "nairobi"
  */
 export async function getCategoryTreeForHome(
-    limitCats = 12,
-    limitSubsPerCat = 12,
+    limitCats = 50,
+    limitSubsPerCat = 50,
     regionSlug?: string
 ) {
     await connectToDatabase();
@@ -125,7 +125,7 @@ export async function getCategoryTreeForHome(
         .populate({ path: "category", model: Category, select: "name" })
         .select("_id subcategory category imageUrl fields")
         .lean();
-
+    console.log(subcats);
     const byCat: Record<string, any[]> = Object.create(null);
 
     for (const s of subcats as any[]) {
@@ -185,7 +185,8 @@ export async function getCategoryTreeForHome(
         .filter(Boolean) as HomeCategoryNode[];
 
     tree.sort((a, b) => b.count - a.count);
-    return tree.slice(0, limitCats);
+    //return tree.slice(0, limitCats);
+    return tree;
 }
 
 /**
