@@ -7,8 +7,6 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signInWithPopup,
-    signInWithRedirect,
-    getRedirectResult,
     GoogleAuthProvider,
     signInWithCredential,
     UserCredential,
@@ -31,7 +29,9 @@ function AuthPageInner() {
 
     const redirectParam = searchParams.get("redirect_url");
     const redirectTo =
-        redirectParam && redirectParam.startsWith("/") ? redirectParam : "/";
+        redirectParam && redirectParam.startsWith("/")
+            ? redirectParam
+            : "/";
 
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState("");
@@ -45,7 +45,6 @@ function AuthPageInner() {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
     const [navigating, setNavigating] = useState(false);
-
     const [authBundle, setAuthBundle] = useState<{
         auth: any;
         googleProvider: GoogleAuthProvider;
@@ -73,7 +72,7 @@ function AuthPageInner() {
         (async () => {
             try {
                 const bundle: any = await getAuthSafe();
-                if (!mounted || !bundle?.auth) return;
+                if (!mounted) return;
 
                 await setPersistence(bundle.auth, browserLocalPersistence);
                 setAuthBundle(bundle);
@@ -90,54 +89,8 @@ function AuthPageInner() {
         };
     }, []);
 
-    const processUser = async (result: UserCredential) => {
-        const firebaseUser = result.user;
-        const isNewUser = Boolean((result as any)?._tokenResponse?.isNewUser);
-
-        if (isNewUser) {
-            const displayName = firebaseUser.displayName?.trim() || "";
-            const nameParts = displayName.split(" ").filter(Boolean);
-
-            await createUserInDB({
-                clerkId: firebaseUser.uid,
-                email: firebaseUser.email || "",
-                firstName: nameParts[0] || firstName || "",
-                lastName: nameParts.slice(1).join(" ") || lastName || "",
-                photo: firebaseUser.photoURL || "",
-                status: "User",
-                verified: [
-                    {
-                        accountverified: false,
-                        verifieddate: new Date(),
-                    },
-                ],
-            });
-        }
-
-        setNavigating(true);
-        router.replace(redirectTo);
-    };
-
-    useEffect(() => {
-        if (!authBundle) return;
-
-        (async () => {
-            try {
-                const result = await getRedirectResult(authBundle.auth);
-
-                if (result) {
-                    await processUser(result);
-                }
-            } catch (err: any) {
-                console.error("Google redirect error:", err);
-                setError(err?.code || err?.message || "Google sign-in failed.");
-            }
-        })();
-    }, [authBundle]);
-
     const toggleMode = () => {
         if (loading) return;
-
         setIsSignUp((prev) => !prev);
         setError("");
         setSuccess("");
@@ -155,7 +108,6 @@ function AuthPageInner() {
 
         switch (value) {
             case "auth/invalid-credential":
-            case "auth/invalid-login-credentials":
                 return "Incorrect email or password.";
             case "auth/user-not-found":
                 return "No account was found with that email.";
@@ -181,6 +133,8 @@ function AuthPageInner() {
                 return "Another sign-in popup was already open.";
             case "auth/account-exists-with-different-credential":
                 return "An account already exists with this email using a different sign-in method.";
+            case "auth/invalid-login-credentials":
+                return "Incorrect email or password.";
             case "auth/missing-password":
                 return "Please enter your password.";
             case "auth/user-disabled":
@@ -189,13 +143,40 @@ function AuthPageInner() {
                 if (value.includes("no id token")) {
                     return "Google sign-in failed. No ID token was returned.";
                 }
-                return codeOrMessage || "Something went wrong. Please try again.";
+                return "Something went wrong. Please try again.";
         }
+    };
+
+    const processUser = async (result: UserCredential) => {
+        const user = result.user;
+        const isNewUser = Boolean((result as any)?._tokenResponse?.isNewUser);
+
+        if (isNewUser) {
+            const displayName = user.displayName?.trim() || "";
+            const nameParts = displayName.split(" ").filter(Boolean);
+
+            await createUserInDB({
+                clerkId: user.uid,
+                email: user.email || "",
+                firstName: nameParts[0] || firstName || "",
+                lastName: nameParts.slice(1).join(" ") || lastName || "",
+                photo: user.photoURL || "",
+                status: "User",
+                verified: [
+                    {
+                        accountverified: false,
+                        verifieddate: new Date(),
+                    },
+                ],
+            });
+        }
+
+        setNavigating(true);
+        router.replace(redirectTo);
     };
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!authBundle || loading) return;
 
         clearMessages();
@@ -232,11 +213,7 @@ function AuthPageInner() {
         setLoading(true);
 
         try {
-            const methods = await fetchSignInMethodsForEmail(
-                authBundle.auth,
-                cleanEmail
-            );
-
+            const methods = await fetchSignInMethodsForEmail(authBundle.auth, cleanEmail);
             if (methods.length > 0) {
                 setError("This email is already registered. Please sign in instead.");
                 return;
@@ -248,9 +225,11 @@ function AuthPageInner() {
                 password
             );
 
-            await updateProfile(userCredential.user, {
-                displayName: `${cleanFirstName} ${cleanLastName}`.trim(),
-            });
+            if (cleanFirstName || cleanLastName) {
+                await updateProfile(userCredential.user, {
+                    displayName: `${cleanFirstName} ${cleanLastName}`.trim(),
+                });
+            }
 
             await createUserInDB({
                 clerkId: userCredential.user.uid,
@@ -277,14 +256,17 @@ function AuthPageInner() {
             console.error("Sign up error:", err);
             setError(getFriendlyError(err?.code || err?.message));
         } finally {
-            setLoading(false);
+            if (!navigating) {
+                setLoading(false);
+            }
         }
     };
 
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!authBundle || loading || navigating) return;
+
+        let didStartNavigation = false;
 
         clearMessages();
 
@@ -304,13 +286,9 @@ function AuthPageInner() {
 
         try {
             await setPersistence(authBundle.auth, browserLocalPersistence);
+            await signInWithEmailAndPassword(authBundle.auth, cleanEmail, password);
 
-            await signInWithEmailAndPassword(
-                authBundle.auth,
-                cleanEmail,
-                password
-            );
-
+            didStartNavigation = true;
             setNavigating(true);
             router.replace(redirectTo);
         } catch (err: any) {
@@ -320,19 +298,20 @@ function AuthPageInner() {
             });
 
             setError(getFriendlyError(err?.code || err?.message));
-            setLoading(false);
+        } finally {
+            if (!didStartNavigation) {
+                setLoading(false);
+            }
         }
     };
 
     const handleGoogleSignIn = async () => {
-        if (!authBundle || loading || navigating) return;
+        if (!authBundle || loading) return;
 
         clearMessages();
         setLoading(true);
 
         try {
-            await setPersistence(authBundle.auth, browserLocalPersistence);
-
             if (Capacitor.isNativePlatform()) {
                 const googleResult = await GoogleAuth.signIn();
 
@@ -344,39 +323,22 @@ function AuthPageInner() {
                     googleResult.authentication.idToken
                 );
 
-                const result = await signInWithCredential(
-                    authBundle.auth,
-                    credential
-                );
-
+                const result = await signInWithCredential(authBundle.auth, credential);
                 await processUser(result);
-                return;
+            } else {
+                const result = await signInWithPopup(
+                    authBundle.auth,
+                    authBundle.googleProvider
+                );
+                await processUser(result);
             }
-
-            const isMobileBrowser =
-                typeof window !== "undefined" &&
-                /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-            if (isMobileBrowser) {
-                await signInWithRedirect(authBundle.auth, authBundle.googleProvider);
-                return;
-            }
-
-            const result = await signInWithPopup(
-                authBundle.auth,
-                authBundle.googleProvider
-            );
-
-            await processUser(result);
         } catch (err: any) {
-            console.error("Google sign-in error:", {
-                code: err?.code,
-                message: err?.message,
-                full: err,
-            });
-
+            console.error("Google sign-in error:", err);
             setError(getFriendlyError(err?.code || err?.message));
-            setLoading(false);
+        } finally {
+            if (!navigating) {
+                setLoading(false);
+            }
         }
     };
 
@@ -389,11 +351,9 @@ function AuthPageInner() {
                         alt="Tadao Market"
                         className="w-20 h-20 rounded-full object-cover border border-orange-100 shadow-sm mb-3"
                     />
-
                     <h1 className="text-3xl font-extrabold text-[#f97316] tracking-tight">
                         Tadao Market
                     </h1>
-
                     <p className="text-sm text-gray-500 mt-1 text-center">
                         Buy, sell, and connect with confidence
                     </p>
@@ -402,7 +362,6 @@ function AuthPageInner() {
                 <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">
                     {formTitle}
                 </h2>
-
                 <p className="text-sm text-center text-gray-500 mb-6">
                     {isSignUp
                         ? "Create your account to start posting and managing listings."
@@ -436,7 +395,6 @@ function AuthPageInner() {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[#f97316] focus:ring-2 focus:ring-orange-200"
                                 disabled={loading}
                             />
-
                             <input
                                 type="text"
                                 placeholder="Last Name"
@@ -479,11 +437,7 @@ function AuthPageInner() {
                             aria-label={showPassword ? "Hide password" : "Show password"}
                             disabled={loading}
                         >
-                            {showPassword ? (
-                                <IoEyeOffOutline size={22} />
-                            ) : (
-                                <IoEyeOutline size={22} />
-                            )}
+                            {showPassword ? <IoEyeOffOutline size={22} /> : <IoEyeOutline size={22} />}
                         </button>
                     </div>
 
@@ -504,16 +458,10 @@ function AuthPageInner() {
                                 type="button"
                                 onClick={() => setShowConfirmPassword((prev) => !prev)}
                                 className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-[#f97316]"
-                                aria-label={
-                                    showConfirmPassword ? "Hide confirm password" : "Show confirm password"
-                                }
+                                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                                 disabled={loading}
                             >
-                                {showConfirmPassword ? (
-                                    <IoEyeOffOutline size={22} />
-                                ) : (
-                                    <IoEyeOutline size={22} />
-                                )}
+                                {showConfirmPassword ? <IoEyeOffOutline size={22} /> : <IoEyeOutline size={22} />}
                             </button>
                         </div>
                     )}
@@ -546,7 +494,6 @@ function AuthPageInner() {
                 </div>
 
                 <button
-                    type="button"
                     onClick={handleGoogleSignIn}
                     disabled={loading || !authBundle}
                     className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60 flex items-center justify-center gap-3"
@@ -572,9 +519,7 @@ function AuthPageInner() {
                         <button
                             type="button"
                             onClick={() =>
-                                router.push(
-                                    `/forgot-password?redirect_url=${encodeURIComponent(redirectTo)}`
-                                )
+                                router.push(`/forgot-password?redirect_url=${encodeURIComponent(redirectTo)}`)
                             }
                             disabled={loading}
                             className="text-blue-600 underline underline-offset-2 disabled:opacity-60"
@@ -583,7 +528,6 @@ function AuthPageInner() {
                         </button>
                     </div>
                 )}
-
                 {(loading || navigating) && (
                     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/90 backdrop-blur-sm">
                         <div className="flex flex-col items-center rounded-2xl bg-white px-8 py-6 shadow-xl border border-orange-100">
@@ -594,7 +538,6 @@ function AuthPageInner() {
                         </div>
                     </div>
                 )}
-
                 <p className="mt-6 text-center text-xs text-gray-500 leading-5">
                     By continuing, you agree to our{" "}
                     <a
@@ -618,9 +561,7 @@ function AuthPageFallback() {
             <div className="w-full max-w-md rounded-2xl bg-white shadow-xl border border-orange-100 p-6 sm:p-8">
                 <div className="flex flex-col items-center">
                     <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
-                    <p className="mt-4 text-sm text-gray-500">
-                        Loading authentication...
-                    </p>
+                    <p className="mt-4 text-sm text-gray-500">Loading authentication...</p>
                 </div>
             </div>
         </div>

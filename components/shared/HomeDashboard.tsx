@@ -165,16 +165,31 @@ const HomeDashboard = ({
     setIsOpenPackage(false);
   };
   const handleFee = async () => {
-    const res = await updateVerifiesFee(fee, VerificationPackId);
-    //console.log(res);
-    toast({
-      title: "Updated!",
-      description: "Verification fee updated",
-      duration: 5000,
-      className: "bg-[#30AF5B] text-white",
-    });
-  };
+    try {
 
+      const res = await updateVerifiesFee(fee);
+
+      if (!res?.success) {
+        throw new Error(res?.message || "Could not update verification fee");
+      }
+
+      toast({
+        title: "Updated!",
+        description: "Verification fee updated",
+        duration: 5000,
+        className: "bg-[#30AF5B] text-white",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Failed",
+        description: error?.message || "Could not update verification fee",
+        duration: 5000,
+        variant: "destructive",
+      });
+    } finally {
+
+    }
+  };
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const handleOpenCategory = () => {
     setIsOpenCategory(true);
