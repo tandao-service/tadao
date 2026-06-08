@@ -130,7 +130,11 @@ function AuthPageInner() {
                 }
             } catch (err: any) {
                 console.error("Google redirect error:", err);
-                setError(err?.code || err?.message || "Google sign-in failed.");
+                setError(
+                    err?.code
+                        ? `${err.code}: ${err.message || ""}`
+                        : err?.message || "Google sign-in failed."
+                );
             }
         })();
     }, [authBundle]);
