@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { getUserAgragate } from "@/lib/actions/user.actions";
@@ -25,7 +25,11 @@ export default function UsersClient() {
     const [users, setUsers] = useState<any>(null);
     const [recipientUid, setRecipientUid] = useState("");
     const [isOpenChatId, setIsOpenChatId] = useState(false);
+    const router = useRouter();
 
+    const handleOpenUserAdverts = (userId: string) => {
+        router.push(`/admin/users/${userId}/adverts`);
+    };
     useEffect(() => {
         let cancelled = false;
 
@@ -81,6 +85,8 @@ export default function UsersClient() {
                     userId={appUserId || ""}
                     totalPages={users?.totalPages || 1}
                     handleOpenChatId={handleOpenChatId}
+                    handleOpenUserAdverts={handleOpenUserAdverts}
+
                 />
             </AdminCard>
 

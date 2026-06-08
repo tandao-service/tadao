@@ -7,7 +7,7 @@ export interface IVerifies
 }
 
 const VerifiesSchema = new Schema({
-  fee: { type: String, required: true, unique: true },
+  fee: { type: String, required: true }
 
 })
 //var address = Schema({title: string, checked: boolean});

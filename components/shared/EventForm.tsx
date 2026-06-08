@@ -241,7 +241,7 @@ const AdForm = ({
 }: AdFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const { startUpload } = useUploadThing("imageUploader");
+
 
   const [coverThumbFile, setCoverThumbFile] = useState<File | null>(null);
 
@@ -282,7 +282,30 @@ const AdForm = ({
   const [remainingAds, setRemainingAds] = useState(0);
   const [planName, setPlanName] = useState("Free");
   const [planId, setPlanId] = useState("");
+  const [errorAlert, setErrorAlert] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+  }>({
+    open: false,
+    title: "",
+    message: "",
+  });
 
+  const showError = (title: string, message: string) => {
+    setErrorAlert({
+      open: true,
+      title,
+      message,
+    });
+
+    toast({
+      variant: "destructive",
+      title,
+      description: message,
+      duration: 7000,
+    });
+  };
   const isFinancing = selectedCategory === "Financing";
   const isSpecialFixedCategory =
     type === "Create" &&
@@ -586,10 +609,25 @@ const AdForm = ({
 
     if (!result.success) {
       const errors = result.error.errors.reduce((acc: any, err: any) => {
-        acc[err.path[0]] = err.message;
+        const key = String(err.path?.[0] || "field");
+        acc[key] = err.message;
         return acc;
       }, {});
+
       setFormErrors(errors);
+
+      const missingList = result.error.errors
+        .map((err: any) => {
+          const field = String(err.path?.[0] || "Field");
+          return `${field}: ${err.message}`;
+        })
+        .join("\n");
+
+      showError(
+        "Missing required fields",
+        missingList || "Please complete all required fields."
+      );
+
       return false;
     }
 
@@ -929,6 +967,7 @@ const AdForm = ({
         if (!formData.bidIncrement || Number(formData.bidIncrement) <= 0) {
           errors.bidIncrement = "Bid Increment must be a number greater than 0.";
           setBidErrors(errors);
+          showError("Bidding error", errors.bidIncrement);
           return;
         }
 
@@ -938,6 +977,7 @@ const AdForm = ({
         if (!formData.biddingEndsAt || biddingEndDate <= now) {
           errors.biddingEndsAt = "Bidding End Date must be a valid future date.";
           setBidErrors(errors);
+          showError("Bidding error", errors.biddingEndsAt);
           return;
         }
 
@@ -965,12 +1005,11 @@ const AdForm = ({
 
         if (!isValidKenyanPhoneNumber(phone)) {
 
-          toast({
-            variant: "destructive",
-            title: "Invalid Phone",
-            description: "Invalid Phone Number.",
-            duration: 5000,
-          });
+          showError(
+            "Invalid phone number",
+            "Please verify or enter a valid Kenyan phone number before posting."
+          );
+          return;
           return;
         }
 
@@ -1022,9 +1061,13 @@ const AdForm = ({
 
         const canContinue = await checkPostingGateBeforeUpload();
         if (!canContinue) return;
+
         const { fullUrls,
           coverThumbUrl } = await uploadFiles();
-        if (!fullUrls) return;
+        if (!fullUrls) {
+          showError("Upload failed", "Images were not uploaded. Please try again.");
+          return;
+        }
 
         const safeExistingUrls = Array.isArray(formData.imageUrls)
           ? formData.imageUrls.filter(
@@ -1153,12 +1196,11 @@ const AdForm = ({
       }
     } catch (error) {
       console.error("Validation or submission failed", error);
-      toast({
-        title: "Something went wrong",
-        description: "Please try again.",
-        duration: 5000,
-        variant: "destructive",
-      });
+      showError(
+        "Something went wrong",
+        error instanceof Error ? error.message : "Please try again."
+      );
+
     } finally {
       setLoading(false);
     }
@@ -1820,7 +1862,33 @@ const AdForm = ({
           onKeyDown={(e) => e.preventDefault()}
         />
       )}
+      {errorAlert.open && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
+            <h2 className="text-lg font-bold text-red-600">
+              {errorAlert.title}
+            </h2>
 
+            <p className="mt-2 text-sm text-gray-700">
+              {errorAlert.message}
+            </p>
+
+            <button
+              type="button"
+              onClick={() =>
+                setErrorAlert({
+                  open: false,
+                  title: "",
+                  message: "",
+                })
+              }
+              className="mt-5 w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <SubscriptionRequiredModal
         open={subscriptionModalOpen}
         onClose={() => setSubscriptionModalOpen(false)}

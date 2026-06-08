@@ -5,6 +5,8 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
   ConfirmationResult,
+  PhoneAuthProvider,
+  linkWithCredential,
 } from "firebase/auth";
 import { getAuthSafe } from "@/lib/firebase";
 
@@ -99,15 +101,43 @@ export default function PhoneVerification({
   };
 
   const verifyOtp = async () => {
-    if (!confirmResult) return;
+    if (!confirmResult || !authInstance?.currentUser) {
+      setError("User session not found. Please refresh and try again.");
+      return;
+    }
+
     setError("");
     setLoading(true);
+
     try {
-      const res = await confirmResult.confirm(otp);
-      onVerified(res.user.phoneNumber || "");
+      const credential = PhoneAuthProvider.credential(
+        confirmResult.verificationId,
+        otp
+      );
+
+      const linkedUser = await linkWithCredential(
+        authInstance.currentUser,
+        credential
+      );
+
+      const verifiedPhone = linkedUser.user.phoneNumber || "";
+
+      await onVerified(verifiedPhone);
+
+      setOtp("");
+      setConfirmResult(null);
     } catch (err: any) {
       console.error(err);
-      setError("Invalid OTP.");
+
+      if (err?.code === "auth/credential-already-in-use") {
+        setError("This phone number is already linked to another account.");
+      } else if (err?.code === "auth/provider-already-linked") {
+        setError("Phone number is already linked to this account.");
+      } else if (err?.code === "auth/invalid-verification-code") {
+        setError("Invalid OTP.");
+      } else {
+        setError(err?.message || "Failed to verify phone.");
+      }
     } finally {
       setLoading(false);
     }

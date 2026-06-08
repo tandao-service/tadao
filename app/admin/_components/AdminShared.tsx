@@ -17,7 +17,7 @@ import {
     CalendarClock,
     Boxes,
 } from "lucide-react";
-import { icon } from "leaflet";
+
 
 export type AdminNavItem = {
     href: string;

@@ -27,6 +27,7 @@ type CollectionProps = {
   urlParamName?: string;
   userId: string;
   handleOpenChatId: (value: any) => void;
+  handleOpenUserAdverts?: (userId: string) => void;
 };
 
 const CollectionUsers = ({
@@ -38,6 +39,7 @@ const CollectionUsers = ({
   urlParamName,
   userId,
   handleOpenChatId,
+  handleOpenUserAdverts,
 }: CollectionProps) => {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const pathname = usePathname();
@@ -90,35 +92,35 @@ const CollectionUsers = ({
     <div>
       {data.length > 0 ? (
         <div className="dark:bg-[#2D3236]">
-          <table className="min-w-full border-collapse border border-gray-300 dark:border-gray-600">
+          <table className="min-w-full border-collapse ">
             <thead className="dark:bg-gray-800 bg-gray-200 text-xs">
               <tr>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Email
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Name
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Status
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Business Name
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Verified
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Total Paid
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Ads
                 </th>
 
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Actions
                 </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <th className=" px-4 py-2">
                   Contact
                 </th>
               </tr>
@@ -129,20 +131,20 @@ const CollectionUsers = ({
                   key={index}
                   className="hover:bg-gray-100 dark:hover:bg-gray-600 text-xs"
                 >
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     {user.email}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     {user.firstName} {user.lastName}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     {user.status}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     {user.businessname || "N/A"}
                   </td>
 
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     {user.verified && user?.verified[0]?.accountverified === true ? (<> <p className="p-1 bg-green-100 text-green-700 rounded-sm text-xs cursor-pointer hover:underline">
                       <VerifiedUserOutlinedIcon sx={{ fontSize: 16 }} />
                       Verified Seller
@@ -151,7 +153,7 @@ const CollectionUsers = ({
                       Unverified Seller
                     </p></>)}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     {user.totalPaid || "0"}
                   </td>
                   <td className="border flex gap-2 border-gray-300 dark:border-gray-600 px-4 py-2">
@@ -162,15 +164,24 @@ const CollectionUsers = ({
                   </td>
 
 
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                    <div
-                      onClick={() => handleOpenMethods(user)} // Pass the specific delivery
-                      className="cursor-pointer hover:text-green-600"
-                    >
-                      <ModeEditOutlinedIcon />
+                  <td className="">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenUserAdverts?.(user._id)}
+                        className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+                      >
+                        Adverts
+                      </button>
+                      <div
+                        onClick={() => handleOpenMethods(user)} // Pass the specific delivery
+                        className="cursor-pointer hover:text-green-600"
+                      >
+                        <ModeEditOutlinedIcon />
+                      </div>
                     </div>
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                  <td className=" px-4 py-2">
                     <button
                       onClick={() => handleOpenContact(user)}
                       className="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900"

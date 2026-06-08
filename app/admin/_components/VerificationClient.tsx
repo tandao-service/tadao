@@ -18,7 +18,8 @@ export default function VerificationClient() {
     const { toast } = useToast();
     const [loading, setLoading] = useState(true);
     const [fee, setFee] = useState("500");
-
+    const [verifyId, setVerifyId] = useState("");
+    const [updating, setUpdating] = useState(false);
     useEffect(() => {
         let cancelled = false;
 
@@ -27,7 +28,8 @@ export default function VerificationClient() {
                 setLoading(true);
                 const res: any = await getVerifyfee();
                 if (!cancelled) {
-                    setFee(String(res?.fee ?? res ?? "500"));
+                    setVerifyId(res?._id || "");
+                    setFee(String(res?.fee ?? "500"));
                 }
             } catch (error) {
                 console.error("Failed to load verification fee:", error);
@@ -44,35 +46,38 @@ export default function VerificationClient() {
 
     const handleFee = async () => {
         try {
-            await updateVerifiesFee(fee, VerificationPackId);
+            setUpdating(true);
+
+            const res = await updateVerifiesFee(fee);
+
+            if (!res?.success) {
+                throw new Error(res?.message || "Could not update verification fee");
+            }
+
             toast({
                 title: "Updated!",
                 description: "Verification fee updated",
                 duration: 5000,
                 className: "bg-[#30AF5B] text-white",
             });
-        } catch (error) {
-            console.error("Failed to update verification fee:", error);
+        } catch (error: any) {
             toast({
                 title: "Failed",
-                description: "Could not update verification fee",
+                description: error?.message || "Could not update verification fee",
                 duration: 5000,
                 variant: "destructive",
             });
+        } finally {
+            setUpdating(false);
         }
     };
-
     if (loading) {
         return <AdminSectionLoader label="Loading verification settings..." />;
     }
 
     return (
         <>
-            <AdminPageHeader
-                eyebrow="Verification"
-                title="Verification Fee"
-                subtitle="Manage seller verification pricing."
-            />
+
 
             <AdminCard className="max-w-xl">
                 <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -90,9 +95,10 @@ export default function VerificationClient() {
                     <button
                         type="button"
                         onClick={handleFee}
-                        className="h-12 rounded-2xl bg-slate-950 px-5 text-sm font-medium text-white hover:bg-orange-500"
+                        disabled={updating}
+                        className="h-12 rounded-2xl bg-slate-950 px-5 text-sm font-medium text-white hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        Update
+                        {updating ? "Updating..." : "Update"}
                     </button>
                 </div>
             </AdminCard>

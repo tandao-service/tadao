@@ -25,22 +25,40 @@ export const createVerifies = async ({ verifies, path }: CreateVerifiesParams) =
 
 // UPDATE
 
-export async function updateVerifiesFee(fee: string, _id: string) {
+export async function updateVerifiesFee(fee: string) {
   try {
-    await connectToDatabase()
-    const updatedV = await Verifies.findByIdAndUpdate(
-      _id,
-      { fee },
-      { new: true }
-    )
+    await connectToDatabase();
 
+    const cleanedFee = String(fee || "").trim();
 
-    return JSON.parse(JSON.stringify(updatedV))
-  } catch (error) {
-    handleError(error)
+    if (!cleanedFee) {
+      throw new Error("Fee is required");
+    }
+
+    const updatedV = await Verifies.findOneAndUpdate(
+      {},
+      { fee: cleanedFee },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
+
+    revalidatePath("/admin/verification");
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(updatedV)),
+    };
+  } catch (error: any) {
+    console.error("UPDATE VERIFY FEE ERROR:", error);
+
+    return {
+      success: false,
+      message: error?.message || "Failed to update verification fee",
+    };
   }
 }
-
 export async function updateVerifies({ verifies, path }: UpdateVerifiesParams) {
   try {
     await connectToDatabase()
