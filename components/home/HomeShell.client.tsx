@@ -17,6 +17,7 @@ import TrendingGridSkeleton from "./TrendingGridSkeleton";
 import BottomNav from "@/components/home/BottomNav.client";
 import { getAllPackages } from "@/lib/actions/packages.actions";
 import { console } from "inspector";
+import { useAuth } from "@/app/hooks/useAuth";
 
 function slugify(input: string) {
     return String(input || "")
@@ -71,7 +72,7 @@ export default function HomeShell({
     categoryTree: HomeCategoryNode[];
 }) {
     const footerRef = React.useRef<HTMLElement | null>(null);
-
+    const { appUserId } = useAuth();
     const defaultListingSlug = React.useMemo(
         () => getDefaultListingSlugFromTree(categoryTree as any[]),
         [categoryTree]
@@ -142,7 +143,7 @@ export default function HomeShell({
                         ) : null}
 
                         {trending?.length ? (
-                            <TrendingGrid ads={trending} />
+                            <TrendingGrid ads={trending} currentUserId={appUserId || ""} />
                         ) : (
                             <TrendingGridSkeleton />
                         )}

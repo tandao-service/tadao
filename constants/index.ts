@@ -241,17 +241,12 @@ export const headerLinks = [
 
   },
   {
-    label: 'Public Profile',
-    route: '/seller',
-
-  },
-  {
     label: 'Chat',
     route: '/chat',
 
   },
   {
-    label: 'My dashboard',
+    label: 'My Adverts',
     route: '/dashboard/ads',
 
   },

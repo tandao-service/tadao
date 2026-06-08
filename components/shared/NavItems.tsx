@@ -82,10 +82,10 @@ export default function NavItems({
   const iconMap: Record<string, React.ReactNode> = {
     Home: <HomeIcon fontSize="small" />,
     Sell: <SellOutlinedIcon fontSize="small" />,
-    "Public Profile": <FormatListBulletedOutlinedIcon fontSize="small" />,
+    // "Public Profile": <FormatListBulletedOutlinedIcon fontSize="small" />,
     Chat: <CommentOutlinedIcon fontSize="small" />,
-    "My dashboard": <StackedLineChartOutlinedIcon fontSize="small" />,
-    Bookmark: <BookmarkIcon fontSize="small" />,
+    "My Adverts": <StackedLineChartOutlinedIcon fontSize="small" />,
+    Favorites: <BookmarkIcon fontSize="small" />,
     Plan: <DiamondIcon fontSize="small" />,
     Settings: <PersonOutlineOutlinedIcon fontSize="small" />,
     Admin: <ManageAccountsOutlinedIcon fontSize="small" />,
@@ -120,15 +120,15 @@ export default function NavItems({
                       handleOpenSell();
                       handleclicklink();
                       break;
-                    case "Public Profile":
-                      handleOpenShop(user);
-                      handleclicklink();
-                      break;
+                    // case "Public Profile":
+                    //   handleOpenShop(user);
+                    //  handleclicklink();
+                    //  break;
                     case "Chat":
                       handleOpenChat();
                       handleclicklink();
                       break;
-                    case "My dashboard":
+                    case "My Adverts":
                       handleOpenPerfomance();
                       handleclicklink();
                       break;
@@ -167,7 +167,7 @@ export default function NavItems({
                     <span
                       className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition ${isActive
                         ? "bg-white/15 text-white"
-                        : "bg-orange-50 text-orange-600 group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300"
+                        : "text-orange-600 group-hover:bg-white dark:bg-orange-500/10 dark:text-orange-300"
                         }`}
                     >
                       {iconMap[link.label]}

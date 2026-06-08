@@ -3,9 +3,16 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { IoCamera } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import {
+    IoCamera,
+    IoFlashOutline,
+    IoSparklesOutline,
+} from "react-icons/io5";
 import sanitizeHtml from "sanitize-html";
-import { buildAdPath, toListingSlugFromName } from "@/app/_ad/ad-url";
+
+import { buildAdPath } from "@/app/_ad/ad-url";
+import { boostAd, featureAd } from "@/lib/actions/dynamicAd.actions";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -17,27 +24,19 @@ function safeStr(v: any) {
     return (v ?? "").toString().trim();
 }
 
-function chip(label: string) {
-    return (
-        <span className="rounded-lg border bg-[#ebf2f7] px-2 py-1 text-[10px] text-gray-700 dark:bg-[#131B1E] dark:text-gray-300">
-            {label}
-        </span>
-    );
-}
-
-// ✅ boost fallback (if aggregate fields not present)
 function isBoostActive(ad: any, kind: "featured" | "top") {
     const now = Date.now();
     const b = ad?.boost || {};
+
     if (kind === "featured") {
         const until = b?.featuredUntil ? new Date(b.featuredUntil).getTime() : 0;
         return b?.isFeatured === true && until > now;
     }
+
     const until = b?.topUntil ? new Date(b.topUntil).getTime() : 0;
     return b?.isTop === true && until > now;
 }
 
-// ✅ sanitize + truncate (borrowed from VerticalCard)
 function truncateDescription(raw: any, charLimit = 90) {
     const safe = sanitizeHtml(String(raw ?? ""), {
         allowedTags: [],
@@ -53,6 +52,8 @@ type Props = {
     regionFallback?: string;
     descLimit?: number;
     listingSlug?: string;
+    currentUserId?: string;
+    showOwnerActions?: boolean;
 };
 
 export default function SmartPropertyCardWithDesc({
@@ -60,55 +61,135 @@ export default function SmartPropertyCardWithDesc({
     regionFallback,
     listingSlug,
     descLimit = 90,
+    currentUserId,
+    showOwnerActions = false,
 }: Props) {
-    const id = String(ad?._id || "");
+    const router = useRouter();
 
-    const title = safeStr(ad?.data?.title) || "Listing";
-    const region = safeStr(ad?.data?.region) || safeStr(regionFallback);
-    const area = safeStr(ad?.data?.area);
+    const id = String(ad?._id || ad?.id || "");
 
-    const description = truncateDescription(ad?.data?.description, descLimit);
+    const title = safeStr(ad?.data?.title) || safeStr(ad?.title) || "Listing";
+    const region =
+        safeStr(ad?.data?.region) ||
+        safeStr(ad?.region) ||
+        safeStr(regionFallback);
+    const area = safeStr(ad?.data?.area) || safeStr(ad?.area);
+
+    const description =
+        truncateDescription(ad?.data?.description, descLimit) ||
+        truncateDescription(ad?.description, descLimit);
 
     const image =
         ad?.data?.coverThumbUrl ||
         (Array.isArray(ad?.data?.imageUrls) && ad.data.imageUrls.length > 0
             ? ad.data.imageUrls[0]
-            : null);
+            : null) ||
+        ad?.image ||
+        null;
 
-    const imgCount = Array.isArray(ad?.data?.imageUrls) ? ad.data.imageUrls.length : 0;
+    const imgCount = Array.isArray(ad?.data?.imageUrls)
+        ? ad.data.imageUrls.length
+        : Number(ad?.imagesCount || 0);
 
     const planName = safeStr(ad?.plan?.name);
     const planColor = safeStr(ad?.plan?.color);
 
-    // ✅ verified can be array OR object depending on populate
     const isVerified =
+        ad?.isVerifiedSeller === true ||
         ad?.organizer?.verified?.accountverified === true ||
         ad?.organizer?.verified?.[0]?.accountverified === true;
 
     const isContactPrice = ad?.data?.contact === "contact";
-    const price = Number(ad?.data?.price || 0);
+    const price = Number(ad?.data?.price ?? ad?.price ?? 0);
 
-    const isRent = Boolean(ad?.data?.period || ad?.data?.per);
-    const condition = safeStr(ad?.data?.condition);
-    const landType = safeStr(ad?.data?.["land-Type"]);
-    const landArea = safeStr(ad?.data?.["land-Area(acres)"]);
-    const hasDelivery = Boolean(ad?.data?.["delivery"]);
-    const hasBulk = Boolean(ad?.data?.["bulkprice"]);
+    const featuredActive =
+        ad?.featuredActive === true ||
+        ad?.isFeatured === true ||
+        isBoostActive(ad, "featured");
 
-    // ✅ badges: prefer aggregate computed fields, fallback to boost dates
-    const featuredActive = ad?.featuredActive === true ? true : isBoostActive(ad, "featured");
-    const topActive = ad?.topActive === true ? true : isBoostActive(ad, "top");
+    const topActive =
+        ad?.topActive === true ||
+        ad?.isTop === true ||
+        isBoostActive(ad, "top");
 
-    // ✅ Image loading overlay state
+    const ownerId = String(
+        ad?.organizer?._id ||
+        ad?.organizer ||
+        ad?.organizerId ||
+        ad?.userId ||
+        ""
+    );
+
+    const isOwner = Boolean(currentUserId && ownerId === String(currentUserId));
+    const canShowOwnerActions = showOwnerActions && isOwner;
+
     const [imgLoading, setImgLoading] = useState<boolean>(Boolean(image));
     const [imgError, setImgError] = useState<boolean>(false);
+    const [actioning, setActioning] = useState<"boost" | "feature" | "">("");
+
+    const handleBoost = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!id || !currentUserId) return;
+
+        try {
+            setActioning("boost");
+
+            const res = await boostAd({
+                adId: id,
+                userId: currentUserId,
+                path: "/dashboard/ads",
+            });
+
+            if (!res?.ok) {
+                alert(res?.message || "Unable to boost ad.");
+                return;
+            }
+
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to boost ad. Please try again.");
+        } finally {
+            setActioning("");
+        }
+    };
+
+    const handleFeature = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!id || !currentUserId) return;
+
+        try {
+            setActioning("feature");
+
+            const res = await featureAd({
+                adId: id,
+                userId: currentUserId,
+                path: "/dashboard/ads",
+            });
+
+            if (!res?.ok) {
+                alert(res?.message || "Unable to feature ad.");
+                return;
+            }
+
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to feature ad. Please try again.");
+        } finally {
+            setActioning("");
+        }
+    };
 
     return (
         <Link
             href={buildAdPath(ad, listingSlug)}
             className="group block overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
         >
-            {/* Image */}
             <div
                 className="relative w-full"
                 style={
@@ -119,7 +200,6 @@ export default function SmartPropertyCardWithDesc({
             >
                 {image && !imgError ? (
                     <>
-                        {/* ✅ Loading overlay */}
                         {imgLoading && (
                             <div className="absolute inset-0 z-[2] flex items-center justify-center bg-black/10 backdrop-blur-[1px]">
                                 <div className="h-9 w-9 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
@@ -145,13 +225,14 @@ export default function SmartPropertyCardWithDesc({
                         <div className="flex flex-col items-center gap-2">
                             <Image src="/logo.png" alt="Tadao" width={40} height={40} />
                             <p className="text-[11px] font-bold text-orange-500">
-                                {safeStr(ad?.data?.category) || "Listing"}
+                                {safeStr(ad?.data?.category) ||
+                                    safeStr(ad?.category) ||
+                                    "Listing"}
                             </p>
                         </div>
                     </div>
                 )}
 
-                {/* LEFT stack badges */}
                 <div className="absolute left-0 top-0 flex flex-col gap-1">
                     {featuredActive && (
                         <div className="rounded-br-lg rounded-tl-sm bg-orange-500 px-2 py-1 text-[10px] font-extrabold text-white shadow-lg">
@@ -175,14 +256,12 @@ export default function SmartPropertyCardWithDesc({
                     )}
                 </div>
 
-                {/* Verified badge */}
                 {isVerified && (
                     <div className="absolute right-0 top-0 rounded-bl-lg rounded-tr-lg bg-green-100 px-2 py-1 text-[10px] font-semibold text-green-700">
                         Verified
                     </div>
                 )}
 
-                {/* Bottom badges */}
                 <div className="absolute bottom-2 left-0 right-0 flex justify-between px-2">
                     <div className="rounded-sm bg-black/70 px-2 py-1 text-[10px] text-white">
                         <div className="flex items-center gap-1">
@@ -204,7 +283,6 @@ export default function SmartPropertyCardWithDesc({
                 </div>
             </div>
 
-            {/* Body */}
             <div className="p-3">
                 <h2 className="line-clamp-2 text-sm font-semibold">{title}</h2>
 
@@ -223,18 +301,45 @@ export default function SmartPropertyCardWithDesc({
                     </p>
                 )}
 
-                <div className="mt-2 font-bold text-orange-500">
-                    {isContactPrice ? "Contact for price" : price > 0 ? moneyKsh(price) : "KSh 0"}
+                <div className="mt-2 font-bold text-black">
+                    {isContactPrice
+                        ? "Contact for price"
+                        : price > 0
+                            ? moneyKsh(price)
+                            : "KSh 0"}
                 </div>
 
-                {/**<div className="mt-3 flex flex-wrap gap-2">
-                    {isRent && chip("Rent")}
-                    {condition && chip(condition)}
-                    {landType && chip(landType)}
-                    {landArea && chip(landArea)}
-                    {hasBulk && chip("Bulk Price")}
-                    {hasDelivery && chip("Delivery")}
-                </div> */}
+                {canShowOwnerActions && (
+                    <div className="mt-3 flex gap-2">
+                        <button
+                            type="button"
+                            onClick={handleBoost}
+                            disabled={actioning !== ""}
+                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-sky-50 px-2 py-2 text-[11px] font-bold text-sky-700 hover:bg-sky-100 disabled:opacity-60"
+                        >
+                            <IoFlashOutline />
+                            {actioning === "boost"
+                                ? "Boosting..."
+                                : topActive
+                                    ? "Boosted"
+                                    : "Boost"}
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleFeature}
+                            disabled={actioning !== ""}
+                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-purple-50 px-2 py-2 text-[11px] font-bold text-purple-700 hover:bg-purple-100 disabled:opacity-60"
+                        >
+                            <IoSparklesOutline />
+                            {actioning === "feature"
+                                ? "Featuring..."
+                                : featuredActive
+                                    ? "Featured"
+                                    : "Feature"}
+                        </button>
+                    </div>
+                )}
             </div>
         </Link>
     );

@@ -104,17 +104,56 @@ type Props = {
         brand?: string;
     };
 };
+const themeColors = [
+    {
+        bg: "bg-orange-50",
+        text: "text-orange-600",
+        ring: "ring-orange-100",
+        hover: "hover:bg-orange-100",
+    },
+    {
+        bg: "bg-blue-50",
+        text: "text-blue-600",
+        ring: "ring-blue-100",
+        hover: "hover:bg-blue-100",
+    },
+    {
+        bg: "bg-emerald-50",
+        text: "text-emerald-600",
+        ring: "ring-emerald-100",
+        hover: "hover:bg-emerald-100",
+    },
+    {
+        bg: "bg-yellow-50",
+        text: "text-yellow-600",
+        ring: "ring-yellow-100",
+        hover: "hover:bg-yellow-100",
+    },
+    {
+        bg: "bg-purple-50",
+        text: "text-purple-600",
+        ring: "ring-purple-100",
+        hover: "hover:bg-purple-100",
+    },
+];
 
+function getThemeColor(index: number) {
+    return themeColors[index % themeColors.length];
+}
 function setQS(sp: URLSearchParams, key: string, value: string) {
     if (!value) sp.delete(key);
     else sp.set(key, value);
 }
 
-function isProtectedVerifiedCategory(categoryName: string) {
+function isProtectedVerifiedCategory_(categoryName: string) {
     const c = String(categoryName || "").trim().toLowerCase();
     return c === "donations" || c === "lost and found";
 }
-
+function isProtectedVerifiedCategory(categoryName: string) {
+    // Donations and Lost & Found should be viewable first.
+    // Payment/verification is only required when viewing donor/finder contact.
+    return false;
+}
 function initials2(label: string) {
     const s = String(label || "").trim();
     if (!s) return "NA";
@@ -163,18 +202,33 @@ function IconOrInitial(props: { label: string; src?: string; className?: string 
     );
 }
 
-function IconBubble({ src, alt }: { src?: string; alt: string }) {
+function IconBubble({
+    src,
+    alt,
+    index = 0,
+}: {
+    src?: string;
+    alt: string;
+    index?: number;
+}) {
+    const color = getThemeColor(index);
+
     return (
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 ring-1 ring-orange-100">
+        <div
+            className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-2xl ring-1",
+                color.bg,
+                color.ring
+            )}
+        >
             {src ? (
                 <img src={src} alt={alt} className="h-5 w-5 object-contain" loading="lazy" />
             ) : (
-                <div className="h-5 w-5 rounded-full bg-gradient-to-br from-orange-200 to-orange-50" />
+                <div className={cn("h-5 w-5 rounded-full", color.text)} />
             )}
         </div>
     );
 }
-
 function SidebarPanel({
     children,
     className,
@@ -185,7 +239,7 @@ function SidebarPanel({
     return (
         <div
             className={cn(
-                "overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_10px_35px_rgba(15,23,42,0.06)]",
+                "overflow-hidden rounded-xl border border-orange-100 bg-white shadow-sm",
                 className
             )}
         >
@@ -206,17 +260,19 @@ function SidebarSection({
     className?: string;
 }) {
     return (
-        <section className={cn("border-b border-slate-200/80 last:border-b-0", className)}>
-            <div className="flex items-center justify-between px-4 py-4">
-                <h3 className="text-[12px] font-black uppercase tracking-[0.14em] text-slate-700">
+        <section className={cn("border-b border-orange-100 last:border-b-0", className)}>
+            <div className="flex items-center justify-between px-4 py-3">
+                <h3 className="text-[12px] font-bold text-slate-800">
                     {title}
                 </h3>
+
                 {right ? (
-                    <div className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-extrabold text-slate-600">
+                    <div className="rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold text-blue-700">
                         {right}
                     </div>
                 ) : null}
             </div>
+
             <div className="px-3 pb-4">{children}</div>
         </section>
     );
@@ -225,54 +281,35 @@ function SidebarSection({
 function SidebarListItem({
     active,
     onClick,
-    icon,
     title,
-    subtitle,
-    trailing,
+    count,
 }: {
     active?: boolean;
     onClick?: () => void;
-    icon?: React.ReactNode;
     title: React.ReactNode;
-    subtitle?: React.ReactNode;
-    trailing?: React.ReactNode;
+    count?: number;
 }) {
     return (
         <button
             type="button"
             onClick={onClick}
-            className={cn(
-                "group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left transition",
-                active ? "bg-orange-50 ring-1 ring-orange-200" : "hover:bg-slate-50"
-            )}
+            className="block w-full text-left"
         >
-            {icon ? <div className="shrink-0">{icon}</div> : null}
+            <span
+                className={cn(
+                    "text-[13px] leading-6",
+                    active
+                        ? "font-bold text-slate-950"
+                        : "font-normal text-slate-800 hover:text-orange-600"
+                )}
+            >
+                {title}
+            </span>
 
-            <div className="min-w-0 flex-1">
-                <div
-                    className={cn(
-                        "truncate text-[13px]",
-                        active ? "font-extrabold text-orange-700" : "font-semibold text-slate-900"
-                    )}
-                >
-                    {title}
-                </div>
-                {subtitle ? (
-                    <div className="mt-0.5 truncate text-[11px] font-medium text-slate-500">
-                        {subtitle}
-                    </div>
-                ) : null}
-            </div>
-
-            {trailing ? (
-                <div
-                    className={cn(
-                        "shrink-0 text-[11px] font-bold",
-                        active ? "text-orange-600" : "text-slate-400"
-                    )}
-                >
-                    {trailing}
-                </div>
+            {typeof count === "number" ? (
+                <span className="ml-1 text-[13px] text-slate-400">
+                    | {count.toLocaleString()}
+                </span>
             ) : null}
         </button>
     );
@@ -354,6 +391,7 @@ function SearchableSelect<T extends { [k: string]: any }>(props: {
                         <IconBubble
                             src={String(selected?.[iconKey] || "")}
                             alt={String(selected?.[valueKey] || "Category")}
+
                         />
                     ) : null}
                     <div className="min-w-0">
@@ -577,7 +615,7 @@ export default function ListingPageClient(props: Props) {
 
     const { user: currentUser, loading: authLoading } = useAuth();
     // if your hook uses isLoaded instead, use that instead of loading
-
+    const [showAllSubcategories, setShowAllSubcategories] = React.useState(false);
     const [accessChecking, setAccessChecking] = React.useState(true);
     const [categoryName, setCategoryName] = React.useState(props.categoryName);
     const [isVehicle, setIsVehicle] = React.useState(props.isVehicle);
@@ -682,6 +720,9 @@ export default function ListingPageClient(props: Props) {
     const [membership, setMembership] = React.useState(props.selected.membership || "");
     const [sort, setSort] = React.useState(props.selected.sort || "recommended");
     const [mobileCatName, setMobileCatName] = React.useState<string>("");
+    const {
+        appUserId,
+    } = useAuth();
 
     const townsForCounty = React.useMemo(() => {
         if (!county) return sidebar.towns;
@@ -918,8 +959,13 @@ export default function ListingPageClient(props: Props) {
             const nextCategoryName = String(cat.name).trim();
             const nextIsVehicle = nextCategoryName.toLowerCase() === "vehicle";
             const nextListings = cat.listings;
-            const nextSlug = nextListings[0]?.slug;
 
+            const nextSlug = cat.name
+                .trim()
+                .toLowerCase()
+                .replace(/&/g, "and")
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
             setCategoryName(nextCategoryName);
             setIsVehicle(nextIsVehicle);
             setCategoryListings(nextListings);
@@ -1319,7 +1365,7 @@ export default function ListingPageClient(props: Props) {
         return (
             <>
                 <TopBar />
-                <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
+                <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-emerald-50 pt-[calc(var(--topbar-h,64px)+12px)]">
                     <main className="mx-auto max-w-[1440px] px-4 pb-10">
                         <div className="flex min-h-[60vh] items-center justify-center">
                             <div className="rounded-[28px] border border-emerald-100 bg-white px-8 py-10 shadow-[0_10px_35px_rgba(15,23,42,0.06)]">
@@ -1364,7 +1410,7 @@ export default function ListingPageClient(props: Props) {
 
             <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
                 <main className="mx-auto max-w-[1440px] px-3 pb-8 sm:px-4 lg:px-5">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[290px_minmax(0,1fr)]">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[270px_minmax(0,1fr)]">
                         <aside className="hidden md:block">
                             <SidebarPanel>
                                 <SidebarSection
@@ -1386,29 +1432,38 @@ export default function ListingPageClient(props: Props) {
                                     </div>
                                 </SidebarSection>
 
-                                <SidebarSection
-                                    title={categoryName}
-                                    right={`${Number(totalCategoryAds || 0).toLocaleString()} ads`}
-                                >
-                                    <div className="max-h-[360px] space-y-1 overflow-auto pr-1">
-                                        {categoryListings.map((it) => {
-                                            const active = it.slug.toLowerCase() === activeSlug.toLowerCase();
-                                            const live = sidebar.subcategoryCounts?.[it.subcategory];
-                                            const fallback = countsBySubFallback?.[it.subcategory];
-                                            const count = Number(live ?? fallback ?? 0);
+                                <SidebarSection title={categoryName}>
+                                    <div className="space-y-0.5 px-3 pb-2">
+                                        {categoryListings
+                                            .slice(0, showAllSubcategories ? categoryListings.length : 8)
+                                            .map((it) => {
+                                                const active =
+                                                    it.slug.toLowerCase() === activeSlug.toLowerCase();
 
-                                            return (
-                                                <SidebarListItem
-                                                    key={it.slug}
-                                                    active={active}
-                                                    onClick={() => onSubcategoryClick(it.slug)}
-                                                    icon={<IconBubble src={it.icon} alt={it.title} />}
-                                                    title={it.title}
-                                                    subtitle={`${count.toLocaleString()} ads`}
-                                                    trailing={<IoChevronForward />}
-                                                />
-                                            );
-                                        })}
+                                                const live = sidebar.subcategoryCounts?.[it.subcategory];
+                                                const fallback = countsBySubFallback?.[it.subcategory];
+                                                const count = Number(live ?? fallback ?? 0);
+
+                                                return (
+                                                    <SidebarListItem
+                                                        key={it.slug}
+                                                        active={active}
+                                                        onClick={() => onSubcategoryClick(it.slug)}
+                                                        title={it.title}
+                                                        count={count}
+                                                    />
+                                                );
+                                            })}
+
+                                        {categoryListings.length > 8 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowAllSubcategories((prev) => !prev)}
+                                                className="mt-1 text-[13px] font-medium text-green-600 underline decoration-dotted underline-offset-2 hover:text-orange-600"
+                                            >
+                                                {showAllSubcategories ? "Show less" : "Show more"}
+                                            </button>
+                                        )}
                                     </div>
                                 </SidebarSection>
 
@@ -1426,7 +1481,7 @@ export default function ListingPageClient(props: Props) {
                                         <button
                                             type="button"
                                             onClick={applyFilters}
-                                            className="h-11 rounded-xl bg-orange-500 px-3 text-[13px] font-extrabold text-white shadow-[0_10px_20px_rgba(249,115,22,0.28)] transition hover:bg-orange-600"
+                                            className="h-11 rounded-xl bg-emerald-500 px-3 text-[13px] font-extrabold text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:bg-emerald-600"
                                         >
                                             Apply
                                         </button>
@@ -1495,7 +1550,7 @@ export default function ListingPageClient(props: Props) {
 
                                         <button
                                             onClick={applyFilters}
-                                            className="h-14 rounded-2xl bg-orange-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(249,115,22,0.28)] transition hover:-translate-y-0.5 hover:bg-orange-600"
+                                            className="h-14 rounded-2xl bg-emerald-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
                                         >
                                             Search
                                         </button>
@@ -1717,6 +1772,8 @@ export default function ListingPageClient(props: Props) {
                                         key={String(ad._id)}
                                         ad={ad}
                                         regionFallback={props.regionLabel}
+                                        currentUserId={appUserId || ""}
+                                        showOwnerActions
                                     />
                                 ))}
                             </div>
@@ -1725,8 +1782,9 @@ export default function ListingPageClient(props: Props) {
 
                             <div className="mt-4 flex items-center justify-center">
                                 {loadingMore ? (
-                                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm">
-                                        Loading…
+                                    <div className="flex flex-col items-center gap-3">
+                                        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
+                                        <p className="text-sm font-semibold text-orange-600">Loading...</p>
                                     </div>
                                 ) : null}
 
@@ -1784,7 +1842,7 @@ export default function ListingPageClient(props: Props) {
 
                         <div className="max-h-[72vh] overflow-auto px-4 py-4">
                             <div className="space-y-2">
-                                {props.categories.map((c) => {
+                                {props.categories.map((c, index) => {
                                     const activeCat =
                                         String(c.name).toLowerCase() ===
                                         String(categoryName).toLowerCase();
@@ -1806,7 +1864,7 @@ export default function ListingPageClient(props: Props) {
                                             ].join(" ")}
                                         >
                                             <div className="flex items-center gap-3">
-                                                <IconBubble src={c.icon} alt={c.name} />
+                                                <IconBubble src={c.icon} alt={c.name} index={index} />
 
                                                 <div className="min-w-0 flex-1">
                                                     <div
@@ -1884,11 +1942,11 @@ export default function ListingPageClient(props: Props) {
                             <div className="space-y-2">
                                 {props.categories
                                     .find(
-                                        (c) =>
+                                        (c, index) =>
                                             String(c.name).toLowerCase() ===
                                             String(mobileCatName || categoryName).toLowerCase()
                                     )
-                                    ?.listings?.map((it) => {
+                                    ?.listings?.map((it, index) => {
                                         const selectedCat = props.categories.find(
                                             (c) =>
                                                 String(c.name).toLowerCase() ===
@@ -1922,7 +1980,7 @@ export default function ListingPageClient(props: Props) {
                                                 ].join(" ")}
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <IconBubble src={it.icon} alt={it.title} />
+                                                    <IconBubble src={it.icon} alt={it.title} index={index} />
 
                                                     <div className="min-w-0 flex-1">
                                                         <div

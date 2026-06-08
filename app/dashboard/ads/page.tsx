@@ -90,19 +90,9 @@ export default function DashboardAdsPage() {
                 <TopBar />
                 <MobileBackPill label="Back" />
                 <main className="mx-auto max-w-7xl px-3 pt-[calc(var(--topbar-h,64px)+10px)] pb-8 md:px-4">
-                    <div className="overflow-hidden rounded-[24px] border border-orange-100 bg-white shadow-sm">
-                        <div className="h-28 animate-pulse bg-gradient-to-r from-orange-100 via-orange-50 to-white" />
-                        <div className="grid gap-3 p-4 sm:grid-cols-2 xl:grid-cols-4">
-                            {Array.from({ length: 4 }).map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="h-20 animate-pulse rounded-2xl bg-slate-100"
-                                />
-                            ))}
-                        </div>
-                        <div className="px-4 pb-4 text-sm font-medium text-slate-500">
-                            Loading dashboard...
-                        </div>
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
+                        <p className="text-sm font-semibold text-orange-600">Loading...</p>
                     </div>
                 </main>
             </>

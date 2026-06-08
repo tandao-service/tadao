@@ -104,6 +104,13 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
             title
         )}&price=${encodeURIComponent(priceText)}&image=${encodeURIComponent(cover || "")}`
         : "/profile-messages";
+    const isContactProtectedAd =
+        safeStr(data?.category).toLowerCase() === "donations" ||
+        safeStr(data?.category).toLowerCase() === "lost and found" ||
+        safeStr(data?.subcategory).toLowerCase() === "donated items" ||
+        safeStr(data?.subcategory).toLowerCase() === "lost and found items";
+
+    const canViewProtectedContact = !isContactProtectedAd || isVerified;
 
     const specs = buildSpecs(data);
 
@@ -314,7 +321,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                 </Link>
 
                                 <div className="mt-5 grid grid-cols-1 gap-3">
-                                    {phone ? (
+                                    {phone && canViewProtectedContact ? (
                                         <a
                                             href={`tel:${phone}`}
                                             className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
@@ -329,7 +336,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                         </a>
                                     ) : null}
 
-                                    {whatsapp ? (
+                                    {whatsapp && canViewProtectedContact ? (
                                         <a
                                             href={`https://wa.me/${whatsapp.replace(/[^\d]/g, "")}`}
                                             target="_blank"
@@ -346,7 +353,7 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                         </a>
                                     ) : null}
 
-                                    {email ? (
+                                    {email && canViewProtectedContact ? (
                                         <a
                                             href={`mailto:${email}`}
                                             className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
@@ -360,7 +367,24 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                             </span>
                                         </a>
                                     ) : null}
+                                    {isContactProtectedAd && !canViewProtectedContact ? (
+                                        <div className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 p-4">
+                                            <h3 className="text-sm font-extrabold text-slate-900">
+                                                View contact details
+                                            </h3>
 
+                                            <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                                                You can view this item first. To contact the owner, please verify your account now.
+                                            </p>
+
+                                            <Link
+                                                href={`/verify?redirect_url=${encodeURIComponent(canonicalPath)}&reason=protected-contact`}
+                                                className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-2xl bg-orange-500 text-sm font-extrabold text-white hover:bg-orange-600"
+                                            >
+                                                Verify Now
+                                            </Link>
+                                        </div>
+                                    ) : null}
                                     <Link
                                         href={chatHref}
                                         className="group flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-1 text-sm font-semibold text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-100 hover:shadow-sm"

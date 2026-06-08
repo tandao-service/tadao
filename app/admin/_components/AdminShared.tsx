@@ -190,7 +190,9 @@ export function AdminSidebarLinks({
         <nav className="space-y-1">
             {adminNavItems.map((item) => {
                 const Icon = item.icon;
-                const active = pathname === item.href;
+                const active =
+                    pathname === item.href ||
+                    (item.href !== "/admin" && pathname.startsWith(item.href));
 
                 return (
                     <Link
@@ -200,17 +202,29 @@ export function AdminSidebarLinks({
                         className={[
                             "group flex w-full items-center gap-3 rounded-2xl px-4 py-3 transition-all",
                             active
-                                ? "bg-gradient-to-r from-orange-500 to-amber-400 text-white shadow-lg"
-                                : "text-slate-300 hover:bg-white/10 hover:text-white",
+                                ? "bg-orange-50 text-orange-700 ring-1 ring-orange-100"
+                                : "text-slate-700 hover:bg-slate-50 hover:text-slate-950",
                         ].join(" ")}
                     >
-                        <Icon className="h-5 w-5 shrink-0" />
+                        <div
+                            className={[
+                                "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition",
+                                active
+                                    ? "bg-orange-500 text-white shadow-sm"
+                                    : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-orange-600",
+                            ].join(" ")}
+                        >
+                            <Icon className="h-5 w-5" />
+                        </div>
+
                         <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold">{item.label}</p>
+                            <p className="truncate text-sm font-bold">
+                                {item.label}
+                            </p>
                             <p
                                 className={[
                                     "truncate text-[11px]",
-                                    active ? "text-orange-50/90" : "text-slate-500",
+                                    active ? "text-orange-600/80" : "text-slate-400",
                                 ].join(" ")}
                             >
                                 {item.description}

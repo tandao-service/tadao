@@ -1694,18 +1694,18 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
   const map: Record<string, ListingMapEntry> = {};
 
   const stripIntent = (name: string) =>
-    name
+    String(name || "")
       .replace(/\s+for\s+sale\s*$/i, "")
       .replace(/\s+for\s+rent\s*$/i, "")
       .trim();
 
   const detectMode = (name: string): "sale" | "rent" => {
-    const n = name.toLowerCase();
+    const n = String(name || "").toLowerCase();
     if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
     return "sale";
   };
 
-  const normalize = (v: string) => v.trim().toLowerCase();
+  const normalize = (v: string) => String(v || "").trim().toLowerCase();
 
   for (const s of subcats as any[]) {
     const rawSub = String(s?.subcategory || "").trim();
@@ -1716,33 +1716,79 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
 
     const icon = Array.isArray(s?.imageUrl) ? s.imageUrl[0] || "" : "";
 
-    // ✅ force special clean routes
+    // ✅ CATEGORY-LEVEL ROUTE
+    // Example: /vehicle, /property, /electronics
+    // This route should show ALL adverts under this category.
+    const categorySlug = slugify(catName);
+
+    if (!map[categorySlug]) {
+      map[categorySlug] = {
+        category: catName,
+        subcategory: "",
+        title: catName,
+        icon,
+      };
+    }
+
+    // ✅ force special clean route for Donations category landing
+    if (normalize(catName) === "donations") {
+      map["donations"] = {
+        category: catName,
+        subcategory: "",
+        title: "Donations",
+        icon,
+      };
+    }
+
+    // ✅ force special clean route for Lost & Found category landing
+    if (normalize(catName) === "lost and found") {
+      map["lost-and-found"] = {
+        category: catName,
+        subcategory: "",
+        title: "Lost & Found",
+        icon,
+      };
+    }
+
+    // ✅ force clean route for Financing category landing
+    if (normalize(catName) === "financing") {
+      map["financing"] = {
+        category: catName,
+        subcategory: "",
+        title: "Financing",
+        icon,
+      };
+    }
+
+    // ✅ special subcategory route: donations
     if (
       normalize(catName) === "donations" &&
       normalize(rawSub) === "donated items"
     ) {
-      map["donations"] = {
+      map["donated-items"] = {
         category: catName,
         subcategory: rawSub,
-        title: "Donations",
+        title: "Donated Items",
         icon,
       };
       continue;
     }
 
+    // ✅ special subcategory route: lost and found items
     if (
       normalize(catName) === "lost and found" &&
       normalize(rawSub) === "lost and found items"
     ) {
-      map["lost-and-found"] = {
+      map["lost-and-found-items"] = {
         category: catName,
         subcategory: rawSub,
-        title: "Lost & Found",
+        title: "Lost & Found Items",
         icon,
       };
       continue;
     }
-    // ✅ force clean route for Financing
+
+    // ✅ special subcategory route: assets financing
     if (
       normalize(catName) === "financing" &&
       normalize(rawSub) === "assets financing"
@@ -1755,6 +1801,7 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
       };
       continue;
     }
+
     const mode = detectMode(rawSub);
     const cleanSub = stripIntent(rawSub);
     const suffix = mode === "rent" ? "for-rent" : "for-sale";
@@ -1770,11 +1817,11 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
     };
   }
 
-  // ✅ fallback, so route never shows Category not found
+  // ✅ fallbacks for category landing pages
   if (!map["donations"]) {
     map["donations"] = {
       category: "Donations",
-      subcategory: "Donated Items",
+      subcategory: "",
       title: "Donations",
       icon: "",
     };
@@ -1783,8 +1830,17 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
   if (!map["lost-and-found"]) {
     map["lost-and-found"] = {
       category: "Lost and Found",
-      subcategory: "Lost and Found Items",
+      subcategory: "",
       title: "Lost & Found",
+      icon: "",
+    };
+  }
+
+  if (!map["financing"]) {
+    map["financing"] = {
+      category: "Financing",
+      subcategory: "",
+      title: "Financing",
       icon: "",
     };
   }

@@ -33,7 +33,6 @@ function detectMode(name: string): "sale" | "rent" {
 function toListingSlugFromName(name: string, categoryName?: string) {
     const base = stripIntent(name);
 
-    // Clean route for financing
     if (
         slugify(categoryName || "") === "financing" ||
         slugify(base) === "assets-financing"
@@ -47,11 +46,6 @@ function toListingSlugFromName(name: string, categoryName?: string) {
     return `${slugify(base)}-${suffix}`;
 }
 
-/** Hide scrollbar 
-const scrollbarNone = `
-  .scrollbar-none::-webkit-scrollbar { display:none; }
-  .scrollbar-none { -ms-overflow-style:none; scrollbar-width:none; }
-`;*/
 const scrollbarThin = `
   .scrollbar-thin::-webkit-scrollbar { width: 6px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
@@ -59,12 +53,13 @@ const scrollbarThin = `
   .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   .scrollbar-thin { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
 `;
+
 function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
     return (
-        <div className="rounded-full bg-gray-100 p-1 dark:bg-[#131B1E]">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-slate-100 dark:bg-[#131B1E]">
             {src ? (
                 <Image
-                    className="h-8 w-8 rounded-full object-cover"
+                    className="h-7 w-7 rounded-md object-cover"
                     src={src}
                     alt={alt}
                     width={60}
@@ -72,7 +67,7 @@ function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
                     unoptimized
                 />
             ) : (
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-slate-100 to-slate-200" />
+                <div className="h-7 w-7 rounded-md bg-gradient-to-br from-slate-100 to-slate-200" />
             )}
         </div>
     );
@@ -86,8 +81,10 @@ function useScrollButtons(deps: any[] = []) {
     const compute = React.useCallback(() => {
         const el = scrollRef.current;
         if (!el) return;
+
         const { scrollTop, scrollHeight, clientHeight } = el;
         setShowUp(scrollTop > 0);
+
         const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
         setShowDown(!atBottom && scrollHeight > clientHeight + 2);
     }, []);
@@ -111,11 +108,11 @@ function useScrollButtons(deps: any[] = []) {
         window.addEventListener("resize", onScroll);
 
         compute();
+
         return () => {
             el.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onScroll);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
 
     return { scrollRef, showUp, showDown, toTop, toBottom };
@@ -126,79 +123,67 @@ function useScrollButtons(deps: any[] = []) {
 type Props = {
     tree: HomeCategoryNode[];
     compact?: boolean;
-
-    /** Footer element ref: sidebar stops before it, then scrolls away */
     footerRef?: React.RefObject<HTMLElement | null>;
-
-    /** Use a CSS var height from TopBar (recommended) */
-    topOffsetCssVar?: string; // e.g. "--topbar-h"
-    /** Extra gap below topbar */
+    topOffsetCssVar?: string;
     topGap?: number;
-    /** Gap above footer */
     bottomGap?: number;
 };
 
-/* ---------------- compact component (no desktop hooks) ---------------- */
+/* ---------------- compact component ---------------- */
 
 function CategoryRailCompact({ tree }: { tree: HomeCategoryNode[] }) {
     return (
-        <div className="rounded-2xl lg:border bg-white p-2 lg:p-3 dark:border-gray-700 dark:bg-[#2D3236]">
+        <div className="rounded-2xl bg-white p-2 lg:border lg:p-3 dark:border-gray-700 dark:bg-[#2D3236]">
             <div className="flex items-center justify-between">
-                <div className="text-sm font-extrabold">Categories</div>
-                <div className="text-[11px] font-bold text-slate-500">
+                <div className="text-[15px] font-semibold text-slate-800">
+                    Categories
+                </div>
+                <div className="text-[12px] font-medium text-slate-500">
                     {tree.length} groups
                 </div>
             </div>
 
-            {/* ✅ Mobile: 3 per row like screenshot */}
             <div className="mt-3 grid grid-cols-3 gap-3">
-                {tree.map((c) => {
-                    const defaultName = c?.subcategories?.length ? c.subcategories[0].name : c.name;
-
-                    return (
-                        <a
-                            key={c.id}
-                            href={`/${toListingSlugFromName(defaultName)}`}
-                            className={cn(
-                                "group rounded-2xl border bg-white p-3 text-center shadow-sm",
-                                "hover:bg-orange-50 hover:shadow-md",
-                                "dark:border-gray-700 dark:bg-[#2D3236] dark:hover:bg-[#131B1E]"
+                {tree.map((c) => (
+                    <a
+                        key={c.id}
+                        href={`/${slugify(c.name)}`}
+                        className={cn(
+                            "group rounded-2xl border bg-white p-3 text-center shadow-sm transition",
+                            "hover:border-orange-300 hover:bg-orange-100 hover:shadow-md",
+                            "dark:border-gray-700 dark:bg-[#2D3236] dark:hover:bg-orange-950/40"
+                        )}
+                    >
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200 group-hover:bg-orange-200 group-hover:ring-orange-300 dark:bg-[#131B1E] dark:ring-gray-700">
+                            {c.icon ? (
+                                <Image
+                                    src={c.icon}
+                                    alt={c.name}
+                                    width={80}
+                                    height={80}
+                                    className="h-10 w-10 object-contain"
+                                    unoptimized
+                                />
+                            ) : (
+                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-[#1f2427] dark:to-[#131B1E]" />
                             )}
-                        >
-                            {/* Icon bubble */}
-                            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200 group-hover:bg-orange-100 group-hover:ring-orange-200 dark:bg-[#131B1E] dark:ring-gray-700">
-                                {c.icon ? (
-                                    <Image
-                                        src={c.icon}
-                                        alt={c.name}
-                                        width={80}
-                                        height={80}
-                                        className="h-10 w-10 object-contain"
-                                        unoptimized
-                                    />
-                                ) : (
-                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-[#1f2427] dark:to-[#131B1E]" />
-                                )}
-                            </div>
+                        </div>
 
-                            {/* Title */}
-                            <div className="mt-2 truncate text-[12px] font-extrabold text-slate-900 dark:text-white">
-                                {c.name}
-                            </div>
+                        <div className="mt-2 truncate text-[13px] font-semibold text-slate-800 dark:text-white">
+                            {c.name}
+                        </div>
 
-                            {/* Count */}
-                            <div className="mt-0.5 text-[11px] font-bold text-slate-500">
-                                {Number(c.count || 0).toLocaleString()} ads
-                            </div>
-                        </a>
-                    );
-                })}
+                        <div className="mt-0.5 text-[12px] font-normal text-slate-500">
+                            {Number(c.count || 0).toLocaleString()} ads
+                        </div>
+                    </a>
+                ))}
             </div>
         </div>
     );
 }
 
-/* ---------------- desktop component (all desktop hooks live here) ---------------- */
+/* ---------------- desktop component ---------------- */
 
 function CategoryRailDesktop({
     tree,
@@ -223,9 +208,13 @@ function CategoryRailDesktop({
     const showSub = Boolean(hovered);
 
     const computeTopOffsetPx = React.useCallback(() => {
-        const v = getComputedStyle(document.documentElement).getPropertyValue(topOffsetCssVar).trim();
+        const v = getComputedStyle(document.documentElement)
+            .getPropertyValue(topOffsetCssVar)
+            .trim();
+
         const n = Number(String(v).replace("px", "").trim());
         const topbarH = Number.isFinite(n) && n > 0 ? n : 64;
+
         return topbarH + topGap;
     }, [topGap, topOffsetCssVar]);
 
@@ -240,7 +229,6 @@ function CategoryRailDesktop({
         setFixedTop(topOffsetPx);
 
         const scrollY = window.scrollY;
-
         const wrapTop = wrap.getBoundingClientRect().top + scrollY;
         const railH = rail.offsetHeight;
 
@@ -289,17 +277,10 @@ function CategoryRailDesktop({
 
     const outerStyle: React.CSSProperties =
         mode === "fixed"
-            ? { position: "fixed", top: fixedTop, width: 256, zIndex: 20 }
+            ? { position: "fixed", top: fixedTop, width: 286, zIndex: 20 }
             : mode === "stopped"
-                ? { position: "absolute", top: stoppedTop, width: 256, zIndex: 20 }
-                : { position: "relative", width: 256 };
-
-    const flyoutStyle: React.CSSProperties =
-        mode === "fixed"
-            ? { position: "fixed", top: fixedTop, left: "calc(50% - 24rem)", zIndex: 25 }
-            : mode === "stopped"
-                ? { position: "absolute", top: stoppedTop, left: 256 + 12, zIndex: 25 }
-                : { position: "absolute", top: 0, left: 256 + 12, zIndex: 25 };
+                ? { position: "absolute", top: stoppedTop, width: 286, zIndex: 20 }
+                : { position: "relative", width: 286 };
 
     const [flyoutLeft, setFlyoutLeft] = React.useState<number>(0);
 
@@ -309,12 +290,13 @@ function CategoryRailDesktop({
 
         const calc = () => {
             const r = wrap.getBoundingClientRect();
-            setFlyoutLeft(r.left + 256 + 12);
+            setFlyoutLeft(r.left + 286 + 10);
         };
 
         calc();
         window.addEventListener("scroll", calc, { passive: true });
         window.addEventListener("resize", calc);
+
         return () => {
             window.removeEventListener("scroll", calc);
             window.removeEventListener("resize", calc);
@@ -323,39 +305,42 @@ function CategoryRailDesktop({
 
     const flyoutFinalStyle: React.CSSProperties =
         mode === "fixed"
-            ? { position: "fixed", top: fixedTop, left: flyoutLeft, width: 256, zIndex: 70 }
-            : { ...flyoutStyle, width: 256 };
+            ? {
+                position: "fixed",
+                top: fixedTop,
+                left: flyoutLeft,
+                width: 286,
+                zIndex: 70,
+            }
+            : mode === "stopped"
+                ? {
+                    position: "absolute",
+                    top: stoppedTop,
+                    left: 286 + 10,
+                    width: 286,
+                    zIndex: 70,
+                }
+                : {
+                    position: "absolute",
+                    top: 0,
+                    left: 286 + 10,
+                    width: 286,
+                    zIndex: 70,
+                };
 
     return (
         <div ref={wrapRef} className="relative">
             <style jsx>{scrollbarThin}</style>
 
-            {/* LEFT */}
             <div style={outerStyle}>
                 <div
                     ref={railRef}
-                    className="w-64 rounded-2xl border bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]"
+                    className="w-[260px] overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]"
                 >
-                    {/*    {categoryScroll.showUp && (
-                        <button
-                            onClick={categoryScroll.toTop}
-                            className="absolute top-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-l from-orange-400 to-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-lg"
-                        >
-                            ↑ Top
-                        </button>
-                    )}
-
-                    {categoryScroll.showDown && (
-                        <button
-                            onClick={categoryScroll.toBottom}
-                            className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-l from-orange-400 to-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-lg"
-                        >
-                            ↓ Bottom
-                        </button>
-                    )}*/}
-
-                    <div className="border-b p-2 dark:border-gray-600">
-                        <h2 className="text-sm font-extrabold">Categories</h2>
+                    <div className="border-b border-slate-100 px-4 py-3 dark:border-gray-600">
+                        <h2 className="text-[15px] font-semibold text-slate-800">
+                            Categories
+                        </h2>
                     </div>
 
                     <div
@@ -365,34 +350,45 @@ function CategoryRailDesktop({
                     >
                         {tree.map((category) => {
                             const isActive = hovered === category.name;
-
-                            const defaultName =
-                                category?.subcategories?.length ? category.subcategories[0].name : category.name;
-
-                            const href = `/${toListingSlugFromName(defaultName)}`;
+                            const href = `/${slugify(category.name)}`;
 
                             return (
                                 <div
                                     key={category.id}
                                     onMouseEnter={() => setHovered(category.name)}
                                     className={cn(
-                                        "relative flex items-center gap-2 border-b p-2 text-left text-sm",
-                                        "hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]",
-                                        isActive && "bg-slate-50 dark:bg-[#131B1E]"
+                                        "relative flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 text-left transition",
+                                        "hover:bg-orange-100 dark:border-gray-700 dark:hover:bg-orange-950/40",
+                                        isActive &&
+                                        "bg-orange-100 ring-1 ring-inset ring-orange-300 dark:bg-orange-950/40"
                                     )}
                                 >
-                                    {/* clickable overlay */}
-                                    <a href={href} aria-label={`Open ${category.name}`} className="absolute inset-0 z-[1]" />
+                                    <a
+                                        href={href}
+                                        aria-label={`Open ${category.name}`}
+                                        className="absolute inset-0 z-[1]"
+                                    />
 
-                                    <div className="relative z-[2] pointer-events-none flex w-full items-center gap-2">
+                                    <div className="relative z-[2] pointer-events-none flex w-full items-center gap-3">
                                         <IconCircle src={category.icon} alt={category.name} />
 
                                         <div className="min-w-0 flex-1">
-                                            <div className="truncate text-xs font-extrabold">{category.name}</div>
-                                            <div className="text-[11px] text-slate-500">{category.count} ads</div>
+                                            <div className="truncate text-[14px] font-semibold text-slate-800 dark:text-white">
+                                                {category.name}
+                                            </div>
+                                            <div className="text-[12px] font-normal text-slate-500">
+                                                {Number(category.count || 0).toLocaleString()} ads
+                                            </div>
                                         </div>
 
-                                        <div className="text-slate-400">›</div>
+                                        <div
+                                            className={cn(
+                                                "text-lg font-bold",
+                                                isActive ? "text-orange-600" : "text-slate-400"
+                                            )}
+                                        >
+                                            ›
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -403,35 +399,18 @@ function CategoryRailDesktop({
 
             <div className="h-[1px]" style={{ height: 0 }} />
 
-            {/* RIGHT flyout */}
             {showSub && (
                 <div
-                    className="rounded-2xl border bg-white p-1 shadow-xl dark:border-gray-700 dark:bg-[#2D3236]"
+                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 shadow-xl dark:border-gray-700 dark:bg-[#2D3236]"
                     style={flyoutFinalStyle}
                     onMouseEnter={() => setHovered(activeCat.name)}
                     onMouseLeave={() => setHovered("")}
                 >
-                    <div className="border-b p-2 dark:border-gray-600">
-                        <h2 className="text-sm font-extrabold">{activeCat.name}</h2>
+                    <div className="border-b border-slate-100 px-4 py-3 dark:border-gray-600">
+                        <h2 className="text-[15px] font-semibold text-slate-800 dark:text-white">
+                            {activeCat.name}
+                        </h2>
                     </div>
-
-                    {/*  {subcategoryScroll.showUp && (
-                        <button
-                            onClick={subcategoryScroll.toTop}
-                            className="absolute top-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-l from-orange-400 to-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-lg"
-                        >
-                            ↑ Top
-                        </button>
-                    )}
-
-                    {subcategoryScroll.showDown && (
-                        <button
-                            onClick={subcategoryScroll.toBottom}
-                            className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-gradient-to-l from-orange-400 to-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-lg"
-                        >
-                            ↓ Bottom
-                        </button>
-                    )}*/}
 
                     <div
                         ref={subcategoryScroll.scrollRef}
@@ -442,21 +421,27 @@ function CategoryRailDesktop({
                             activeCat.subcategories.map((sub: any) => (
                                 <a
                                     key={sub.id}
-                                    href={`/${toListingSlugFromName(sub.name)}`}
-                                    className="flex items-center gap-2 border-b p-2 hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-[#131B1E]"
+                                    href={`/${toListingSlugFromName(sub.name, activeCat.name)}`}
+                                    className="flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 transition hover:bg-orange-100 dark:border-gray-700 dark:hover:bg-orange-950/40"
                                 >
                                     <IconCircle src={sub.icon || null} alt={sub.name} />
 
                                     <div className="min-w-0 flex-1">
-                                        <div className="truncate text-xs font-extrabold">{sub.name}</div>
-                                        <div className="text-[11px] text-slate-500">{sub.count} ads</div>
+                                        <div className="truncate text-[14px] font-semibold text-slate-800 dark:text-white">
+                                            {sub.name}
+                                        </div>
+                                        <div className="text-[12px] font-normal text-slate-500">
+                                            {Number(sub.count || 0).toLocaleString()} ads
+                                        </div>
                                     </div>
 
-                                    <div className="text-slate-400">›</div>
+                                    <div className="text-lg font-bold text-slate-400">›</div>
                                 </a>
                             ))
                         ) : (
-                            <div className="p-3 text-sm text-slate-500">No subcategories yet.</div>
+                            <div className="p-3 text-sm text-slate-500">
+                                No subcategories yet.
+                            </div>
                         )}
                     </div>
                 </div>
@@ -468,7 +453,6 @@ function CategoryRailDesktop({
 /* ---------------- main export ---------------- */
 
 export default function CategoryRail(props: Props) {
-    // ✅ allowed: early return BEFORE any hooks in this component
     if (!props.tree?.length) return null;
 
     return props.compact ? (

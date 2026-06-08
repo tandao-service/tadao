@@ -293,7 +293,9 @@ export default async function ListingPageUI(args: {
     // Sidebar (filters/options) — initial only
     const sidebar = await getListingSidebarOptions({
         category: categoryName,
-        subcategory: String(listing.subcategory || "").trim(), // ✅ ADD THIS
+        ...(listing.subcategory
+            ? { subcategory: String(listing.subcategory).trim() }
+            : {}),
         regionSlug: args.regionSlug,
         min: minN,
         max: maxN,
@@ -327,7 +329,9 @@ export default async function ListingPageUI(args: {
         const res = await getAdsForRegionListing({
             regionSlug: args.regionSlug,
             category: listing.category,
-            subcategory: listing.subcategory,
+            ...(listing.subcategory
+                ? { subcategory: String(listing.subcategory).trim() }
+                : {}),
             page,
             limit: PAGE_SIZE,
             min: minN,
@@ -358,8 +362,11 @@ export default async function ListingPageUI(args: {
                             ? "new"
                             : "recommended",
             category: categoryName,
-            subcategory: String(listing.subcategory || "").trim(),
         };
+
+        if (listing.subcategory) {
+            queryObject.subcategory = String(listing.subcategory).trim();
+        }
 
         if (membership) queryObject.membership = membership;
 

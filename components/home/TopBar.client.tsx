@@ -22,6 +22,8 @@ import UserMenu from "@/components/shared/UserMenu";
 import { useAuth } from "@/app/hooks/useAuth";
 import Unreadmessages from "../shared/Unreadmessages";
 import MobileNav from "../shared/MobileNav";
+import SalesLineGraph from "../shared/SalesLineGraph";
+import { PlusCircleIcon, PlusIcon } from "lucide-react";
 
 function getDisplayName(appUser?: any, authUser?: any) {
     if (appUser?.firstName || appUser?.lastName) {
@@ -68,7 +70,8 @@ export default function TopBar() {
 
     const handleGoBack = React.useCallback(() => {
         if (typeof window !== "undefined" && window.history.length > 1) {
-            router.back();
+            // router.back();
+            router.push("/");
         } else {
             router.push("/");
         }
@@ -219,6 +222,22 @@ export default function TopBar() {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button
+                                        type="button"
+                                        onClick={() => router.push("/dashboard/ads")}
+                                        className={iconButtonClass}
+                                    >
+                                        <SellOutlinedIcon />
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>My Adverts</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                         <button
                             type="button"
                             onClick={() => {
@@ -230,7 +249,7 @@ export default function TopBar() {
                             }}
                             className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-sm font-extrabold text-white shadow-sm transition hover:bg-orange-600 hover:shadow md:px-4"
                         >
-                            <SellOutlinedIcon sx={{ fontSize: 18 }} />
+                            <PlusIcon />
                             <span>Sell</span>
                         </button>
                     </div>

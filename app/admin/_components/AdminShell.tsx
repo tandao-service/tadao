@@ -87,55 +87,56 @@ export default function AdminShell({
 
                 <aside
                     className={[
-                        "fixed left-0 top-[50px] z-0 h-[calc(100vh-60px)] w-[290px] border-r border-white/10",
-                        "bg-slate-950 text-white transition-transform duration-300",
+                        "fixed left-0 top-[50px] z-40 h-[calc(100vh-50px)] w-[290px]",
+                        "border-r border-slate-200 bg-white text-slate-900 shadow-sm",
+                        "transition-transform duration-300",
                         "lg:translate-x-0",
                         mobileOpen ? "translate-x-0" : "-translate-x-full",
                     ].join(" ")}
                 >
                     <div className="flex h-full flex-col">
-                        <div className="border-b border-white/10 p-5">
+                        <div className="border-b border-slate-200 bg-white p-5">
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-
-                                    <div>
-                                        <p className="text-sm font-semibold tracking-wide text-white">
-                                            Tadao Market
-                                        </p>
-                                        <p className="text-xs text-slate-400">Admin Console</p>
-                                    </div>
+                                <div>
+                                    <p className="text-sm font-extrabold tracking-wide text-slate-950">
+                                        Tadao Market
+                                    </p>
+                                    <p className="text-xs font-medium text-slate-500">
+                                        Admin Console
+                                    </p>
                                 </div>
 
                                 <button
                                     onClick={() => setMobileOpen(false)}
-                                    className="rounded-xl p-2 text-slate-300 hover:bg-white/10 lg:hidden"
+                                    className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
                                 >
                                     <X className="h-5 w-5" />
                                 </button>
                             </div>
 
-                            <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-3">
+                            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="relative h-12 w-12 overflow-hidden rounded-2xl bg-white/10">
+                                    <div className="relative h-12 w-12 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
                                         {adminImage ? (
                                             <Image
                                                 src={adminImage}
                                                 alt={adminName}
                                                 fill
                                                 className="object-cover"
+                                                unoptimized
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-white">
+                                            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-orange-600">
                                                 {adminName.slice(0, 1)}
                                             </div>
                                         )}
                                     </div>
 
                                     <div className="min-w-0">
-                                        <p className="truncate text-sm font-semibold text-white">
+                                        <p className="truncate text-sm font-bold text-slate-950">
                                             {adminName}
                                         </p>
-                                        <p className="truncate text-xs text-slate-400">
+                                        <p className="truncate text-xs text-slate-500">
                                             {adminEmail || "Administrator"}
                                         </p>
                                     </div>
@@ -143,7 +144,7 @@ export default function AdminShell({
                             </div>
                         </div>
 
-                        <ScrollArea className="flex-1 bg-black px-0 py-0">
+                        <ScrollArea className="flex-1 bg-white px-3 py-4">
                             <AdminSidebarLinks onNavigate={() => setMobileOpen(false)} />
                         </ScrollArea>
                     </div>

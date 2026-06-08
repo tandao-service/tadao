@@ -63,7 +63,7 @@ const UserMenu = ({ userdata, handleOpenShop, handleOpenSettings }: Props) => {
                                 }}
                                 className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                             >
-                                My Ads
+                                My Adverts
                             </button>
                             <button
                                 onClick={() => {

@@ -3,7 +3,7 @@ import type { HomeAd } from "@/lib/home/home.data";
 import SmartPropertyCard from "./SmartPropertyCard";
 
 
-export default function TrendingGrid({ ads }: { ads: HomeAd[] }) {
+export default function TrendingGrid({ ads, currentUserId }: { ads: HomeAd[], currentUserId?: string; }) {
     return (
         <div>
             <div className="flex items-end justify-between px-1">
@@ -16,7 +16,12 @@ export default function TrendingGrid({ ads }: { ads: HomeAd[] }) {
             <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
                 {ads.map((ad: any) => {
                     const key = String(ad?._id || ad?.id || "");
-                    return <SmartPropertyCard key={key} ad={ad} />;
+                    return <SmartPropertyCard
+                        key={key}
+                        ad={ad}
+                        currentUserId={currentUserId || ""}
+                        showOwnerActions
+                    />;
                 })}
             </div>
         </div>

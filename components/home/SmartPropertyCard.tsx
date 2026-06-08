@@ -4,8 +4,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { IoCamera } from "react-icons/io5";
-import { buildAdPath, generateListingSlug } from "@/app/_ad/ad-url";
+import { useRouter } from "next/navigation";
+import { IoCamera, IoFlashOutline, IoSparklesOutline } from "react-icons/io5";
+
+import { buildAdPath } from "@/app/_ad/ad-url";
+import { boostAd, featureAd } from "@/lib/actions/dynamicAd.actions";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -17,33 +20,34 @@ function safeStr(v: any) {
     return (v ?? "").toString().trim();
 }
 
-function chip(label: string) {
-    return (
-        <span className="rounded-lg border bg-[#ebf2f7] px-2 py-1 text-[10px] text-gray-700 dark:bg-[#131B1E] dark:text-gray-300">
-            {label}
-        </span>
-    );
-}
-
-// fallback (if aggregate fields not present)
 function isBoostActive(ad: any, kind: "featured" | "top") {
     const now = Date.now();
     const b = ad?.boost || {};
+
     if (kind === "featured") {
         const until = b?.featuredUntil ? new Date(b.featuredUntil).getTime() : 0;
         return b?.isFeatured === true && until > now;
     }
+
     const until = b?.topUntil ? new Date(b.topUntil).getTime() : 0;
     return b?.isTop === true && until > now;
 }
 
 type Props = {
-    ad: any; // can be raw ad OR HomeAd
+    ad: any;
     regionFallback?: string;
+    currentUserId?: string;
+    showOwnerActions?: boolean;
 };
 
-export default function SmartPropertyCard({ ad, regionFallback }: Props) {
-    // ✅ support both raw ad + HomeAd
+export default function SmartPropertyCard({
+    ad,
+    regionFallback,
+    currentUserId,
+    showOwnerActions = false,
+}: Props) {
+    const router = useRouter();
+
     const id = String(ad?._id || ad?.id || "");
 
     const rawTitle = safeStr(ad?.data?.title);
@@ -67,7 +71,10 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
     const homeImage = ad?.image || null;
     const image = rawImage || homeImage;
 
-    const rawImgCount = Array.isArray(ad?.data?.imageUrls) ? ad.data.imageUrls.length : 0;
+    const rawImgCount = Array.isArray(ad?.data?.imageUrls)
+        ? ad.data.imageUrls.length
+        : 0;
+
     const homeImgCount = Number(ad?.imagesCount ?? 0);
     const imgCount = rawImgCount || homeImgCount;
 
@@ -82,34 +89,94 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
     const isContactPrice = ad?.data?.contact === "contact";
     const price = Number(ad?.data?.price ?? ad?.price ?? 0);
 
-    const isRent = Boolean(ad?.data?.period || ad?.data?.per);
-
-    const condition = safeStr(ad?.data?.condition);
-    const transmission = safeStr(ad?.data?.transimmison);
-    const engineCC = safeStr(ad?.data?.["engine-CC"]);
-    const landType = safeStr(ad?.data?.["land-Type"]);
-    const landArea = safeStr(ad?.data?.["land-Area(acres)"]);
-    const hasDelivery = Boolean(ad?.data?.["delivery"]);
-    const hasBulk = Boolean(ad?.data?.["bulkprice"]);
-
-    // ✅ badges: support HomeAd flags too
     const featuredActive =
         ad?.featuredActive === true ||
         ad?.isFeatured === true ||
         isBoostActive(ad, "featured");
 
-    const topActive = ad?.topActive === true || ad?.isTop === true || isBoostActive(ad, "top");
+    const topActive =
+        ad?.topActive === true ||
+        ad?.isTop === true ||
+        isBoostActive(ad, "top");
 
-    // ✅ Image loading overlay state
+    const ownerId = String(
+        ad?.organizer?._id ||
+        ad?.organizer ||
+        ad?.organizerId ||
+        ad?.userId ||
+        ""
+    );
+
+    const isOwner = Boolean(currentUserId && ownerId === String(currentUserId));
+    const canShowOwnerActions = showOwnerActions && isOwner;
+
     const [imgLoading, setImgLoading] = useState<boolean>(Boolean(image));
     const [imgError, setImgError] = useState<boolean>(false);
+    const [actioning, setActioning] = useState<"boost" | "feature" | "">("");
+
+    const handleBoost = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!id || !currentUserId) return;
+
+        try {
+            setActioning("boost");
+
+            const res = await boostAd({
+                adId: id,
+                userId: currentUserId,
+                path: "/dashboard/ads",
+            });
+
+            if (!res?.ok) {
+                alert(res?.message || "Unable to boost ad.");
+                return;
+            }
+
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to boost ad. Please try again.");
+        } finally {
+            setActioning("");
+        }
+    };
+
+    const handleFeature = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!id || !currentUserId) return;
+
+        try {
+            setActioning("feature");
+
+            const res = await featureAd({
+                adId: id,
+                userId: currentUserId,
+                path: "/dashboard/ads",
+            });
+
+            if (!res?.ok) {
+                alert(res?.message || "Unable to feature ad.");
+                return;
+            }
+
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to feature ad. Please try again.");
+        } finally {
+            setActioning("");
+        }
+    };
 
     return (
         <Link
             href={buildAdPath(ad, ad.listingSlug)}
             className="block overflow-hidden rounded-lg border bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
         >
-            {/* Image */}
             <div
                 className="relative w-full"
                 style={
@@ -145,13 +212,15 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                         <div className="flex flex-col items-center gap-2">
                             <Image src="/logo.png" alt="Tadao" width={40} height={40} />
                             <p className="text-[11px] font-bold text-orange-500">
-                                {safeStr(ad?.data?.category) || safeStr(ad?.category) || region || "Listing"}
+                                {safeStr(ad?.data?.category) ||
+                                    safeStr(ad?.category) ||
+                                    region ||
+                                    "Listing"}
                             </p>
                         </div>
                     </div>
                 )}
 
-                {/* LEFT stack badges */}
                 <div className="absolute left-0 top-0 flex flex-col gap-1">
                     {featuredActive && (
                         <div className="rounded-br-lg rounded-tl-sm bg-orange-500 px-2 py-1 text-[10px] font-extrabold text-white shadow-lg">
@@ -175,14 +244,12 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                     )}
                 </div>
 
-                {/* Verified badge */}
                 {isVerified && (
                     <div className="absolute right-0 top-0 rounded-bl-lg rounded-tr-lg bg-green-100 px-2 py-1 text-[10px] font-semibold text-green-700">
                         Verified
                     </div>
                 )}
 
-                {/* Bottom badges */}
                 <div className="absolute bottom-2 left-0 right-0 flex justify-between px-2">
                     <div className="rounded-sm bg-black/70 px-2 py-1 text-[10px] text-white">
                         <div className="flex items-center gap-1">
@@ -204,7 +271,6 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                 </div>
             </div>
 
-            {/* Body */}
             <div className="p-3">
                 <h2 className="line-clamp-2 text-sm font-semibold">{title}</h2>
 
@@ -213,20 +279,41 @@ export default function SmartPropertyCard({ ad, regionFallback }: Props) {
                     {area ? ` - ${area}` : ""}
                 </div>
 
-                <div className="mt-2 font-bold text-orange-500">
+                <div className="mt-2 font-bold text-black">
                     {isContactPrice ? "Contact for price" : moneyKsh(price)}
                 </div>
 
-                {/**  <div className="mt-3 flex flex-wrap gap-2">
-                    {isRent && chip("Rent")}
-                    {condition && chip(condition)}
-                    {transmission && chip(transmission)}
-                    {engineCC && chip(engineCC)}
-                    {landType && chip(landType)}
-                    {landArea && chip(landArea)}
-                    {hasBulk && chip("Bulk Price")}
-                    {hasDelivery && chip("Delivery")}
-                </div>*/}
+                {canShowOwnerActions && (
+                    <div className="mt-3 flex gap-2">
+                        <button
+                            type="button"
+                            onClick={handleBoost}
+                            disabled={actioning !== ""}
+                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-sky-50 px-2 py-2 text-[11px] font-bold text-sky-700 hover:bg-sky-100 disabled:opacity-60"
+                        >
+                            <IoFlashOutline />
+                            {actioning === "boost"
+                                ? "Boosting..."
+                                : topActive
+                                    ? "Boosted"
+                                    : "Boost"}
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleFeature}
+                            disabled={actioning !== ""}
+                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-purple-50 px-2 py-2 text-[11px] font-bold text-purple-700 hover:bg-purple-100 disabled:opacity-60"
+                        >
+                            <IoSparklesOutline />
+                            {actioning === "feature"
+                                ? "Featuring..."
+                                : featuredActive
+                                    ? "Featured"
+                                    : "Feature"}
+                        </button>
+                    </div>
+                )}
             </div>
         </Link>
     );
