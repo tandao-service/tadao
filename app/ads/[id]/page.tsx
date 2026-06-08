@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { getAdById } from "@/lib/actions/dynamicAd.actions";
+import { getAdById, incrementAdMetric } from "@/lib/actions/dynamicAd.actions";
 import { buildAdPath } from "@/app/_ad/ad-url";
 
 
@@ -13,6 +13,8 @@ export default async function Page({ params }: Props) {
     const ad = await getAdById(params.id).catch(() => null);
 
     if (!ad) return notFound();
+
+    await incrementAdMetric(String(ad._id), "views");
 
     redirect(buildAdPath(ad));
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
-import { getAdById, getListingMapFromDB } from "@/lib/actions/dynamicAd.actions";
+import { getAdById, getListingMapFromDB, incrementAdMetric } from "@/lib/actions/dynamicAd.actions";
 import AdDetailsView from "@/app/_ad/AdDetailsView";
 import { buildAdAbsoluteUrl, buildAdPath, extractIdFromProductSlug, safeStr } from "@/app/_ad/ad-url";
 
@@ -111,6 +111,6 @@ export default async function Page({ params }: Props) {
     if (currentPath !== canonicalPath) {
         redirect(canonicalPath);
     }
-
+    await incrementAdMetric(String(ad._id), "views");
     return <AdDetailsView ad={ad} listingSlug={listingSlug} />;
 }

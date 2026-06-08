@@ -62,9 +62,6 @@ export function generateListingSlug(ad: any) {
 
     if (subcategory) {
         const s = subcategory.toLowerCase();
-
-
-
         return toListingSlugFromName(subcategory);
     }
 

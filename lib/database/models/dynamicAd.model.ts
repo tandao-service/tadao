@@ -39,16 +39,16 @@ const BidSchema = new Schema({
 });
 const dynamicAdSchema = new Schema({
   data: Schema.Types.Mixed, // Dynamic data based on selected category
-  views: { type: String },
   priority: { type: Number },
   expirely: { type: Date },
   adstatus: { type: String },
-  inquiries: { type: String },
-  whatsapp: { type: String },
-  calls: { type: String },
-  shared: { type: String },
-  bookmarked: { type: String },
-  abused: { type: String },
+  views: { type: Number, default: 0 },
+  inquiries: { type: Number, default: 0 },
+  whatsapp: { type: Number, default: 0 },
+  calls: { type: Number, default: 0 },
+  shared: { type: Number, default: 0 },
+  bookmarked: { type: Number, default: 0 },
+  abused: { type: Number, default: 0 },
   subcategory: { type: Schema.Types.ObjectId, ref: 'Subcategory' },
   organizer: { type: Schema.Types.ObjectId, ref: 'User' },
   plan: { type: Schema.Types.ObjectId, ref: 'Packages' },

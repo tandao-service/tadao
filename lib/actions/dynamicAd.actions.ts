@@ -1847,6 +1847,29 @@ export async function getListingMapFromDB(): Promise<Record<string, ListingMapEn
 
   return map;
 }
+export async function incrementAdMetric(
+  adId: string,
+  metric: "views" | "calls" | "whatsapp" | "inquiries" | "shared"
+) {
+  try {
+    await connectToDatabase();
+
+    const allowed = ["views", "calls", "whatsapp", "inquiries", "shared"];
+    if (!allowed.includes(metric)) {
+      throw new Error("Invalid metric");
+    }
+
+    const updated = await DynamicAd.findByIdAndUpdate(
+      adId,
+      { $inc: { [metric]: 1 } },
+      { new: true }
+    );
+
+    return JSON.parse(JSON.stringify(updated));
+  } catch (error) {
+    handleError(error);
+  }
+}
 // lib/actions/dynamicAd.actions.ts
 export async function getRelatedAdsServer({
   subcategory,

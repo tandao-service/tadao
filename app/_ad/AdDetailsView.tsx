@@ -23,6 +23,7 @@ import {
     safeStr,
     toListingSlugFromName,
 } from "./ad-url";
+import TrackedAdLink from "./TrackedAdLink";
 
 type Props = {
     ad: any;
@@ -322,50 +323,56 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
 
                                 <div className="mt-5 grid grid-cols-1 gap-3">
                                     {phone && canViewProtectedContact ? (
-                                        <a
+                                        <TrackedAdLink
+                                            adId={String(ad._id)}
+                                            metric="calls"
                                             href={`tel:${phone}`}
                                             className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                                                 <IoCall className="h-5 w-5" />
                                             </span>
                                             <span className="min-w-0">
                                                 <span className="block text-xs font-medium text-slate-500">Call</span>
                                                 <span className="block truncate font-bold text-slate-900">{phone}</span>
                                             </span>
-                                        </a>
+                                        </TrackedAdLink>
                                     ) : null}
 
                                     {whatsapp && canViewProtectedContact ? (
-                                        <a
+                                        <TrackedAdLink
+                                            adId={String(ad._id)}
+                                            metric="whatsapp"
                                             href={`https://wa.me/${whatsapp.replace(/[^\d]/g, "")}`}
-                                            target="_blank"
-                                            rel="noreferrer"
                                             className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600 transition group-hover:bg-green-100">
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                                                 <IoChatbubbleOutline className="h-5 w-5" />
                                             </span>
                                             <span className="min-w-0">
                                                 <span className="block text-xs font-medium text-slate-500">WhatsApp</span>
                                                 <span className="block truncate font-bold text-slate-900">{whatsapp}</span>
                                             </span>
-                                        </a>
+                                        </TrackedAdLink>
+
                                     ) : null}
 
                                     {email && canViewProtectedContact ? (
-                                        <a
+                                        <TrackedAdLink
+                                            adId={String(ad._id)}
+                                            metric="inquiries"
                                             href={`mailto:${email}`}
                                             className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
                                         >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition group-hover:bg-sky-100">
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                                                 <IoMail className="h-5 w-5" />
                                             </span>
                                             <span className="min-w-0">
                                                 <span className="block text-xs font-medium text-slate-500">Email</span>
                                                 <span className="block truncate font-bold text-slate-900">{email}</span>
                                             </span>
-                                        </a>
+                                        </TrackedAdLink>
+
                                     ) : null}
                                     {isContactProtectedAd && !canViewProtectedContact ? (
                                         <div className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 p-4">
@@ -385,18 +392,24 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                             </Link>
                                         </div>
                                     ) : null}
-                                    <Link
-                                        href={chatHref}
-                                        className="group flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-1 text-sm font-semibold text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-100 hover:shadow-sm"
-                                    >
-                                        <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/80 text-orange-600 transition group-hover:bg-white">
-                                            <IoChatboxOutline className="h-5 w-5" />
-                                        </span>
-                                        <span className="min-w-0">
-                                            <span className="block text-xs font-medium text-orange-500">Message</span>
-                                            <span className="block truncate font-extrabold">Chat seller</span>
-                                        </span>
-                                    </Link>
+                                    {canViewProtectedContact ? (
+                                        <TrackedAdLink
+                                            adId={String(ad._id)}
+                                            metric="inquiries"
+                                            href={chatHref}
+                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
+                                        >
+                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                                <IoChatboxOutline className="h-5 w-5" />
+                                            </span>
+                                            <span className="min-w-0">
+                                                <span className="block text-xs font-medium text-slate-500">Message</span>
+                                                <span className="block truncate font-bold text-slate-900">Chat seller</span>
+                                            </span>
+                                        </TrackedAdLink>
+
+
+                                    ) : null}
 
                                     <CopyLinkButton
                                         url={canonicalUrl}
