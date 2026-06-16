@@ -6,6 +6,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import TopProgressBar from "@/components/home/TopProgressBar";
 import { SellCategoryTreeProvider } from "./hooks/useSellCategoryTree";
 import { getGlobalCategoryTree } from "@/lib/home/home-tree-cache";
+import ServiceWorkerRegister from "@/components/shared/ServiceWorkerRegister";
 export const dynamic = "force-dynamic";
 const poppins = Poppins({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.variable}>
+        <ServiceWorkerRegister />
         <Suspense fallback={null}>
           <TopProgressBar height={3} colorClassName="bg-orange-500" />
         </Suspense>

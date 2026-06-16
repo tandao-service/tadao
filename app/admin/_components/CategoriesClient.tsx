@@ -70,58 +70,66 @@ export default function CategoriesClient() {
                 subtitle="Manage listing groups, form fields, and category visibility."
             />
 
-            <div className="grid gap-6">
+            <div className="grid min-w-0 gap-6">
                 <AdminCard>
-                    <div className="mb-5 flex items-center justify-between gap-3">
-                        <div>
-                            <h2 className="text-lg font-semibold text-slate-950">
-                                Categories
-                            </h2>
-                            <p className="mt-1 text-sm text-slate-500">
-                                Main listing groups shown to sellers.
-                            </p>
+                    <div className="min-w-0">
+                        <div className="mb-5 flex items-center justify-between gap-3">
+                            <div>
+                                <h2 className="text-lg font-semibold text-slate-950">
+                                    Categories
+                                </h2>
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Main listing groups shown to sellers.
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={() => setIsOpenCategory(true)}
+                                className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
+                            >
+                                <AddOutlinedIcon fontSize="small" />
+                                Add Category
+                            </button>
                         </div>
 
-                        <button
-                            onClick={() => setIsOpenCategory(true)}
-                            className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
-                        >
-                            <AddOutlinedIcon fontSize="small" />
-                            Add Category
-                        </button>
+                        <div className="w-full min-w-0 overflow-x-auto">
+                            <DisplayCategories categories={categories} onSaved={loadData} />
+                        </div>
                     </div>
-
-                    <DisplayCategories categories={categories} onSaved={loadData} />
                 </AdminCard>
 
                 <AdminCard>
-                    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h2 className="text-lg font-semibold text-slate-950">
-                                Subcategories
-                            </h2>
-                            <p className="mt-1 text-sm text-slate-500">
-                                Manage subcategory forms and fields.
-                            </p>
+                    <div className="min-w-0">
+                        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h2 className="text-lg font-semibold text-slate-950">
+                                    Subcategories
+                                </h2>
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Manage subcategory forms and fields.
+                                </p>
+                            </div>
+
+                            <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
+                                <CategoryIdFilterSearch catList={catList} />
+
+                                <button
+                                    onClick={() => setIsOpenSubCategory(true)}
+                                    className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
+                                >
+                                    <AddOutlinedIcon fontSize="small" />
+                                    Add Subcategory
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <CategoryIdFilterSearch catList={catList} />
-
-                            <button
-                                onClick={() => setIsOpenSubCategory(true)}
-                                className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
-                            >
-                                <AddOutlinedIcon fontSize="small" />
-                                Add Subcategory
-                            </button>
+                        <div className="w-full min-w-0 overflow-x-auto">
+                            <DisplaySubCategories
+                                subcategories={subcategories}
+                                onSaved={loadData}
+                            />
                         </div>
                     </div>
-
-                    <DisplaySubCategories
-                        subcategories={subcategories}
-                        onSaved={loadData}
-                    />
                 </AdminCard>
             </div>
 

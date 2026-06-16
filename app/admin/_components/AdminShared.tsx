@@ -151,12 +151,12 @@ export function AdminCard({
 
 export function AdminSectionLoader({ label }: { label: string }) {
     return (
-        <div className="flex min-h-[260px] items-center justify-center rounded-[28px] border border-dashed border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center gap-3 text-sm text-slate-500">
-                <CircularProgress sx={{ color: "gray" }} size={22} />
-                <span>{label}</span>
+        <main className="flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
+                <p className="text-sm font-semibold text-orange-600">{label}...</p>
             </div>
-        </div>
+        </main>
     );
 }
 

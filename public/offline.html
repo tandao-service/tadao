@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tadao Market Offline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff7ed;
+            color: #111827;
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .card {
+            max-width: 420px;
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #f97316;
+        }
+
+        button {
+            margin-top: 16px;
+            border: none;
+            background: #111827;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>You are offline</h1>
+        <p>
+            Tadao Market is currently offline. Previously visited pages may still be
+            available.
+        </p>
+        <button onclick="location.reload()">Try Again</button>
+    </div>
+</body>
+
+</html>

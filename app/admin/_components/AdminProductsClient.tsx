@@ -139,7 +139,7 @@ export default function AdminProductsClient() {
                 </div>
 
                 {loading ? (
-                    <AdminSectionLoader label="Loading products..." />
+                    <AdminSectionLoader />
                 ) : items.length === 0 ? (
                     <AdminEmpty label="No products found." />
                 ) : (

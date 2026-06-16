@@ -71,18 +71,18 @@ export default function AbuseClient() {
                 subtitle="Review reported users and listings."
             />
 
-            <AdminCard>
-                <CollectionAbuse
-                    data={reported?.data || []}
-                    emptyTitle="No Abuse"
-                    emptyStateSubtext="Come back later"
-                    limit={limit}
-                    page={page}
-                    userId={appUserId || ""}
-                    totalPages={reported?.totalPages || 1}
-                    handleOpenChatId={handleOpenChatId}
-                />
-            </AdminCard>
+
+            <CollectionAbuse
+                data={reported?.data || []}
+                emptyTitle="No Abuse"
+                emptyStateSubtext="Come back later"
+                limit={limit}
+                page={page}
+                userId={appUserId || ""}
+                totalPages={reported?.totalPages || 1}
+                handleOpenChatId={handleOpenChatId}
+            />
+
 
             <PopupChatId
                 isOpen={isOpenChatId}

@@ -75,20 +75,20 @@ export default function UsersClient() {
                 subtitle="Manage users, advertisers, and communication."
             />
 
-            <AdminCard>
-                <CollectionUsers
-                    data={users?.data || []}
-                    emptyTitle="No User Found"
-                    emptyStateSubtext="Come back later"
-                    limit={limit}
-                    page={page}
-                    userId={appUserId || ""}
-                    totalPages={users?.totalPages || 1}
-                    handleOpenChatId={handleOpenChatId}
-                    handleOpenUserAdverts={handleOpenUserAdverts}
 
-                />
-            </AdminCard>
+            <CollectionUsers
+                data={users?.data || []}
+                emptyTitle="No User Found"
+                emptyStateSubtext="Come back later"
+                limit={limit}
+                page={page}
+                userId={appUserId || ""}
+                totalPages={users?.totalPages || 1}
+                handleOpenChatId={handleOpenChatId}
+                handleOpenUserAdverts={handleOpenUserAdverts}
+
+            />
+
 
             <PopupChatId
                 isOpen={isOpenChatId}

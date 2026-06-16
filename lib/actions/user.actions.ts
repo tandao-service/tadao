@@ -374,66 +374,66 @@ export async function getUserAgragate(limit: number, page: number) {
     const usersWithAdStats = await User.aggregate([
       {
         $lookup: {
-          from: 'dynamicads',
-          localField: '_id',
-          foreignField: 'organizer',
-          as: 'ads'
-        }
+          from: "dynamicads",
+          localField: "_id",
+          foreignField: "organizer",
+          as: "ads",
+        },
       },
       {
         $lookup: {
-          from: 'transactions',
-          localField: '_id',
-          foreignField: 'buyer',
-          as: 'transactions'
-        }
+          from: "transactions",
+          localField: "_id",
+          foreignField: "buyer",
+          as: "transactions",
+        },
       },
       {
         $addFields: {
-          adsCount: { $size: '$ads' },
+          adsCount: { $size: "$ads" },
           activeCount: {
             $size: {
               $filter: {
-                input: '$ads',
-                as: 'ad',
-                cond: { $eq: ['$$ad.adstatus', 'Active'] }
-              }
-            }
+                input: "$ads",
+                as: "ad",
+                cond: { $eq: ["$$ad.adstatus", "Active"] },
+              },
+            },
           },
           pendingCount: {
             $size: {
               $filter: {
-                input: '$ads',
-                as: 'ad',
-                cond: { $eq: ['$$ad.adstatus', 'Pending'] }
-              }
-            }
+                input: "$ads",
+                as: "ad",
+                cond: { $eq: ["$$ad.adstatus", "Pending"] },
+              },
+            },
           },
           inactiveCount: {
             $size: {
               $filter: {
-                input: '$ads',
-                as: 'ad',
-                cond: { $eq: ['$$ad.adstatus', 'Inactive'] }
-              }
-            }
+                input: "$ads",
+                as: "ad",
+                cond: { $eq: ["$$ad.adstatus", "Inactive"] },
+              },
+            },
           },
           totalPaid: {
             $sum: {
               $map: {
                 input: {
                   $filter: {
-                    input: '$transactions',
-                    as: 'txn',
-                    cond: { $eq: ['$$txn.status', 'Active'] }
-                  }
+                    input: "$transactions",
+                    as: "txn",
+                    cond: { $eq: ["$$txn.status", "Active"] },
+                  },
                 },
-                as: 'activeTxn',
-                in: { $toDouble: '$$activeTxn.amount' }
-              }
-            }
-          }
-        }
+                as: "activeTxn",
+                in: { $toDouble: "$$activeTxn.amount" },
+              },
+            },
+          },
+        },
       },
       {
         $project: {
@@ -452,20 +452,20 @@ export async function getUserAgragate(limit: number, page: number) {
           activeCount: 1,
           pendingCount: 1,
           inactiveCount: 1,
-          totalPaid: 1
-
-        }
+          totalPaid: 1,
+        },
       },
-      { $sort: { adsCount: -1 } },  // Sort by adsCount descending
+      { $sort: { adsCount: -1 } },
       { $skip: skipAmount },
-      { $limit: limit }
+      { $limit: limit },
     ]);
 
     const totalUsers = await User.countDocuments();
 
     return {
       data: JSON.parse(JSON.stringify(usersWithAdStats)),
-      totalPages: Math.ceil(totalUsers / limit)
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
     };
   } catch (error) {
     handleError(error);

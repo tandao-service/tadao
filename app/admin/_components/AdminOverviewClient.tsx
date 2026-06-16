@@ -129,7 +129,7 @@ export default function AdminOverviewClient() {
     }, [data]);
 
     if (loading) {
-        return <AdminSectionLoader label="Loading admin overview..." />;
+        return <AdminSectionLoader label="Loading overview..." />;
     }
 
     return (
@@ -149,7 +149,7 @@ export default function AdminOverviewClient() {
                 }
             />
 
-            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <section className="grid gap-4 grid-cols-4 lg:grid-cols-4">
                 <StatCard
                     title="Total Ads"
                     value={formatNumber(overview.totalAds)}
@@ -187,7 +187,7 @@ export default function AdminOverviewClient() {
                 />
             </section>
 
-            <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+            <section className="grid gap-6 grid-cols-2 xl:grid-cols-[0.9fr_1.1fr]">
                 <AdminCard>
                     <div className="mb-5">
                         <h2 className="text-lg font-semibold tracking-tight text-slate-950">
@@ -339,23 +339,28 @@ function StatCard({
     return (
         <Link
             href={href}
-            className="overflow-hidden rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         >
-            <div className="mb-4 flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-500">{title}</p>
-                <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${tones[tone]}`}>
+            <div className="mb-2 flex items-center justify-between">
+                <p className="text-xs font-medium text-slate-500">{title}</p>
+
+                <div
+                    className={`flex h-8 w-8 items-center justify-center rounded-xl ${tones[tone]}`}
+                >
                     {icon}
                 </div>
             </div>
 
-            <p className="text-2xl font-semibold tracking-tight text-slate-950">
+            <p className="text-lg font-semibold tracking-tight text-slate-950">
                 {value}
             </p>
-            <p className="mt-2 text-xs text-slate-500">{hint}</p>
+
+            <p className="mt-1 text-[11px] text-slate-500">
+                {hint}
+            </p>
         </Link>
     );
 }
-
 function ActionTile({
     href,
     title,
