@@ -187,7 +187,7 @@ export default function AdminOverviewClient() {
                 />
             </section>
 
-            <section className="grid gap-6 grid-cols-2 xl:grid-cols-[0.9fr_1.1fr]">
+            <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
                 <AdminCard>
                     <div className="mb-5">
                         <h2 className="text-lg font-semibold tracking-tight text-slate-950">
