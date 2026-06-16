@@ -1388,6 +1388,20 @@ const AdForm = ({
                 multiline
                 minRows={4}
               />
+              <TextField
+                required
+                id="phone"
+                label="Phone Number"
+                type="tel"
+                value={`${user?.phone || ""}`}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                  handleInputChange("phone", countryCode + removeLeadingZero(e.target.value));
+                }}
+                variant="outlined"
+                placeholder="Example: 0712345678"
+                className="w-full"
+              />
             </div>
           )}
           {selectedSubCategory && selectedCategory !== "Buyer Requests" && (

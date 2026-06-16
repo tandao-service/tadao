@@ -149,7 +149,7 @@ export default function AdminOverviewClient() {
                 }
             />
 
-            <section className="grid gap-4 grid-cols-4 lg:grid-cols-4">
+            <section className="grid gap-4 grid-cols-2 lg:grid-cols-4">
                 <StatCard
                     title="Total Ads"
                     value={formatNumber(overview.totalAds)}
