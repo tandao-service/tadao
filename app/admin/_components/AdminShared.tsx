@@ -142,7 +142,7 @@ export function AdminCard({
 }) {
     return (
         <section
-            className={`rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm ${className}`}
+            className={`rounded-xl border border-slate-200 bg-white p-2 shadow-sm ${className}`}
         >
             {children}
         </section>

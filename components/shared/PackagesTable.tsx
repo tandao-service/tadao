@@ -49,9 +49,9 @@ export default function PackagesTable({ packagesList, onSaved }: Props) {
                             <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Auto Renew
                             </th>
-                            <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            {/** <th className="px-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Prices
-                            </th>
+                            </th> */}
                             <th className="px-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Actions
                             </th>
@@ -112,7 +112,7 @@ export default function PackagesTable({ packagesList, onSaved }: Props) {
                                         {ent?.autoRenewHours ? `${ent.autoRenewHours} hrs` : "-"}
                                     </td>
 
-                                    <td className="bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                                    {/**   <td className="bg-slate-50 px-4 py-4 text-sm text-slate-700">
                                         {(pack?.price || []).length > 0
                                             ? (pack.price || [])
                                                 .map(
@@ -123,7 +123,7 @@ export default function PackagesTable({ packagesList, onSaved }: Props) {
                                                 )
                                                 .join(" | ")
                                             : "-"}
-                                    </td>
+                                    </td>*/}
 
                                     <td className="rounded-r-2xl bg-slate-50 px-4 py-4">
                                         <div className="flex justify-end gap-2">

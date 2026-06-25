@@ -1510,18 +1510,12 @@ export default function ListingPageClient(props: Props) {
                                             </div>
                                         </div>
 
-                                        <button
-                                            type="button"
-                                            onClick={() => setCatsOpen(true)}
-                                            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-orange-50 md:hidden"
-                                        >
-                                            <Layers className="h-4 w-4" />
-                                            Category
-                                        </button>
+
                                     </div>
 
                                     <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-[220px_1fr_140px]">
-                                        <select
+
+                                        <div className="flex items-center gap-3"> <select
                                             value={county}
                                             onChange={(e) => {
                                                 setCounty(e.target.value);
@@ -1536,24 +1530,37 @@ export default function ListingPageClient(props: Props) {
                                                 </option>
                                             ))}
                                         </select>
-
-                                        <div className="relative">
-                                            <IoSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
-                                            <input
-                                                value={q}
-                                                onChange={(e) => setQ(e.target.value)}
-                                                onKeyDown={(e) => e.key === "Enter" && applyFilters()}
-                                                placeholder="Search keywords, category, subcategory..."
-                                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setCatsOpen(true)}
+                                                className="inline-flex h-14 shrink-0 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-orange-50 md:hidden"
+                                            >
+                                                <Layers className="h-4 w-4" />
+                                                Category
+                                            </button>
                                         </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative flex-1">
+                                                <IoSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
 
-                                        <button
-                                            onClick={applyFilters}
-                                            className="h-14 rounded-2xl bg-emerald-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
-                                        >
-                                            Search
-                                        </button>
+                                                <input
+                                                    value={q}
+                                                    onChange={(e) => setQ(e.target.value)}
+                                                    onKeyDown={(e) => e.key === "Enter" && applyFilters()}
+                                                    placeholder="Search keywords, category, subcategory..."
+                                                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                                />
+                                            </div>
+
+                                            <button
+                                                onClick={applyFilters}
+                                                className="h-14 shrink-0 rounded-2xl bg-emerald-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
+                                            >
+                                                Search
+                                            </button>
+
+
+                                        </div>
                                     </div>
 
                                     <div className="mt-4 space-y-3">

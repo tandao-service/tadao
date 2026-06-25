@@ -339,13 +339,13 @@ function StatCard({
     return (
         <Link
             href={href}
-            className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="overflow-hidden rounded-sm border border-slate-200 bg-white px-2 py-1 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         >
-            <div className="mb-2 flex items-center justify-between">
+            <div className="mb-0 flex items-center justify-between">
                 <p className="text-xs font-medium text-slate-500">{title}</p>
 
                 <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-xl ${tones[tone]}`}
+                    className={`flex h-5 w-5 items-center justify-center rounded-xl ${tones[tone]}`}
                 >
                     {icon}
                 </div>
@@ -355,7 +355,7 @@ function StatCard({
                 {value}
             </p>
 
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-0 text-[11px] text-slate-500">
                 {hint}
             </p>
         </Link>
@@ -377,10 +377,10 @@ function ActionTile({
     return (
         <Link
             href={href}
-            className="group flex items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition hover:border-orange-200 hover:bg-orange-50/50"
+            className="group flex items-start justify-between gap-4 rounded-sm border border-slate-200 bg-slate-50 px-4 py-1 transition hover:border-orange-200 hover:bg-orange-50/50"
         >
             <div className="flex min-w-0 gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-slate-700 shadow-sm">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-2xl bg-white text-slate-700 shadow-sm">
                     {icon}
                 </div>
                 <div className="min-w-0">
@@ -391,7 +391,7 @@ function ActionTile({
 
             <div className="shrink-0 text-right">
                 <p className="text-sm font-semibold text-slate-950">{value}</p>
-                <p className="mt-1 text-xs font-medium text-orange-600 group-hover:text-orange-700">
+                <p className="mt-0 text-xs font-medium text-orange-600 group-hover:text-orange-700">
                     Open
                 </p>
             </div>
@@ -411,7 +411,7 @@ function ShortcutCard({
     return (
         <Link
             href={href}
-            className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/40"
+            className="rounded-sm border border-slate-200 bg-white px-2 py-1 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/40"
         >
             <p className="text-sm font-semibold text-slate-950">{title}</p>
             <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
