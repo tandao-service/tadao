@@ -1117,7 +1117,7 @@ export default function ListingPageClient(props: Props) {
             document.removeEventListener("keydown", onKey);
             document.body.style.overflow = prev;
         };
-    }, [filtersOpen, catsOpen, regionsOpen]);
+    }, [filtersOpen, catsOpen, subsOpen, regionsOpen]);
 
     const appliedCount = React.useMemo(() => {
         const vals = [
@@ -1532,7 +1532,11 @@ export default function ListingPageClient(props: Props) {
                                         </select>
                                             <button
                                                 type="button"
-                                                onClick={() => setCatsOpen(true)}
+                                                // onClick={() => setCatsOpen(true)}
+                                                onClick={() => {
+                                                    setMobileCatName(categoryName);
+                                                    setSubsOpen(true);
+                                                }}
                                                 className="inline-flex h-14 shrink-0 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-orange-50 md:hidden"
                                             >
                                                 <Layers className="h-4 w-4" />
