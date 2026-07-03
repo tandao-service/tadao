@@ -603,6 +603,15 @@ const AdForm = ({
     }
   }, [activeButton, activeButtonTitle, activePackage, selectedSubCategory]);
 
+  useEffect(() => {
+    if (user?.phone) {
+      const phone = user.phone;
+      setPhoneNumber(phone);
+      setFormData((prev) => ({ ...prev, phone }));
+    }
+  }, [user?.phone]);
+
+
   const validateForm = async () => {
     const validationSchema = createValidationSchema(fields, selectedCategory);
     const result = validationSchema.safeParse(formData);
@@ -1001,7 +1010,7 @@ const AdForm = ({
           return;
         }
 
-        const phone = countryCode + removeLeadingZero(phoneNumber);
+        const phone = user?.phone ? user?.phone : countryCode + removeLeadingZero(phoneNumber);
 
         if (!isValidKenyanPhoneNumber(phone)) {
 
@@ -1010,7 +1019,7 @@ const AdForm = ({
             "Please verify or enter a valid Kenyan phone number before posting."
           );
           return;
-          return;
+
         }
 
         if (
@@ -1359,7 +1368,7 @@ const AdForm = ({
               </div>
             </div>
           )}
-          {isDonationOrLostFound && selectedSubCategory && (
+          {/**  {isDonationOrLostFound && selectedSubCategory && (
             <div className="mt-3 grid grid-cols-1 gap-3">
               <TextField
                 required
@@ -1403,7 +1412,7 @@ const AdForm = ({
                 className="w-full"
               />
             </div>
-          )}
+          )}*/}
           {selectedSubCategory && selectedCategory !== "Buyer Requests" && (
             <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border-gray-300 dark:border-gray-600 items-center">
               <FileUploader
@@ -1761,6 +1770,7 @@ const AdForm = ({
                   <div className="flex w-full gap-1">
                     {user?.phone ? (
                       <>
+
                         <TextField
                           required={field.required}
                           id={field.name}
@@ -1770,6 +1780,7 @@ const AdForm = ({
                           value={`${user?.phone || ""}`}
                           variant="outlined"
                           className="w-full"
+
                         />
                         <p className="flex lg:w-[150px] text-green-600 text-sm mt-1">
                           ✅ Phone verified

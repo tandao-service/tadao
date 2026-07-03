@@ -1,5 +1,4 @@
 // lib/home/home.categories.ts
-import "server-only";
 import { connectToDatabase } from "@/lib/database";
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";

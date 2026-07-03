@@ -70,20 +70,7 @@ export const createValidationSchema = (fields: Field[], category: string) => {
     daysTo: z.string()
   });
 
-  const deliverySchema = z.array(deliveryItemSchema);
-  //if (fieldExists("rentprice")) {
-  // schemaShape["period"] = z.string().nonempty(`Period is required`);
-  //}
 
-  //if (fieldExists("rentprice")) {
-  // schemaShape["price"] = z.union([z.string(), z.number()])
-  // .transform((value) =>
-  //   typeof value === "string" ? parseFloat(value) : value
-  //)
-  // .refine((value) => !isNaN(value), {
-  //   message: `Price must be a valid number`,
-  // });
-  //}
 
   fields.forEach((field) => {
     let fieldSchema: z.ZodTypeAny; // Declare variable
