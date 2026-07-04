@@ -218,6 +218,7 @@ const EXCLUDED_BIDDING_CATEGORIES = [
   "Buyer Requests",
   "Seeking Work CVs",
   "Donations",
+  "Financing",
   "Lost and Found",
 ];
 

@@ -85,6 +85,37 @@ export function buildAdPath(ad: any, listingSlug?: string) {
     const resolvedListingSlug = resolveListingSlug(ad, listingSlug);
     const contentSlug = buildAdContentSlug(ad);
 
+    const category = safeStr(ad?.data?.category || ad?.category).toLowerCase();
+    const subcategory = safeStr(ad?.data?.subcategory || ad?.subcategory).toLowerCase();
+
+    const isDonation =
+        category === "donations" ||
+        subcategory === "donated items" ||
+        resolvedListingSlug === "donated-items" ||
+        resolvedListingSlug === "donated-items-for-sale";
+
+    const isLostAndFound =
+        category === "lost and found" ||
+        resolvedListingSlug === "lost-and-found";
+
+    const isFinancing =
+        category === "financing" ||
+        category === "finance" ||
+        resolvedListingSlug === "financing" ||
+        resolvedListingSlug === "finance";
+
+    if (isDonation) {
+        return `/donations/${contentSlug}-${id}`;
+    }
+
+    if (isLostAndFound) {
+        return `/lost-and-found/${contentSlug}-${id}`;
+    }
+
+    if (isFinancing) {
+        return `/financing/${contentSlug}-${id}`;
+    }
+
     return `/${resolvedListingSlug}/${contentSlug}-${id}`;
 }
 

@@ -104,12 +104,29 @@ export const createData = async ({
     const isFree = String(pkg.name).toLowerCase() === "free";
 
     // ✅ server truth: period + amount
+
+    //const periodKey = normalizePeriodKey(periodPack);
+
+    //const prices = Array.isArray(pkg.price) ? pkg.price : [];
+    //const priceRow = prices.find(
+    //  (x: any) => String(x.period).toLowerCase() === periodKey
+    //);
+    // const amountDue = Number(priceRow?.amount || 0);
+
     const periodKey = normalizePeriodKey(periodPack);
 
-    const prices = Array.isArray(pkg.price) ? pkg.price : [];
+    const isAssetsFinancing =
+      String(formData?.subcategory || "").trim().toLowerCase() === "assets financing" ||
+      String(formData?.category || "").trim().toLowerCase() === "financing";
+
+    const selectedPrices = isAssetsFinancing ? pkg.price2 : pkg.price;
+
+    const prices = Array.isArray(selectedPrices) ? selectedPrices : [];
+
     const priceRow = prices.find(
-      (x: any) => String(x.period).toLowerCase() === periodKey
+      (x: any) => String(x.period).toLowerCase().trim() === periodKey
     );
+
     const amountDue = Number(priceRow?.amount || 0);
 
     if (!isFree && amountDue <= 0) {
