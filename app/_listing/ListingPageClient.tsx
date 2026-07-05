@@ -136,7 +136,19 @@ const themeColors = [
         hover: "hover:bg-purple-100",
     },
 ];
+function isSpecialNoPriceCategory(categoryName: string, activeTitle?: string) {
+    const cat = String(categoryName || "").trim().toLowerCase();
+    const active = String(activeTitle || "").trim().toLowerCase();
 
+    return (
+        cat === "donations" ||
+        cat === "lost and found" ||
+        cat === "financing" ||
+        active === "donated items" ||
+        active === "lost and found items" ||
+        active === "assets financing"
+    );
+}
 function getThemeColor(index: number) {
     return themeColors[index % themeColors.length];
 }
@@ -1238,7 +1250,12 @@ export default function ListingPageClient(props: Props) {
         },
         [fetchItems]
     );
-
+    const hidePriceFilters = React.useMemo(() => {
+        return isSpecialNoPriceCategory(
+            categoryName,
+            String(activeListing?.title || activeListing?.subcategory || props.title || "")
+        );
+    }, [categoryName, activeListing?.title, activeListing?.subcategory, props.title]);
     const pricePresets = React.useMemo(() => {
         return pickPricePresets(categoryName, String(activeListing?.title || props.title || ""));
     }, [categoryName, activeListing?.title, props.title]);
@@ -1288,7 +1305,27 @@ export default function ListingPageClient(props: Props) {
     const FiltersContent = (
         <div className="space-y-4">
             <div>
-                <SidebarMiniLabel>Price, KSh</SidebarMiniLabel>
+                {!hidePriceFilters ? (
+                    <div>
+                        <SidebarMiniLabel>Price, KSh</SidebarMiniLabel>
+                        <div className="grid grid-cols-2 gap-2">
+                            <input
+                                value={min}
+                                onChange={(e) => setMin(e.target.value)}
+                                placeholder="Min"
+                                inputMode="numeric"
+                                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                            />
+                            <input
+                                value={max}
+                                onChange={(e) => setMax(e.target.value)}
+                                placeholder="Max"
+                                inputMode="numeric"
+                                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                            />
+                        </div>
+                    </div>
+                ) : null}
                 <div className="grid grid-cols-2 gap-2">
                     <input
                         value={min}
@@ -1568,27 +1605,30 @@ export default function ListingPageClient(props: Props) {
                                     </div>
 
                                     <div className="mt-4 space-y-3">
-                                        <div className="flex flex-wrap gap-2">
-                                            {pricePresets.map((p) => {
-                                                const key = `${p.min ?? ""}-${p.max ?? ""}`;
-                                                const active = key === activePriceKey;
-                                                return (
-                                                    <button
-                                                        key={p.label}
-                                                        type="button"
-                                                        onClick={() => onPricePreset(p)}
-                                                        className={cn(
-                                                            "rounded-xl border border-slate-200 px-4 py-2 text-xs font-extrabold transition",
-                                                            active
-                                                                ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
-                                                                : "bg-white text-slate-700 hover:bg-orange-50"
-                                                        )}
-                                                    >
-                                                        {p.label}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
+                                        {!hidePriceFilters ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {pricePresets.map((p) => {
+                                                    const key = `${p.min ?? ""}-${p.max ?? ""}`;
+                                                    const active = key === activePriceKey;
+
+                                                    return (
+                                                        <button
+                                                            key={p.label}
+                                                            type="button"
+                                                            onClick={() => onPricePreset(p)}
+                                                            className={cn(
+                                                                "rounded-xl border border-slate-200 px-4 py-2 text-xs font-extrabold transition",
+                                                                active
+                                                                    ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                                    : "bg-white text-slate-700 hover:bg-orange-50"
+                                                            )}
+                                                        >
+                                                            {p.label}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : null}
 
                                         {isVehicle ? (
                                             quickField === "make-model" && makeModelParsed.length ? (

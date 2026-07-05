@@ -264,7 +264,7 @@ const AdForm = ({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [defaults, setDefaults] = useState<Record<string, any>>({});
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
-
+  const [redirectingToPayment, setRedirectingToPayment] = useState(false);
   const [showDeliveryPopup, setShowDeliveryPopup] = useState(false);
   const [showBulkPopup, setShowBulkPopup] = useState(false);
 
@@ -351,14 +351,21 @@ const AdForm = ({
 
   const constituencies =
     REGIONS_WITH_AREA.find((county) => county.region === selectedCounty)?.area || [];
-
+  const showProcessingOverlay = loading || redirectingToPayment;
   const getPackagePrices = (pack: Package | null | undefined) => {
     if (!pack) return [];
-    return String(selectedSubCategory).toLowerCase() === "assets financing"
-      ? pack.price2 || []
-      : pack.price || [];
-  };
 
+    const isAssetsFinancing =
+      String(selectedSubCategory).trim().toLowerCase() === "assets financing";
+
+    if (isAssetsFinancing) {
+      return Array.isArray(pack.price2) && pack.price2.length > 0
+        ? pack.price2
+        : pack.price || [];
+    }
+
+    return pack.price || [];
+  };
   const packageCards = useMemo(() => {
     return packagesList.filter(
       (pack: any) =>
@@ -1142,7 +1149,22 @@ const AdForm = ({
 
           return;
         }
+        const resultPlanName = String(result?.plan?.name || planName || "").toLowerCase();
 
+        const paymentId =
+          result?.paymentRequest?.orderTrackingId ||
+          result?.paymentRequest?._id;
+
+        if (resultPlanName && resultPlanName !== "free" && paymentId) {
+
+          setRedirectingToPayment(true);
+
+          setTimeout(() => {
+            handlePay(String(paymentId));
+          }, 500);
+
+          return;
+        }
         if (!user?.phone) {
           await updateUserPhone(userId, phone);
         }
@@ -1924,6 +1946,25 @@ const AdForm = ({
         daysRemaining={daysRemaining}
         packname={planName}
       />
+      {showProcessingOverlay && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-sm rounded-3xl bg-white p-7 text-center shadow-2xl dark:bg-[#2D3236]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
+              <CircularProgress size={32} sx={{ color: "#f97316" }} />
+            </div>
+
+            <h2 className="mt-5 text-xl font-extrabold text-slate-900 dark:text-white">
+              {redirectingToPayment ? "Preparing payment" : "Submitting ad"}
+            </h2>
+
+            <p className="mt-2 text-sm font-medium text-slate-500 dark:text-slate-300">
+              {redirectingToPayment
+                ? "Your ad has been created. Please wait while we redirect you to payment."
+                : "Please wait while we process your ad."}
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

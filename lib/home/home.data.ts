@@ -1,5 +1,4 @@
 // lib/home/home.data.ts
-import "server-only";
 
 import { connectToDatabase } from "@/lib/database";
 import DynamicAd from "@/lib/database/models/dynamicAd.model";
@@ -37,7 +36,23 @@ export type HomeRegion = {
     name: string;
     count: number;
 };
+function isSpecialNonTradingAd(data: any) {
+    const category = String(data?.category || "").trim().toLowerCase();
+    const subcategory = String(data?.subcategory || "").trim().toLowerCase();
 
+    return (
+        category === "donations" ||
+        category === "lost and found" ||
+        subcategory === "donated items" ||
+        subcategory === "lost and found items"
+    );
+}
+
+const TRADING_ADS_MATCH = {
+    adstatus: "Active",
+    "data.category": { $nin: ["Donations", "Lost and Found"] },
+    "data.subcategory": { $nin: ["Donated Items", "Lost and Found Items"] },
+};
 // ---------- HELPERS ----------
 function slugify(input: string) {
     return String(input || "")
@@ -226,7 +241,7 @@ export async function getHomePageData() {
 
     // 3) TRENDING
     const trendingQuery = DynamicAd.find(
-        { adstatus: "Active" },
+        TRADING_ADS_MATCH,
         {
             data: 1,
             boost: 1,
@@ -241,7 +256,9 @@ export async function getHomePageData() {
         .limit(28);
 
     const trendingDocs = await trendingQuery.populate(populateSpec);
-    const trending: HomeAd[] = (trendingDocs || []).map(toHomeAd);
+    const trending: HomeAd[] = (trendingDocs || [])
+        .filter((doc: any) => !isSpecialNonTradingAd(doc?.data))
+        .map(toHomeAd);
 
     // 4) REGIONS
     const regionAgg = await DynamicAd.aggregate([

@@ -80,11 +80,10 @@ export const createData = async ({
 }: CreateAdShopParams) => {
   try {
     await connectToDatabase();
-    //console.error("formData:", formData);
-    //console.error("userId:", userId);
+
     const organizer = await User.findById(userId);
     if (!organizer) throw new Error("Organizer not found");
-    //console.error("planId:", planId);
+
     let pkg = null;
 
     if (planId && Types.ObjectId.isValid(planId)) {
@@ -105,13 +104,6 @@ export const createData = async ({
 
     // ✅ server truth: period + amount
 
-    //const periodKey = normalizePeriodKey(periodPack);
-
-    //const prices = Array.isArray(pkg.price) ? pkg.price : [];
-    //const priceRow = prices.find(
-    //  (x: any) => String(x.period).toLowerCase() === periodKey
-    //);
-    // const amountDue = Number(priceRow?.amount || 0);
 
     const periodKey = normalizePeriodKey(periodPack);
 
@@ -119,12 +111,15 @@ export const createData = async ({
       String(formData?.subcategory || "").trim().toLowerCase() === "assets financing" ||
       String(formData?.category || "").trim().toLowerCase() === "financing";
 
-    const selectedPrices = isAssetsFinancing ? pkg.price2 : pkg.price;
+    const selectedPrices =
+      isAssetsFinancing && Array.isArray(pkg.price2) && pkg.price2.length > 0
+        ? pkg.price2
+        : pkg.price;
 
     const prices = Array.isArray(selectedPrices) ? selectedPrices : [];
 
     const priceRow = prices.find(
-      (x: any) => String(x.period).toLowerCase().trim() === periodKey
+      (x: any) => normalizePeriodKey(x.period) === periodKey
     );
 
     const amountDue = Number(priceRow?.amount || 0);
@@ -171,7 +166,22 @@ export const createData = async ({
       plan: pkg._id,
       boost,
     });
-    // ✅ reduce remaining ads for paid subscriptions
+    let paymentRequest: any = null;
+
+    if (!isFree && amountDue > 0) {
+      paymentRequest = await createTransaction({
+        orderTrackingId: String(response._id),
+        merchantId: String(response._id),
+        buyerId: String(userId),
+        planId: String(pkg._id),
+        plan: String(pkg.name),
+        amount: amountDue,
+        period: periodKey,
+        createdAt: new Date(),
+        status: "Pending",
+      });
+    }
+
     // ✅ reduce remaining ads for paid subscriptions only
     if (
       organizer?.subscription?.planName &&
@@ -191,8 +201,13 @@ export const createData = async ({
     }
     revalidatePath(path);
 
-    const populatedResponse = await populateAd(DynamicAd.findById(response._id));
-    return JSON.parse(JSON.stringify(await populatedResponse));
+    const populatedResponse: any = await populateAd(DynamicAd.findById(response._id));
+    const plainAd = JSON.parse(JSON.stringify(populatedResponse));
+
+    return {
+      ...plainAd,
+      paymentRequest,
+    };
   } catch (error) {
     console.error("CREATE DATA ERROR:", error);
     handleError(error);

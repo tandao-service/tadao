@@ -42,7 +42,84 @@ function moneyKsh(v: any) {
     if (!Number.isFinite(n) || n <= 0) return "";
     return `KSh ${n.toLocaleString()}`;
 }
+function norm(v: any) {
+    return safeStr(v).toLowerCase();
+}
 
+function pickData(data: any, keys: string[]) {
+    for (const key of keys) {
+        const value = data?.[key];
+        if (safeStr(value)) return safeStr(value);
+    }
+    return "";
+}
+
+function isDonationOrLostFoundData(data: any) {
+    const category = norm(data?.category);
+    const subcategory = norm(data?.subcategory);
+
+    return (
+        category === "donations" ||
+        category === "lost and found" ||
+        subcategory === "donated items" ||
+        subcategory === "lost and found items"
+    );
+}
+
+function isFinancingData(data: any) {
+    return norm(data?.category) === "financing";
+}
+
+function financingInfo(data: any) {
+    return {
+        subcategory: safeStr(data?.subcategory),
+
+        minAmount: pickData(data, [
+            "Minimum Amount",
+            "Minimum Finance Amount",
+            "Min Amount",
+            "Min Financing",
+            "minAmount",
+            "minimumAmount",
+        ]),
+
+        maxAmount: pickData(data, [
+            "Maximum Amount",
+            "Maximum Finance Amount",
+            "Max Amount",
+            "Max Financing",
+            "maxAmount",
+            "maximumAmount",
+        ]),
+
+        amount: pickData(data, [
+            "Loan Amount",
+            "loanAmount",
+            "LoanAmount",
+            "Amount",
+            "Asset Price",
+            "Asset Value",
+            "Financing Amount",
+        ]),
+
+        deposit: pickData(data, [
+            "Deposit Amount",
+            "deposit",
+            "Down Payment",
+            "Deposit",
+        ]),
+
+        term: pickData(data, [
+            "Preferred Loan Term",
+            "loanterm",
+            "Loan Term",
+            "Repayment Period",
+            "Term",
+        ]),
+
+        income: pickData(data, ["Monthly Income", "monthlyIncome"]),
+    };
+}
 function buildSpecs(data: any) {
     const items = [
         { label: "Category", value: safeStr(data?.category) },
@@ -77,8 +154,17 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
 
     const price = Number(data?.price || 0);
     const isContactPrice = data?.contact === "contact";
-    const priceText = isContactPrice ? "Contact for price" : moneyKsh(price) || "KSh 0";
+    const noPriceNeeded = isDonationOrLostFoundData(data);
+    const showFinancingInfo = isFinancingData(data);
+    const financing = financingInfo(data);
+    const isAssetFinancing =
+        safeStr(data?.subcategory).toLowerCase() === "assets financing";
 
+    const priceText = noPriceNeeded
+        ? ""
+        : isContactPrice
+            ? "Contact for price"
+            : moneyKsh(price) || "KSh 0";
     const phone = safeStr(organizer?.phone);
     const whatsapp = safeStr(organizer?.whatsapp);
     const email = safeStr(organizer?.email);
@@ -208,14 +294,87 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl bg-orange-50 px-4 py-1">
-                                        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
-                                            Price
+                                    {showFinancingInfo ? (
+                                        <div className="rounded-2xl bg-orange-50 px-4 py-3">
+                                            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
+                                                Financing
+                                            </div>
+
+                                            <div className="mt-2 space-y-1 text-sm text-slate-700">
+                                                {financing.subcategory ? (
+                                                    <div className="font-extrabold text-orange-600">
+                                                        {financing.subcategory}
+                                                    </div>
+                                                ) : null}
+                                                {isAssetFinancing && (financing.minAmount || financing.maxAmount) ? (
+                                                    <div className="rounded-2xl border border-orange-100 bg-white px-3 py-3">
+                                                        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                                                            Finance Range
+                                                        </div>
+
+                                                        <div className="mt-2 grid grid-cols-2 gap-2">
+                                                            {financing.minAmount ? (
+                                                                <div className="rounded-xl bg-orange-50 px-3 py-2 text-center">
+                                                                    <div className="text-[10px] font-bold uppercase text-orange-500">
+                                                                        Minimum
+                                                                    </div>
+                                                                    <div className="text-sm font-extrabold text-slate-900">
+                                                                        {moneyKsh(financing.minAmount)}
+                                                                    </div>
+                                                                </div>
+                                                            ) : null}
+
+                                                            {financing.maxAmount ? (
+                                                                <div className="rounded-xl bg-orange-50 px-3 py-2 text-center">
+                                                                    <div className="text-[10px] font-bold uppercase text-orange-500">
+                                                                        Maximum
+                                                                    </div>
+                                                                    <div className="text-sm font-extrabold text-slate-900">
+                                                                        {moneyKsh(financing.maxAmount)}
+                                                                    </div>
+                                                                </div>
+                                                            ) : null}
+                                                        </div>
+                                                    </div>
+                                                ) : null}
+                                                {financing.amount ? (
+                                                    <div>
+                                                        <span className="font-bold">Amount:</span>{" "}
+                                                        {moneyKsh(financing.amount)}
+                                                    </div>
+                                                ) : null}
+
+                                                {financing.deposit ? (
+                                                    <div>
+                                                        <span className="font-bold">Deposit:</span>{" "}
+                                                        {moneyKsh(financing.deposit)}
+                                                    </div>
+                                                ) : null}
+
+                                                {financing.term ? (
+                                                    <div>
+                                                        <span className="font-bold">Term:</span> {financing.term}
+                                                    </div>
+                                                ) : null}
+
+                                                {financing.income ? (
+                                                    <div>
+                                                        <span className="font-bold">Income:</span>{" "}
+                                                        {moneyKsh(financing.income)}
+                                                    </div>
+                                                ) : null}
+                                            </div>
                                         </div>
-                                        <div className="mt-1 text-xl font-extrabold text-orange-600">
-                                            {priceText}
+                                    ) : !noPriceNeeded ? (
+                                        <div className="rounded-2xl bg-orange-50 px-4 py-1">
+                                            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
+                                                Price
+                                            </div>
+                                            <div className="mt-1 text-xl font-extrabold text-orange-600">
+                                                {priceText}
+                                            </div>
                                         </div>
-                                    </div>
+                                    ) : null}
                                 </div>
 
                                 {(data?.unit || data?.per || data?.period) && (
@@ -246,12 +405,12 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
                                             {specs.map((item) => (
                                                 <div
                                                     key={item.label}
-                                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2"
+                                                    className="inline-flex justify-center items-center gap-2 rounded-sm border border-slate-200 bg-slate-50 px-3 py-2"
                                                 >
-                                                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                                                        {item.label}
+                                                    <span className="text-[12px] uppercase text-slate-500">
+                                                        {item.label}:
                                                     </span>
-                                                    <span className="text-sm font-extrabold text-slate-900">
+                                                    <span className="text-[12px] font-extrabold text-slate-900">
                                                         {item.value}
                                                     </span>
                                                 </div>
@@ -274,12 +433,53 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
 
                     <aside className="lg:col-span-4">
                         <div className="space-y-3 lg:sticky lg:top-[calc(var(--topbar-h,64px)+12px)]">
-                            <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
-                                <div className="text-sm text-slate-500">Price</div>
-                                <div className="mt-1 text-2xl font-extrabold text-slate-900">
-                                    {priceText}
+                            {showFinancingInfo ? (
+                                <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
+                                    <div className="text-sm text-slate-500">Financing Details</div>
+
+                                    <div className="mt-3 space-y-2 text-sm text-slate-700">
+                                        {financing.subcategory ? (
+                                            <div className="text-lg font-extrabold text-slate-900">
+                                                {financing.subcategory}
+                                            </div>
+                                        ) : null}
+
+                                        {financing.amount ? (
+                                            <div>
+                                                <span className="font-bold">Amount:</span>{" "}
+                                                {moneyKsh(financing.amount)}
+                                            </div>
+                                        ) : null}
+
+                                        {financing.deposit ? (
+                                            <div>
+                                                <span className="font-bold">Deposit:</span>{" "}
+                                                {moneyKsh(financing.deposit)}
+                                            </div>
+                                        ) : null}
+
+                                        {financing.term ? (
+                                            <div>
+                                                <span className="font-bold">Term:</span> {financing.term}
+                                            </div>
+                                        ) : null}
+
+                                        {financing.income ? (
+                                            <div>
+                                                <span className="font-bold">Income:</span>{" "}
+                                                {moneyKsh(financing.income)}
+                                            </div>
+                                        ) : null}
+                                    </div>
                                 </div>
-                            </div>
+                            ) : !noPriceNeeded ? (
+                                <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
+                                    <div className="text-sm text-slate-500">Price</div>
+                                    <div className="mt-1 text-2xl font-extrabold text-slate-900">
+                                        {priceText}
+                                    </div>
+                                </div>
+                            ) : null}
 
                             <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
                                 <Link

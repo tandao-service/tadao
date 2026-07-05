@@ -32,20 +32,40 @@ function detectMode(name: string): "sale" | "rent" {
 
 function toListingSlugFromName(name: string, categoryName?: string) {
     const base = stripIntent(name);
+    const categorySlug = slugify(categoryName || "");
+    const baseSlug = slugify(base);
 
     if (
-        slugify(categoryName || "") === "financing" ||
-        slugify(base) === "assets-financing"
+        categorySlug === "donations" ||
+        baseSlug === "donated-items" ||
+        baseSlug === "donated-items-for-sale"
     ) {
-        return slugify(base);
+        return "donations";
+    }
+
+    if (
+        categorySlug === "lost-and-found" ||
+        baseSlug === "lost-and-found" ||
+        baseSlug === "lost-and-found-items"
+    ) {
+        return "lost-and-found";
+    }
+
+    if (
+        categorySlug === "financing" ||
+        categorySlug === "finance" ||
+        baseSlug === "financing" ||
+        baseSlug === "finance" ||
+        baseSlug === "assets-financing"
+    ) {
+        return "financing";
     }
 
     const mode = detectMode(name);
     const suffix = mode === "rent" ? "for-rent" : "for-sale";
 
-    return `${slugify(base)}-${suffix}`;
+    return `${baseSlug}-${suffix}`;
 }
-
 const scrollbarThin = `
   .scrollbar-thin::-webkit-scrollbar { width: 6px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }

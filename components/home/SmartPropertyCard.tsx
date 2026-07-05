@@ -9,6 +9,7 @@ import { IoCamera, IoFlashOutline, IoSparklesOutline } from "react-icons/io5";
 
 import { buildAdPath } from "@/app/_ad/ad-url";
 import { boostAd, featureAd } from "@/lib/actions/dynamicAd.actions";
+import Category from "@/lib/database/models/category.model";
 
 function moneyKsh(v: any) {
     const n = Number(v);
@@ -19,7 +20,62 @@ function moneyKsh(v: any) {
 function safeStr(v: any) {
     return (v ?? "").toString().trim();
 }
+function norm(v: any) {
+    return safeStr(v).toLowerCase();
+}
 
+function pickData(ad: any, keys: string[]) {
+    for (const key of keys) {
+        const value = ad?.data?.[key] ?? ad?.[key];
+        if (safeStr(value)) return safeStr(value);
+    }
+    return "";
+}
+
+function isDonationOrLostFoundAd(ad: any) {
+    const category = norm(ad?.data?.category || ad?.category);
+    const subcategory = norm(ad?.data?.subcategory || ad?.subcategory);
+
+    return (
+        category === "donations" ||
+        category === "lost and found" ||
+        subcategory === "donated items" ||
+        subcategory === "lost and found items"
+    );
+}
+
+function isFinancingAd(ad: any) {
+    return norm(ad?.data?.category || ad?.category) === "financing";
+}
+
+function financingInfo(ad: any) {
+    return {
+        subcategory: safeStr(ad?.data?.subcategory || ad?.subcategory),
+        amount: pickData(ad, [
+            "Loan Amount",
+            "loanAmount",
+            "LoanAmount",
+            "Amount",
+            "Asset Price",
+            "Asset Value",
+            "Financing Amount",
+        ]),
+        deposit: pickData(ad, [
+            "Deposit Amount",
+            "deposit",
+            "Down Payment",
+            "Deposit",
+        ]),
+        term: pickData(ad, [
+            "Preferred Loan Term",
+            "loanterm",
+            "Loan Term",
+            "Repayment Period",
+            "Term",
+        ]),
+        income: pickData(ad, ["Monthly Income", "monthlyIncome"]),
+    };
+}
 function isBoostActive(ad: any, kind: "featured" | "top") {
     const now = Date.now();
     const b = ad?.boost || {};
@@ -106,7 +162,9 @@ export default function SmartPropertyCard({
         ad?.userId ||
         ""
     );
-
+    const noPriceNeeded = isDonationOrLostFoundAd(ad);
+    const showFinancingInfo = isFinancingAd(ad);
+    const financing = financingInfo(ad);
     const isOwner = Boolean(currentUserId && ownerId === String(currentUserId));
     const canShowOwnerActions = showOwnerActions && isOwner;
 
@@ -279,9 +337,46 @@ export default function SmartPropertyCard({
                     {area ? ` - ${area}` : ""}
                 </div>
 
-                <div className="mt-2 font-bold text-black">
-                    {isContactPrice ? "Contact for price" : moneyKsh(price)}
-                </div>
+                {showFinancingInfo ? (
+                    <div className="mt-2 space-y-1 text-[12px] text-gray-700 dark:text-gray-300">
+                        {financing.subcategory && (
+                            <div className="font-bold text-orange-600">
+                                {financing.subcategory}
+                            </div>
+                        )}
+
+                        {financing.amount && (
+                            <div>
+                                <span className="font-semibold">Amount:</span>{" "}
+                                {moneyKsh(financing.amount)}
+                            </div>
+                        )}
+
+                        {financing.deposit && (
+                            <div>
+                                <span className="font-semibold">Deposit:</span>{" "}
+                                {moneyKsh(financing.deposit)}
+                            </div>
+                        )}
+
+                        {financing.term && (
+                            <div>
+                                <span className="font-semibold">Term:</span> {financing.term}
+                            </div>
+                        )}
+
+                        {financing.income && (
+                            <div>
+                                <span className="font-semibold">Income:</span>{" "}
+                                {moneyKsh(financing.income)}
+                            </div>
+                        )}
+                    </div>
+                ) : !noPriceNeeded ? (
+                    <div className="mt-2 font-bold text-black dark:text-white">
+                        {isContactPrice ? "Contact for price" : moneyKsh(price)}
+                    </div>
+                ) : null}
 
                 {canShowOwnerActions && (
                     <div className="mt-3 flex gap-2">
