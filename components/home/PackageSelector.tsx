@@ -89,9 +89,15 @@ export default function PackageSelector({
 
     const getPackagePrices = (pack: PackageSelectorPackage | null | undefined) => {
         if (!pack) return [];
-        return isFinancing ? pack.price2 || [] : pack.price || [];
-    };
 
+        if (isFinancing) {
+            return Array.isArray(pack.price2) && pack.price2.length > 0
+                ? pack.price2
+                : pack.price || [];
+        }
+
+        return pack.price || [];
+    };
     const periodOptions = isFinancing
         ? PERIOD_LABELS_FINANCING
         : PERIOD_LABELS_NON_FINANCING;
