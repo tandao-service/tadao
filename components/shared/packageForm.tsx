@@ -83,11 +83,55 @@ const PackageForm = ({ type, pack, packageId, onSaved }: PackageFormProps) => {
     defaultValues: initialValues,
   });
 
+  useEffect(() => {
+    if (type === "Update" && pack) {
+      form.reset({
+        ...pack,
+
+        features: Array.isArray(pack.features)
+          ? pack.features
+          : [],
+
+        price: Array.isArray(pack.price)
+          ? pack.price
+          : [],
+
+        price2: Array.isArray(pack.price2)
+          ? pack.price2
+          : [],
+
+        entitlements: {
+          maxListings:
+            pack.entitlements?.maxListings ??
+            pack.list ??
+            0,
+
+          priority:
+            pack.entitlements?.priority ??
+            pack.priority ??
+            0,
+
+          topDays:
+            pack.entitlements?.topDays ??
+            0,
+
+          featuredDays:
+            pack.entitlements?.featuredDays ??
+            0,
+
+          autoRenewHours:
+            pack.entitlements?.autoRenewHours ??
+            null,
+        },
+      });
+    }
+  }, [pack, type, form]);
   const maxListingsValue = form.watch("entitlements.maxListings");
   const watchName = form.watch("name");
   const watchDescription = form.watch("description");
   const watchColor = form.watch("color");
   const watchPrice = form.watch("price");
+  const watchPrice2 = form.watch("price2");
   const watchFeatures = form.watch("features");
   const watchEntitlements = form.watch("entitlements");
 
@@ -486,7 +530,7 @@ const PackageForm = ({ type, pack, packageId, onSaved }: PackageFormProps) => {
                   <div className="mt-5">
                     <p className="mb-2 text-sm font-semibold text-slate-900">Prices</p>
                     <div className="space-y-2">
-                      {(watchPrice || []).slice(0, 4).map((p: any, i: number) => (
+                      {(watchPrice || []).slice(0, 5).map((p: any, i: number) => (
                         <div
                           key={i}
                           className="flex justify-between rounded-xl bg-slate-50 px-3 py-2 text-sm"
@@ -499,7 +543,34 @@ const PackageForm = ({ type, pack, packageId, onSaved }: PackageFormProps) => {
                       ))}
                     </div>
                   </div>
+                  <div className="mt-5">
+                    <p className="mb-2 text-sm font-semibold text-slate-900">
+                      Asset Financing Prices
+                    </p>
 
+                    <div className="space-y-2">
+                      {(watchPrice2 || []).slice(0, 5).map(
+                        (p: any, i: number) => (
+                          <div
+                            key={p._id?.toString() || `${p.period}-${i}`}
+                            className="flex justify-between rounded-xl bg-orange-50 px-3 py-2 text-sm"
+                          >
+                            <span>{p.period}</span>
+
+                            <span className="font-semibold">
+                              KES {Number(p.amount || 0).toLocaleString()}
+                            </span>
+                          </div>
+                        )
+                      )}
+
+                      {!watchPrice2?.length && (
+                        <p className="rounded-xl bg-slate-50 px-3 py-2 text-sm text-slate-400">
+                          No Asset Financing prices configured.
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   <div className="mt-5">
                     <p className="mb-2 text-sm font-semibold text-slate-900">Features</p>
                     <ul className="space-y-2">

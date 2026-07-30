@@ -107,7 +107,6 @@ export const getAllPackages = async () => {
 
     const packages = await Packages.find().sort({ priority: 1 }); // 1 for ascending
 
-
     return JSON.parse(JSON.stringify(packages));
   } catch (error) {
     handleError(error)

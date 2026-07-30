@@ -6,6 +6,8 @@ export interface IPackages
   description: string;
   features: Feature[];
   price: Price[];
+  // Financing → Asset Financing pricing
+  price2: Price[];
   imageUrl: string;
   color: string;
   priority: number;

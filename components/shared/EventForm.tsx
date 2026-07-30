@@ -366,15 +366,6 @@ const AdForm = ({
 
     return pack.price || [];
   };
-  const packageCards = useMemo(() => {
-    return packagesList.filter(
-      (pack: any) =>
-        !(
-          selectedSubCategory.toLowerCase() === "assets financing" &&
-          pack.name === "Free"
-        )
-    );
-  }, [packagesList, selectedSubCategory]);
 
   const saveSellDraft = () => {
     try {
@@ -533,7 +524,7 @@ const AdForm = ({
 
   useEffect(() => {
     if (!packagesList.length) return;
-
+    // console.log(packagesList);
     const freePkg = packagesList.find(
       (p: any) => String(p.name).toLowerCase() === "free"
     );

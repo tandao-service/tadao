@@ -19,7 +19,7 @@ export default async function SellPage({ searchParams }: SellPageProps) {
     const tx = params.tx || "";
 
     const packagesList = (await getAllPackages()) || [];
-
+    //console.log(packagesList);
     return (
         <SellPageClient
             category={category}
