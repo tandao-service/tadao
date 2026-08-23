@@ -19,10 +19,10 @@ global.mongooseCache = cached;
 export async function connectToDatabase() {
   const MONGODB_URI = process.env.MONGODB_URI;
 
-  console.log("=== MONGODB CONNECTION DEBUG ===");
-  console.log("Environment:", process.env.VERCEL_ENV || process.env.NODE_ENV);
-  console.log("MONGODB_URI exists:", !!MONGODB_URI);
-  console.log("Configured dbName: Tadaomarket");
+  //console.log("=== MONGODB CONNECTION DEBUG ===");
+  //console.log("Environment:", process.env.VERCEL_ENV || process.env.NODE_ENV);
+  // console.log("MONGODB_URI exists:", !!MONGODB_URI);
+  // console.log("Configured dbName: Tadaomarket");
 
   if (!MONGODB_URI) {
     console.error("MONGODB_URI is missing");
@@ -30,10 +30,10 @@ export async function connectToDatabase() {
   }
 
   if (cached.conn) {
-    console.log("Using cached MongoDB connection");
-    console.log("Database:", mongoose.connection.name);
-    console.log("Host:", mongoose.connection.host);
-    console.log("Ready state:", mongoose.connection.readyState);
+    // console.log("Using cached MongoDB connection");
+    // console.log("Database:", mongoose.connection.name);
+    //console.log("Host:", mongoose.connection.host);
+    // console.log("Ready state:", mongoose.connection.readyState);
 
     return cached.conn;
   }
@@ -48,10 +48,10 @@ export async function connectToDatabase() {
 
     cached.conn = await cached.promise;
 
-    console.log("MongoDB connected successfully");
-    console.log("Database:", mongoose.connection.name);
-    console.log("Host:", mongoose.connection.host);
-    console.log("Ready state:", mongoose.connection.readyState);
+    // console.log("MongoDB connected successfully");
+    // console.log("Database:", mongoose.connection.name);
+    // console.log("Host:", mongoose.connection.host);
+    //console.log("Ready state:", mongoose.connection.readyState);
 
     return cached.conn;
   } catch (error) {
