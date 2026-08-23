@@ -30,9 +30,11 @@ import "react-quill/dist/quill.snow.css";
 import { createValidationSchema } from "@/lib/createValidationSchema";
 import { useUploadThing } from "@/lib/uploadthing";
 import { createData, updateAd } from "@/lib/actions/dynamicAd.actions";
+import { updateUserPhone } from "@/lib/actions/user.actions";
 import { createLoan } from "@/lib/actions/loan.actions";
 import { getSellPostGate } from "@/lib/actions/sell.actions";
 import { REGIONS_WITH_AREA } from "@/constants";
+
 import CategorySelect from "./CategorySelect";
 import SubCategorySelect from "./SubCategorySelect";
 import { Multiselect } from "./Multiselect";
@@ -41,6 +43,7 @@ import MakeModelAutocomplete from "./MakeModelAutocomplete";
 import { BulkPriceManager } from "./BulkPriceManager";
 import DeliveryOptions from "./DeliveryOptions";
 import PriceInput from "./PriceInput";
+import PhoneVerification from "./PhoneVerification";
 import BiddingCheckbox from "./BiddingCheckbox";
 import { FileUploader } from "./FileUploader";
 import SubscriptionRequiredModal from "./SubscriptionRequiredModal";
@@ -600,24 +603,11 @@ const AdForm = ({
   }, [activeButton, activeButtonTitle, activePackage, selectedSubCategory]);
 
   useEffect(() => {
-    if (!user?.phone) return;
-
-    const rawPhone = String(user.phone).trim();
-
-    if (rawPhone.startsWith("+254")) {
-      setCountryCode("+254");
-      setPhoneNumber(rawPhone.substring(4));
-    } else if (rawPhone.startsWith("254")) {
-      setCountryCode("+254");
-      setPhoneNumber(rawPhone.substring(3));
-    } else {
-      setPhoneNumber(rawPhone);
+    if (user?.phone) {
+      const phone = user.phone;
+      setPhoneNumber(phone);
+      setFormData((prev) => ({ ...prev, phone }));
     }
-
-    setFormData((prev) => ({
-      ...prev,
-      phone: rawPhone,
-    }));
   }, [user?.phone]);
 
 
@@ -892,7 +882,21 @@ const AdForm = ({
     }
   };
 
+  const handleVerified = async (phone: string) => {
+    await updateUserPhone(userId, phone);
 
+    const cleanNumber = phone.startsWith("+") ? phone.slice(1) : phone;
+    const code = cleanNumber.slice(0, 3);
+    const localNumber = cleanNumber.slice(3);
+
+    setCountryCode("+" + code);
+    setPhoneNumber(localNumber);
+    setFormData((prev) => ({ ...prev, phone }));
+
+    if (user) {
+      user.phone = phone;
+    }
+  };
 
   const years = Array.from({ length: new Date().getFullYear() - 1959 }, (_, i) =>
     String(new Date().getFullYear() - i)
@@ -1005,10 +1009,8 @@ const AdForm = ({
           return;
         }
 
-        // const phone = user?.phone ? user?.phone : countryCode + removeLeadingZero(phoneNumber);
-        const phone =
-          countryCode +
-          removeLeadingZero(phoneNumber.replace(/\D/g, ""));
+        const phone = user?.phone ? user?.phone : countryCode + removeLeadingZero(phoneNumber);
+
         if (!isValidKenyanPhoneNumber(phone)) {
 
           showError(
@@ -1154,7 +1156,9 @@ const AdForm = ({
 
           return;
         }
-
+        if (!user?.phone) {
+          await updateUserPhone(userId, phone);
+        }
 
         resetFormAfterSubmit();
         clearSellDraft();
@@ -1776,77 +1780,33 @@ const AdForm = ({
               )}
 
               {field.type === "phone" && (
-                <div className="w-full">
-                  <label className="block text-sm font-medium mb-1">
-                    Phone Number
-                    {field.required && <span className="text-red-500">*</span>}
-                  </label>
+                <div className="flex w-full flex-col">
+                  <div className="flex w-full gap-1">
+                    {user?.phone ? (
+                      <>
 
-                  <div className="flex gap-2 w-full">
-                    <select
-                      value={countryCode}
-                      onChange={(e) => {
-                        const code = e.target.value;
-                        setCountryCode(code);
+                        <TextField
+                          required={field.required}
+                          id={field.name}
+                          disabled
+                          label={`${capitalizeFirstLetter(field.name)} (Verified)`}
+                          type="tel"
+                          value={`${user?.phone || ""}`}
+                          variant="outlined"
+                          className="w-full"
 
-                        const clean = removeLeadingZero(phoneNumber);
-                        const fullPhone = `${code}${clean}`;
-
-                        setFormData((prev) => ({
-                          ...prev,
-                          phone: fullPhone,
-                        }));
-                      }}
-                      className="border border-gray-300 dark:border-gray-600
-                   dark:bg-[#2D3236] dark:text-gray-100
-                   px-2 py-3 rounded-md w-[130px]"
-                    >
-                      <option value="+254">+254 Kenya</option>
-                      <option value="+256">+256 Uganda</option>
-                      <option value="+255">+255 Tanzania</option>
-                      <option value="+250">+250 Rwanda</option>
-                      <option value="+257">+257 Burundi</option>
-                      <option value="+211">+211 South Sudan</option>
-                      <option value="+251">+251 Ethiopia</option>
-                      <option value="+252">+252 Somalia</option>
-                    </select>
-
-                    <input
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e) => {
-                        const value = e.target.value;
-
-                        // Allow numbers, spaces and +
-                        setPhoneNumber(value);
-
-                        const clean = removeLeadingZero(
-                          value.replace(/\D/g, "")
-                        );
-
-                        const fullPhone = `${countryCode}${clean}`;
-
-                        setFormData((prev) => ({
-                          ...prev,
-                          phone: fullPhone,
-                        }));
-                      }}
-                      placeholder="0712345678"
-                      className="border border-gray-300 dark:border-gray-600
-                   dark:bg-[#2D3236] dark:text-gray-100
-                   px-3 py-3 rounded-md w-full"
-                    />
+                        />
+                        <p className="flex lg:w-[150px] text-green-600 text-sm mt-1">
+                          ✅ Phone verified
+                        </p>
+                      </>
+                    ) : (
+                      <div className="p-0 w-full">
+                        <h1 className="text-xl font-bold mb-4">Verify Your Phone</h1>
+                        <PhoneVerification onVerified={handleVerified} />
+                      </div>
+                    )}
                   </div>
-
-                  {formErrors[field.name] && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {formErrors[field.name]}
-                    </p>
-                  )}
-
-                  <p className="text-gray-500 text-xs mt-1">
-                    Buyers will use this number to contact you.
-                  </p>
                 </div>
               )}
 
