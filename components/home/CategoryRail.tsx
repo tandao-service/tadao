@@ -2,6 +2,9 @@
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
+
 import type { HomeCategoryNode } from "@/lib/home/home.categories";
 import { cn } from "@/lib/utils";
 
@@ -25,8 +28,15 @@ function stripIntent(name: string) {
 
 function detectMode(name: string): "sale" | "rent" {
     const n = String(name || "").toLowerCase();
-    if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) return "rent";
-    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) return "sale";
+
+    if (/\bfor\s+rent\b/.test(n) || /\brent\b/.test(n)) {
+        return "rent";
+    }
+
+    if (/\bfor\s+sale\b/.test(n) || /\bsale\b/.test(n)) {
+        return "sale";
+    }
+
     return "sale";
 }
 
@@ -66,15 +76,32 @@ function toListingSlugFromName(name: string, categoryName?: string) {
 
     return `${baseSlug}-${suffix}`;
 }
+
 const scrollbarThin = `
   .scrollbar-thin::-webkit-scrollbar { width: 6px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-  .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
 `;
 
-function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
+/* ---------------- icon ---------------- */
+
+function IconCircle({
+    src,
+    alt,
+}: {
+    src?: string | null;
+    alt: string;
+}) {
     return (
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-slate-100 dark:bg-[#131B1E]">
             {src ? (
@@ -87,55 +114,146 @@ function IconCircle({ src, alt }: { src?: string | null; alt: string }) {
                     unoptimized
                 />
             ) : (
-                <div className="h-7 w-7 rounded-md bg-gradient-to-br from-slate-100 to-slate-200" />
+                <div className="h-7 w-7 rounded-md bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#1f2427] dark:to-[#131B1E]" />
             )}
         </div>
     );
 }
 
+/* ---------------- pending navigation ---------------- */
+
+function useCategoryNavigation() {
+    const [pendingHref, setPendingHref] =
+        React.useState<string | null>(null);
+
+    const startNavigation = React.useCallback(
+        (href: string) => {
+            setPendingHref(href);
+        },
+        []
+    );
+
+    React.useEffect(() => {
+        const clearPending = () => {
+            setPendingHref(null);
+        };
+
+        window.addEventListener(
+            "pageshow",
+            clearPending
+        );
+
+        return () => {
+            window.removeEventListener(
+                "pageshow",
+                clearPending
+            );
+        };
+    }, []);
+
+    return {
+        pendingHref,
+        startNavigation,
+    };
+}
+
+/* ---------------- scroll buttons ---------------- */
+
 function useScrollButtons(deps: any[] = []) {
-    const scrollRef = React.useRef<HTMLDivElement>(null);
-    const [showUp, setShowUp] = React.useState(false);
-    const [showDown, setShowDown] = React.useState(false);
+    const scrollRef =
+        React.useRef<HTMLDivElement>(null);
+
+    const [showUp, setShowUp] =
+        React.useState(false);
+
+    const [showDown, setShowDown] =
+        React.useState(false);
 
     const compute = React.useCallback(() => {
         const el = scrollRef.current;
+
         if (!el) return;
 
-        const { scrollTop, scrollHeight, clientHeight } = el;
+        const {
+            scrollTop,
+            scrollHeight,
+            clientHeight,
+        } = el;
+
         setShowUp(scrollTop > 0);
 
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
-        setShowDown(!atBottom && scrollHeight > clientHeight + 2);
+        const atBottom =
+            scrollTop + clientHeight >=
+            scrollHeight - 1;
+
+        setShowDown(
+            !atBottom &&
+            scrollHeight >
+            clientHeight + 2
+        );
     }, []);
 
     const toTop = React.useCallback(() => {
-        scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+        scrollRef.current?.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     }, []);
 
-    const toBottom = React.useCallback(() => {
-        const el = scrollRef.current;
-        if (!el) return;
-        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    }, []);
+    const toBottom =
+        React.useCallback(() => {
+            const el = scrollRef.current;
+
+            if (!el) return;
+
+            el.scrollTo({
+                top: el.scrollHeight,
+                behavior: "smooth",
+            });
+        }, []);
 
     React.useEffect(() => {
         const el = scrollRef.current;
+
         if (!el) return;
 
         const onScroll = () => compute();
-        el.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll);
+
+        el.addEventListener(
+            "scroll",
+            onScroll,
+            {
+                passive: true,
+            }
+        );
+
+        window.addEventListener(
+            "resize",
+            onScroll
+        );
 
         compute();
 
         return () => {
-            el.removeEventListener("scroll", onScroll);
-            window.removeEventListener("resize", onScroll);
+            el.removeEventListener(
+                "scroll",
+                onScroll
+            );
+
+            window.removeEventListener(
+                "resize",
+                onScroll
+            );
         };
     }, deps);
 
-    return { scrollRef, showUp, showDown, toTop, toBottom };
+    return {
+        scrollRef,
+        showUp,
+        showDown,
+        toTop,
+        toBottom,
+    };
 }
 
 /* ---------------- types ---------------- */
@@ -143,67 +261,125 @@ function useScrollButtons(deps: any[] = []) {
 type Props = {
     tree: HomeCategoryNode[];
     compact?: boolean;
+
     footerRef?: React.RefObject<HTMLElement | null>;
+
     topOffsetCssVar?: string;
     topGap?: number;
     bottomGap?: number;
 };
 
-/* ---------------- compact component ---------------- */
+/* ---------------- mobile / compact ---------------- */
 
-function CategoryRailCompact({ tree }: { tree: HomeCategoryNode[] }) {
+function CategoryRailCompact({
+    tree,
+}: {
+    tree: HomeCategoryNode[];
+}) {
+    const {
+        pendingHref,
+        startNavigation,
+    } = useCategoryNavigation();
+
     return (
         <div className="rounded-2xl bg-white p-2 lg:border lg:p-3 dark:border-gray-700 dark:bg-[#2D3236]">
             <div className="flex items-center justify-between">
-                <div className="text-[15px] font-semibold text-slate-800">
+                <div className="text-[15px] font-semibold text-slate-800 dark:text-white">
                     Categories
                 </div>
+
                 <div className="text-[12px] font-medium text-slate-500">
                     {tree.length} groups
                 </div>
             </div>
 
             <div className="mt-3 grid grid-cols-3 gap-3">
-                {tree.map((c) => (
-                    <a
-                        key={c.id}
-                        href={`/${slugify(c.name)}`}
-                        className={cn(
-                            "group rounded-2xl border bg-white p-3 text-center shadow-sm transition",
-                            "hover:border-orange-300 hover:bg-orange-100 hover:shadow-md",
-                            "dark:border-gray-700 dark:bg-[#2D3236] dark:hover:bg-orange-950/40"
-                        )}
-                    >
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200 group-hover:bg-orange-200 group-hover:ring-orange-300 dark:bg-[#131B1E] dark:ring-gray-700">
-                            {c.icon ? (
-                                <Image
-                                    src={c.icon}
-                                    alt={c.name}
-                                    width={80}
-                                    height={80}
-                                    className="h-10 w-10 object-contain"
-                                    unoptimized
-                                />
-                            ) : (
-                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-[#1f2427] dark:to-[#131B1E]" />
+                {tree.map((c) => {
+                    const href = `/${slugify(
+                        c.name
+                    )}`;
+
+                    const isLoading =
+                        pendingHref === href;
+
+                    return (
+                        <Link
+                            key={c.id}
+                            href={href}
+                            prefetch
+                            onClick={() =>
+                                startNavigation(
+                                    href
+                                )
+                            }
+                            aria-busy={
+                                isLoading
+                            }
+                            className={cn(
+                                "group relative rounded-2xl border bg-white p-3 text-center shadow-sm transition",
+                                "hover:border-orange-300 hover:bg-orange-100 hover:shadow-md",
+                                "active:scale-[0.98]",
+                                "dark:border-gray-700 dark:bg-[#2D3236] dark:hover:bg-orange-950/40",
+                                isLoading &&
+                                "border-orange-400 bg-orange-50 ring-2 ring-orange-200 dark:bg-orange-950/40"
                             )}
-                        </div>
+                        >
+                            <div
+                                className={cn(
+                                    "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200 transition",
+                                    "group-hover:bg-orange-200 group-hover:ring-orange-300",
+                                    "dark:bg-[#131B1E] dark:ring-gray-700",
+                                    isLoading &&
+                                    "bg-orange-100 ring-orange-300"
+                                )}
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="h-7 w-7 animate-spin text-orange-600" />
+                                ) : c.icon ? (
+                                    <Image
+                                        src={c.icon}
+                                        alt={
+                                            c.name
+                                        }
+                                        width={80}
+                                        height={80}
+                                        className="h-10 w-10 object-contain"
+                                        unoptimized
+                                    />
+                                ) : (
+                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-[#1f2427] dark:to-[#131B1E]" />
+                                )}
+                            </div>
 
-                        <div className="mt-2 truncate text-[13px] font-semibold text-slate-800 dark:text-white">
-                            {c.name}
-                        </div>
+                            <div
+                                className={cn(
+                                    "mt-2 truncate text-[13px] font-semibold text-slate-800 dark:text-white",
+                                    isLoading &&
+                                    "text-orange-700 dark:text-orange-300"
+                                )}
+                            >
+                                {isLoading
+                                    ? "Opening..."
+                                    : c.name}
+                            </div>
 
-                        <div className="mt-0.5 text-[12px] font-normal text-slate-500">
-                            {Number(c.count || 0).toLocaleString()} ads
-                        </div>
-                    </a>
-                ))}
+                            <div className="mt-0.5 text-[12px] font-normal text-slate-500">
+                                {isLoading
+                                    ? "Please wait"
+                                    : `${Number(
+                                        c.count ||
+                                        0
+                                    ).toLocaleString()} ads`}
+                            </div>
+                        </Link>
+                    );
+                })}
             </div>
         </div>
     );
 }
 
-/* ---------------- desktop component ---------------- */
+/* ---------------- desktop ---------------- */
 
 function CategoryRailDesktop({
     tree,
@@ -212,114 +388,280 @@ function CategoryRailDesktop({
     topGap = 12,
     bottomGap = 12,
 }: Omit<Props, "compact">) {
-    const [hovered, setHovered] = React.useState<string>("");
+    const [hovered, setHovered] =
+        React.useState<string>("");
 
-    const wrapRef = React.useRef<HTMLDivElement>(null);
-    const railRef = React.useRef<HTMLDivElement>(null);
+    const {
+        pendingHref,
+        startNavigation,
+    } = useCategoryNavigation();
 
-    const [mode, setMode] = React.useState<"relative" | "fixed" | "stopped">("relative");
-    const [fixedTop, setFixedTop] = React.useState<number>(76);
-    const [stoppedTop, setStoppedTop] = React.useState<number>(0);
+    const wrapRef =
+        React.useRef<HTMLDivElement>(null);
 
-    const categoryScroll = useScrollButtons();
-    const subcategoryScroll = useScrollButtons([hovered]);
+    const railRef =
+        React.useRef<HTMLDivElement>(null);
 
-    const activeCat = tree.find((x) => x.name === hovered) || tree[0];
+    const [mode, setMode] =
+        React.useState<
+            "relative" | "fixed" | "stopped"
+        >("relative");
+
+    const [fixedTop, setFixedTop] =
+        React.useState<number>(76);
+
+    const [stoppedTop, setStoppedTop] =
+        React.useState<number>(0);
+
+    const categoryScroll =
+        useScrollButtons();
+
+    const subcategoryScroll =
+        useScrollButtons([hovered]);
+
+    const activeCat =
+        tree.find(
+            (x) => x.name === hovered
+        ) || tree[0];
+
     const showSub = Boolean(hovered);
 
-    const computeTopOffsetPx = React.useCallback(() => {
-        const v = getComputedStyle(document.documentElement)
-            .getPropertyValue(topOffsetCssVar)
-            .trim();
+    const computeTopOffsetPx =
+        React.useCallback(() => {
+            const v =
+                getComputedStyle(
+                    document.documentElement
+                )
+                    .getPropertyValue(
+                        topOffsetCssVar
+                    )
+                    .trim();
 
-        const n = Number(String(v).replace("px", "").trim());
-        const topbarH = Number.isFinite(n) && n > 0 ? n : 64;
+            const n = Number(
+                String(v)
+                    .replace("px", "")
+                    .trim()
+            );
 
-        return topbarH + topGap;
-    }, [topGap, topOffsetCssVar]);
+            const topbarH =
+                Number.isFinite(n) &&
+                    n > 0
+                    ? n
+                    : 64;
 
-    const recompute = React.useCallback(() => {
-        const wrap = wrapRef.current;
-        const rail = railRef.current;
-        const footerEl = footerRef?.current;
+            return topbarH + topGap;
+        }, [
+            topGap,
+            topOffsetCssVar,
+        ]);
 
-        if (!wrap || !rail) return;
+    const recompute =
+        React.useCallback(() => {
+            const wrap =
+                wrapRef.current;
 
-        const topOffsetPx = computeTopOffsetPx();
-        setFixedTop(topOffsetPx);
+            const rail =
+                railRef.current;
 
-        const scrollY = window.scrollY;
-        const wrapTop = wrap.getBoundingClientRect().top + scrollY;
-        const railH = rail.offsetHeight;
+            const footerEl =
+                footerRef?.current;
 
-        let footerTop = Number.POSITIVE_INFINITY;
-        if (footerEl) footerTop = footerEl.getBoundingClientRect().top + scrollY;
+            if (!wrap || !rail) {
+                return;
+            }
 
-        const stopY = footerTop - railH - bottomGap;
-        const startStickY = wrapTop - topOffsetPx;
+            const topOffsetPx =
+                computeTopOffsetPx();
 
-        if (scrollY < startStickY) {
-            setMode("relative");
+            setFixedTop(topOffsetPx);
+
+            const scrollY =
+                window.scrollY;
+
+            const wrapTop =
+                wrap.getBoundingClientRect()
+                    .top + scrollY;
+
+            const railH =
+                rail.offsetHeight;
+
+            let footerTop =
+                Number.POSITIVE_INFINITY;
+
+            if (footerEl) {
+                footerTop =
+                    footerEl.getBoundingClientRect()
+                        .top +
+                    scrollY;
+            }
+
+            const stopY =
+                footerTop -
+                railH -
+                bottomGap;
+
+            const startStickY =
+                wrapTop -
+                topOffsetPx;
+
+            if (
+                scrollY <
+                startStickY
+            ) {
+                setMode("relative");
+                setStoppedTop(0);
+
+                return;
+            }
+
+            if (
+                scrollY >=
+                stopY -
+                topOffsetPx
+            ) {
+                setMode("stopped");
+
+                setStoppedTop(
+                    Math.max(
+                        0,
+                        stopY -
+                        wrapTop
+                    )
+                );
+
+                return;
+            }
+
+            setMode("fixed");
             setStoppedTop(0);
-            return;
-        }
-
-        if (scrollY >= stopY - topOffsetPx) {
-            setMode("stopped");
-            setStoppedTop(Math.max(0, stopY - wrapTop));
-            return;
-        }
-
-        setMode("fixed");
-        setStoppedTop(0);
-    }, [bottomGap, computeTopOffsetPx, footerRef]);
+        }, [
+            bottomGap,
+            computeTopOffsetPx,
+            footerRef,
+        ]);
 
     React.useEffect(() => {
         recompute();
 
-        const onScroll = () => recompute();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll);
+        const onScroll = () =>
+            recompute();
 
-        const ro = new ResizeObserver(() => recompute());
-        if (railRef.current) ro.observe(railRef.current);
+        window.addEventListener(
+            "scroll",
+            onScroll,
+            {
+                passive: true,
+            }
+        );
+
+        window.addEventListener(
+            "resize",
+            onScroll
+        );
+
+        const ro =
+            new ResizeObserver(() =>
+                recompute()
+            );
+
+        if (railRef.current) {
+            ro.observe(
+                railRef.current
+            );
+        }
 
         return () => {
-            window.removeEventListener("scroll", onScroll);
-            window.removeEventListener("resize", onScroll);
+            window.removeEventListener(
+                "scroll",
+                onScroll
+            );
+
+            window.removeEventListener(
+                "resize",
+                onScroll
+            );
+
             ro.disconnect();
         };
     }, [recompute]);
 
     React.useEffect(() => {
         recompute();
-    }, [hovered, recompute]);
+    }, [
+        hovered,
+        recompute,
+    ]);
 
     const outerStyle: React.CSSProperties =
         mode === "fixed"
-            ? { position: "fixed", top: fixedTop, width: 286, zIndex: 20 }
+            ? {
+                position: "fixed",
+                top: fixedTop,
+                width: 286,
+                zIndex: 20,
+            }
             : mode === "stopped"
-                ? { position: "absolute", top: stoppedTop, width: 286, zIndex: 20 }
-                : { position: "relative", width: 286 };
+                ? {
+                    position:
+                        "absolute",
+                    top: stoppedTop,
+                    width: 286,
+                    zIndex: 20,
+                }
+                : {
+                    position:
+                        "relative",
+                    width: 286,
+                };
 
-    const [flyoutLeft, setFlyoutLeft] = React.useState<number>(0);
+    const [
+        flyoutLeft,
+        setFlyoutLeft,
+    ] =
+        React.useState<number>(0);
 
     React.useEffect(() => {
-        const wrap = wrapRef.current;
+        const wrap =
+            wrapRef.current;
+
         if (!wrap) return;
 
         const calc = () => {
-            const r = wrap.getBoundingClientRect();
-            setFlyoutLeft(r.left + 286 + 10);
+            const r =
+                wrap.getBoundingClientRect();
+
+            setFlyoutLeft(
+                r.left +
+                286 +
+                10
+            );
         };
 
         calc();
-        window.addEventListener("scroll", calc, { passive: true });
-        window.addEventListener("resize", calc);
+
+        window.addEventListener(
+            "scroll",
+            calc,
+            {
+                passive: true,
+            }
+        );
+
+        window.addEventListener(
+            "resize",
+            calc
+        );
 
         return () => {
-            window.removeEventListener("scroll", calc);
-            window.removeEventListener("resize", calc);
+            window.removeEventListener(
+                "scroll",
+                calc
+            );
+
+            window.removeEventListener(
+                "resize",
+                calc
+            );
         };
     }, [mode]);
 
@@ -334,14 +676,16 @@ function CategoryRailDesktop({
             }
             : mode === "stopped"
                 ? {
-                    position: "absolute",
+                    position:
+                        "absolute",
                     top: stoppedTop,
                     left: 286 + 10,
                     width: 286,
                     zIndex: 70,
                 }
                 : {
-                    position: "absolute",
+                    position:
+                        "absolute",
                     top: 0,
                     left: 286 + 10,
                     width: 286,
@@ -349,118 +693,285 @@ function CategoryRailDesktop({
                 };
 
     return (
-        <div ref={wrapRef} className="relative">
-            <style jsx>{scrollbarThin}</style>
+        <div
+            ref={wrapRef}
+            className="relative"
+        >
+            <style jsx>
+                {scrollbarThin}
+            </style>
 
+            {/* Main category rail */}
             <div style={outerStyle}>
                 <div
                     ref={railRef}
                     className="w-[260px] overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 shadow-lg dark:border-gray-700 dark:bg-[#2D3236]"
                 >
                     <div className="border-b border-slate-100 px-4 py-3 dark:border-gray-600">
-                        <h2 className="text-[15px] font-semibold text-slate-800">
+                        <h2 className="text-[15px] font-semibold text-slate-800 dark:text-white">
                             Categories
                         </h2>
                     </div>
 
                     <div
-                        ref={categoryScroll.scrollRef}
+                        ref={
+                            categoryScroll.scrollRef
+                        }
                         className="scrollbar-none h-[450px] w-full overflow-y-auto"
-                        style={{ scrollBehavior: "smooth" }}
+                        style={{
+                            scrollBehavior:
+                                "smooth",
+                        }}
                     >
-                        {tree.map((category) => {
-                            const isActive = hovered === category.name;
-                            const href = `/${slugify(category.name)}`;
+                        {tree.map(
+                            (
+                                category
+                            ) => {
+                                const isActive =
+                                    hovered ===
+                                    category.name;
 
-                            return (
-                                <div
-                                    key={category.id}
-                                    onMouseEnter={() => setHovered(category.name)}
-                                    className={cn(
-                                        "relative flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 text-left transition",
-                                        "hover:bg-orange-100 dark:border-gray-700 dark:hover:bg-orange-950/40",
-                                        isActive &&
-                                        "bg-orange-100 ring-1 ring-inset ring-orange-300 dark:bg-orange-950/40"
-                                    )}
-                                >
-                                    <a
-                                        href={href}
-                                        aria-label={`Open ${category.name}`}
-                                        className="absolute inset-0 z-[1]"
-                                    />
+                                const href = `/${slugify(
+                                    category.name
+                                )}`;
 
-                                    <div className="relative z-[2] pointer-events-none flex w-full items-center gap-3">
-                                        <IconCircle src={category.icon} alt={category.name} />
+                                const isLoading =
+                                    pendingHref ===
+                                    href;
 
-                                        <div className="min-w-0 flex-1">
-                                            <div className="truncate text-[14px] font-semibold text-slate-800 dark:text-white">
-                                                {category.name}
-                                            </div>
-                                            <div className="text-[12px] font-normal text-slate-500">
-                                                {Number(category.count || 0).toLocaleString()} ads
-                                            </div>
-                                        </div>
+                                return (
+                                    <div
+                                        key={
+                                            category.id
+                                        }
+                                        onMouseEnter={() =>
+                                            setHovered(
+                                                category.name
+                                            )
+                                        }
+                                        className={cn(
+                                            "relative flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 text-left transition",
+                                            "hover:bg-orange-100 dark:border-gray-700 dark:hover:bg-orange-950/40",
+                                            isActive &&
+                                            "bg-orange-100 ring-1 ring-inset ring-orange-300 dark:bg-orange-950/40",
+                                            isLoading &&
+                                            "bg-orange-50 ring-1 ring-inset ring-orange-400 dark:bg-orange-950/40"
+                                        )}
+                                    >
+                                        <Link
+                                            href={
+                                                href
+                                            }
+                                            prefetch
+                                            aria-label={`Open ${category.name}`}
+                                            aria-busy={
+                                                isLoading
+                                            }
+                                            onClick={() =>
+                                                startNavigation(
+                                                    href
+                                                )
+                                            }
+                                            className="absolute inset-0 z-[1]"
+                                        />
 
-                                        <div
-                                            className={cn(
-                                                "text-lg font-bold",
-                                                isActive ? "text-orange-600" : "text-slate-400"
+                                        <div className="pointer-events-none relative z-[2] flex w-full items-center gap-3">
+                                            {isLoading ? (
+                                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100">
+                                                    <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
+                                                </div>
+                                            ) : (
+                                                <IconCircle
+                                                    src={
+                                                        category.icon
+                                                    }
+                                                    alt={
+                                                        category.name
+                                                    }
+                                                />
                                             )}
-                                        >
-                                            ›
+
+                                            <div className="min-w-0 flex-1">
+                                                <div
+                                                    className={cn(
+                                                        "truncate text-[14px] font-semibold text-slate-800 dark:text-white",
+                                                        isLoading &&
+                                                        "text-orange-700 dark:text-orange-300"
+                                                    )}
+                                                >
+                                                    {isLoading
+                                                        ? "Opening..."
+                                                        : category.name}
+                                                </div>
+
+                                                <div className="text-[12px] font-normal text-slate-500">
+                                                    {isLoading
+                                                        ? "Loading ads..."
+                                                        : `${Number(
+                                                            category.count ||
+                                                            0
+                                                        ).toLocaleString()} ads`}
+                                                </div>
+                                            </div>
+
+                                            {isLoading ? (
+                                                <Loader2 className="h-4 w-4 animate-spin text-orange-600" />
+                                            ) : (
+                                                <div
+                                                    className={cn(
+                                                        "text-lg font-bold",
+                                                        isActive
+                                                            ? "text-orange-600"
+                                                            : "text-slate-400"
+                                                    )}
+                                                >
+                                                    ›
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            }
+                        )}
                     </div>
                 </div>
             </div>
 
-            <div className="h-[1px]" style={{ height: 0 }} />
+            <div
+                className="h-[1px]"
+                style={{
+                    height: 0,
+                }}
+            />
 
+            {/* Subcategory flyout */}
             {showSub && (
                 <div
                     className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 shadow-xl dark:border-gray-700 dark:bg-[#2D3236]"
-                    style={flyoutFinalStyle}
-                    onMouseEnter={() => setHovered(activeCat.name)}
-                    onMouseLeave={() => setHovered("")}
+                    style={
+                        flyoutFinalStyle
+                    }
+                    onMouseEnter={() =>
+                        setHovered(
+                            activeCat.name
+                        )
+                    }
+                    onMouseLeave={() =>
+                        setHovered("")
+                    }
                 >
                     <div className="border-b border-slate-100 px-4 py-3 dark:border-gray-600">
                         <h2 className="text-[15px] font-semibold text-slate-800 dark:text-white">
-                            {activeCat.name}
+                            {
+                                activeCat.name
+                            }
                         </h2>
                     </div>
 
                     <div
-                        ref={subcategoryScroll.scrollRef}
+                        ref={
+                            subcategoryScroll.scrollRef
+                        }
                         className="scrollbar-none h-[450px] w-full overflow-y-auto"
-                        style={{ scrollBehavior: "smooth" }}
+                        style={{
+                            scrollBehavior:
+                                "smooth",
+                        }}
                     >
-                        {activeCat.subcategories?.length ? (
-                            activeCat.subcategories.map((sub: any) => (
-                                <a
-                                    key={sub.id}
-                                    href={`/${toListingSlugFromName(sub.name, activeCat.name)}`}
-                                    className="flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 transition hover:bg-orange-100 dark:border-gray-700 dark:hover:bg-orange-950/40"
-                                >
-                                    <IconCircle src={sub.icon || null} alt={sub.name} />
+                        {activeCat
+                            .subcategories
+                            ?.length ? (
+                            activeCat.subcategories.map(
+                                (
+                                    sub: any
+                                ) => {
+                                    const href = `/${toListingSlugFromName(
+                                        sub.name,
+                                        activeCat.name
+                                    )}`;
 
-                                    <div className="min-w-0 flex-1">
-                                        <div className="truncate text-[14px] font-semibold text-slate-800 dark:text-white">
-                                            {sub.name}
-                                        </div>
-                                        <div className="text-[12px] font-normal text-slate-500">
-                                            {Number(sub.count || 0).toLocaleString()} ads
-                                        </div>
-                                    </div>
+                                    const isLoading =
+                                        pendingHref ===
+                                        href;
 
-                                    <div className="text-lg font-bold text-slate-400">›</div>
-                                </a>
-                            ))
+                                    return (
+                                        <Link
+                                            key={
+                                                sub.id
+                                            }
+                                            href={
+                                                href
+                                            }
+                                            prefetch
+                                            aria-busy={
+                                                isLoading
+                                            }
+                                            onClick={() =>
+                                                startNavigation(
+                                                    href
+                                                )
+                                            }
+                                            className={cn(
+                                                "flex items-center gap-3 border-b border-slate-100 px-3 py-2.5 transition",
+                                                "hover:bg-orange-100 dark:border-gray-700 dark:hover:bg-orange-950/40",
+                                                isLoading &&
+                                                "bg-orange-50 ring-1 ring-inset ring-orange-300 dark:bg-orange-950/40"
+                                            )}
+                                        >
+                                            {isLoading ? (
+                                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100">
+                                                    <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
+                                                </div>
+                                            ) : (
+                                                <IconCircle
+                                                    src={
+                                                        sub.icon ||
+                                                        null
+                                                    }
+                                                    alt={
+                                                        sub.name
+                                                    }
+                                                />
+                                            )}
+
+                                            <div className="min-w-0 flex-1">
+                                                <div
+                                                    className={cn(
+                                                        "truncate text-[14px] font-semibold text-slate-800 dark:text-white",
+                                                        isLoading &&
+                                                        "text-orange-700 dark:text-orange-300"
+                                                    )}
+                                                >
+                                                    {isLoading
+                                                        ? "Opening..."
+                                                        : sub.name}
+                                                </div>
+
+                                                <div className="text-[12px] font-normal text-slate-500">
+                                                    {isLoading
+                                                        ? "Loading ads..."
+                                                        : `${Number(
+                                                            sub.count ||
+                                                            0
+                                                        ).toLocaleString()} ads`}
+                                                </div>
+                                            </div>
+
+                                            {isLoading ? (
+                                                <Loader2 className="h-4 w-4 shrink-0 animate-spin text-orange-600" />
+                                            ) : (
+                                                <div className="text-lg font-bold text-slate-400">
+                                                    ›
+                                                </div>
+                                            )}
+                                        </Link>
+                                    );
+                                }
+                            )
                         ) : (
                             <div className="p-3 text-sm text-slate-500">
-                                No subcategories yet.
+                                No subcategories
+                                yet.
                             </div>
                         )}
                     </div>
@@ -472,12 +983,20 @@ function CategoryRailDesktop({
 
 /* ---------------- main export ---------------- */
 
-export default function CategoryRail(props: Props) {
-    if (!props.tree?.length) return null;
+export default function CategoryRail(
+    props: Props
+) {
+    if (!props.tree?.length) {
+        return null;
+    }
 
     return props.compact ? (
-        <CategoryRailCompact tree={props.tree} />
+        <CategoryRailCompact
+            tree={props.tree}
+        />
     ) : (
-        <CategoryRailDesktop {...props} />
+        <CategoryRailDesktop
+            {...props}
+        />
     );
 }

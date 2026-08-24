@@ -22,33 +22,62 @@ function getDaysRemaining(expiresAt?: string | Date | null) {
 
 export default function PackagesPageClient() {
     const router = useRouter();
-    const { user, appUserId, loading, profileLoading } = useAuth();
+
+    const {
+        user,
+        appUserId,
+        loading,
+        profileLoading,
+    } = useAuth();
 
     const [packagesList, setPackagesList] = useState<any[]>([]);
     const [packagesLoading, setPackagesLoading] = useState(true);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication
+    |--------------------------------------------------------------------------
+    */
     useEffect(() => {
         if (!loading && !profileLoading && !appUserId) {
             router.replace("/auth");
         }
     }, [loading, profileLoading, appUserId, router]);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Load packages
+    |--------------------------------------------------------------------------
+    */
     useEffect(() => {
         let mounted = true;
 
         const loadPackages = async () => {
             try {
                 setPackagesLoading(true);
+
                 const data = await getAllPackages();
 
                 if (mounted) {
-                    setPackagesList(Array.isArray(data) ? data : []);
+                    setPackagesList(
+                        Array.isArray(data)
+                            ? data
+                            : []
+                    );
                 }
             } catch (error) {
-                console.error("Failed to load packages:", error);
-                if (mounted) setPackagesList([]);
+                console.error(
+                    "Failed to load packages:",
+                    error
+                );
+
+                if (mounted) {
+                    setPackagesList([]);
+                }
             } finally {
-                if (mounted) setPackagesLoading(false);
+                if (mounted) {
+                    setPackagesLoading(false);
+                }
             }
         };
 
@@ -59,54 +88,221 @@ export default function PackagesPageClient() {
         };
     }, []);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Subscription
+    |--------------------------------------------------------------------------
+    */
     const subscription = user?.subscription || {};
-    const isActive = Boolean(subscription?.active);
-    const packname = isActive ? String(subscription?.planName || "Free") : "Free";
+
+    const isActive = Boolean(
+        subscription?.active
+    );
+
+    const packname = isActive
+        ? String(
+            subscription?.planName || "Free"
+        )
+        : "Free";
+
     const daysRemaining =
         isActive && subscription?.expiresAt
-            ? getDaysRemaining(subscription.expiresAt)
+            ? getDaysRemaining(
+                subscription.expiresAt
+            )
             : 0;
 
-    const isBusy = loading || profileLoading || packagesLoading;
+    const isBusy =
+        loading ||
+        profileLoading ||
+        packagesLoading;
 
+    /*
+    |--------------------------------------------------------------------------
+    | Loading state
+    |--------------------------------------------------------------------------
+    */
     if (isBusy) {
         return (
             <>
                 <TopBar />
-                <main className="min-h-[calc(100vh-72px)] bg-slate-50">
-                    <div className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-8">
-                        <section className="overflow-hidden rounded-[30px] border border-orange-100 bg-gradient-to-r from-orange-500 to-orange-400 shadow-sm">
-                            <div className="px-6 py-8 text-white md:px-10 md:py-10">
-                                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
+
+                <main className="min-h-screen bg-slate-50">
+                    <div
+                        className="
+                            mx-auto
+                            w-full
+                            max-w-[1800px]
+                            px-3
+                            py-3
+                            sm:px-4
+                            sm:py-5
+                            md:px-6
+                            md:py-6
+                            lg:px-8
+                            xl:px-9
+                        "
+                    >
+                        {/* Hero */}
+                        <section
+                            className="
+                                overflow-hidden
+                                rounded-[24px]
+                                border
+                                border-orange-100
+                                bg-gradient-to-r
+                                from-orange-500
+                                to-orange-400
+                                shadow-sm
+                                sm:rounded-[28px]
+                                lg:rounded-[36px]
+                            "
+                        >
+                            <div
+                                className="
+                                    px-5
+                                    py-6
+                                    text-white
+                                    sm:px-7
+                                    sm:py-8
+                                    md:px-9
+                                    md:py-9
+                                    lg:px-12
+                                    lg:py-12
+                                    xl:px-14
+                                "
+                            >
+                                <div
+                                    className="
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        rounded-full
+                                        bg-white/15
+                                        px-3
+                                        py-2
+                                        text-xs
+                                        font-semibold
+                                        backdrop-blur-sm
+                                        sm:px-4
+                                        sm:text-sm
+                                    "
+                                >
                                     <DiamondIcon fontSize="small" />
+
                                     Packages
                                 </div>
 
-                                <h1 className="mt-4 text-3xl font-extrabold tracking-[-0.03em] md:text-5xl">
+                                <h1
+                                    className="
+                                        mt-5
+                                        text-[34px]
+                                        font-extrabold
+                                        leading-[1.05]
+                                        tracking-[-0.04em]
+                                        sm:text-4xl
+                                        md:text-5xl
+                                        lg:text-[58px]
+                                        xl:text-[64px]
+                                    "
+                                >
                                     Choose Your Package
                                 </h1>
 
-                                <p className="mt-3 max-w-2xl text-sm text-orange-50 md:text-base">
-                                    Loading packages and preparing your subscription options.
+                                <p
+                                    className="
+                                        mt-4
+                                        max-w-3xl
+                                        text-sm
+                                        leading-6
+                                        text-orange-50
+                                        sm:text-base
+                                        sm:leading-7
+                                        lg:text-lg
+                                    "
+                                >
+                                    Loading packages and
+                                    preparing your subscription
+                                    options.
                                 </p>
                             </div>
                         </section>
 
-                        <section className="mt-6 rounded-[28px] border border-orange-100 bg-white p-4 shadow-sm md:p-6">
+                        {/* Content */}
+                        <section
+                            className="
+                                mt-4
+                                rounded-[24px]
+                                border
+                                border-orange-100
+                                bg-white
+                                p-4
+                                shadow-sm
+                                sm:mt-5
+                                sm:rounded-[28px]
+                                sm:p-5
+                                md:mt-6
+                                md:p-6
+                                lg:rounded-[36px]
+                                lg:p-8
+                                xl:p-9
+                            "
+                        >
                             <div className="mb-6">
-                                <h2 className="text-2xl font-extrabold tracking-[-0.02em] text-slate-900">
+                                <h2
+                                    className="
+                                        text-2xl
+                                        font-extrabold
+                                        tracking-[-0.03em]
+                                        text-slate-900
+                                        sm:text-[28px]
+                                        lg:text-3xl
+                                    "
+                                >
                                     Available packages
                                 </h2>
-                                <p className="mt-1 text-sm text-slate-500">
-                                    Choose the best package for your ads.
+
+                                <p
+                                    className="
+                                        mt-1
+                                        text-sm
+                                        leading-6
+                                        text-slate-500
+                                        sm:text-base
+                                    "
+                                >
+                                    Choose the best package for
+                                    your ads.
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                                {Array.from({ length: 4 }).map((_, i) => (
+                            <div
+                                className="
+                                    grid
+                                    grid-cols-1
+                                    gap-4
+                                    sm:grid-cols-2
+                                    lg:grid-cols-3
+                                    xl:grid-cols-4
+                                "
+                            >
+                                {Array.from({
+                                    length: 4,
+                                }).map((_, i) => (
                                     <div
                                         key={i}
-                                        className="h-[360px] animate-pulse rounded-[24px] border border-orange-100 bg-gradient-to-b from-orange-50 to-white"
+                                        className="
+                                            h-[320px]
+                                            animate-pulse
+                                            rounded-[22px]
+                                            border
+                                            border-orange-100
+                                            bg-gradient-to-b
+                                            from-orange-50
+                                            to-white
+                                            sm:h-[340px]
+                                            lg:h-[360px]
+                                        "
                                     />
                                 ))}
                             </div>
@@ -117,45 +313,198 @@ export default function PackagesPageClient() {
         );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Redirecting
+    |--------------------------------------------------------------------------
+    */
     if (!user || !appUserId) {
         return null;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Page
+    |--------------------------------------------------------------------------
+    */
     return (
         <>
             <TopBar />
 
-            <main className="min-h-[calc(100vh-72px)] bg-slate-50">
-                <div className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-8">
-                    <section className="overflow-hidden rounded-[30px] border border-orange-100 bg-gradient-to-r from-orange-500 to-orange-400 shadow-sm">
-                        <div className="px-6 py-8 text-white md:px-10 md:py-10">
-                            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                    <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
+            <main className="min-h-screen bg-slate-50">
+                <div
+                    className="
+                        mx-auto
+                        w-full
+                        max-w-[1800px]
+                        px-3
+                        py-3
+                        sm:px-4
+                        sm:py-5
+                        md:px-6
+                        md:py-6
+                        lg:px-8
+                        xl:px-9
+                    "
+                >
+                    {/* Hero */}
+                    <section
+                        className="
+                            overflow-hidden
+                            rounded-[24px]
+                            border
+                            border-orange-100
+                            bg-gradient-to-r
+                            from-orange-500
+                            to-orange-400
+                            shadow-sm
+                            sm:rounded-[28px]
+                            lg:rounded-[36px]
+                        "
+                    >
+                        <div
+                            className="
+                                px-5
+                                py-6
+                                text-white
+                                sm:px-7
+                                sm:py-8
+                                md:px-9
+                                md:py-9
+                                lg:px-12
+                                lg:py-12
+                                xl:px-14
+                            "
+                        >
+                            <div
+                                className="
+                                    flex
+                                    flex-col
+                                    gap-6
+                                    lg:flex-row
+                                    lg:items-center
+                                    lg:justify-between
+                                    lg:gap-12
+                                "
+                            >
+                                {/* Hero text */}
+                                <div className="min-w-0 flex-1">
+                                    <div
+                                        className="
+                                            inline-flex
+                                            items-center
+                                            gap-2
+                                            rounded-full
+                                            bg-white/15
+                                            px-3
+                                            py-2
+                                            text-xs
+                                            font-semibold
+                                            backdrop-blur-sm
+                                            sm:px-4
+                                            sm:text-sm
+                                        "
+                                    >
                                         <DiamondIcon fontSize="small" />
-                                        Subscription plans
+
+                                        <span>
+                                            Subscription plans
+                                        </span>
                                     </div>
 
-                                    <h1 className="mt-4 text-3xl font-extrabold tracking-[-0.03em] md:text-5xl">
+                                    <h1
+                                        className="
+                                            mt-5
+                                            text-[34px]
+                                            font-extrabold
+                                            leading-[1.05]
+                                            tracking-[-0.04em]
+                                            sm:text-4xl
+                                            md:text-5xl
+                                            lg:text-[58px]
+                                            xl:text-[64px]
+                                        "
+                                    >
                                         Choose Your Package
                                     </h1>
 
-                                    <p className="mt-3 max-w-2xl text-sm text-orange-50 md:text-base">
-                                        Select the package that fits your posting needs and continue
-                                        to payment.
+                                    <p
+                                        className="
+                                            mt-4
+                                            max-w-3xl
+                                            text-sm
+                                            leading-6
+                                            text-orange-50
+                                            sm:text-base
+                                            sm:leading-7
+                                            lg:text-lg
+                                            lg:leading-8
+                                        "
+                                    >
+                                        Select the package that
+                                        fits your posting needs
+                                        and continue to payment.
                                     </p>
                                 </div>
 
-                                <div className="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur-sm">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-100">
+                                {/* Current plan */}
+                                <div
+                                    className="
+                                        w-full
+                                        rounded-[20px]
+                                        border
+                                        border-white/10
+                                        bg-white/10
+                                        px-5
+                                        py-4
+                                        backdrop-blur-sm
+                                        sm:px-6
+                                        sm:py-5
+                                        lg:w-auto
+                                        lg:min-w-[280px]
+                                        xl:min-w-[320px]
+                                    "
+                                >
+                                    <p
+                                        className="
+                                            text-[11px]
+                                            font-semibold
+                                            uppercase
+                                            tracking-[0.18em]
+                                            text-orange-100
+                                            sm:text-xs
+                                        "
+                                    >
                                         Current plan
                                     </p>
-                                    <p className="mt-1 text-2xl font-extrabold text-white">
+
+                                    <p
+                                        className="
+                                            mt-1
+                                            break-words
+                                            text-2xl
+                                            font-extrabold
+                                            text-white
+                                            sm:text-3xl
+                                        "
+                                    >
                                         {packname}
                                     </p>
-                                    <p className="mt-1 text-sm text-orange-50">
+
+                                    <p
+                                        className="
+                                            mt-2
+                                            text-sm
+                                            leading-6
+                                            text-orange-50
+                                        "
+                                    >
                                         {isActive
-                                            ? `${daysRemaining} day${daysRemaining === 1 ? "" : "s"} remaining`
+                                            ? `${daysRemaining} day${daysRemaining ===
+                                                1
+                                                ? ""
+                                                : "s"
+                                            } remaining`
                                             : "You are currently on the free plan"}
                                     </p>
                                 </div>
@@ -163,30 +512,111 @@ export default function PackagesPageClient() {
                         </div>
                     </section>
 
-                    <section className="mt-6 rounded-[28px] border border-orange-100 bg-white p-4 shadow-sm md:p-6">
-                        <div className="mb-5 flex flex-col gap-3 border-b border-slate-100 pb-5 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <h2 className="text-2xl font-extrabold tracking-[-0.02em] text-slate-900">
+                    {/* Packages */}
+                    <section
+                        className="
+                            mt-4
+                            rounded-[24px]
+                            border
+                            border-orange-100
+                            bg-white
+                            p-4
+                            shadow-sm
+                            sm:mt-5
+                            sm:rounded-[28px]
+                            sm:p-5
+                            md:mt-6
+                            md:p-6
+                            lg:rounded-[36px]
+                            lg:p-8
+                            xl:p-9
+                        "
+                    >
+                        {/* Section header */}
+                        <div
+                            className="
+                                mb-5
+                                flex
+                                flex-col
+                                gap-4
+                                border-b
+                                border-slate-100
+                                pb-5
+                                md:flex-row
+                                md:items-center
+                                md:justify-between
+                                md:gap-6
+                                lg:mb-7
+                                lg:pb-7
+                            "
+                        >
+                            <div className="min-w-0">
+                                <h2
+                                    className="
+                                        text-2xl
+                                        font-extrabold
+                                        tracking-[-0.03em]
+                                        text-slate-900
+                                        sm:text-[28px]
+                                        lg:text-3xl
+                                    "
+                                >
                                     Available packages
                                 </h2>
-                                <p className="mt-1 text-sm text-slate-500">
-                                    Upgrade your visibility and promote your ads more effectively.
+
+                                <p
+                                    className="
+                                        mt-1
+                                        max-w-3xl
+                                        text-sm
+                                        leading-6
+                                        text-slate-500
+                                        sm:text-base
+                                    "
+                                >
+                                    Upgrade your visibility and
+                                    promote your ads more
+                                    effectively.
                                 </p>
                             </div>
 
-                            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-600">
+                            <div
+                                className="
+                                    inline-flex
+                                    w-fit
+                                    shrink-0
+                                    items-center
+                                    gap-2
+                                    rounded-full
+                                    bg-orange-50
+                                    px-4
+                                    py-2.5
+                                    text-sm
+                                    font-semibold
+                                    text-orange-600
+                                    sm:px-5
+                                "
+                            >
                                 <DiamondIcon fontSize="small" />
-                                Tadao Market plans
+
+                                <span>
+                                    Tadao Market plans
+                                </span>
                             </div>
                         </div>
 
-                        <Listpackages
-                            packagesList={packagesList}
-                            userId={String(user._id)}
-                            daysRemaining={daysRemaining}
-                            packname={packname}
-                            user={user}
-                        />
+                        {/* Package cards */}
+                        <div className="min-w-0 overflow-hidden">
+                            <Listpackages
+                                packagesList={packagesList}
+                                userId={String(user._id)}
+                                daysRemaining={
+                                    daysRemaining
+                                }
+                                packname={packname}
+                                user={user}
+                            />
+                        </div>
                     </section>
                 </div>
             </main>
