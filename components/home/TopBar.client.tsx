@@ -70,11 +70,11 @@ export default function TopBar() {
 
     const handleGoBack = React.useCallback(() => {
         if (typeof window !== "undefined" && window.history.length > 1) {
-            // router.back();
-            router.push("/");
-        } else {
-            router.push("/");
+            router.back();
+            return;
         }
+
+        router.push("/");
     }, [router]);
 
     React.useEffect(() => {
