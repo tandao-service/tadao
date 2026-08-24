@@ -1,36 +1,121 @@
 // app/[listingSlug]/loading.tsx
 
-function SkeletonBox({
+import TopBar from "@/components/home/TopBar.client";
+
+function SkeletonLine({
     className = "",
 }: {
     className?: string;
 }) {
     return (
         <div
-            className={`animate-pulse rounded-xl bg-slate-200 ${className}`}
-        />
+            className={`overflow-hidden rounded-md bg-slate-200/80 ${className}`}
+        >
+            <div className="skeleton-shimmer h-full w-full" />
+        </div>
     );
 }
 
-function ListingCardSkeleton() {
-    return (
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            {/* image */}
-            <div className="aspect-[4/3] w-full animate-pulse bg-slate-200" />
+function ListingImageSkeleton({
+    index,
+}: {
+    index: number;
+}) {
+    const backgrounds = [
+        "from-orange-100 via-amber-50 to-slate-100",
+        "from-blue-100 via-slate-50 to-cyan-50",
+        "from-emerald-100 via-green-50 to-slate-100",
+        "from-purple-100 via-fuchsia-50 to-slate-100",
+        "from-rose-100 via-orange-50 to-slate-100",
+        "from-yellow-100 via-amber-50 to-slate-100",
+    ];
 
-            <div className="space-y-3 p-3">
+    const bg =
+        backgrounds[index % backgrounds.length];
+
+    return (
+        <div
+            className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${bg}`}
+        >
+            {/* Fake image depth */}
+            <div className="absolute inset-0 opacity-40">
+                <div className="absolute -left-10 top-5 h-32 w-32 rounded-full bg-white/60 blur-2xl" />
+                <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-white/50 blur-3xl" />
+            </div>
+
+            {/* Fake object/image area */}
+            <div className="absolute inset-x-[12%] bottom-[10%] top-[14%] rounded-2xl bg-white/35 shadow-inner backdrop-blur-[2px]" />
+
+            {/* promoted/status style chip */}
+            <div className="absolute left-3 top-3 h-7 w-20 overflow-hidden rounded-full bg-white/85 shadow-sm">
+                <div className="skeleton-shimmer h-full w-full" />
+            </div>
+
+            {/* favorite button placeholder */}
+            <div className="absolute right-3 top-3 h-9 w-9 overflow-hidden rounded-full bg-white/90 shadow-sm">
+                <div className="skeleton-shimmer h-full w-full" />
+            </div>
+
+            {/* image counter */}
+            <div className="absolute bottom-3 right-3 h-6 w-12 overflow-hidden rounded-full bg-slate-900/25">
+                <div className="skeleton-shimmer h-full w-full opacity-50" />
+            </div>
+
+            {/* Moving light */}
+            <div className="skeleton-image-glow absolute inset-0" />
+        </div>
+    );
+}
+
+function ListingCardSkeleton({
+    index,
+}: {
+    index: number;
+}) {
+    return (
+        <div
+            className="listing-loading-card overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.06)]"
+            style={{
+                animationDelay: `${Math.min(index, 12) * 45}ms`,
+            }}
+        >
+            <ListingImageSkeleton
+                index={index}
+            />
+
+            <div className="p-3">
                 {/* title */}
-                <SkeletonBox className="h-4 w-[88%]" />
+                <SkeletonLine className="h-4 w-[92%]" />
+
+                <SkeletonLine className="mt-2 h-4 w-[70%]" />
 
                 {/* location */}
-                <SkeletonBox className="h-3 w-[62%]" />
+                <div className="mt-3 flex items-center gap-2">
+                    <div className="h-5 w-5 overflow-hidden rounded-full bg-orange-100">
+                        <div className="skeleton-shimmer h-full w-full" />
+                    </div>
+
+                    <SkeletonLine className="h-3 w-[52%]" />
+                </div>
 
                 {/* price */}
-                <SkeletonBox className="h-5 w-[48%]" />
+                <div className="mt-3">
+                    <div className="h-6 w-[55%] overflow-hidden rounded-lg bg-orange-100">
+                        <div className="skeleton-shimmer h-full w-full" />
+                    </div>
+                </div>
 
-                <div className="flex items-center justify-between pt-1">
-                    <SkeletonBox className="h-3 w-16" />
-                    <SkeletonBox className="h-7 w-7 rounded-full" />
+                {/* footer */}
+                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                    <div className="flex items-center gap-2">
+                        <div className="h-7 w-7 overflow-hidden rounded-full bg-emerald-100">
+                            <div className="skeleton-shimmer h-full w-full" />
+                        </div>
+
+                        <SkeletonLine className="h-3 w-16" />
+                    </div>
+
+                    <SkeletonLine className="h-3 w-10" />
                 </div>
             </div>
         </div>
@@ -40,30 +125,44 @@ function ListingCardSkeleton() {
 function SidebarSkeleton() {
     return (
         <aside className="hidden md:block">
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
                 {/* category */}
-                <div className="border-b border-slate-100 p-4">
-                    <SkeletonBox className="h-4 w-24" />
+                <div className="border-b border-orange-100 p-4">
+                    <div className="flex items-center justify-between">
+                        <SkeletonLine className="h-4 w-24" />
+                        <div className="h-6 w-16 overflow-hidden rounded-full bg-orange-50">
+                            <div className="skeleton-shimmer h-full w-full" />
+                        </div>
+                    </div>
 
-                    <div className="mt-4">
-                        <SkeletonBox className="h-12 w-full" />
+                    <div className="mt-4 h-12 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                        <div className="skeleton-shimmer h-full w-full" />
                     </div>
                 </div>
 
                 {/* subcategories */}
-                <div className="border-b border-slate-100 p-4">
-                    <SkeletonBox className="h-4 w-32" />
+                <div className="border-b border-orange-100 p-4">
+                    <SkeletonLine className="h-4 w-32" />
 
                     <div className="mt-4 space-y-3">
                         {Array.from({
-                            length: 7,
+                            length: 8,
                         }).map((_, index) => (
                             <div
                                 key={index}
-                                className="flex items-center justify-between"
+                                className="flex items-center justify-between gap-3"
                             >
-                                <SkeletonBox className="h-3 w-[65%]" />
-                                <SkeletonBox className="h-3 w-8" />
+                                <SkeletonLine
+                                    className={
+                                        index % 3 === 0
+                                            ? "h-3 w-[72%]"
+                                            : index % 3 === 1
+                                                ? "h-3 w-[60%]"
+                                                : "h-3 w-[67%]"
+                                    }
+                                />
+
+                                <SkeletonLine className="h-3 w-8" />
                             </div>
                         ))}
                     </div>
@@ -71,17 +170,29 @@ function SidebarSkeleton() {
 
                 {/* filters */}
                 <div className="p-4">
-                    <SkeletonBox className="h-4 w-20" />
+                    <SkeletonLine className="h-4 w-20" />
 
                     <div className="mt-4 space-y-3">
-                        <SkeletonBox className="h-11 w-full" />
-                        <SkeletonBox className="h-11 w-full" />
-                        <SkeletonBox className="h-11 w-full" />
+                        {Array.from({
+                            length: 3,
+                        }).map((_, index) => (
+                            <div
+                                key={index}
+                                className="h-11 overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+                            >
+                                <div className="skeleton-shimmer h-full w-full" />
+                            </div>
+                        ))}
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-2">
-                        <SkeletonBox className="h-11 w-full" />
-                        <SkeletonBox className="h-11 w-full" />
+                        <div className="h-11 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                            <div className="skeleton-shimmer h-full w-full" />
+                        </div>
+
+                        <div className="h-11 overflow-hidden rounded-xl bg-emerald-200">
+                            <div className="skeleton-shimmer h-full w-full" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,37 +203,62 @@ function SidebarSkeleton() {
 function ListingHeaderSkeleton() {
     return (
         <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-            <div className="px-5 py-5 sm:px-6">
-                {/* heading */}
-                <SkeletonBox className="h-8 w-[55%] max-w-[420px]" />
+            <div className="bg-gradient-to-r from-white via-orange-50/70 to-white px-5 py-5 sm:px-6">
+                {/* title */}
+                <div className="flex flex-wrap items-center gap-3">
+                    <SkeletonLine className="h-8 w-[220px] sm:w-[340px]" />
 
-                <div className="mt-3 flex items-center gap-2">
-                    <SkeletonBox className="h-3 w-24" />
-                    <SkeletonBox className="h-3 w-16" />
+                    <div className="h-8 w-20 overflow-hidden rounded-xl bg-orange-100">
+                        <div className="skeleton-shimmer h-full w-full" />
+                    </div>
                 </div>
 
-                {/* search */}
+                {/* subtitle */}
+                <div className="mt-3 flex items-center gap-2">
+                    <SkeletonLine className="h-3 w-24" />
+
+                    <div className="h-1 w-1 rounded-full bg-slate-300" />
+
+                    <SkeletonLine className="h-3 w-20" />
+                </div>
+
+                {/* main search */}
                 <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-[220px_1fr_140px]">
-                    <SkeletonBox className="h-14 w-full" />
+                    <div className="h-14 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                        <div className="skeleton-shimmer h-full w-full" />
+                    </div>
 
-                    <SkeletonBox className="h-14 w-full" />
+                    <div className="h-14 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                        <div className="skeleton-shimmer h-full w-full" />
+                    </div>
 
-                    <SkeletonBox className="h-14 w-full" />
+                    <div className="h-14 overflow-hidden rounded-2xl bg-emerald-300 shadow-sm">
+                        <div className="skeleton-shimmer h-full w-full opacity-60" />
+                    </div>
                 </div>
 
                 {/* price chips */}
                 <div className="mt-4 flex flex-wrap gap-2">
-                    {Array.from({
-                        length: 5,
-                    }).map((_, index) => (
-                        <SkeletonBox
+                    {[
+                        88,
+                        110,
+                        125,
+                        105,
+                        115,
+                    ].map((width, index) => (
+                        <div
                             key={index}
-                            className="h-9 w-24"
-                        />
+                            className="h-9 overflow-hidden rounded-xl border border-orange-100 bg-orange-50"
+                            style={{
+                                width,
+                            }}
+                        >
+                            <div className="skeleton-shimmer h-full w-full" />
+                        </div>
                     ))}
                 </div>
 
-                {/* quick category chips */}
+                {/* quick filter tiles */}
                 <div className="mt-4 grid grid-cols-4 gap-2 md:grid-cols-7">
                     {Array.from({
                         length: 7,
@@ -131,9 +267,18 @@ function ListingHeaderSkeleton() {
                             key={index}
                             className="flex h-[92px] flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white"
                         >
-                            <SkeletonBox className="h-9 w-9 rounded-full" />
+                            <div
+                                className={`h-10 w-10 overflow-hidden rounded-full ${index % 3 === 0
+                                    ? "bg-orange-100"
+                                    : index % 3 === 1
+                                        ? "bg-blue-100"
+                                        : "bg-emerald-100"
+                                    }`}
+                            >
+                                <div className="skeleton-shimmer h-full w-full" />
+                            </div>
 
-                            <SkeletonBox className="h-3 w-12" />
+                            <SkeletonLine className="h-3 w-12" />
                         </div>
                     ))}
                 </div>
@@ -142,66 +287,177 @@ function ListingHeaderSkeleton() {
     );
 }
 
-export default function Loading() {
+function ResultToolbarSkeleton() {
     return (
-        <div className="min-h-screen bg-slate-50">
-            {/* =====================================================
-                TOP BAR PLACEHOLDER
+        <div className="mt-4 flex flex-col gap-3 rounded-[24px] border border-slate-200/80 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+                <SkeletonLine className="h-4 w-20" />
 
-                Keeps the top of the page occupied instead of
-                showing an empty white screen while Next loads.
-            ===================================================== */}
-            <div className="fixed inset-x-0 top-0 z-50 h-[64px] border-b border-slate-200 bg-white">
-                <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4">
-                    <div className="h-9 w-28 animate-pulse rounded-xl bg-slate-200" />
+                <SkeletonLine className="h-4 w-8" />
 
-                    <div className="hidden items-center gap-3 md:flex">
-                        <div className="h-9 w-24 animate-pulse rounded-xl bg-slate-100" />
-                        <div className="h-9 w-24 animate-pulse rounded-xl bg-slate-100" />
-                        <div className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
-                    </div>
+                <SkeletonLine className="h-4 w-12" />
+            </div>
+
+            <div className="flex items-center gap-3">
+                <SkeletonLine className="h-4 w-14" />
+
+                <div className="h-12 w-36 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                    <div className="skeleton-shimmer h-full w-full" />
                 </div>
             </div>
-
-            {/* =====================================================
-                PAGE
-            ===================================================== */}
-            <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
-                <main className="mx-auto max-w-[1440px] px-3 pb-8 sm:px-4 lg:px-5">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[270px_minmax(0,1fr)]">
-                        {/* sidebar */}
-                        <SidebarSkeleton />
-
-                        {/* main */}
-                        <section className="min-w-0">
-                            <ListingHeaderSkeleton />
-
-                            {/* result information */}
-                            <div className="mt-4 flex items-center justify-between rounded-[24px] border border-slate-200/80 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
-                                <SkeletonBox className="h-4 w-32" />
-
-                                <SkeletonBox className="h-12 w-36" />
-                            </div>
-
-                            {/* =================================================
-                                LISTINGS
-
-                                These are immediately visible while the
-                                real Mongo/API data is loading.
-                            ================================================= */}
-                            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
-                                {Array.from({
-                                    length: 12,
-                                }).map((_, index) => (
-                                    <ListingCardSkeleton
-                                        key={index}
-                                    />
-                                ))}
-                            </div>
-                        </section>
-                    </div>
-                </main>
-            </div>
         </div>
+    );
+}
+
+export default function Loading() {
+    return (
+        <>
+            <style>{`
+                @keyframes skeleton-shimmer {
+                    0% {
+                        transform: translateX(-120%);
+                    }
+
+                    100% {
+                        transform: translateX(120%);
+                    }
+                }
+
+                .skeleton-shimmer {
+                    position: relative;
+                }
+
+                .skeleton-shimmer::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    transform: translateX(-120%);
+                    background:
+                        linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,0.65),
+                            transparent
+                        );
+                    animation:
+                        skeleton-shimmer
+                        1.45s
+                        ease-in-out
+                        infinite;
+                }
+
+                @keyframes skeleton-image-glow {
+                    0% {
+                        opacity: 0.1;
+                        transform: translateX(-80%);
+                    }
+
+                    50% {
+                        opacity: 0.45;
+                    }
+
+                    100% {
+                        opacity: 0.1;
+                        transform: translateX(80%);
+                    }
+                }
+
+                .skeleton-image-glow {
+                    background:
+                        linear-gradient(
+                            110deg,
+                            transparent 20%,
+                            rgba(255,255,255,0.55) 48%,
+                            transparent 75%
+                        );
+
+                    animation:
+                        skeleton-image-glow
+                        1.8s
+                        ease-in-out
+                        infinite;
+                }
+
+                @keyframes listing-loading-enter {
+                    from {
+                        opacity: 0;
+                        transform:
+                            translateY(12px)
+                            scale(0.985);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform:
+                            translateY(0)
+                            scale(1);
+                    }
+                }
+
+                .listing-loading-card {
+                    opacity: 0;
+
+                    animation:
+                        listing-loading-enter
+                        300ms
+                        ease-out
+                        forwards;
+                }
+
+                @media (
+                    prefers-reduced-motion:
+                    reduce
+                ) {
+                    .listing-loading-card {
+                        opacity: 1;
+                        animation: none;
+                    }
+
+                    .skeleton-shimmer::after,
+                    .skeleton-image-glow {
+                        animation: none;
+                    }
+                }
+            `}</style>
+
+            <div className="min-h-screen bg-slate-50">
+                {/* Real Tadao toolbar */}
+                <TopBar />
+
+
+                {/* ==========================================
+                    PAGE
+                ========================================== */}
+
+                <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
+                    <main className="mx-auto max-w-[1440px] px-3 pb-8 sm:px-4 lg:px-5">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[270px_minmax(0,1fr)]">
+                            <SidebarSkeleton />
+
+                            <section className="min-w-0">
+                                <ListingHeaderSkeleton />
+
+                                <ResultToolbarSkeleton />
+
+                                {/* ==================================
+                                    LISTINGS
+                                ================================== */}
+
+                                <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
+                                    {Array.from({
+                                        length: 16,
+                                    }).map((_, index) => (
+                                        <ListingCardSkeleton
+                                            key={index}
+                                            index={index}
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </>
     );
 }
