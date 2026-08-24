@@ -721,26 +721,12 @@ export default function ListingPageClient(props: Props) {
     );
 
     const [layout, setLayout] = React.useState<"grid" | "list">("grid");
-    const [layoutInitialized, setLayoutInitialized] = React.useState(false);
 
     React.useEffect(() => {
-        if (layoutInitialized) return;
-
         const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
-        const initialLayout: "grid" | "list" =
-            props.selected.layout
-                ? props.selected.layout
-                : isMobile
-                    ? "list"
-                    : "grid";
-
-        setLayout(initialLayout);
-        setLayoutInitialized(true);
-    }, [
-        layoutInitialized,
-        props.selected.layout,
-    ]);
+        setLayout(isMobile ? "list" : "grid");
+    }, []);
     const [county, setCounty] = React.useState(props.selected.county || "");
     const [town, setTown] = React.useState(props.selected.town || "");
     const [q, setQ] = React.useState(props.selected.q || "");
