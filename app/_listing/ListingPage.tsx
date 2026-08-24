@@ -1,24 +1,36 @@
 // app/_listing/ListingPage.tsx
+
 import type { Metadata } from "next";
 import { cache } from "react";
+
 import {
     getAlldynamicAd,
     getAdsForRegionListing,
     getListingMapFromDB,
     getListingSidebarOptions,
 } from "@/lib/actions/dynamicAd.actions";
+
 import ListingPageClient from "@/app/_listing/ListingPageClient";
 import { getGlobalCategoryTree } from "@/lib/home/home-tree-cache";
 
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";
+
 import { getRegionsForListing } from "@/lib/home/home.data";
 
 const PAGE_SIZE = 24;
 
+/* =========================================================
+   LISTING MAP CACHE
+========================================================= */
+
 const getListingMap = cache(async () => {
     return await getListingMapFromDB();
 });
+
+/* =========================================================
+   HELPERS
+========================================================= */
 
 function regionFromSlug(slug: string) {
     return slug
@@ -29,58 +41,117 @@ function regionFromSlug(slug: string) {
 
 function parseNum(v?: string) {
     const n = Number(v);
-    return Number.isFinite(n) ? n : undefined;
-}
-function isProtectedVerifiedCategory(categoryName: string) {
-    const c = String(categoryName || "").trim().toLowerCase();
-    return c === "donations" || c === "lost and found";
+
+    return Number.isFinite(n)
+        ? n
+        : undefined;
 }
 
-function isVerifiedUser(user: any) {
-    return Boolean(
-        user?.verified?.some((v: any) => v?.accountverified === true)
-    );
+function normalizeSlug(s: string) {
+    return String(s || "")
+        .trim()
+        .toLowerCase();
 }
+
+function normName(s: any) {
+    return String(s || "")
+        .trim()
+        .toLowerCase();
+}
+
+function normalizeSort(v?: string) {
+    const s = String(v || "")
+        .trim()
+        .toLowerCase();
+
+    if (s === "new") {
+        return "new";
+    }
+
+    if (s === "lowest") {
+        return "lowest";
+    }
+
+    if (s === "highest") {
+        return "highest";
+    }
+
+    return "recommended";
+}
+
+/* =========================================================
+   SEARCH PARAM TYPES
+========================================================= */
+
 type ListingSearchParams = {
     page?: string;
+
     min?: string;
     max?: string;
+
     sort?: string;
+
     membership?: string;
 
     county?: string;
     town?: string;
+
     make?: string;
     model?: string;
+
     q?: string;
 
-    // ✅ NEW for non-vehicle
+    // non-vehicle
     type?: string;
     brand?: string;
 
     layout?: string;
 };
 
-function normalizeSlug(s: string) {
-    return String(s || "").trim().toLowerCase();
-}
-function normName(s: any) {
-    return String(s || "").trim().toLowerCase();
-}
-function normalizeSort(v?: string) {
-    const s = String(v || "").trim().toLowerCase();
-    if (s === "new") return "new";
-    if (s === "lowest") return "lowest";
-    if (s === "highest") return "highest";
-    return "recommended";
-}
-type CategoryListingItem = { slug: string; title: string; subcategory: string; icon?: string };
+/* =========================================================
+   CATEGORY LISTING TYPES
+========================================================= */
 
-function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: string) {
+type CategoryListingItem = {
+    slug: string;
+    title: string;
+    subcategory: string;
+    icon?: string;
+};
+
+type ClientCategory = {
+    name: string;
+    count: number;
+    icon?: string;
+
+    listings: CategoryListingItem[];
+
+    countsBySub: Record<string, number>;
+
+    fieldsBySub: Record<string, any[]>;
+};
+
+/* =========================================================
+   GET LISTINGS BELONGING TO CATEGORY
+========================================================= */
+
+function getCategoryListings(
+    LISTING_MAP: Record<string, any>,
+    categoryName: string
+) {
     const items: CategoryListingItem[] = [];
+
     for (const [slug, entry] of Object.entries(LISTING_MAP)) {
-        if (!entry) continue;
-        if (String(entry.category || "").trim() !== String(categoryName || "").trim()) continue;
+        if (!entry) {
+            continue;
+        }
+
+        if (
+            String(entry.category || "").trim() !==
+            String(categoryName || "").trim()
+        ) {
+            continue;
+        }
 
         items.push({
             slug,
@@ -89,353 +160,994 @@ function getCategoryListings(LISTING_MAP: Record<string, any>, categoryName: str
             icon: undefined,
         });
     }
-    items.sort((a, b) => a.title.localeCompare(b.title));
+
+    items.sort((a, b) =>
+        a.title.localeCompare(b.title)
+    );
+
     return items;
 }
 
-async function getQuickFilterForSubcategory(args: { categoryName: string; subcategoryName: string }) {
-    try {
-        const catDoc: any = await Category.findOne({ name: args.categoryName }).select("_id").lean();
-        if (!catDoc?._id) return { field: "", options: [] as string[] };
+/* =========================================================
+   QUICK FILTER
+========================================================= */
 
-        const subDoc: any = await Subcategory.findOne({
-            category: catDoc._id,
-            subcategory: args.subcategoryName,
-        })
+async function getQuickFilterForSubcategory(args: {
+    categoryName: string;
+    subcategoryName: string;
+}) {
+    try {
+        const catDoc: any = await Category
+            .findOne({
+                name: args.categoryName,
+            })
+            .select("_id")
+            .lean();
+
+        if (!catDoc?._id) {
+            return {
+                field: "",
+                options: [] as string[],
+            };
+        }
+
+        const subDoc: any = await Subcategory
+            .findOne({
+                category: catDoc._id,
+                subcategory: args.subcategoryName,
+            })
             .select("fields")
             .lean();
 
-        const fields: any[] = Array.isArray(subDoc?.fields) ? subDoc.fields : [];
+        const fields: any[] =
+            Array.isArray(subDoc?.fields)
+                ? subDoc.fields
+                : [];
 
-        // preference order: type -> make-model -> make -> brand
+        /*
+         * Priority:
+         *
+         * type
+         * make-model
+         * make
+         * brand
+         */
+
         const picked =
-            fields.find((f) => f?.name === "type" || /type/i.test(String(f?.name || ""))) ||
-            fields.find((f) => f?.name === "make-model") ||
-            fields.find((f) => f?.name === "make") ||
-            fields.find((f) => f?.name === "brand");
+            fields.find(
+                (f) =>
+                    f?.name === "type" ||
+                    /type/i.test(
+                        String(f?.name || "")
+                    )
+            ) ||
+            fields.find(
+                (f) =>
+                    f?.name === "make-model"
+            ) ||
+            fields.find(
+                (f) =>
+                    f?.name === "make"
+            ) ||
+            fields.find(
+                (f) =>
+                    f?.name === "brand"
+            );
 
-        const fieldName = String(picked?.name || "").trim();
-        const options = Array.isArray(picked?.options) ? picked.options.map((x: any) => String(x)) : [];
+        const fieldName = String(
+            picked?.name || ""
+        ).trim();
 
-        return { field: fieldName, options };
-    } catch {
-        return { field: "", options: [] as string[] };
+        const options =
+            Array.isArray(picked?.options)
+                ? picked.options.map(
+                    (x: any) => String(x)
+                )
+                : [];
+
+        return {
+            field: fieldName,
+            options,
+        };
+    } catch (error) {
+        console.error(
+            "Failed to get quick filter:",
+            error
+        );
+
+        return {
+            field: "",
+            options: [] as string[],
+        };
     }
 }
+
+/* =========================================================
+   METADATA
+========================================================= */
 
 export async function buildListingMetadata(args: {
     listingSlug: string;
     regionSlug?: string;
 }): Promise<Metadata> {
-    const LISTING_MAP = await getListingMap();
-    const listingSlug = normalizeSlug(args.listingSlug);
-    const listing = LISTING_MAP[listingSlug];
+    const LISTING_MAP =
+        await getListingMap();
 
-    const regionName = args.regionSlug ? regionFromSlug(args.regionSlug) : "Kenya";
-    const titleText = listing?.title ?? "Listings";
-    const title = `${titleText} in ${regionName} | Tadao Market`;
-    const description = `Browse ${String(titleText).toLowerCase()} in ${regionName}. Filter by price, location, and more on Tadao Market.`;
+    const listingSlug =
+        normalizeSlug(
+            args.listingSlug
+        );
 
-    const canonical = args.regionSlug
-        ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
-        : `https://tadaomarket.com/${listingSlug}`;
+    const listing =
+        LISTING_MAP[listingSlug];
+
+    const regionName =
+        args.regionSlug
+            ? regionFromSlug(
+                args.regionSlug
+            )
+            : "Kenya";
+
+    const titleText =
+        listing?.title ??
+        "Listings";
+
+    const title =
+        `${titleText} in ${regionName} | Tadao Market`;
+
+    const description =
+        `Browse ${String(
+            titleText
+        ).toLowerCase()} in ${regionName}. ` +
+        `Filter by price, location, and more on Tadao Market.`;
+
+    const canonical =
+        args.regionSlug
+            ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
+            : `https://tadaomarket.com/${listingSlug}`;
 
     if (!listing) {
         return {
-            title: "Category not found | Tadao Market",
-            robots: { index: false, follow: false },
-            alternates: { canonical },
+            title:
+                "Category not found | Tadao Market",
+
+            robots: {
+                index: false,
+                follow: false,
+            },
+
+            alternates: {
+                canonical,
+            },
         };
     }
 
-    return { title, description, alternates: { canonical } };
+    return {
+        title,
+        description,
+
+        alternates: {
+            canonical,
+        },
+    };
 }
 
-type ClientCategory = {
-    name: string;
-    count: number;
-    icon?: string;
-    listings: CategoryListingItem[];
-    countsBySub: Record<string, number>; // ✅ NEW
-    // ✅ NEW: fields per subcategory name
-    fieldsBySub: Record<string, any[]>;
-};
+/* =========================================================
+   LISTING PAGE
+========================================================= */
 
 export default async function ListingPageUI(args: {
     listingSlug: string;
+
     regionSlug?: string;
+
     searchParams: ListingSearchParams;
 }) {
-    const LISTING_MAP = await getListingMap();
-    const listingSlug = normalizeSlug(args.listingSlug);
-    const listing = LISTING_MAP[listingSlug];
+    /* -----------------------------------------------------
+       1. LISTING MAP
+    ----------------------------------------------------- */
+
+    const LISTING_MAP =
+        await getListingMap();
+
+    const listingSlug =
+        normalizeSlug(
+            args.listingSlug
+        );
+
+    const listing =
+        LISTING_MAP[listingSlug];
 
     if (!listing) {
         return (
             <main className="p-6">
-                <h1 className="text-2xl font-bold">Category not found</h1>
+                <h1 className="text-2xl font-bold">
+                    Category not found
+                </h1>
             </main>
         );
     }
 
-    const page = Math.max(1, parseNum(args.searchParams.page) || 1);
+    /* -----------------------------------------------------
+       2. SEARCH PARAMS
+    ----------------------------------------------------- */
 
-    const minN = parseNum(args.searchParams.min);
-    const maxN = parseNum(args.searchParams.max);
+    const page =
+        Math.max(
+            1,
+            parseNum(
+                args.searchParams.page
+            ) || 1
+        );
 
-    const min = args.searchParams.min || "";
-    const max = args.searchParams.max || "";
+    const minN =
+        parseNum(
+            args.searchParams.min
+        );
+
+    const maxN =
+        parseNum(
+            args.searchParams.max
+        );
+
+    const min =
+        args.searchParams.min ||
+        "";
+
+    const max =
+        args.searchParams.max ||
+        "";
 
     const membership =
-        args.searchParams.membership === "verified"
+        args.searchParams.membership ===
+            "verified"
             ? "verified"
-            : args.searchParams.membership === "unverified"
+            : args.searchParams
+                .membership ===
+                "unverified"
                 ? "unverified"
                 : "";
 
-    const county = String(args.searchParams.county || "").trim();
-    const town = String(args.searchParams.town || "").trim();
-    const q = String(args.searchParams.q || "").trim();
+    const county =
+        String(
+            args.searchParams.county ||
+            ""
+        ).trim();
 
-    const categoryName = String(listing.category || "").trim();
-    const isVehicle = categoryName.toLowerCase() === "vehicle";
+    const town =
+        String(
+            args.searchParams.town ||
+            ""
+        ).trim();
 
-    const make = isVehicle ? String(args.searchParams.make || "").trim() : "";
-    const model = isVehicle ? String(args.searchParams.model || "").trim() : "";
+    const q =
+        String(
+            args.searchParams.q ||
+            ""
+        ).trim();
 
-    // ✅ NEW for non-vehicle
-    const type = !isVehicle ? String(args.searchParams.type || "").trim() : "";
-    const brand = !isVehicle ? String(args.searchParams.brand || "").trim() : "";
+    /* -----------------------------------------------------
+       3. CATEGORY
+    ----------------------------------------------------- */
 
-    const layout = args.searchParams.layout === "list" ? "list" : "grid";
-    const sort = normalizeSort(args.searchParams.sort);
-    const canonical = args.regionSlug
-        ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
-        : `https://tadaomarket.com/${listingSlug}`;
+    const categoryName =
+        String(
+            listing.category || ""
+        ).trim();
 
-    // base list (slugs) for this category
-    let categoryListings = getCategoryListings(LISTING_MAP, categoryName);
+    const isVehicle =
+        categoryName.toLowerCase() ===
+        "vehicle";
 
-    // ✅ homepage tree (truth for counts + icons) + used for category switcher
-    const homeTree = await getGlobalCategoryTree().catch(() => []);
+    const make =
+        isVehicle
+            ? String(
+                args.searchParams.make ||
+                ""
+            ).trim()
+            : "";
 
-    // Build ALL categories nav data (category -> its subcategory listings with icons)
-    const categories: ClientCategory[] = [];
+    const model =
+        isVehicle
+            ? String(
+                args.searchParams.model ||
+                ""
+            ).trim()
+            : "";
 
-    for (const c of homeTree as any[]) {
-        const catName = String(c?.name || "").trim();
-        if (!catName) continue;
+    const type =
+        !isVehicle
+            ? String(
+                args.searchParams.type ||
+                ""
+            ).trim()
+            : "";
 
-        // icon & count from home tree
-        const catIcon = String(c?.icon || "").trim();
-        const catCount = Number(c?.count || 0);
+    const brand =
+        !isVehicle
+            ? String(
+                args.searchParams.brand ||
+                ""
+            ).trim()
+            : "";
 
-        // build icon map per subcategory
-        const iconBySub: Record<string, string> = {};
-        const countsBySub: Record<string, number> = {};
-        const fieldsBySub: Record<string, any[]> = {};
-        if (c?.subcategories?.length) {
-            for (const s of c.subcategories as any[]) {
-                const subName = String(s?.name || "").trim();
-                const subIcon = String(s?.icon || "").trim();
-                if (subName && subIcon) iconBySub[subName] = subIcon;
-                const subCount = Number(s?.count || 0);
-                if (subName) countsBySub[subName] = subCount;
-                fieldsBySub[subName] = Array.isArray(s?.fields) ? s.fields : [];
+    const layout =
+        args.searchParams.layout ===
+            "list"
+            ? "list"
+            : "grid";
+
+    const sort =
+        normalizeSort(
+            args.searchParams.sort
+        );
+
+    const canonical =
+        args.regionSlug
+            ? `https://tadaomarket.com/r/${args.regionSlug}/${listingSlug}`
+            : `https://tadaomarket.com/${listingSlug}`;
+
+    /* -----------------------------------------------------
+       4. CURRENT CATEGORY LISTINGS
+    ----------------------------------------------------- */
+
+    let categoryListings =
+        getCategoryListings(
+            LISTING_MAP,
+            categoryName
+        );
+
+    /* -----------------------------------------------------
+       5. HOME CATEGORY TREE
+    ----------------------------------------------------- */
+
+    const homeTree =
+        await getGlobalCategoryTree()
+            .catch(() => []);
+
+    /* -----------------------------------------------------
+       6. BUILD CATEGORY SWITCHER
+    ----------------------------------------------------- */
+
+    const categories:
+        ClientCategory[] = [];
+
+    for (
+        const c of homeTree as any[]
+    ) {
+        const catName =
+            String(
+                c?.name || ""
+            ).trim();
+
+        if (!catName) {
+            continue;
+        }
+
+        const catIcon =
+            String(
+                c?.icon || ""
+            ).trim();
+
+        const catCount =
+            Number(
+                c?.count || 0
+            );
+
+        const iconBySub:
+            Record<
+                string,
+                string
+            > = {};
+
+        const countsBySub:
+            Record<
+                string,
+                number
+            > = {};
+
+        const fieldsBySub:
+            Record<
+                string,
+                any[]
+            > = {};
+
+        if (
+            c?.subcategories?.length
+        ) {
+            for (
+                const s of
+                c.subcategories as any[]
+            ) {
+                const subName =
+                    String(
+                        s?.name || ""
+                    ).trim();
+
+                const subIcon =
+                    String(
+                        s?.icon || ""
+                    ).trim();
+
+                if (
+                    subName &&
+                    subIcon
+                ) {
+                    iconBySub[
+                        subName
+                    ] = subIcon;
+                }
+
+                const subCount =
+                    Number(
+                        s?.count || 0
+                    );
+
+                if (subName) {
+                    countsBySub[
+                        subName
+                    ] = subCount;
+                }
+
+                fieldsBySub[
+                    subName
+                ] =
+                    Array.isArray(
+                        s?.fields
+                    )
+                        ? s.fields
+                        : [];
             }
         }
-        // map listing slugs for this category
-        let listings = getCategoryListings(LISTING_MAP, catName);
-        listings = listings.map((it) => ({
-            ...it,
-            icon: iconBySub[it.subcategory] || it.icon || "",
-        }));
 
-        // only include categories that have listings
-        if (listings.length) {
+        let listings =
+            getCategoryListings(
+                LISTING_MAP,
+                catName
+            );
+
+        listings =
+            listings.map(
+                (it) => ({
+                    ...it,
+
+                    icon:
+                        iconBySub[
+                        it.subcategory
+                        ] ||
+                        it.icon ||
+                        "",
+                })
+            );
+
+        if (
+            listings.length
+        ) {
             categories.push({
                 name: catName,
+
                 count: catCount,
-                icon: catIcon || "",
+
+                icon:
+                    catIcon || "",
+
                 listings,
-                countsBySub, // ✅
-                fieldsBySub, // ✅
+
+                countsBySub,
+
+                fieldsBySub,
             });
         }
     }
 
-    // current category in homeTree (for counts + icons)
-    const homeCat = (homeTree || []).find((c: any) => normName(c?.name) === normName(categoryName));
+    /* -----------------------------------------------------
+       7. CURRENT CATEGORY COUNTS & ICONS
+    ----------------------------------------------------- */
 
-    // ✅ MUST be plain objects {}
-    const iconBySub: Record<string, string> = {};
-    const homeCountsBySub: Record<string, number> = {};
+    const homeCat =
+        (homeTree || []).find(
+            (c: any) =>
+                normName(
+                    c?.name
+                ) ===
+                normName(
+                    categoryName
+                )
+        );
 
-    if (homeCat?.subcategories?.length) {
-        for (const s of homeCat.subcategories as any[]) {
-            const name = String(s?.name || "").trim();
-            const icon = String(s?.icon || "").trim();
-            const count = Number(s?.count || 0);
-            if (!name) continue;
-            if (icon) iconBySub[name] = icon;
-            homeCountsBySub[name] = count;
+    const iconBySub:
+        Record<
+            string,
+            string
+        > = {};
+
+    const homeCountsBySub:
+        Record<
+            string,
+            number
+        > = {};
+
+    if (
+        homeCat?.subcategories
+            ?.length
+    ) {
+        for (
+            const s of
+            homeCat.subcategories as any[]
+        ) {
+            const name =
+                String(
+                    s?.name || ""
+                ).trim();
+
+            const icon =
+                String(
+                    s?.icon || ""
+                ).trim();
+
+            const count =
+                Number(
+                    s?.count || 0
+                );
+
+            if (!name) {
+                continue;
+            }
+
+            if (icon) {
+                iconBySub[name] =
+                    icon;
+            }
+
+            homeCountsBySub[
+                name
+            ] = count;
         }
     }
 
-    const homeTotalInCategory = Number(homeCat?.count || 0);
+    const homeTotalInCategory =
+        Number(
+            homeCat?.count || 0
+        );
 
-    // inject icons into current categoryListings
-    categoryListings = categoryListings.map((it) => ({
-        ...it,
-        icon: iconBySub[it.subcategory] || it.icon || "",
-    }));
+    categoryListings =
+        categoryListings.map(
+            (it) => ({
+                ...it,
 
-    // Sidebar (filters/options) — initial only
-    const sidebar = await getListingSidebarOptions({
-        category: categoryName,
-        ...(listing.subcategory
-            ? { subcategory: String(listing.subcategory).trim() }
-            : {}),
-        regionSlug: args.regionSlug,
-        min: minN,
-        max: maxN,
-        membership: membership ? (membership as any) : undefined,
-        county,
-        town,
-        make,
-        model,
-        q,
-        type,
-        brand,
-    } as any);
+                icon:
+                    iconBySub[
+                    it.subcategory
+                    ] ||
+                    it.icon ||
+                    "",
+            })
+        );
 
-    // Fetch ads (initial only)
-    let items: any[] = [];
-    let totalPages = 1;
-    let regionLabel = "Kenya";
+    /* =====================================================
+       8. START INDEPENDENT REQUESTS TOGETHER
+       ===================================================== */
+
+    /*
+     * Previously:
+     *
+     * await sidebar
+     * await ads
+     * await quickFilter
+     * await regions
+     *
+     * Now all independent work begins before Promise.all().
+     */
+
+    const sidebarPromise =
+        getListingSidebarOptions({
+            category:
+                categoryName,
+
+            ...(listing.subcategory
+                ? {
+                    subcategory:
+                        String(
+                            listing.subcategory
+                        ).trim(),
+                }
+                : {}),
+
+            regionSlug:
+                args.regionSlug,
+
+            min: minN,
+
+            max: maxN,
+
+            membership:
+                membership
+                    ? (membership as any)
+                    : undefined,
+
+            county,
+
+            town,
+
+            make,
+
+            model,
+
+            q,
+
+            type,
+
+            brand,
+        } as any);
+
+    const quickFilterPromise =
+        getQuickFilterForSubcategory({
+            categoryName,
+
+            subcategoryName:
+                String(
+                    listing.subcategory ||
+                    ""
+                ).trim(),
+        });
+
+    const regionsPromise =
+        getRegionsForListing(
+            listingSlug
+        );
+
+    /* =====================================================
+       9. BUILD ADS REQUEST
+       ===================================================== */
+
+    let adsPromise:
+        Promise<any>;
+
+    let fallbackRegionName =
+        "Kenya";
 
     if (args.regionSlug) {
-        const regionName = regionFromSlug(args.regionSlug);
+        /* -------------------------------------------------
+           REGION LISTING
+        ------------------------------------------------- */
+
+        const regionName =
+            regionFromSlug(
+                args.regionSlug
+            );
+
+        fallbackRegionName =
+            regionName;
 
         const regionSort =
             sort === "lowest"
                 ? "price_asc"
-                : sort === "highest"
+                : sort ===
+                    "highest"
                     ? "price_desc"
-                    : sort === "new"
+                    : sort ===
+                        "new"
                         ? "new"
                         : "recommended";
 
-        const res = await getAdsForRegionListing({
-            regionSlug: args.regionSlug,
-            category: listing.category,
-            ...(listing.subcategory
-                ? { subcategory: String(listing.subcategory).trim() }
-                : {}),
-            page,
-            limit: PAGE_SIZE,
-            min: minN,
-            max: maxN,
-            sort: regionSort,
-            membership: membership ? (membership as any) : undefined,
-            county,
-            town,
-            make: isVehicle ? make : undefined,
-            model: isVehicle ? model : undefined,
-            q,
-            // ✅ NEW for non-vehicle (if supported in your action, otherwise ignored)
-            type: !isVehicle ? type : undefined,
-            brand: !isVehicle ? brand : undefined,
-        } as any);
+        adsPromise =
+            getAdsForRegionListing({
+                regionSlug:
+                    args.regionSlug,
 
-        items = res?.items || [];
-        totalPages = Number(res?.totalPages || 1);
-        regionLabel = res?.regionName || regionName;
+                category:
+                    listing.category,
+
+                ...(listing.subcategory
+                    ? {
+                        subcategory:
+                            String(
+                                listing.subcategory
+                            ).trim(),
+                    }
+                    : {}),
+
+                page,
+
+                limit:
+                    PAGE_SIZE,
+
+                min:
+                    minN,
+
+                max:
+                    maxN,
+
+                sort:
+                    regionSort,
+
+                membership:
+                    membership
+                        ? (membership as any)
+                        : undefined,
+
+                county,
+
+                town,
+
+                make:
+                    isVehicle
+                        ? make
+                        : undefined,
+
+                model:
+                    isVehicle
+                        ? model
+                        : undefined,
+
+                q,
+
+                type:
+                    !isVehicle
+                        ? type
+                        : undefined,
+
+                brand:
+                    !isVehicle
+                        ? brand
+                        : undefined,
+            } as any);
     } else {
-        const queryObject: any = {
+        /* -------------------------------------------------
+           GENERAL KENYA LISTING
+        ------------------------------------------------- */
+
+        const queryObject:
+            any = {
             sortby:
                 sort === "lowest"
                     ? "price_asc"
-                    : sort === "highest"
+                    : sort ===
+                        "highest"
                         ? "price_desc"
-                        : sort === "new"
+                        : sort ===
+                            "new"
                             ? "new"
                             : "recommended",
-            category: categoryName,
+
+            category:
+                categoryName,
         };
 
-        if (listing.subcategory) {
-            queryObject.subcategory = String(listing.subcategory).trim();
+        if (
+            listing.subcategory
+        ) {
+            queryObject.subcategory =
+                String(
+                    listing.subcategory
+                ).trim();
         }
 
-        if (membership) queryObject.membership = membership;
-
-        if (minN !== undefined || maxN !== undefined) {
-            queryObject.price = `${minN || 0}-${maxN || 999999999}`;
+        if (membership) {
+            queryObject.membership =
+                membership;
         }
 
-        if (county) queryObject.county = county;
-        if (town) queryObject.town = town;
-        if (q) queryObject.q = q;
+        if (
+            minN !== undefined ||
+            maxN !== undefined
+        ) {
+            queryObject.price =
+                `${minN || 0}-${maxN || 999999999}`;
+        }
 
-        if (isVehicle && make) queryObject.make = make;
-        if (isVehicle && model) queryObject.model = model;
+        if (county) {
+            queryObject.county =
+                county;
+        }
 
-        if (!isVehicle && type) queryObject.type = type;
-        if (!isVehicle && brand) queryObject.brand = brand;
+        if (town) {
+            queryObject.town =
+                town;
+        }
 
-        const res = await getAlldynamicAd({
-            page,
-            limit: PAGE_SIZE,
-            queryObject,
-        });
+        if (q) {
+            queryObject.q = q;
+        }
 
-        items = res?.data || [];
-        totalPages = Number(res?.totalPages || 1);
-        regionLabel = "Kenya";
+        if (
+            isVehicle &&
+            make
+        ) {
+            queryObject.make =
+                make;
+        }
+
+        if (
+            isVehicle &&
+            model
+        ) {
+            queryObject.model =
+                model;
+        }
+
+        if (
+            !isVehicle &&
+            type
+        ) {
+            queryObject.type =
+                type;
+        }
+
+        if (
+            !isVehicle &&
+            brand
+        ) {
+            queryObject.brand =
+                brand;
+        }
+
+        adsPromise =
+            getAlldynamicAd({
+                page,
+
+                limit:
+                    PAGE_SIZE,
+
+                queryObject,
+            });
     }
 
-    // ✅ quick filter options for current subcategory (type/make/make-model/brand)
-    const quickFilter = await getQuickFilterForSubcategory({
-        categoryName,
-        subcategoryName: String(listing.subcategory || "").trim(),
-    });
-    const regions = await getRegionsForListing(listingSlug);
+    /* =====================================================
+       10. WAIT FOR ALL REQUESTS AT ONCE
+       ===================================================== */
+
+    const [
+        sidebar,
+        quickFilter,
+        regions,
+        adsResult,
+    ] = await Promise.all([
+        sidebarPromise,
+        quickFilterPromise,
+        regionsPromise,
+        adsPromise,
+    ]);
+
+    /* =====================================================
+       11. NORMALIZE ADS RESPONSE
+       ===================================================== */
+
+    let items:
+        any[] = [];
+
+    let totalPages = 1;
+
+    let regionLabel =
+        fallbackRegionName;
+
+    if (args.regionSlug) {
+        items =
+            adsResult?.items ||
+            [];
+
+        totalPages =
+            Number(
+                adsResult
+                    ?.totalPages ||
+                1
+            );
+
+        regionLabel =
+            adsResult
+                ?.regionName ||
+            fallbackRegionName;
+    } else {
+        items =
+            adsResult?.data ||
+            [];
+
+        totalPages =
+            Number(
+                adsResult
+                    ?.totalPages ||
+                1
+            );
+
+        regionLabel =
+            "Kenya";
+    }
+
+    /* =====================================================
+       12. RENDER
+       ===================================================== */
+
     return (
         <ListingPageClient
-            title={String(listing.title || "Listings")}
-            regionLabel={regionLabel}
-            canonical={canonical}
-            activeListingSlug={listingSlug}
-            regionSlug={args.regionSlug || ""}
-            regions={regions}
-            // ✅ category switching data
-            categories={categories}
+            title={String(
+                listing.title ||
+                "Listings"
+            )}
+            regionLabel={
+                regionLabel
+            }
+            canonical={
+                canonical
+            }
+            activeListingSlug={
+                listingSlug
+            }
+            regionSlug={
+                args.regionSlug ||
+                ""
+            }
+            regions={
+                regions
+            }
 
-            categoryName={categoryName}
-            categoryListings={categoryListings}
-            sidebar={sidebar}
-            isVehicle={isVehicle}
-            items={items}
-            totalPages={totalPages}
-            page={page}
-            homeCountsBySub={homeCountsBySub}
-            homeTotalInCategory={homeTotalInCategory}
-            quickFilter={quickFilter}
+            /* category switching */
+            categories={
+                categories
+            }
+
+            categoryName={
+                categoryName
+            }
+
+            categoryListings={
+                categoryListings
+            }
+
+            sidebar={
+                sidebar
+            }
+
+            isVehicle={
+                isVehicle
+            }
+
+            items={
+                items
+            }
+
+            totalPages={
+                totalPages
+            }
+
+            page={
+                page
+            }
+
+            homeCountsBySub={
+                homeCountsBySub
+            }
+
+            homeTotalInCategory={
+                homeTotalInCategory
+            }
+
+            quickFilter={
+                quickFilter
+            }
+
             selected={{
                 q,
+
                 county,
+
                 town,
+
                 make,
+
                 model,
+
                 min,
+
                 max,
+
                 membership,
+
                 sort,
+
                 layout,
 
-                // ✅ NEW
                 type,
+
                 brand,
             }}
         />

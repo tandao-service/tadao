@@ -625,7 +625,7 @@ type FetchOverrides = {
 export default function ListingPageClient(props: Props) {
     const router = useRouter();
 
-    const { user: currentUser, loading: authLoading, appUserId } = useAuth();
+    const { user: currentUser, loading: authLoading } = useAuth();
     // if your hook uses isLoaded instead, use that instead of loading
     const [showAllSubcategories, setShowAllSubcategories] = React.useState(false);
     const [accessChecking, setAccessChecking] = React.useState(true);
@@ -732,6 +732,9 @@ export default function ListingPageClient(props: Props) {
     const [membership, setMembership] = React.useState(props.selected.membership || "");
     const [sort, setSort] = React.useState(props.selected.sort || "recommended");
     const [mobileCatName, setMobileCatName] = React.useState<string>("");
+    const {
+        appUserId,
+    } = useAuth();
 
     const townsForCounty = React.useMemo(() => {
         if (!county) return sidebar.towns;
@@ -751,7 +754,6 @@ export default function ListingPageClient(props: Props) {
     const [currentPage, setCurrentPage] = React.useState<number>(props.page || 1);
     const [tp, setTp] = React.useState<number>(props.totalPages || 1);
     const [loadingMore, setLoadingMore] = React.useState(false);
-    const [refreshing, setRefreshing] = React.useState(false);
     const [loadError, setLoadError] = React.useState<string>("");
 
     const sentinelRef = React.useRef<HTMLDivElement | null>(null);
@@ -897,7 +899,7 @@ export default function ListingPageClient(props: Props) {
         ]
     );
 
-    const canLoadMore = currentPage < tp && !loadingMore && !refreshing;
+    const canLoadMore = currentPage < tp && !loadingMore;
 
     const fetchNextPage = React.useCallback(async () => {
         if (!canLoadMore) return;
@@ -937,7 +939,8 @@ export default function ListingPageClient(props: Props) {
             setBrand("");
             setCurrentPage(1);
             setTp(1);
-            setRefreshing(true);
+            setAllItems([]);
+            setLoadingMore(true);
 
             try {
                 await fetchItems({
@@ -955,7 +958,7 @@ export default function ListingPageClient(props: Props) {
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
-                setRefreshing(false);
+                setLoadingMore(false);
             }
         },
         [fetchItems]
@@ -987,7 +990,8 @@ export default function ListingPageClient(props: Props) {
             setActiveSlug(nextSlug);
             setCurrentPage(1);
             setTp(1);
-            setRefreshing(true);
+            setAllItems([]);
+            setLoadingMore(true);
 
             try {
                 await fetchItems({
@@ -1005,7 +1009,7 @@ export default function ListingPageClient(props: Props) {
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
-                setRefreshing(false);
+                setLoadingMore(false);
             }
         },
         [fetchItems]
@@ -1016,7 +1020,8 @@ export default function ListingPageClient(props: Props) {
             setCurrentPage(1);
             setSort(v);
             setTp(1);
-            setRefreshing(true);
+            setAllItems([]);
+            setLoadingMore(true);
 
             try {
                 await fetchItems({ page: 1, append: false, sort: v });
@@ -1026,7 +1031,7 @@ export default function ListingPageClient(props: Props) {
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
-                setRefreshing(false);
+                setLoadingMore(false);
             }
         },
         [fetchItems]
@@ -1035,13 +1040,14 @@ export default function ListingPageClient(props: Props) {
     const applyFilters = React.useCallback(async () => {
         setCurrentPage(1);
         setTp(1);
-        setRefreshing(true);
+        setAllItems([]);
+        setLoadingMore(true);
         try {
             await fetchItems({ page: 1, append: false });
         } catch (e: any) {
             setLoadError(String(e?.message || e));
         } finally {
-            setRefreshing(false);
+            setLoadingMore(false);
         }
     }, [fetchItems]);
 
@@ -1059,10 +1065,8 @@ export default function ListingPageClient(props: Props) {
         setSort("recommended");
         setLayout("grid");
         setDyn({});
-        setCurrentPage(1);
-        setTp(1);
 
-        setRefreshing(true);
+        setLoadingMore(true);
         try {
             await fetchItems({
                 page: 1,
@@ -1083,7 +1087,7 @@ export default function ListingPageClient(props: Props) {
         } catch (e: any) {
             setLoadError(String(e?.message || e));
         } finally {
-            setRefreshing(false);
+            setLoadingMore(false);
         }
     }, [fetchItems]);
 
@@ -1182,9 +1186,7 @@ export default function ListingPageClient(props: Props) {
         async (val: string) => {
             if (!val) return;
 
-            setCurrentPage(1);
-            setTp(1);
-            setRefreshing(true);
+            setLoadingMore(true);
             try {
                 if (isVehicle) {
                     setMake(val);
@@ -1225,7 +1227,7 @@ export default function ListingPageClient(props: Props) {
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
-                setRefreshing(false);
+                setLoadingMore(false);
             }
         },
         [fetchItems, isVehicle, quickFilterState?.field]
@@ -1237,15 +1239,13 @@ export default function ListingPageClient(props: Props) {
             setMake(makeVal);
             setModel("");
 
-            setCurrentPage(1);
-            setTp(1);
-            setRefreshing(true);
+            setLoadingMore(true);
             try {
                 await fetchItems({ page: 1, append: false, make: makeVal, model: "" });
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
-                setRefreshing(false);
+                setLoadingMore(false);
             }
         },
         [fetchItems]
@@ -1269,9 +1269,7 @@ export default function ListingPageClient(props: Props) {
             setMin(nextMin);
             setMax(nextMax);
 
-            setCurrentPage(1);
-            setTp(1);
-            setRefreshing(true);
+            setLoadingMore(true);
             try {
                 await fetchItems({
                     page: 1,
@@ -1282,7 +1280,7 @@ export default function ListingPageClient(props: Props) {
             } catch (e: any) {
                 setLoadError(String(e?.message || e));
             } finally {
-                setRefreshing(false);
+                setLoadingMore(false);
             }
         },
         [fetchItems]
@@ -1428,33 +1426,6 @@ export default function ListingPageClient(props: Props) {
     }
     return (
         <>
-            <style jsx global>{`
-                @keyframes tadaoListingCardEnter {
-                    from {
-                        opacity: 0;
-                        transform: translateY(10px) scale(0.985);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
-                }
-
-                .tadao-listing-card-enter {
-                    opacity: 0;
-                    animation: tadaoListingCardEnter 260ms ease-out forwards;
-                    will-change: opacity, transform;
-                }
-
-                @media (prefers-reduced-motion: reduce) {
-                    .tadao-listing-card-enter {
-                        opacity: 1;
-                        animation: none;
-                        transform: none;
-                    }
-                }
-            `}</style>
-
             <TopBar />
 
             <div
@@ -1839,38 +1810,22 @@ export default function ListingPageClient(props: Props) {
                                 </div>
                             </div>
 
-                            {refreshing ? (
-                                <div className="mt-4 flex items-center gap-2 rounded-2xl border border-orange-100 bg-orange-50/80 px-4 py-2.5 text-xs font-bold text-orange-700">
-                                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-orange-200 border-t-orange-600" />
-                                    Updating listings...
-                                </div>
-                            ) : null}
-
                             <div
                                 className={cn(
-                                    "mt-4 gap-3 transition-opacity duration-150",
+                                    "mt-4 gap-3",
                                     layout === "grid"
                                         ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
-                                        : "grid grid-cols-1",
-                                    refreshing && "pointer-events-none opacity-55"
+                                        : "grid grid-cols-1"
                                 )}
-                                aria-busy={refreshing}
                             >
-                                {allItems.map((ad: any, index: number) => (
-                                    <div
+                                {allItems.map((ad: any) => (
+                                    <SmartPropertyCardWithDesc
                                         key={String(ad._id)}
-                                        className="tadao-listing-card-enter"
-                                        style={{
-                                            animationDelay: `${Math.min(index, 10) * 30}ms`,
-                                        }}
-                                    >
-                                        <SmartPropertyCardWithDesc
-                                            ad={ad}
-                                            regionFallback={props.regionLabel}
-                                            currentUserId={appUserId || ""}
-                                            showOwnerActions
-                                        />
-                                    </div>
+                                        ad={ad}
+                                        regionFallback={props.regionLabel}
+                                        currentUserId={appUserId || ""}
+                                        showOwnerActions
+                                    />
                                 ))}
                             </div>
 
@@ -1884,7 +1839,7 @@ export default function ListingPageClient(props: Props) {
                                     </div>
                                 ) : null}
 
-                                {!loadingMore && !refreshing && currentPage >= tp ? (
+                                {!loadingMore && currentPage >= tp ? (
                                     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm">
                                         You’ve reached the end
                                     </div>
