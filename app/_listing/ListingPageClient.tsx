@@ -11,7 +11,8 @@ import {
     Layers,
     MapPin,
 } from "lucide-react";
-import SmartPropertyCardWithDesc from "@/components/home/SmartPropertyCardWithDesc";
+import VerticalListingCard from "@/components/home/VerticalListingCard";
+import HorizontalListingCard from "@/components/home/HorizontalListingCard";
 import { Icons } from "@/constants";
 import DynamicFilters from "@/components/home/DynamicFilters";
 import { HomeRegion } from "@/lib/home/home.data";
@@ -719,7 +720,27 @@ export default function ListingPageClient(props: Props) {
         [activeListing?.title, activeListing?.subcategory, activeFields]
     );
 
-    const [layout, setLayout] = React.useState<"grid" | "list">(props.selected.layout || "grid");
+    const [layout, setLayout] = React.useState<"grid" | "list">("grid");
+    const [layoutInitialized, setLayoutInitialized] = React.useState(false);
+
+    React.useEffect(() => {
+        if (layoutInitialized) return;
+
+        const isMobile = window.matchMedia("(max-width: 767px)").matches;
+
+        const initialLayout: "grid" | "list" =
+            props.selected.layout
+                ? props.selected.layout
+                : isMobile
+                    ? "list"
+                    : "grid";
+
+        setLayout(initialLayout);
+        setLayoutInitialized(true);
+    }, [
+        layoutInitialized,
+        props.selected.layout,
+    ]);
     const [county, setCounty] = React.useState(props.selected.county || "");
     const [town, setTown] = React.useState(props.selected.town || "");
     const [q, setQ] = React.useState(props.selected.q || "");
@@ -1848,30 +1869,71 @@ export default function ListingPageClient(props: Props) {
 
                             <div
                                 className={cn(
-                                    "mt-4 gap-3 transition-opacity duration-150",
+                                    "mt-4 transition-opacity duration-150",
                                     layout === "grid"
-                                        ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
-                                        : "grid grid-cols-1",
-                                    refreshing && "pointer-events-none opacity-55"
+                                        ? "grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
+                                        : "flex flex-col gap-3",
+                                    refreshing &&
+                                    "pointer-events-none opacity-55"
                                 )}
-                                aria-busy={refreshing}
+                                aria-busy={
+                                    refreshing
+                                }
                             >
-                                {allItems.map((ad: any, index: number) => (
-                                    <div
-                                        key={String(ad._id)}
-                                        className="tadao-listing-card-enter"
-                                        style={{
-                                            animationDelay: `${Math.min(index, 10) * 30}ms`,
-                                        }}
-                                    >
-                                        <SmartPropertyCardWithDesc
-                                            ad={ad}
-                                            regionFallback={props.regionLabel}
-                                            currentUserId={appUserId || ""}
-                                            showOwnerActions
-                                        />
-                                    </div>
-                                ))}
+                                {allItems.map(
+                                    (
+                                        ad: any,
+                                        index: number
+                                    ) => (
+                                        <div
+                                            key={String(
+                                                ad._id ||
+                                                ad.id
+                                            )}
+                                            className="tadao-listing-card-enter"
+                                            style={{
+                                                animationDelay:
+                                                    `${Math.min(
+                                                        index,
+                                                        10
+                                                    ) * 30}ms`,
+                                            }}
+                                        >
+                                            {layout ===
+                                                "grid" ? (
+                                                <VerticalListingCard
+                                                    ad={ad}
+                                                    regionFallback={
+                                                        props.regionLabel
+                                                    }
+                                                    listingSlug={
+                                                        activeSlug
+                                                    }
+                                                    currentUserId={
+                                                        appUserId ||
+                                                        ""
+                                                    }
+                                                    showOwnerActions
+                                                />
+                                            ) : (
+                                                <HorizontalListingCard
+                                                    ad={ad}
+                                                    regionFallback={
+                                                        props.regionLabel
+                                                    }
+                                                    listingSlug={
+                                                        activeSlug
+                                                    }
+                                                    currentUserId={
+                                                        appUserId ||
+                                                        ""
+                                                    }
+                                                    showOwnerActions
+                                                />
+                                            )}
+                                        </div>
+                                    )
+                                )}
                             </div>
 
                             <div ref={sentinelRef} className="h-1" />
