@@ -2153,26 +2153,48 @@ export default function ListingPageClient(props: Props) {
                                         </div>
                                     ) : null}
 
-                                    <div className="mt-4 flex items-center justify-between gap-1">
+                                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                                        {/* FILTERS */}
                                         <button
                                             type="button"
                                             onClick={() => setFiltersOpen(true)}
-                                            className="md:hidden inline-flex items-center gap-1 rounded-sm border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
+                                            className="
+            md:hidden
+            inline-flex
+            h-10
+            shrink-0
+            items-center
+            gap-1.5
+            rounded-sm
+            border
+            border-slate-200
+            bg-white
+            px-3
+            text-sm
+            font-extrabold
+            text-slate-800
+            transition
+            hover:bg-orange-50
+        "
                                         >
                                             <SlidersHorizontal className="h-4 w-4" />
-                                            Filters
+
+                                            <span>Filters</span>
+
                                             {appliedCount > 0 ? (
-                                                <span className="ml-1 rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-extrabold text-orange-700">
+                                                <span className="ml-0.5 rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-extrabold text-orange-700">
                                                     {appliedCount}
                                                 </span>
                                             ) : null}
                                         </button>
 
-                                        <div className="flex items-center gap-1">
+                                        {/* GRID / LIST */}
+                                        <div className="flex shrink-0 items-center gap-1">
                                             <button
+                                                type="button"
                                                 onClick={() => setLayout("grid")}
                                                 className={cn(
-                                                    "rounded-sm border border-slate-200 px-2 py-2 text-sm font-extrabold transition",
+                                                    "h-10 rounded-sm border border-slate-200 px-3 text-sm font-extrabold transition",
                                                     layout === "grid"
                                                         ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
                                                         : "bg-white text-slate-700 hover:bg-orange-50"
@@ -2180,10 +2202,12 @@ export default function ListingPageClient(props: Props) {
                                             >
                                                 Grid
                                             </button>
+
                                             <button
+                                                type="button"
                                                 onClick={() => setLayout("list")}
                                                 className={cn(
-                                                    "rounded-sm border border-slate-200 px-2 py-2 text-sm font-extrabold transition",
+                                                    "h-10 rounded-sm border border-slate-200 px-3 text-sm font-extrabold transition",
                                                     layout === "list"
                                                         ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
                                                         : "bg-white text-slate-700 hover:bg-orange-50"
@@ -2192,7 +2216,9 @@ export default function ListingPageClient(props: Props) {
                                                 List
                                             </button>
                                         </div>
-                                        <div className="flex items-center gap-1">
+
+                                        {/* SORT */}
+                                        <div className="ml-auto flex min-w-[150px] flex-1 items-center justify-end gap-2 sm:flex-none">
                                             <span className="hidden text-sm font-bold text-slate-600 sm:block">
                                                 Sort by:
                                             </span>
@@ -2200,12 +2226,42 @@ export default function ListingPageClient(props: Props) {
                                             <select
                                                 value={sort}
                                                 onChange={(e) => onSortChange(e.target.value)}
-                                                className="h-11 rounded-sm border border-slate-200 bg-white px-2 text-sm font-extrabold text-slate-800 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                                className="
+                h-10
+                min-w-0
+                flex-1
+                rounded-sm
+                border
+                border-slate-200
+                bg-white
+                px-3
+                text-sm
+                font-extrabold
+                text-slate-800
+                outline-none
+                transition
+                focus:border-orange-400
+                focus:ring-2
+                focus:ring-orange-100
+                sm:w-auto
+                sm:flex-none
+            "
                                             >
-                                                <option value="recommended">Recommended</option>
-                                                <option value="new">Newest</option>
-                                                <option value="lowest">Price: Low to High</option>
-                                                <option value="highest">Price: High to Low</option>
+                                                <option value="recommended">
+                                                    Recommended
+                                                </option>
+
+                                                <option value="new">
+                                                    Newest
+                                                </option>
+
+                                                <option value="lowest">
+                                                    Price: Low to High
+                                                </option>
+
+                                                <option value="highest">
+                                                    Price: High to Low
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
