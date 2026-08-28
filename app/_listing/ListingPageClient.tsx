@@ -2022,13 +2022,13 @@ export default function ListingPageClient(props: Props) {
                                                 onChange={(e) => setQ(e.target.value)}
                                                 onKeyDown={(e) => e.key === "Enter" && applyFilters()}
                                                 placeholder="Search keywords, category, subcategory..."
-                                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                                className="h-14 w-full rounded-sm border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
                                             />
                                         </div>
 
                                         <button
                                             onClick={applyFilters}
-                                            className="h-14 shrink-0 rounded-2xl bg-emerald-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
+                                            className="h-14 shrink-0 rounded-sm bg-emerald-500 px-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
                                         >
                                             Search
                                         </button>
@@ -2153,11 +2153,11 @@ export default function ListingPageClient(props: Props) {
                                         </div>
                                     ) : null}
 
-                                    <div className="mt-4 flex items-center justify-between gap-2">
+                                    <div className="mt-4 flex items-center justify-between gap-1">
                                         <button
                                             type="button"
                                             onClick={() => setFiltersOpen(true)}
-                                            className="md:hidden inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
+                                            className="md:hidden inline-flex items-center gap-1 rounded-sm border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
                                         >
                                             <SlidersHorizontal className="h-4 w-4" />
                                             Filters
@@ -2168,11 +2168,11 @@ export default function ListingPageClient(props: Props) {
                                             ) : null}
                                         </button>
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1">
                                             <button
                                                 onClick={() => setLayout("grid")}
                                                 className={cn(
-                                                    "rounded-2xl border border-slate-200 px-3 py-3 text-sm font-extrabold transition",
+                                                    "rounded-sm border border-slate-200 px-2 py-2 text-sm font-extrabold transition",
                                                     layout === "grid"
                                                         ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
                                                         : "bg-white text-slate-700 hover:bg-orange-50"
@@ -2183,7 +2183,7 @@ export default function ListingPageClient(props: Props) {
                                             <button
                                                 onClick={() => setLayout("list")}
                                                 className={cn(
-                                                    "rounded-2xl border border-slate-200 px-3 py-3 text-sm font-extrabold transition",
+                                                    "rounded-sm border border-slate-200 px-2 py-2 text-sm font-extrabold transition",
                                                     layout === "list"
                                                         ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
                                                         : "bg-white text-slate-700 hover:bg-orange-50"
@@ -2192,7 +2192,7 @@ export default function ListingPageClient(props: Props) {
                                                 List
                                             </button>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1">
                                             <span className="hidden text-sm font-bold text-slate-600 sm:block">
                                                 Sort by:
                                             </span>
@@ -2200,7 +2200,7 @@ export default function ListingPageClient(props: Props) {
                                             <select
                                                 value={sort}
                                                 onChange={(e) => onSortChange(e.target.value)}
-                                                className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-800 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                                className="h-11 rounded-sm border border-slate-200 bg-white px-2 text-sm font-extrabold text-slate-800 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
                                             >
                                                 <option value="recommended">Recommended</option>
                                                 <option value="new">Newest</option>
