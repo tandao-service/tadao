@@ -572,7 +572,7 @@ export default function DynamicFilters({
                         <button
                             type="button"
                             onClick={clearAll}
-                            className="text-[11px] font-bold text-orange-600 hover:underline"
+                            className="text-[11px] rounded-sm font-bold text-orange-600 hover:underline"
                         >
                             Clear all
                         </button>
@@ -583,7 +583,7 @@ export default function DynamicFilters({
                     <button
                         type="button"
                         onClick={onApply}
-                        className="mt-3 h-10 w-full rounded-lg bg-orange-500 text-sm font-bold text-white hover:bg-orange-600"
+                        className="mt-3 h-10 w-full rounded-sm bg-orange-500 text-sm font-bold text-white hover:bg-orange-600"
                     >
                         Apply filters
                     </button>
@@ -594,7 +594,7 @@ export default function DynamicFilters({
                 <button
                     type="button"
                     onClick={() => setOpen(true)}
-                    className="w-full rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm font-bold text-slate-800 hover:bg-orange-50"
+                    className="w-full rounded-sm border border-orange-100 bg-white px-4 py-3 text-sm font-bold text-slate-800 hover:bg-orange-50"
                 >
                     More filters
                 </button>
@@ -605,7 +605,7 @@ export default function DynamicFilters({
                             <button
                                 type="button"
                                 onClick={clearAll}
-                                className="h-11 rounded-xl border border-orange-100 px-4 text-sm font-bold text-slate-700 hover:bg-orange-50"
+                                className="h-11 rounded-sm border border-orange-100 px-4 text-sm font-bold text-slate-700 hover:bg-orange-50"
                             >
                                 Clear
                             </button>
@@ -616,7 +616,7 @@ export default function DynamicFilters({
                                     onApply?.();
                                     setOpen(false);
                                 }}
-                                className="ml-auto h-11 rounded-xl bg-orange-500 px-4 text-sm font-bold text-white shadow-sm hover:bg-orange-600"
+                                className="ml-auto h-11 rounded-sm bg-orange-500 px-4 text-sm font-bold text-white shadow-sm hover:bg-orange-600"
                             >
                                 Apply
                             </button>

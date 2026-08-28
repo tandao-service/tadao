@@ -1991,7 +1991,7 @@ export default function ListingPageClient(props: Props) {
                         </aside>
 
                         <section className="min-w-0">
-                            <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+                            <div className="overflow-hidden bg-white">
                                 <div className="bg-gradient-to-r from-white via-orange-50/40 to-white px-5 py-5 sm:px-6">
 
                                     <div className="min-w-0 flex-1">
