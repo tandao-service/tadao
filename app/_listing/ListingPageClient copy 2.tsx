@@ -13,14 +13,17 @@ import {
 } from "lucide-react";
 import VerticalListingCard from "@/components/home/VerticalListingCard";
 import HorizontalListingCard from "@/components/home/HorizontalListingCard";
-import { Icons, REGIONS_WITH_AREA } from "@/constants";
+import { Icons } from "@/constants";
 import DynamicFilters from "@/components/home/DynamicFilters";
 import { HomeRegion } from "@/lib/home/home.data";
 import RegionsGrid from "@/components/home/RegionsGrid";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { IoSearch, IoChevronForward } from "react-icons/io5";
-import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import {
+    HiOutlineSparkles,
+    HiOutlineAdjustmentsHorizontal,
+} from "react-icons/hi2";
 
 type SidebarData = {
     subcategoryCounts: Record<string, number>;
@@ -62,16 +65,6 @@ type FiltersValue =
     | { make?: string; model?: string };
 
 type FiltersState = Record<string, FiltersValue>;
-
-type FeedSection = {
-    listingSlug: string;
-    categoryName: string;
-    title: string;
-    count: number;
-    items: any[];
-    page: number;
-    totalPages: number;
-};
 
 type Props = {
     title: string;
@@ -517,6 +510,101 @@ function parsePlainTextToMakeModels(text: string) {
         .filter((x) => x.make);
 }
 
+type PricePreset = { label: string; min?: number; max?: number };
+
+function fmtKsh(n: number) {
+    if (!Number.isFinite(n)) return "";
+    if (n >= 1_000_000) {
+        const m = n / 1_000_000;
+        return `${m % 1 === 0 ? m.toFixed(0) : m.toFixed(1)}M`;
+    }
+    if (n >= 1000) return `${Math.round(n / 1000)}K`;
+    return `${n}`;
+}
+
+function preset(min?: number, max?: number): PricePreset {
+    if (min == null && max == null) return { label: "Any price" };
+    if (min == null) return { label: `< KSh ${fmtKsh(max!)}`, min: undefined, max };
+    if (max == null) return { label: `> KSh ${fmtKsh(min)}`, min, max: undefined };
+    return { label: `KSh ${fmtKsh(min)} - ${fmtKsh(max)}`, min, max };
+}
+
+function pickPricePresets(categoryName: string, activeSubTitle: string): PricePreset[] {
+    const cat = String(categoryName || "").toLowerCase();
+    const sub = String(activeSubTitle || "").toLowerCase();
+    const has = (re: RegExp) => re.test(cat) || re.test(sub);
+
+    if (
+        has(/\bvehicle\b|\bcars?\b|\btrucks?\b|\bbuses?\b|\bmotorbikes?\b|\bmachinery\b|\bheavy\s*equipment\b/)
+    ) {
+        return [
+            preset(undefined, 500_000),
+            preset(500_000, 1_500_000),
+            preset(1_500_000, 3_000_000),
+            preset(3_000_000, 6_000_000),
+            preset(6_000_000, undefined),
+        ];
+    }
+
+    if (has(/\bland\b|\bplot\b|\bfarm\b|\bacres?\b/)) {
+        return [
+            preset(undefined, 500_000),
+            preset(500_000, 2_000_000),
+            preset(2_000_000, 5_000_000),
+            preset(5_000_000, 10_000_000),
+            preset(10_000_000, undefined),
+        ];
+    }
+
+    const isProperty =
+        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(cat) ||
+        /\bproperty\b|\breal\s*estate\b|\bhouses?\b|\bapartment\b|\bbedsitter\b|\bstudio\b|\bvilla\b|\bcommercial\b|\boffice\b|\bshop\b|\bwarehouse\b|\bplaza\b/.test(sub);
+
+    if (isProperty) {
+        const isRent =
+            /\brent\b|\blet\b|\bshort\s*let\b|\bairbnb\b/.test(sub) ||
+            /\brent\b|\blet\b/.test(cat);
+
+        if (isRent) {
+            return [
+                preset(undefined, 10_000),
+                preset(10_000, 30_000),
+                preset(30_000, 60_000),
+                preset(60_000, 120_000),
+                preset(120_000, undefined),
+            ];
+        }
+
+        return [
+            preset(undefined, 3_000_000),
+            preset(3_000_000, 8_000_000),
+            preset(8_000_000, 15_000_000),
+            preset(15_000_000, 30_000_000),
+            preset(30_000_000, undefined),
+        ];
+    }
+
+    if (has(/\bparts?\b|\bspares?\b|\baccessor(y|ies)\b|\belectronics?\b|\bphones?\b|\blaptops?\b|\bfurniture\b/)) {
+        return [
+            preset(undefined, 1_000),
+            preset(1_000, 5_000),
+            preset(5_000, 20_000),
+            preset(20_000, 50_000),
+            preset(50_000, 150_000),
+            preset(150_000, undefined),
+        ];
+    }
+
+    return [
+        preset(undefined, 1_000),
+        preset(1_000, 5_000),
+        preset(5_000, 20_000),
+        preset(20_000, 50_000),
+        preset(50_000, 150_000),
+        preset(150_000, undefined),
+    ];
+}
+
 type FetchOverrides = {
     listingSlug?: string;
     page?: number;
@@ -641,13 +729,6 @@ export default function ListingPageClient(props: Props) {
     }, []);
     const [county, setCounty] = React.useState(props.selected.county || "");
     const [town, setTown] = React.useState(props.selected.town || "");
-
-    const locationSelectValue = React.useMemo(() => {
-        if (town && county) return `area:${county}:${town}`;
-        if (county) return `region:${county}`;
-        return "";
-    }, [county, town]);
-
     const [q, setQ] = React.useState(props.selected.q || "");
     const [make, setMake] = React.useState(props.selected.make || "");
     const [model, setModel] = React.useState(props.selected.model || "");
@@ -659,19 +740,21 @@ export default function ListingPageClient(props: Props) {
     const [sort, setSort] = React.useState(props.selected.sort || "recommended");
     const [mobileCatName, setMobileCatName] = React.useState<string>("");
 
+    const townsForCounty = React.useMemo(() => {
+        if (!county) return sidebar.towns;
+        return sidebar.townsByCounty?.[county] || [];
+    }, [county, sidebar.towns, sidebar.townsByCounty]);
 
     React.useEffect(() => {
         setDyn({});
     }, [activeSlug]);
 
+    React.useEffect(() => {
+        if (!county) return;
+        if (town && !townsForCounty.includes(town)) setTown("");
+    }, [county, town, townsForCounty]);
 
     const [allItems, setAllItems] = React.useState<any[]>(props.items || []);
-
-    const [feedSections, setFeedSections] = React.useState<FeedSection[]>([]);
-    const [attemptedAutoSlugs, setAttemptedAutoSlugs] = React.useState<string[]>([]);
-    const [loadingNextSection, setLoadingNextSection] = React.useState(false);
-    const [finishedAutoFeed, setFinishedAutoFeed] = React.useState(false);
-
     const [currentPage, setCurrentPage] = React.useState<number>(props.page || 1);
     const [tp, setTp] = React.useState<number>(props.totalPages || 1);
     const [loadingMore, setLoadingMore] = React.useState(false);
@@ -679,16 +762,6 @@ export default function ListingPageClient(props: Props) {
     const [loadError, setLoadError] = React.useState<string>("");
 
     const sentinelRef = React.useRef<HTMLDivElement | null>(null);
-    const nextSectionSentinelRef = React.useRef<HTMLDivElement | null>(null);
-    const autoFeedLoadingRef = React.useRef(false);
-
-    const resetAutoFeed = React.useCallback(() => {
-        autoFeedLoadingRef.current = false;
-        setFeedSections([]);
-        setAttemptedAutoSlugs([]);
-        setLoadingNextSection(false);
-        setFinishedAutoFeed(false);
-    }, []);
 
     React.useEffect(() => {
         setCategoryName(props.categoryName);
@@ -704,12 +777,6 @@ export default function ListingPageClient(props: Props) {
         setCountsBySubFallback(props.homeCountsBySub || {});
         setTotalFallback(props.homeTotalInCategory || 0);
         setMobileCatName(props.categoryName || "");
-
-        autoFeedLoadingRef.current = false;
-        setFeedSections([]);
-        setAttemptedAutoSlugs([]);
-        setLoadingNextSection(false);
-        setFinishedAutoFeed(false);
     }, [
         props.activeListingSlug,
         props.categoryName,
@@ -837,55 +904,6 @@ export default function ListingPageClient(props: Props) {
         ]
     );
 
-    const onLocationChange = React.useCallback(
-        async (value: string) => {
-            let nextCounty = "";
-            let nextTown = "";
-
-            if (!value) {
-                nextCounty = "";
-                nextTown = "";
-            } else if (value.startsWith("region:")) {
-                nextCounty = value.replace("region:", "");
-                nextTown = "";
-            } else if (value.startsWith("area:")) {
-                const rest = value.replace("area:", "");
-                const separatorIndex = rest.indexOf(":");
-
-                if (separatorIndex === -1) return;
-
-                nextCounty = rest.slice(0, separatorIndex);
-                nextTown = rest.slice(separatorIndex + 1);
-            }
-
-            // Update the visible selection immediately.
-            setCounty(nextCounty);
-            setTown(nextTown);
-
-            // A new location invalidates the continuation feed.
-            resetAutoFeed();
-            setCurrentPage(1);
-            setTp(1);
-            setRefreshing(true);
-            setLoadError("");
-
-            try {
-                // Pass the new values directly because React state updates are async.
-                await fetchItems({
-                    page: 1,
-                    append: false,
-                    county: nextCounty,
-                    town: nextTown,
-                });
-            } catch (e: any) {
-                setLoadError(String(e?.message || e));
-            } finally {
-                setRefreshing(false);
-            }
-        },
-        [fetchItems, resetAutoFeed]
-    );
-
     const canLoadMore = currentPage < tp && !loadingMore && !refreshing;
 
     const fetchNextPage = React.useCallback(async () => {
@@ -915,219 +933,9 @@ export default function ListingPageClient(props: Props) {
         return () => io.disconnect();
     }, [fetchNextPage]);
 
-    const nextListingToAutoLoad = React.useMemo(() => {
-        if (!categoryListings.length) return null;
-
-        const usedSlugs = new Set(
-            [
-                activeSlug,
-                ...attemptedAutoSlugs,
-                ...feedSections.map((section) => section.listingSlug),
-            ].map((slug) => String(slug || "").toLowerCase())
-        );
-
-        const activeIndex = categoryListings.findIndex(
-            (item) =>
-                String(item.slug || "").toLowerCase() ===
-                String(activeSlug || "").toLowerCase()
-        );
-
-        if (activeIndex >= 0) {
-            for (let i = activeIndex + 1; i < categoryListings.length; i += 1) {
-                const item = categoryListings[i];
-
-                if (!usedSlugs.has(String(item.slug || "").toLowerCase())) {
-                    return item;
-                }
-            }
-        }
-
-        for (const item of categoryListings) {
-            if (!usedSlugs.has(String(item.slug || "").toLowerCase())) {
-                return item;
-            }
-        }
-
-        return null;
-    }, [
-        categoryListings,
-        activeSlug,
-        attemptedAutoSlugs,
-        feedSections,
-    ]);
-
-    const fetchAutoFeedSection = React.useCallback(
-        async (listing: CategoryListingItem) => {
-            if (!listing?.slug || autoFeedLoadingRef.current) return;
-
-            autoFeedLoadingRef.current = true;
-            setLoadingNextSection(true);
-
-            setAttemptedAutoSlugs((previous) => {
-                const exists = previous.some(
-                    (slug) =>
-                        String(slug).toLowerCase() ===
-                        String(listing.slug).toLowerCase()
-                );
-
-                return exists ? previous : [...previous, listing.slug];
-            });
-
-            try {
-                const sp = new URLSearchParams();
-
-                sp.set("page", "1");
-                sp.set("limit", "12");
-                sp.set("listingSlug", listing.slug);
-
-                if (props.regionSlug) {
-                    sp.set("regionSlug", props.regionSlug);
-                }
-
-                // Keep filters that make sense across different subcategories.
-                setQS(sp, "q", q);
-                setQS(sp, "county", county);
-                setQS(sp, "town", town);
-                setQS(sp, "min", min);
-                setQS(sp, "max", max);
-                setQS(sp, "membership", membership);
-                setQS(sp, "sort", sort);
-                setQS(sp, "layout", layout);
-
-                // Do not carry make/model/type/brand/dynamic fields to a
-                // different subcategory because those fields may not apply.
-                const res = await fetch(`/api/listings?${sp.toString()}`, {
-                    cache: "no-store",
-                });
-
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}`);
-                }
-
-                const json = await res.json();
-
-                const sectionItems = Array.isArray(json?.items)
-                    ? json.items
-                    : Array.isArray(json?.data)
-                        ? json.data
-                        : [];
-
-                // Empty subcategories are simply skipped. attemptedAutoSlugs
-                // prevents us from requesting the same empty section again.
-                if (!sectionItems.length) {
-                    return;
-                }
-
-                const count = Number(
-                    sidebar.subcategoryCounts?.[listing.subcategory] ??
-                    countsBySubFallback?.[listing.subcategory] ??
-                    sectionItems.length
-                );
-
-                setFeedSections((previous) => {
-                    const exists = previous.some(
-                        (section) =>
-                            String(section.listingSlug).toLowerCase() ===
-                            String(listing.slug).toLowerCase()
-                    );
-
-                    if (exists) return previous;
-
-                    return [
-                        ...previous,
-                        {
-                            listingSlug: listing.slug,
-                            categoryName,
-                            title: listing.title,
-                            count,
-                            items: sectionItems,
-                            page: 1,
-                            totalPages: Number(json?.totalPages || 1),
-                        },
-                    ];
-                });
-            } catch (e: any) {
-                console.error("Failed to load next listing section:", e);
-            } finally {
-                autoFeedLoadingRef.current = false;
-                setLoadingNextSection(false);
-            }
-        },
-        [
-            props.regionSlug,
-            q,
-            county,
-            town,
-            min,
-            max,
-            membership,
-            sort,
-            layout,
-            categoryName,
-            sidebar.subcategoryCounts,
-            countsBySubFallback,
-        ]
-    );
-
-    const primaryListingFinished = currentPage >= tp;
-
-    const canLoadNextAutoSection =
-        primaryListingFinished &&
-        !refreshing &&
-        !loadingMore &&
-        !loadingNextSection &&
-        !!nextListingToAutoLoad &&
-        !finishedAutoFeed;
-
-    React.useEffect(() => {
-        if (!primaryListingFinished) return;
-
-        if (!nextListingToAutoLoad && !loadingNextSection) {
-            setFinishedAutoFeed(true);
-        }
-    }, [
-        primaryListingFinished,
-        nextListingToAutoLoad,
-        loadingNextSection,
-    ]);
-
-    React.useEffect(() => {
-        const el = nextSectionSentinelRef.current;
-        if (!el) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visible = entries.some((entry) => entry.isIntersecting);
-
-                if (
-                    visible &&
-                    canLoadNextAutoSection &&
-                    nextListingToAutoLoad
-                ) {
-                    fetchAutoFeedSection(nextListingToAutoLoad);
-                }
-            },
-            {
-                root: null,
-                rootMargin: "700px",
-                threshold: 0.01,
-            }
-        );
-
-        observer.observe(el);
-
-        return () => observer.disconnect();
-    }, [
-        canLoadNextAutoSection,
-        nextListingToAutoLoad,
-        fetchAutoFeedSection,
-    ]);
-
     const onSubcategoryClick = React.useCallback(
         async (slug: string) => {
             if (!slug) return;
-
-            resetAutoFeed();
 
             setActiveSlug(slug);
             setMake("");
@@ -1157,14 +965,12 @@ export default function ListingPageClient(props: Props) {
                 setRefreshing(false);
             }
         },
-        [fetchItems, resetAutoFeed]
+        [fetchItems]
     );
 
     const onCategoryPick = React.useCallback(
         async (cat: ClientCategory) => {
             if (!cat?.name || !cat.listings?.length) return;
-
-            resetAutoFeed();
 
             const nextCategoryName = String(cat.name).trim();
             const nextIsVehicle = nextCategoryName.toLowerCase() === "vehicle";
@@ -1209,13 +1015,11 @@ export default function ListingPageClient(props: Props) {
                 setRefreshing(false);
             }
         },
-        [fetchItems, resetAutoFeed]
+        [fetchItems]
     );
 
     const onSortChange = React.useCallback(
         async (v: string) => {
-            resetAutoFeed();
-
             setCurrentPage(1);
             setSort(v);
             setTp(1);
@@ -1232,12 +1036,10 @@ export default function ListingPageClient(props: Props) {
                 setRefreshing(false);
             }
         },
-        [fetchItems, resetAutoFeed]
+        [fetchItems]
     );
 
     const applyFilters = React.useCallback(async () => {
-        resetAutoFeed();
-
         setCurrentPage(1);
         setTp(1);
         setRefreshing(true);
@@ -1248,11 +1050,9 @@ export default function ListingPageClient(props: Props) {
         } finally {
             setRefreshing(false);
         }
-    }, [fetchItems, resetAutoFeed]);
+    }, [fetchItems]);
 
     const clearAll = React.useCallback(async () => {
-        resetAutoFeed();
-
         setQ("");
         setCounty("");
         setTown("");
@@ -1292,7 +1092,7 @@ export default function ListingPageClient(props: Props) {
         } finally {
             setRefreshing(false);
         }
-    }, [fetchItems, resetAutoFeed]);
+    }, [fetchItems]);
 
     const goBack = React.useCallback(() => {
         if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
@@ -1310,8 +1110,7 @@ export default function ListingPageClient(props: Props) {
     const [filtersOpen, setFiltersOpen] = React.useState(false);
     const [catsOpen, setCatsOpen] = React.useState(false);
     const [subsOpen, setSubsOpen] = React.useState(false);
-    const [advancedFiltersOpen, setAdvancedFiltersOpen] =
-        React.useState(false);
+
     React.useEffect(() => {
         if (!filtersOpen && !catsOpen && !subsOpen && !regionsOpen) return;
 
@@ -1334,10 +1133,7 @@ export default function ListingPageClient(props: Props) {
             document.body.style.overflow = prev;
         };
     }, [filtersOpen, catsOpen, subsOpen, regionsOpen]);
-    React.useEffect(() => {
-        setDyn({});
-        setAdvancedFiltersOpen(false);
-    }, [activeSlug]);
+
     const appliedCount = React.useMemo(() => {
         const vals = [
             q,
@@ -1393,8 +1189,6 @@ export default function ListingPageClient(props: Props) {
         async (val: string) => {
             if (!val) return;
 
-            resetAutoFeed();
-
             setCurrentPage(1);
             setTp(1);
             setRefreshing(true);
@@ -1441,15 +1235,12 @@ export default function ListingPageClient(props: Props) {
                 setRefreshing(false);
             }
         },
-        [fetchItems, isVehicle, quickFilterState?.field, resetAutoFeed]
+        [fetchItems, isVehicle, quickFilterState?.field]
     );
 
     const onMakeModelChip = React.useCallback(
         async (makeVal: string) => {
             if (!makeVal) return;
-
-            resetAutoFeed();
-
             setMake(makeVal);
             setModel("");
 
@@ -1464,7 +1255,7 @@ export default function ListingPageClient(props: Props) {
                 setRefreshing(false);
             }
         },
-        [fetchItems, resetAutoFeed]
+        [fetchItems]
     );
     const hidePriceFilters = React.useMemo(() => {
         return isSpecialNoPriceCategory(
@@ -1472,20 +1263,44 @@ export default function ListingPageClient(props: Props) {
             String(activeListing?.title || activeListing?.subcategory || props.title || "")
         );
     }, [categoryName, activeListing?.title, activeListing?.subcategory, props.title]);
+    const pricePresets = React.useMemo(() => {
+        return pickPricePresets(categoryName, String(activeListing?.title || props.title || ""));
+    }, [categoryName, activeListing?.title, props.title]);
+
+    const activePriceKey = `${min || ""}-${max || ""}`;
+
+    const onPricePreset = React.useCallback(
+        async (p: PricePreset) => {
+            const nextMin = p.min != null ? String(p.min) : "";
+            const nextMax = p.max != null ? String(p.max) : "";
+            setMin(nextMin);
+            setMax(nextMax);
+
+            setCurrentPage(1);
+            setTp(1);
+            setRefreshing(true);
+            try {
+                await fetchItems({
+                    page: 1,
+                    append: false,
+                    min: nextMin,
+                    max: nextMax,
+                });
+            } catch (e: any) {
+                setLoadError(String(e?.message || e));
+            } finally {
+                setRefreshing(false);
+            }
+        },
+        [fetchItems]
+    );
 
     const activeFilters = React.useMemo(() => {
         const out: { label: string; onClear: () => void }[] = [];
 
         if (q) out.push({ label: q, onClear: () => setQ("") });
-        if (county || town) {
-            out.push({
-                label: town ? `${town}, ${county}` : county,
-                onClear: () => {
-                    setCounty("");
-                    setTown("");
-                },
-            });
-        }
+        if (county) out.push({ label: county, onClear: () => { setCounty(""); setTown(""); } });
+        if (town) out.push({ label: town, onClear: () => setTown("") });
         if (membership) out.push({ label: membership, onClear: () => setMembership("") });
         if (make) out.push({ label: make, onClear: () => { setMake(""); setModel(""); } });
         if (model) out.push({ label: model, onClear: () => setModel("") });
@@ -1497,343 +1312,101 @@ export default function ListingPageClient(props: Props) {
     }, [q, county, town, membership, make, model, type, brand, min, max]);
 
     const FiltersContent = (
-        <div className="space-y-5">
-            {/* CATEGORY */}
+        <div className="space-y-4">
             <div>
-                <label className="mb-2 block text-sm font-extrabold text-slate-900">
-                    Category
-                </label>
-
-
-                <div className="relative">
-
-                    <Layers className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-700" />
-
-                    <select
-                        value={activeSlug}
-                        onChange={async (e) => {
-                            const selectedSlug = e.target.value;
-
-                            if (!selectedSlug) return;
-
-                            /*
-                             * Find which category owns this listing/subcategory.
-                             */
-                            const selectedCategory = props.categories.find(
-                                (cat) =>
-                                    cat.listings?.some(
-                                        (listing) =>
-                                            String(listing.slug).toLowerCase() ===
-                                            String(selectedSlug).toLowerCase()
-                                    )
-                            );
-
-                            if (!selectedCategory) return;
-
-                            const sameCategory =
-                                String(selectedCategory.name).toLowerCase() ===
-                                String(categoryName).toLowerCase();
-
-                            /*
-                             * Same category:
-                             * only switch subcategory.
-                             */
-                            if (sameCategory) {
-                                await onSubcategoryClick(selectedSlug);
-                                return;
-                            }
-
-                            /*
-                             * Different category:
-                             * update category state first,
-                             * then load selected subcategory.
-                             */
-                            resetAutoFeed();
-
-                            const nextCategoryName =
-                                String(selectedCategory.name).trim();
-
-                            const nextIsVehicle =
-                                nextCategoryName.toLowerCase() === "vehicle";
-
-                            setCategoryName(nextCategoryName);
-                            setIsVehicle(nextIsVehicle);
-                            setCategoryListings(
-                                selectedCategory.listings || []
-                            );
-
-                            setCountsBySubFallback(
-                                selectedCategory.countsBySub || {}
-                            );
-
-                            setTotalFallback(
-                                Number(selectedCategory.count || 0)
-                            );
-
-                            setMake("");
-                            setModel("");
-                            setType("");
-                            setBrand("");
-
-                            setActiveSlug(selectedSlug);
-                            setCurrentPage(1);
-                            setTp(1);
-                            setRefreshing(true);
-
-                            try {
-                                await fetchItems({
-                                    page: 1,
-                                    append: false,
-                                    listingSlug: selectedSlug,
-                                    make: "",
-                                    model: "",
-                                    type: "",
-                                    brand: "",
-                                });
-
-                                if (typeof window !== "undefined") {
-                                    window.scrollTo({
-                                        top: 0,
-                                        behavior: "smooth",
-                                    });
-                                }
-                            } catch (e: any) {
-                                setLoadError(
-                                    String(e?.message || e)
-                                );
-                            } finally {
-                                setRefreshing(false);
-                            }
-                        }}
-                        className="
-            h-14
-           w-full
-            appearance-none
-            rounded-2xl
-            border border-slate-200
-            bg-white
-            py-0
-            pl-9
-            pr-8
-            text-sm
-            font-extrabold
-            text-slate-800
-            shadow-sm
-            outline-none
-            transition
-            hover:bg-orange-50
-            focus:border-orange-400
-            focus:ring-4
-            focus:ring-orange-100
-        "
-                    >
-                        {props.categories.map((cat) => (
-                            <optgroup
-                                key={cat.name}
-                                label={`${cat.name} (${Number(
-                                    cat.count || 0
-                                ).toLocaleString()})`}
-                            >
-                                {cat.listings?.map((listing) => {
-                                    const count =
-                                        Number(
-                                            cat.countsBySub?.[
-                                            listing.subcategory
-                                            ] || 0
-                                        );
-
-                                    return (
-                                        <option
-                                            key={listing.slug}
-                                            value={listing.slug}
-                                        >
-                                            {listing.title}
-                                            {count > 0
-                                                ? ` (${count.toLocaleString()})`
-                                                : ""}
-                                        </option>
-                                    );
-                                })}
-                            </optgroup>
-                        ))}
-                    </select>
-
-                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
-                        ▼
-                    </span>
-                </div></div>
-
-            {/* LOCATION */}
-            <div>
-                <label className="mb-2 block text-sm font-extrabold text-slate-900">
-                    Location
-                </label>
-
-                <div className="relative">
-                    <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-
-                    <select
-                        value={locationSelectValue}
-                        onChange={(e) => onLocationChange(e.target.value)}
-                        className="h-14 w-full appearance-none rounded-2xl border border-slate-200 bg-white pl-11 pr-9 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
-                    >
-                        <option value="">All Kenya</option>
-
-                        {REGIONS_WITH_AREA.map((regionItem) => (
-                            <optgroup
-                                key={regionItem.region}
-                                label={regionItem.region}
-                            >
-                                <option value={`region:${regionItem.region}`}>
-                                    All {regionItem.region}
-                                </option>
-
-                                {regionItem.area.map((area) => (
-                                    <option
-                                        key={`${regionItem.region}-${area}`}
-                                        value={`area:${regionItem.region}:${area}`}
-                                    >
-                                        {area}
-                                    </option>
-                                ))}
-                            </optgroup>
-                        ))}
-                    </select>
-
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[11px] text-slate-500">
-                        ▼
-                    </span>
+                {!hidePriceFilters ? (
+                    <div>
+                        <SidebarMiniLabel>Price, KSh</SidebarMiniLabel>
+                        <div className="grid grid-cols-2 gap-2">
+                            <input
+                                value={min}
+                                onChange={(e) => setMin(e.target.value)}
+                                placeholder="Min"
+                                inputMode="numeric"
+                                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                            />
+                            <input
+                                value={max}
+                                onChange={(e) => setMax(e.target.value)}
+                                placeholder="Max"
+                                inputMode="numeric"
+                                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                            />
+                        </div>
+                    </div>
+                ) : null}
+                <div className="grid grid-cols-2 gap-2">
+                    <input
+                        value={min}
+                        onChange={(e) => setMin(e.target.value)}
+                        placeholder="Min"
+                        inputMode="numeric"
+                        className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                    />
+                    <input
+                        value={max}
+                        onChange={(e) => setMax(e.target.value)}
+                        placeholder="Max"
+                        inputMode="numeric"
+                        className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] outline-none focus:ring-2 focus:ring-orange-200"
+                    />
                 </div>
             </div>
 
-            {/* PRICE */}
-            {!hidePriceFilters ? (
-                <div>
-                    <label className="mb-2 block text-sm font-extrabold text-slate-900">
-                        Price (KSh)
-                    </label>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <input
-                            value={min}
-                            onChange={(e) => setMin(e.target.value)}
-                            placeholder="Min"
-                            inputMode="numeric"
-                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400 transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
-                        />
-
-                        <input
-                            value={max}
-                            onChange={(e) => setMax(e.target.value)}
-                            placeholder="Max"
-                            inputMode="numeric"
-                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400 transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
-                        />
-                    </div>
-                </div>
-            ) : null}
-
-            {/* SELLER */}
             <div>
-                <label className="mb-2 block text-sm font-extrabold text-slate-900">
-                    Seller
-                </label>
+                <SidebarMiniLabel>Location</SidebarMiniLabel>
 
+                <button
+                    type="button"
+                    onClick={() => setRegionsOpen(true)}
+                    className="flex h-11 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 text-left outline-none transition focus:ring-2 focus:ring-orange-200 hover:bg-slate-50"
+                >
+                    <div className="flex min-w-0 items-center gap-2">
+                        <MapPin className="h-4 w-4 text-orange-500" />
+                        <div className="min-w-0">
+                            <div className="truncate text-[13px] font-semibold text-slate-900">
+                                {props.regionSlug ? props.regionLabel : "All Kenya"}
+                            </div>
+                            <div className="truncate text-[11px] font-medium text-slate-500 md:hidden">
+                                Tap to change region
+                            </div>
+                        </div>
+                    </div>
+                    <div className="text-slate-400">›</div>
+                </button>
+            </div>
+
+            <div>
+                <SidebarMiniLabel>Verified Seller</SidebarMiniLabel>
                 <select
                     value={membership}
                     onChange={(e) => setMembership(e.target.value)}
-                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                    className="h-11 w-full rounded-xl border border-slate-200 px-3 text-[13px] font-medium outline-none focus:ring-2 focus:ring-orange-200"
                 >
-                    <option value="">All sellers</option>
-                    <option value="verified">Verified sellers</option>
-                    <option value="unverified">Unverified sellers</option>
+                    <option value="">Show all</option>
+                    <option value="verified">Verified</option>
+                    <option value="unverified">Unverified</option>
                 </select>
             </div>
 
-            {/* CATEGORY-SPECIFIC / ADVANCED FILTERS */}
             {activeFields?.length ? (
-                <div className="border-t border-slate-100 pt-5">
-
-                    {/* Header / Toggle */}
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setAdvancedFiltersOpen(
-                                (prev) => !prev
-                            )
-                        }
-                        className="
-                flex
-                w-full
-                items-center
-                justify-between
-                gap-3
-                rounded-2xl
-                border
-                border-slate-200
-                bg-slate-50
-                px-4
-                py-3
-                text-left
-                transition
-                hover:bg-orange-50
-            "
-                        aria-expanded={
-                            advancedFiltersOpen
-                        }
-                    >
-                        <div className="min-w-0">
-                            <div className="text-sm font-extrabold text-slate-900">
-                                More filters
-                            </div>
-
-                            <div className="mt-1 truncate text-xs font-medium text-slate-500">
-                                Options for{" "}
-                                {String(
-                                    activeListing?.title ||
-                                    activeListing?.subcategory ||
-                                    categoryName
-                                )}
-                            </div>
-                        </div>
-
-                        <span
-                            className={cn(
-                                "shrink-0 text-sm font-black text-slate-500 transition-transform duration-200",
-                                advancedFiltersOpen
-                                    ? "rotate-180"
-                                    : "rotate-0"
-                            )}
-                        >
-                            ▼
-                        </span>
-                    </button>
-
-                    {/* Expandable content */}
-                    {advancedFiltersOpen ? (
-                        <div className="mt-4">
-                            <DynamicFilters
-                                subcategory={
-                                    dynSubcategory
-                                }
-                                value={dyn}
-                                onChange={setDyn}
-                                onApply={() =>
-                                    applyFilters()
-                                }
-                                onClear={() => {
-                                    setDyn({});
-                                    applyFilters();
-                                }}
-                                title="More filters"
-                            />
-                        </div>
-                    ) : null}
+                <div>
+                    <SidebarMiniLabel>More Filters</SidebarMiniLabel>
+                    <DynamicFilters
+                        subcategory={dynSubcategory}
+                        value={dyn}
+                        onChange={setDyn}
+                        onApply={() => applyFilters()}
+                        onClear={() => {
+                            setDyn({});
+                            applyFilters();
+                        }}
+                        title="More filters"
+                    />
                 </div>
             ) : null}
         </div>
     );
-
     if (accessChecking) {
         return (
             <>
@@ -1913,11 +1486,11 @@ export default function ListingPageClient(props: Props) {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[270px_minmax(0,1fr)]">
                         <aside className="hidden md:block">
                             <SidebarPanel>
-                                {/**  <SidebarSection
+                                <SidebarSection
                                     title="Category"
                                     right={`${Number(totalCategoryAds || 0).toLocaleString()} ads`}
                                 >
-                                   <div className="space-y-3">
+                                    <div className="space-y-3">
                                         <SearchableSelect
                                             items={props.categories}
                                             valueKey="name"
@@ -1966,7 +1539,7 @@ export default function ListingPageClient(props: Props) {
                                         )}
                                     </div>
                                 </SidebarSection>
- */}
+
                                 <SidebarSection title="Filters">
                                     {FiltersContent}
 
@@ -1993,51 +1566,106 @@ export default function ListingPageClient(props: Props) {
                         <section className="min-w-0">
                             <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
                                 <div className="bg-gradient-to-r from-white via-orange-50/40 to-white px-5 py-5 sm:px-6">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0 flex-1">
 
-                                    <div className="min-w-0 flex-1">
 
+                                            <h1 className="mt-2 font-black tracking-tight text-slate-950 sm:text-4xl">
+                                                {String(activeListing?.title || props.title)} in{" "}
+                                                <span className="text-orange-600">{props.regionLabel}</span>
+                                            </h1>
 
-                                        <h1 className="mt-2 font-black tracking-tight text-slate-950 sm:text-4xl">
-                                            {String(activeListing?.title || props.title)} in{" "}
-                                            <span className="text-orange-600">{props.regionLabel}</span>
-                                        </h1>
+                                            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                                                <span className="font-bold text-slate-700">{categoryName}</span>
+                                                <span>•</span>
+                                                <span>{Number(totalCategoryAds || 0).toLocaleString()} ads</span>
 
-                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                                            <span className="font-bold text-slate-700">{categoryName}</span>
-                                            <span>•</span>
-                                            <span>{Number(totalCategoryAds || 0).toLocaleString()} ads</span>
-
+                                            </div>
                                         </div>
+
+
                                     </div>
 
+                                    <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-[220px_1fr_140px]">
 
-
-
-                                    <div className="mt-2 flex items-center gap-3">
-                                        <div className="relative flex-1">
-                                            <IoSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
-
-                                            <input
-                                                value={q}
-                                                onChange={(e) => setQ(e.target.value)}
-                                                onKeyDown={(e) => e.key === "Enter" && applyFilters()}
-                                                placeholder="Search keywords, category, subcategory..."
-                                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                                            />
-                                        </div>
-
-                                        <button
-                                            onClick={applyFilters}
-                                            className="h-14 shrink-0 rounded-2xl bg-emerald-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
+                                        <div className="flex items-center gap-3"> <select
+                                            value={county}
+                                            onChange={(e) => {
+                                                setCounty(e.target.value);
+                                                setTown("");
+                                            }}
+                                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
                                         >
-                                            Search
-                                        </button>
+                                            <option value="">All Kenya</option>
+                                            {sidebar.counties.map((c) => (
+                                                <option key={c} value={c}>
+                                                    {c}
+                                                </option>
+                                            ))}
+                                        </select>
+                                            <button
+                                                type="button"
+                                                // onClick={() => setCatsOpen(true)}
+                                                onClick={() => {
+                                                    setMobileCatName(categoryName);
+                                                    setSubsOpen(true);
+                                                }}
+                                                className="inline-flex h-14 shrink-0 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-orange-50 md:hidden"
+                                            >
+                                                <Layers className="h-4 w-4" />
+                                                Category
+                                            </button>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative flex-1">
+                                                <IoSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
+
+                                                <input
+                                                    value={q}
+                                                    onChange={(e) => setQ(e.target.value)}
+                                                    onKeyDown={(e) => e.key === "Enter" && applyFilters()}
+                                                    placeholder="Search keywords, category, subcategory..."
+                                                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                                />
+                                            </div>
+
+                                            <button
+                                                onClick={applyFilters}
+                                                className="h-14 shrink-0 rounded-2xl bg-emerald-500 px-5 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
+                                            >
+                                                Search
+                                            </button>
 
 
+                                        </div>
                                     </div>
 
+                                    <div className="mt-4 space-y-3">
+                                        {!hidePriceFilters ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {pricePresets.map((p) => {
+                                                    const key = `${p.min ?? ""}-${p.max ?? ""}`;
+                                                    const active = key === activePriceKey;
 
-                                    {/**    <div className="mt-4 space-y-3">
+                                                    return (
+                                                        <button
+                                                            key={p.label}
+                                                            type="button"
+                                                            onClick={() => onPricePreset(p)}
+                                                            className={cn(
+                                                                "rounded-xl border border-slate-200 px-4 py-2 text-xs font-extrabold transition",
+                                                                active
+                                                                    ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
+                                                                    : "bg-white text-slate-700 hover:bg-orange-50"
+                                                            )}
+                                                        >
+                                                            {p.label}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : null}
+
                                         {isVehicle ? (
                                             quickField === "make-model" && makeModelParsed.length ? (
                                                 <div className="grid grid-cols-4 gap-2 md:grid-cols-7">
@@ -2123,7 +1751,7 @@ export default function ListingPageClient(props: Props) {
                                                 })}
                                             </div>
                                         ) : null}
-                                    </div>*/}
+                                    </div>
 
                                     {activeFilters.length > 0 ? (
                                         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -2153,11 +1781,11 @@ export default function ListingPageClient(props: Props) {
                                         </div>
                                     ) : null}
 
-                                    <div className="mt-4 flex items-center justify-between gap-2">
+                                    <div className="mt-4 flex items-center justify-between gap-2 md:hidden">
                                         <button
                                             type="button"
                                             onClick={() => setFiltersOpen(true)}
-                                            className="md:hidden inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
+                                            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 hover:bg-orange-50"
                                         >
                                             <SlidersHorizontal className="h-4 w-4" />
                                             Filters
@@ -2192,26 +1820,31 @@ export default function ListingPageClient(props: Props) {
                                                 List
                                             </button>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="hidden text-sm font-bold text-slate-600 sm:block">
-                                                Sort by:
-                                            </span>
-
-                                            <select
-                                                value={sort}
-                                                onChange={(e) => onSortChange(e.target.value)}
-                                                className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-800 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                                            >
-                                                <option value="recommended">Recommended</option>
-                                                <option value="new">Newest</option>
-                                                <option value="lowest">Price: Low to High</option>
-                                                <option value="highest">Price: High to Low</option>
-                                            </select>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
 
+                            <div className="mt-4 flex flex-col gap-3 rounded-[24px] border border-slate-200/80 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:flex-row sm:items-center sm:justify-between">
+                                <div className="text-sm font-semibold text-slate-500">
+                                    Showing page <span className="font-black text-slate-900">{currentPage}</span> of{" "}
+                                    <span className="font-black text-slate-900">{tp}</span>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <div className="text-sm font-black text-slate-700">Sort by:</div>
+
+                                    <select
+                                        value={sort}
+                                        onChange={(e) => onSortChange(e.target.value)}
+                                        className="h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                    >
+                                        <option value="recommended">Recommended</option>
+                                        <option value="new">Newest</option>
+                                        <option value="lowest">Price: Low to High</option>
+                                        <option value="highest">Price: High to Low</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             {refreshing ? (
                                 <div className="mt-4 flex items-center gap-2 rounded-2xl border border-orange-100 bg-orange-50/80 px-4 py-2.5 text-xs font-bold text-orange-700">
@@ -2291,144 +1924,20 @@ export default function ListingPageClient(props: Props) {
 
                             <div ref={sentinelRef} className="h-1" />
 
-                            {loadingMore ? (
-                                <div className="mt-4 flex items-center justify-center">
+                            <div className="mt-4 flex items-center justify-center">
+                                {loadingMore ? (
                                     <div className="flex flex-col items-center gap-3">
                                         <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
-                                        <p className="text-sm font-semibold text-orange-600">
-                                            Loading...
-                                        </p>
+                                        <p className="text-sm font-semibold text-orange-600">Loading...</p>
                                     </div>
-                                </div>
-                            ) : null}
+                                ) : null}
 
-                            {feedSections
-                                .filter((section) => section.items.length > 0)
-                                .map((section) => (
-                                    <section
-                                        key={section.listingSlug}
-                                        className="mt-8"
-                                    >
-                                        <div className="mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-px flex-1 bg-slate-200" />
-
-                                                <span className="text-[11px] font-black uppercase tracking-[0.12em] text-orange-500">
-                                                    More in {section.categoryName}
-                                                </span>
-
-                                                <div className="h-px flex-1 bg-slate-200" />
-                                            </div>
-
-                                            <div className="mt-3 flex items-end justify-between gap-3">
-                                                <div>
-                                                    <h2 className="text-lg font-black tracking-tight text-slate-950 sm:text-xl">
-                                                        {section.title}
-                                                    </h2>
-
-                                                    {section.count > 0 ? (
-                                                        <div className="mt-1 text-xs font-semibold text-slate-500">
-                                                            {section.count.toLocaleString()} ads
-                                                        </div>
-                                                    ) : null}
-                                                </div>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        onSubcategoryClick(
-                                                            section.listingSlug
-                                                        )
-                                                    }
-                                                    className="shrink-0 text-xs font-extrabold text-orange-600 transition hover:text-orange-700"
-                                                >
-                                                    View all
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className={cn(
-                                                layout === "grid"
-                                                    ? "grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
-                                                    : "flex flex-col gap-3"
-                                            )}
-                                        >
-                                            {section.items.map(
-                                                (ad: any, index: number) => (
-                                                    <div
-                                                        key={String(
-                                                            ad._id ||
-                                                            ad.id ||
-                                                            `${section.listingSlug}-${index}`
-                                                        )}
-                                                        className="tadao-listing-card-enter"
-                                                        style={{
-                                                            animationDelay: `${Math.min(
-                                                                index,
-                                                                10
-                                                            ) * 30}ms`,
-                                                        }}
-                                                    >
-                                                        {layout === "grid" ? (
-                                                            <VerticalListingCard
-                                                                ad={ad}
-                                                                regionFallback={
-                                                                    props.regionLabel
-                                                                }
-                                                                listingSlug={
-                                                                    section.listingSlug
-                                                                }
-                                                                currentUserId={
-                                                                    appUserId || ""
-                                                                }
-                                                                showOwnerActions
-                                                            />
-                                                        ) : (
-                                                            <HorizontalListingCard
-                                                                ad={ad}
-                                                                regionFallback={
-                                                                    props.regionLabel
-                                                                }
-                                                                listingSlug={
-                                                                    section.listingSlug
-                                                                }
-                                                                currentUserId={
-                                                                    appUserId || ""
-                                                                }
-                                                                showOwnerActions
-                                                            />
-                                                        )}
-                                                    </div>
-                                                )
-                                            )}
-                                        </div>
-                                    </section>
-                                ))}
-
-                            <div ref={nextSectionSentinelRef} className="h-2" />
-
-                            {loadingNextSection ? (
-                                <div className="mt-6 flex items-center justify-center">
-                                    <div className="flex items-center gap-3 rounded-full border border-orange-100 bg-orange-50 px-4 py-2.5">
-                                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-orange-200 border-t-orange-500" />
-                                        <span className="text-xs font-extrabold text-orange-700">
-                                            Finding more listings...
-                                        </span>
+                                {!loadingMore && !refreshing && currentPage >= tp ? (
+                                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm">
+                                        You’ve reached the end
                                     </div>
-                                </div>
-                            ) : null}
-
-                            {finishedAutoFeed &&
-                                !loadingNextSection &&
-                                !loadingMore &&
-                                feedSections.length > 0 ? (
-                                <div className="mt-8 flex justify-center">
-                                    <div className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-500 shadow-sm">
-                                        More categories coming next
-                                    </div>
-                                </div>
-                            ) : null}
+                                ) : null}
+                            </div>
 
                             {loadError ? (
                                 <div className="mt-3 rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -2679,74 +2188,46 @@ export default function ListingPageClient(props: Props) {
             {filtersOpen ? (
                 <div className="fixed inset-0 z-[800] md:hidden">
                     <button
-                        type="button"
                         aria-label="Close filters"
-                        className="absolute inset-0 bg-slate-950/35 backdrop-blur-[1px]"
+                        className="absolute inset-0 bg-black/40"
                         onClick={() => setFiltersOpen(false)}
                     />
-
                     <div
-                        className="absolute inset-x-0 bottom-0 max-h-[92vh] overflow-hidden rounded-t-[28px] bg-white shadow-2xl"
-                        style={{
-                            paddingBottom: "env(safe-area-inset-bottom)",
-                        }}
+                        className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl"
+                        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
-                        <div className="flex justify-center pt-2.5">
-                            <div className="h-1.5 w-12 rounded-full bg-slate-200" />
-                        </div>
-
-                        <div className="flex items-center justify-between border-b border-slate-100 px-5 pb-4 pt-3">
-                            <div>
-                                <h2 className="text-xl font-black text-slate-950">
-                                    Filters
-                                </h2>
-
-                                {appliedCount > 0 ? (
-                                    <p className="mt-0.5 text-xs font-medium text-slate-500">
-                                        {appliedCount}{" "}
-                                        {appliedCount === 1
-                                            ? "filter"
-                                            : "filters"}{" "}
-                                        selected
-                                    </p>
-                                ) : null}
-                            </div>
-
+                        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+                            <div className="text-sm font-extrabold">Filters</div>
                             <button
                                 type="button"
                                 onClick={() => setFiltersOpen(false)}
-                                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50"
-                                aria-label="Close filters"
+                                className="rounded-full border border-slate-200 p-2 hover:bg-orange-50"
                             >
-                                <X className="h-5 w-5" />
+                                <X className="h-4 w-4" />
                             </button>
                         </div>
 
-                        <div className="max-h-[calc(92vh-180px)] overflow-y-auto px-5 py-5">
+                        <div className="max-h-[72vh] overflow-auto px-4 py-4">
                             {FiltersContent}
                         </div>
 
-                        <div className="border-t border-slate-100 bg-white px-5 py-4">
+                        <div className="grid grid-cols-2 gap-2 border-t border-slate-200 px-4 py-3">
+                            <button
+                                type="button"
+                                onClick={clearAll}
+                                className="h-12 rounded-xl border border-slate-200 px-4 text-sm font-extrabold text-slate-700 hover:bg-orange-50"
+                            >
+                                Clear
+                            </button>
                             <button
                                 type="button"
                                 onClick={async () => {
                                     setFiltersOpen(false);
                                     await applyFilters();
                                 }}
-                                disabled={refreshing}
-                                className="flex h-14 w-full items-center justify-center rounded-2xl bg-orange-500 px-5 text-base font-black text-white shadow-[0_10px_25px_rgba(249,115,22,0.25)] transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="h-12 rounded-xl bg-orange-500 px-4 text-sm font-extrabold text-white hover:bg-orange-600"
                             >
-                                {refreshing
-                                    ? "Applying..."
-                                    : "Apply filters"}
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={clearAll}
-                                className="mt-3 flex h-10 w-full items-center justify-center text-sm font-bold text-slate-500 transition hover:text-orange-600"
-                            >
-                                Clear all
+                                Apply
                             </button>
                         </div>
                     </div>

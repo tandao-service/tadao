@@ -10,7 +10,7 @@ import CategoryRail from "./CategoryRail";
 import QuickChips from "./QuickChips";
 import FeaturedRow from "./FeaturedRow";
 import TrendingGrid from "./TrendingGrid";
-import RegionsGrid from "./RegionsGrid";
+//import RegionsGrid from "./RegionsGrid";
 import Footer from "./Footer.client";
 import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
@@ -148,7 +148,7 @@ export default function HomeShell({
                             <TrendingGridSkeleton />
                         )}
 
-                        <RegionsGrid regions={regions} listingSlug={defaultListingSlug} />
+                        {/**   <RegionsGrid regions={regions} listingSlug={defaultListingSlug} />*/}
                     </section>
                 </div>
             </div>
