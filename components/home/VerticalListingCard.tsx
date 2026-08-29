@@ -559,7 +559,7 @@ export default function VerticalListingCard({
             </div>
 
             <div className="flex h-full flex-col p-3">
-                <h2 className="line-clamp-2 text-[14px] font-extrabold leading-5 text-slate-900 dark:text-white">
+                <h2 className="line-clamp-2 text-[14px] font-extrabold leading-5 text-[#047034] dark:text-emerald-100">
                     {title}
                 </h2>
 
@@ -635,7 +635,7 @@ export default function VerticalListingCard({
                         )}
                     </div>
                 ) : !noPriceNeeded ? (
-                    <div className="mt-3 text-base font-black text-slate-950 dark:text-white">
+                    <div className="mt-3 text-base font-black text-[#fb540d] dark:text-orange-400">
                         {isContactPrice
                             ? "Contact for price"
                             : moneyKsh(

@@ -481,7 +481,7 @@ export default function HorizontalListingCard({
                     <div>
                         <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                                <h2 className="line-clamp-2 text-sm font-extrabold leading-5 text-slate-950 dark:text-white sm:text-base lg:text-lg">
+                                <h2 className="line-clamp-2 text-sm font-extrabold leading-5 text-[#047034] dark:text-emerald-100 sm:text-base lg:text-lg">
                                     {title}
                                 </h2>
 
@@ -550,7 +550,7 @@ export default function HorizontalListingCard({
 
                     <div className="mt-3 flex items-end justify-between gap-3">
                         {!noPriceNeeded ? (
-                            <div className="text-base font-black text-orange-600 sm:text-lg">
+                            <div className="text-base font-black text-[#fb540d] dark:text-orange-400 sm:text-lg">
                                 {isContactPrice
                                     ? "Contact for price"
                                     : moneyKsh(

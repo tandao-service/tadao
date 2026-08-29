@@ -6,14 +6,11 @@ import {
   getListingMapFromDB,
   getListingSidebarOptions,
 } from "@/lib/actions/dynamicAd.actions";
-
+export const dynamic = "force-dynamic";
 import Category from "@/lib/database/models/category.model";
 import Subcategory from "@/lib/database/models/subcategory.model";
 
-function parseNum(v?: string | null) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
-}
+
 
 function normalizeSlug(s: string) {
   return String(s || "").trim().toLowerCase();
@@ -27,6 +24,7 @@ async function getQuickFilterForSubcategory(args: {
     const catDoc: any = await Category.findOne({ name: args.categoryName })
       .select("_id")
       .lean();
+
     if (!catDoc?._id) return { field: "", options: [] as string[] };
 
     const subDoc: any = await Subcategory.findOne({
@@ -38,7 +36,6 @@ async function getQuickFilterForSubcategory(args: {
 
     const fields: any[] = Array.isArray(subDoc?.fields) ? subDoc.fields : [];
 
-    // preference order: type -> make-model -> make -> brand
     const picked =
       fields.find((f) => f?.name === "type" || /type/i.test(String(f?.name || ""))) ||
       fields.find((f) => f?.name === "make-model") ||
@@ -55,7 +52,11 @@ async function getQuickFilterForSubcategory(args: {
     return { field: "", options: [] as string[] };
   }
 }
-
+function parseNum(v: string | null) {
+  if (v == null || String(v).trim() === "") return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -76,22 +77,32 @@ export async function GET(req: Request) {
           ? "unverified"
           : undefined;
 
-    // Primary location filter is `region`.
-    // `county` remains as a fallback so old links do not immediately break.
-    const region = String(
-      searchParams.get("region") ||
-      searchParams.get("county") ||
-      ""
-    ).trim();
-
+    const county = String(searchParams.get("county") || "").trim();
     const town = String(searchParams.get("town") || "").trim();
     const make = String(searchParams.get("make") || "").trim();
     const model = String(searchParams.get("model") || "").trim();
     const q = String(searchParams.get("q") || "").trim();
 
-    // quick filters for non-vehicle listings
     const type = String(searchParams.get("type") || "").trim();
     const brand = String(searchParams.get("brand") || "").trim();
+
+    // accept both sort and sortby
+    const sortRaw = String(
+      searchParams.get("sort") || searchParams.get("sortby") || "recommended"
+    ).trim().toLowerCase();
+
+    const sort =
+      sortRaw === "lowest"
+        ? "lowest"
+        : sortRaw === "highest"
+          ? "highest"
+          : sortRaw === "price_asc"
+            ? "price_asc"
+            : sortRaw === "price_desc"
+              ? "price_desc"
+              : sortRaw === "new"
+                ? "new"
+                : "recommended";
 
     const LISTING_MAP = await getListingMapFromDB();
     const listing = LISTING_MAP[listingSlug];
@@ -109,8 +120,11 @@ export async function GET(req: Request) {
             makes: [],
             models: [],
             totalInCategory: 0,
+            types: [],
+            brands: [],
           },
           quickFilter: { field: "", options: [] as string[] },
+          listingMeta: null,
         },
         { status: 404 }
       );
@@ -118,18 +132,18 @@ export async function GET(req: Request) {
 
     const categoryName = String(listing.category || "").trim();
     const subcategoryName = String(listing.subcategory || "").trim();
+    const listingTitle = String(listing.title || subcategoryName || "").trim();
     const isVehicle = categoryName.toLowerCase() === "vehicle";
 
-    // ✅ ALWAYS compute fresh sidebar + quickFilter for this listingSlug + current filters
-    // ✅ IMPORTANT: include subcategory so totals/counties are computed correctly per subcategory context
     const [sidebar, quickFilter] = await Promise.all([
       getListingSidebarOptions({
         category: categoryName,
-        subcategory: subcategoryName, // ✅ critical
-        regionSlug: region || regionSlug || undefined,
+        subcategory: subcategoryName,
+        regionSlug: regionSlug || undefined,
         min,
         max,
         membership,
+        county,
         town,
         make: isVehicle ? make : undefined,
         model: isVehicle ? model : undefined,
@@ -143,27 +157,24 @@ export async function GET(req: Request) {
       }),
     ]);
 
-    // REGION LISTING
     if (regionSlug) {
-      const sort =
-        searchParams.get("sort") === "price_asc"
-          ? "price_asc"
-          : searchParams.get("sort") === "price_desc"
-            ? "price_desc"
-            : searchParams.get("sort") === "new"
-              ? "new"
-              : "recommeded";
 
       const res = await getAdsForRegionListing({
         regionSlug,
-        category: listing.category,
-        subcategory: listing.subcategory,
+        category: categoryName,
+        subcategory: subcategoryName,
         page,
         limit,
         min,
         max,
-        sort,
+        sort:
+          sort === "lowest"
+            ? "price_asc"
+            : sort === "highest"
+              ? "price_desc"
+              : sort,
         membership,
+        county,
         town,
         make: isVehicle ? make : undefined,
         model: isVehicle ? model : undefined,
@@ -177,40 +188,39 @@ export async function GET(req: Request) {
         totalPages: Number(res?.totalPages || 1),
         sidebar,
         quickFilter,
+        listingMeta: {
+          listingSlug,
+          listingTitle,
+          categoryName,
+          subcategoryName,
+          isVehicle,
+          regionSlug,
+        },
       });
     }
 
-    // NATIONAL LISTING
-    const sortby =
-      searchParams.get("sortby") === "lowest"
-        ? "lowest"
-        : searchParams.get("sortby") === "highest"
-          ? "highest"
-          : searchParams.get("sortby") === "new"
-            ? "new"
-            : "recommeded";
-
     const queryObject: any = {
-      sortby,
-      category: listing.category,
-      subcategory: listing.subcategory,
+      sortby:
+        sort === "price_asc"
+          ? "lowest"
+          : sort === "price_desc"
+            ? "highest"
+            : sort,
+      category: categoryName,
+      subcategory: subcategoryName,
     };
 
     if (membership) queryObject.membership = membership;
-    if (min !== undefined || max !== undefined)
+    if (min !== undefined || max !== undefined) {
       queryObject.price = `${min || 0}-${max || 999999999}`;
-
-    // Listings are stored/filterable by data.region.
-    if (region) queryObject.region = region;
-
+    }
+    if (county) queryObject.county = county;
     if (town) queryObject.town = town;
     if (q) queryObject.q = q;
 
-    // ✅ only apply make/model to vehicle category
     if (isVehicle && make) queryObject.make = make;
     if (isVehicle && model) queryObject.model = model;
 
-    // ✅ only apply type/brand to non-vehicle
     if (!isVehicle && type) queryObject.type = type;
     if (!isVehicle && brand) queryObject.brand = brand;
 
@@ -221,6 +231,14 @@ export async function GET(req: Request) {
       totalPages: Number(res?.totalPages || 1),
       sidebar,
       quickFilter,
+      listingMeta: {
+        listingSlug,
+        listingTitle,
+        categoryName,
+        subcategoryName,
+        isVehicle,
+        regionSlug: null,
+      },
     });
   } catch (e: any) {
     return NextResponse.json(

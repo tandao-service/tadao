@@ -643,9 +643,10 @@ export default function ListingPageClient(props: Props) {
     const [town, setTown] = React.useState(props.selected.town || "");
 
     const locationSelectValue = React.useMemo(() => {
+        if (town && county) return `area:${county}:${town}`;
         if (county) return `region:${county}`;
         return "";
-    }, [county]);
+    }, [county, town]);
 
     const [q, setQ] = React.useState(props.selected.q || "");
     const [make, setMake] = React.useState(props.selected.make || "");
@@ -768,14 +769,7 @@ export default function ListingPageClient(props: Props) {
             if (props.regionSlug) sp.set("regionSlug", props.regionSlug);
 
             setQS(sp, "q", q2);
-
-            // Regions-only location filter:
-            // keep the existing React state name `county` for compatibility,
-            // but send it to the API as `region`.
-            setQS(sp, "region", county2);
-            sp.delete("county");
-
-            // Areas/towns are temporarily disabled in the UI.
+            setQS(sp, "county", county2);
             setQS(sp, "town", town2);
             setQS(sp, "min", min2);
             setQS(sp, "max", max2);
@@ -992,11 +986,7 @@ export default function ListingPageClient(props: Props) {
 
                 // Keep filters that make sense across different subcategories.
                 setQS(sp, "q", q);
-
-                // Regions-only location filter.
-                setQS(sp, "region", county);
-                sp.delete("county");
-
+                setQS(sp, "county", county);
                 setQS(sp, "town", town);
                 setQS(sp, "min", min);
                 setQS(sp, "max", max);
@@ -1706,12 +1696,23 @@ export default function ListingPageClient(props: Props) {
                         <option value="">All Kenya</option>
 
                         {REGIONS_WITH_AREA.map((regionItem) => (
-                            <option
+                            <optgroup
                                 key={regionItem.region}
-                                value={`region:${regionItem.region}`}
+                                label={regionItem.region}
                             >
-                                {regionItem.region}
-                            </option>
+                                <option value={`region:${regionItem.region}`}>
+                                    All {regionItem.region}
+                                </option>
+
+                                {regionItem.area.map((area) => (
+                                    <option
+                                        key={`${regionItem.region}-${area}`}
+                                        value={`area:${regionItem.region}:${area}`}
+                                    >
+                                        {area}
+                                    </option>
+                                ))}
+                            </optgroup>
                         ))}
                     </select>
 
@@ -1989,14 +1990,14 @@ export default function ListingPageClient(props: Props) {
                                         <button
                                             type="button"
                                             onClick={clearAll}
-                                            className="h-11 rounded-sm border border-slate-200 bg-white px-3 text-[13px] font-extrabold text-slate-700 transition hover:bg-slate-50"
+                                            className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-[13px] font-extrabold text-slate-700 transition hover:bg-slate-50"
                                         >
                                             Clear
                                         </button>
                                         <button
                                             type="button"
                                             onClick={applyFilters}
-                                            className="h-11 rounded-sm bg-emerald-600 px-3 text-[13px] font-extrabold text-white transition hover:bg-emerald-700"
+                                            className="h-11 rounded-xl bg-emerald-500 px-3 text-[13px] font-extrabold text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:bg-emerald-600"
                                         >
                                             Apply
                                         </button>
@@ -2043,7 +2044,7 @@ export default function ListingPageClient(props: Props) {
 
                                         <button
                                             onClick={applyFilters}
-                                            className="h-14 shrink-0 rounded-sm bg-emerald-700 px-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-emerald-800"
+                                            className="h-14 shrink-0 rounded-sm bg-emerald-500 px-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)] transition hover:-translate-y-0.5 hover:bg-emerald-600"
                                         >
                                             Search
                                         </button>

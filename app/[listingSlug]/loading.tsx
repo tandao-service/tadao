@@ -437,35 +437,9 @@ function ListingLoadingView() {
                                     </div>
                                 </div>
 
-                                {/* Price chips */}
-                                <div className="mt-4 flex flex-wrap gap-2">
-                                    {Array.from({
-                                        length: 5,
-                                    }).map((_, index) => (
-                                        <SkeletonLine
-                                            key={index}
-                                            className="h-9 w-24 rounded-xl"
-                                        />
-                                    ))}
-                                </div>
 
-                                {/* Brands */}
-                                <div className="mt-4 grid grid-cols-4 gap-2 md:grid-cols-7">
-                                    {Array.from({
-                                        length: 7,
-                                    }).map((_, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex h-[92px] flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white"
-                                        >
-                                            <div className="relative h-10 w-10 overflow-hidden rounded-full bg-orange-100">
-                                                <div className="skeleton-shimmer absolute inset-0" />
-                                            </div>
 
-                                            <SkeletonLine className="h-3 w-12" />
-                                        </div>
-                                    ))}
-                                </div>
+
                             </div>
 
                             {/* Sort */}

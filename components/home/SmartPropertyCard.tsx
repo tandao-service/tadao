@@ -330,7 +330,7 @@ export default function SmartPropertyCard({
             </div>
 
             <div className="p-3">
-                <h2 className="line-clamp-2 text-sm font-semibold">{title}</h2>
+                <h2 className="line-clamp-2 text-sm font-extrabold text-[#047034] dark:text-emerald-100">{title}</h2>
 
                 <div className="mt-1 line-clamp-1 text-[12px] text-gray-600 dark:text-gray-300">
                     {region}
@@ -373,7 +373,7 @@ export default function SmartPropertyCard({
                         )}
                     </div>
                 ) : !noPriceNeeded ? (
-                    <div className="mt-2 font-bold text-black dark:text-white">
+                    <div className="mt-2 font-black text-[#fb540d] dark:text-orange-400">
                         {isContactPrice ? "Contact for price" : moneyKsh(price)}
                     </div>
                 ) : null}
