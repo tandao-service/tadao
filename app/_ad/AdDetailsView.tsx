@@ -229,434 +229,437 @@ export default async function AdDetailsView({ ad, listingSlug }: Props) {
             <TopBar />
             <MobileBackPill label="Back" />
 
-            <main className="w-full lg:mx-auto lg:max-w-6xl lg:px-4 pt-[calc(var(--topbar-h,64px)+0px)] pb-8">
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
-                />
-                <div className="hidden lg:inline">
-                    <div className="mb-4 rounded-2xl border border-orange-100 bg-white p-3 text-sm text-slate-600 shadow-sm">
-                        <div className="flex flex-wrap items-center gap-2">
-                            <Link href="/" className="font-bold text-slate-900 hover:underline">
-                                Home
-                            </Link>
-
-                            {safeStr(data?.subcategory) ? (
-                                <>
-                                    <span className="text-slate-400">/</span>
-                                    <Link
-                                        href={`/${toListingSlugFromName(safeStr(data.subcategory))}`}
-                                        className="font-bold text-slate-900 hover:underline"
-                                    >
-                                        {safeStr(data.subcategory)}
-                                    </Link>
-                                </>
-                            ) : null}
-
-                            <span className="text-slate-400">/</span>
-                            <span className="text-slate-500">{region}</span>
-
-                            {area ? (
-                                <>
-                                    <span className="text-slate-400">/</span>
-                                    <span className="text-slate-500">{area}</span>
-                                </>
-                            ) : null}
-
-                            <span className="ml-auto">
-                                <a className="underline" href={canonicalUrl}>
-                                    Canonical
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <section className="grid grid-cols-1 lg:gap-4 lg:grid-cols-12">
-                    <div className="lg:col-span-8">
-                        <div className="overflow-hidden lg:rounded-[28px] border border-orange-100 bg-white shadow-sm">
-                            <PropertyGallery
-                                title={title}
-                                images={galleryImages}
-                                badgeText={safeStr(data?.subcategory) || safeStr(data?.category) || "Listing"}
-                            />
-
-                            <div className="p-5 md:p-6">
-                                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                                    <div>
-                                        <h1 className="text-2xl font-extrabold text-slate-900 md:text-3xl">
-                                            {title}
-                                        </h1>
-
-                                        <div className="mt-2 text-sm text-slate-600">
-                                            {region}
-                                            {area ? ` • ${area}` : ""}
-                                            {safeStr(data?.condition) ? ` • ${safeStr(data?.condition)}` : ""}
-                                        </div>
-                                    </div>
-
-                                    {showFinancingInfo ? (
-                                        <div className="rounded-2xl bg-orange-50 px-4 py-3">
-                                            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
-                                                Financing
-                                            </div>
-
-                                            <div className="mt-2 space-y-1 text-sm text-slate-700">
-                                                {financing.subcategory ? (
-                                                    <div className="font-extrabold text-orange-600">
-                                                        {financing.subcategory}
-                                                    </div>
-                                                ) : null}
-                                                {isAssetFinancing && (financing.minAmount || financing.maxAmount) ? (
-                                                    <div className="rounded-2xl border border-orange-100 bg-white px-3 py-3">
-                                                        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-                                                            Finance Range
-                                                        </div>
-
-                                                        <div className="mt-2 grid grid-cols-2 gap-2">
-                                                            {financing.minAmount ? (
-                                                                <div className="rounded-xl bg-orange-50 px-3 py-2 text-center">
-                                                                    <div className="text-[10px] font-bold uppercase text-orange-500">
-                                                                        Minimum
-                                                                    </div>
-                                                                    <div className="text-sm font-extrabold text-slate-900">
-                                                                        {moneyKsh(financing.minAmount)}
-                                                                    </div>
-                                                                </div>
-                                                            ) : null}
-
-                                                            {financing.maxAmount ? (
-                                                                <div className="rounded-xl bg-orange-50 px-3 py-2 text-center">
-                                                                    <div className="text-[10px] font-bold uppercase text-orange-500">
-                                                                        Maximum
-                                                                    </div>
-                                                                    <div className="text-sm font-extrabold text-slate-900">
-                                                                        {moneyKsh(financing.maxAmount)}
-                                                                    </div>
-                                                                </div>
-                                                            ) : null}
-                                                        </div>
-                                                    </div>
-                                                ) : null}
-                                                {financing.amount ? (
-                                                    <div>
-                                                        <span className="font-bold">Amount:</span>{" "}
-                                                        {moneyKsh(financing.amount)}
-                                                    </div>
-                                                ) : null}
-
-                                                {financing.deposit ? (
-                                                    <div>
-                                                        <span className="font-bold">Deposit:</span>{" "}
-                                                        {moneyKsh(financing.deposit)}
-                                                    </div>
-                                                ) : null}
-
-                                                {financing.term ? (
-                                                    <div>
-                                                        <span className="font-bold">Term:</span> {financing.term}
-                                                    </div>
-                                                ) : null}
-
-                                                {financing.income ? (
-                                                    <div>
-                                                        <span className="font-bold">Income:</span>{" "}
-                                                        {moneyKsh(financing.income)}
-                                                    </div>
-                                                ) : null}
-                                            </div>
-                                        </div>
-                                    ) : !noPriceNeeded ? (
-                                        <div className="rounded-2xl bg-orange-50 px-4 py-1">
-                                            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
-                                                Price
-                                            </div>
-                                            <div className="mt-1 text-xl font-extrabold text-orange-600">
-                                                {priceText}
-                                            </div>
-                                        </div>
-                                    ) : null}
-                                </div>
-
-                                {(data?.unit || data?.per || data?.period) && (
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                        {data?.unit && data?.contact === "specify" ? (
-                                            <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
-                                                {safeStr(data.unit)}
-                                            </span>
-                                        ) : null}
-                                        {data?.per ? (
-                                            <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
-                                                {safeStr(data.per)}
-                                            </span>
-                                        ) : null}
-                                        {data?.period ? (
-                                            <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
-                                                {safeStr(data.period)}
-                                            </span>
-                                        ) : null}
-                                    </div>
-                                )}
-
-                                {specs.length > 0 ? (
-                                    <div className="mt-5">
-                                        <h2 className="text-lg font-extrabold text-slate-900">Key details</h2>
-
-                                        <div className="mt-3 flex flex-wrap gap-2">
-                                            {specs.map((item) => (
-                                                <div
-                                                    key={item.label}
-                                                    className="inline-flex justify-center items-center gap-2 rounded-sm border border-slate-200 bg-slate-50 px-3 py-2"
-                                                >
-                                                    <span className="text-[12px] uppercase text-slate-500">
-                                                        {item.label}:
-                                                    </span>
-                                                    <span className="text-[12px] font-extrabold text-slate-900">
-                                                        {item.value}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ) : null}
-
-                                {description ? (
-                                    <div className="mt-6">
-                                        <h2 className="text-lg font-extrabold text-slate-900">Description</h2>
-                                        <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
-                                            {description}
-                                        </p>
-                                    </div>
-                                ) : null}
-                            </div>
-                        </div>
-                    </div>
-
-                    <aside className="lg:col-span-4">
-                        <div className="space-y-3 lg:sticky lg:top-[calc(var(--topbar-h,64px)+12px)]">
-                            {showFinancingInfo ? (
-                                <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
-                                    <div className="text-sm text-slate-500">Financing Details</div>
-
-                                    <div className="mt-3 space-y-2 text-sm text-slate-700">
-                                        {financing.subcategory ? (
-                                            <div className="text-lg font-extrabold text-slate-900">
-                                                {financing.subcategory}
-                                            </div>
-                                        ) : null}
-
-                                        {financing.amount ? (
-                                            <div>
-                                                <span className="font-bold">Amount:</span>{" "}
-                                                {moneyKsh(financing.amount)}
-                                            </div>
-                                        ) : null}
-
-                                        {financing.deposit ? (
-                                            <div>
-                                                <span className="font-bold">Deposit:</span>{" "}
-                                                {moneyKsh(financing.deposit)}
-                                            </div>
-                                        ) : null}
-
-                                        {financing.term ? (
-                                            <div>
-                                                <span className="font-bold">Term:</span> {financing.term}
-                                            </div>
-                                        ) : null}
-
-                                        {financing.income ? (
-                                            <div>
-                                                <span className="font-bold">Income:</span>{" "}
-                                                {moneyKsh(financing.income)}
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                </div>
-                            ) : !noPriceNeeded ? (
-                                <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
-                                    <div className="text-sm text-slate-500">Price</div>
-                                    <div className="mt-1 text-2xl font-extrabold text-slate-900">
-                                        {priceText}
-                                    </div>
-                                </div>
-                            ) : null}
-
-                            <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-sm">
-                                <Link
-                                    href={`/seller/${organizerId}`}
-                                    className="group flex items-center gap-3 rounded-2xl transition hover:bg-slate-50"
-                                >
-                                    <div className="h-14 w-14 overflow-hidden rounded-full border border-orange-100 bg-orange-50">
-                                        {sellerPhoto ? (
-                                            <Image
-                                                src={sellerPhoto}
-                                                alt={sellerName}
-                                                width={96}
-                                                height={96}
-                                                className="h-14 w-14 object-cover"
-                                                unoptimized
-                                            />
-                                        ) : (
-                                            <div className="flex h-14 w-14 items-center justify-center text-sm font-bold text-orange-600">
-                                                {sellerName.slice(0, 1).toUpperCase()}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="min-w-0 flex-1">
-                                        <div className="truncate font-extrabold text-slate-900 group-hover:text-orange-600">
-                                            {sellerName}
-                                        </div>
-                                        <div className="mt-0.5 flex items-center gap-2 text-xs text-slate-500">
-                                            <span>{isVerified ? "Verified Seller" : "Seller"}</span>
-                                            <span>•</span>
-                                            <span>View profile</span>
-                                        </div>
-                                    </div>
-
-                                    {isVerified ? (
-                                        <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-extrabold text-emerald-700">
-                                            VERIFIED
-                                        </span>
-                                    ) : null}
+            {/* Compact neutral backdrop matches the category listing pages. */}
+            <div className="min-h-screen w-full bg-[#EBEEF2]">
+                <main className="mx-auto w-full max-w-[1280px] px-3 pb-6 pt-2 sm:px-4 lg:px-5">
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+                    />
+                    <div className="hidden lg:block">
+                        <div className="mb-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                                <Link href="/" className="font-bold text-slate-900 hover:underline">
+                                    Home
                                 </Link>
 
-                                <div className="mt-5 grid grid-cols-1 gap-3">
-                                    {phone && canViewProtectedContact ? (
-                                        <TrackedAdLink
-                                            adId={String(ad._id)}
-                                            metric="calls"
-                                            href={`tel:${phone}`}
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
+                                {safeStr(data?.subcategory) ? (
+                                    <>
+                                        <span className="text-slate-400">/</span>
+                                        <Link
+                                            href={`/${toListingSlugFromName(safeStr(data.subcategory))}`}
+                                            className="font-bold text-slate-900 hover:underline"
                                         >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                                                <IoCall className="h-5 w-5" />
-                                            </span>
-                                            <span className="min-w-0">
-                                                <span className="block text-xs font-medium text-slate-500">Call</span>
-                                                <span className="block truncate font-bold text-slate-900">{phone}</span>
-                                            </span>
-                                        </TrackedAdLink>
-                                    ) : null}
+                                            {safeStr(data.subcategory)}
+                                        </Link>
+                                    </>
+                                ) : null}
 
-                                    {whatsapp && canViewProtectedContact ? (
-                                        <TrackedAdLink
-                                            adId={String(ad._id)}
-                                            metric="whatsapp"
-                                            href={`https://wa.me/${whatsapp.replace(/[^\d]/g, "")}`}
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
-                                        >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                                                <IoChatbubbleOutline className="h-5 w-5" />
-                                            </span>
-                                            <span className="min-w-0">
-                                                <span className="block text-xs font-medium text-slate-500">WhatsApp</span>
-                                                <span className="block truncate font-bold text-slate-900">{whatsapp}</span>
-                                            </span>
-                                        </TrackedAdLink>
+                                <span className="text-slate-400">/</span>
+                                <span className="text-slate-500">{region}</span>
 
-                                    ) : null}
+                                {area ? (
+                                    <>
+                                        <span className="text-slate-400">/</span>
+                                        <span className="text-slate-500">{area}</span>
+                                    </>
+                                ) : null}
 
-                                    {email && canViewProtectedContact ? (
-                                        <TrackedAdLink
-                                            adId={String(ad._id)}
-                                            metric="inquiries"
-                                            href={`mailto:${email}`}
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
-                                        >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                                                <IoMail className="h-5 w-5" />
-                                            </span>
-                                            <span className="min-w-0">
-                                                <span className="block text-xs font-medium text-slate-500">Email</span>
-                                                <span className="block truncate font-bold text-slate-900">{email}</span>
-                                            </span>
-                                        </TrackedAdLink>
+                                <span className="ml-auto">
+                                    <a className="underline" href={canonicalUrl}>
+                                        Canonical
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <section className="grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-3">
+                        <div className="lg:col-span-8">
+                            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                                <PropertyGallery
+                                    title={title}
+                                    images={galleryImages}
+                                    badgeText={safeStr(data?.subcategory) || safeStr(data?.category) || "Listing"}
+                                />
 
-                                    ) : null}
-                                    {isContactProtectedAd && !canViewProtectedContact ? (
-                                        <div className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 p-4">
-                                            <h3 className="text-sm font-extrabold text-slate-900">
-                                                View contact details
-                                            </h3>
+                                <div className="p-3 sm:p-4">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                                        <div>
+                                            <h1 className="text-lg font-extrabold leading-snug tracking-tight text-slate-900 sm:text-xl lg:text-[22px]">
+                                                {title}
+                                            </h1>
 
-                                            <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                                                You can view this item first. To contact the owner, please verify your account now.
-                                            </p>
+                                            <div className="mt-1 text-xs text-slate-600 sm:text-[13px]">
+                                                {region}
+                                                {area ? ` • ${area}` : ""}
+                                                {safeStr(data?.condition) ? ` • ${safeStr(data?.condition)}` : ""}
+                                            </div>
+                                        </div>
 
-                                            <Link
-                                                href={`/verify?redirect_url=${encodeURIComponent(canonicalPath)}&reason=protected-contact`}
-                                                className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-2xl bg-orange-500 text-sm font-extrabold text-white hover:bg-orange-600"
-                                            >
-                                                Verify Now
-                                            </Link>
+                                        {showFinancingInfo ? (
+                                            <div className="rounded-xl bg-orange-50 px-3 py-2">
+                                                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
+                                                    Financing
+                                                </div>
+
+                                                <div className="mt-1 space-y-1 text-xs text-slate-700">
+                                                    {financing.subcategory ? (
+                                                        <div className="font-extrabold text-orange-600">
+                                                            {financing.subcategory}
+                                                        </div>
+                                                    ) : null}
+                                                    {isAssetFinancing && (financing.minAmount || financing.maxAmount) ? (
+                                                        <div className="rounded-xl border border-orange-100 bg-white px-2.5 py-2">
+                                                            <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                                                                Finance Range
+                                                            </div>
+
+                                                            <div className="mt-1 grid grid-cols-2 gap-2">
+                                                                {financing.minAmount ? (
+                                                                    <div className="rounded-xl bg-orange-50 px-3 py-2 text-center">
+                                                                        <div className="text-[10px] font-bold uppercase text-orange-500">
+                                                                            Minimum
+                                                                        </div>
+                                                                        <div className="text-sm font-extrabold text-slate-900">
+                                                                            {moneyKsh(financing.minAmount)}
+                                                                        </div>
+                                                                    </div>
+                                                                ) : null}
+
+                                                                {financing.maxAmount ? (
+                                                                    <div className="rounded-xl bg-orange-50 px-3 py-2 text-center">
+                                                                        <div className="text-[10px] font-bold uppercase text-orange-500">
+                                                                            Maximum
+                                                                        </div>
+                                                                        <div className="text-sm font-extrabold text-slate-900">
+                                                                            {moneyKsh(financing.maxAmount)}
+                                                                        </div>
+                                                                    </div>
+                                                                ) : null}
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
+                                                    {financing.amount ? (
+                                                        <div>
+                                                            <span className="font-bold">Amount:</span>{" "}
+                                                            {moneyKsh(financing.amount)}
+                                                        </div>
+                                                    ) : null}
+
+                                                    {financing.deposit ? (
+                                                        <div>
+                                                            <span className="font-bold">Deposit:</span>{" "}
+                                                            {moneyKsh(financing.deposit)}
+                                                        </div>
+                                                    ) : null}
+
+                                                    {financing.term ? (
+                                                        <div>
+                                                            <span className="font-bold">Term:</span> {financing.term}
+                                                        </div>
+                                                    ) : null}
+
+                                                    {financing.income ? (
+                                                        <div>
+                                                            <span className="font-bold">Income:</span>{" "}
+                                                            {moneyKsh(financing.income)}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        ) : !noPriceNeeded ? (
+                                            <div className="rounded-xl bg-orange-50 px-3 py-2 lg:hidden">
+                                                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500">
+                                                    Price
+                                                </div>
+                                                <div className="mt-0.5 text-lg font-extrabold text-orange-600">
+                                                    {priceText}
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </div>
+
+                                    {(data?.unit || data?.per || data?.period) && (
+                                        <div className="mt-2 flex flex-wrap gap-1.5">
+                                            {data?.unit && data?.contact === "specify" ? (
+                                                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
+                                                    {safeStr(data.unit)}
+                                                </span>
+                                            ) : null}
+                                            {data?.per ? (
+                                                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
+                                                    {safeStr(data.per)}
+                                                </span>
+                                            ) : null}
+                                            {data?.period ? (
+                                                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
+                                                    {safeStr(data.period)}
+                                                </span>
+                                            ) : null}
+                                        </div>
+                                    )}
+
+                                    {specs.length > 0 ? (
+                                        <div className="mt-4">
+                                            <h2 className="text-sm font-extrabold text-slate-900">Key details</h2>
+
+                                            <div className="mt-2 flex flex-wrap gap-1.5">
+                                                {specs.map((item) => (
+                                                    <div
+                                                        key={item.label}
+                                                        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5"
+                                                    >
+                                                        <span className="text-[10px] uppercase text-slate-500">
+                                                            {item.label}:
+                                                        </span>
+                                                        <span className="text-[11px] font-bold text-slate-900">
+                                                            {item.value}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     ) : null}
-                                    {canViewProtectedContact ? (
-                                        <TrackedAdLink
-                                            adId={String(ad._id)}
-                                            metric="inquiries"
-                                            href={chatHref}
-                                            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
-                                        >
-                                            <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                                                <IoChatboxOutline className="h-5 w-5" />
-                                            </span>
-                                            <span className="min-w-0">
-                                                <span className="block text-xs font-medium text-slate-500">Message</span>
-                                                <span className="block truncate font-bold text-slate-900">Chat seller</span>
-                                            </span>
-                                        </TrackedAdLink>
 
-
+                                    {description ? (
+                                        <div className="mt-4">
+                                            <h2 className="text-sm font-extrabold text-slate-900">Description</h2>
+                                            <p className="mt-1.5 whitespace-pre-line break-words text-[13px] leading-5 text-slate-700">
+                                                {description}
+                                            </p>
+                                        </div>
                                     ) : null}
-
-                                    <CopyLinkButton
-                                        url={canonicalUrl}
-                                        title={title}
-                                        text={`Check out this ad on Tadao Market: ${title}`}
-                                        className="group flex items-center gap-3 rounded-2xl bg-orange-500 px-4 py-1 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-sm"
-                                    >
-                                        <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition group-hover:bg-white/20">
-                                            <IoShareSocialOutline className="h-5 w-5" />
-                                        </span>
-                                        <span className="min-w-0 text-left">
-                                            <span className="block text-xs font-medium text-orange-100">Share</span>
-                                            <span className="block truncate font-extrabold text-white">Share ad</span>
-                                        </span>
-                                    </CopyLinkButton>
-
-                                    <Link
-                                        href={`/ads/${ad._id}/update`}
-                                        className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-1 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm"
-                                    >
-                                        <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600 transition group-hover:bg-amber-100">
-                                            <IoCreateOutline className="h-5 w-5" />
-                                        </span>
-                                        <span className="min-w-0">
-                                            <span className="block text-xs font-medium text-slate-500">Manage</span>
-                                            <span className="block truncate font-bold text-slate-900">Edit this ad</span>
-                                        </span>
-                                    </Link>
-                                </div>
-
-                                <div className="mt-5 border-t border-slate-200 pt-5">
-                                    <AdDetailActions ad={ad} adPath={canonicalPath} />
                                 </div>
                             </div>
                         </div>
-                    </aside>
-                </section>
 
-                <RelatedPropertiesInfinite
-                    initial={relatedInitial}
-                    subcategory={safeStr(data?.subcategory)}
-                    currentAdId={String(ad?._id)}
-                    regionFallback={region}
-                    listingSlug={listingSlug}
-                    pageSize={PAGE_SIZE}
-                />
-            </main>
+                        <aside className="lg:col-span-4">
+                            <div className="space-y-2.5 lg:sticky lg:top-[calc(var(--topbar-h,42px)+8px)]">
+                                {showFinancingInfo ? (
+                                    <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                                        <div className="text-sm text-slate-500">Financing Details</div>
+
+                                        <div className="mt-2 space-y-1 text-xs text-slate-700">
+                                            {financing.subcategory ? (
+                                                <div className="text-lg font-extrabold text-slate-900">
+                                                    {financing.subcategory}
+                                                </div>
+                                            ) : null}
+
+                                            {financing.amount ? (
+                                                <div>
+                                                    <span className="font-bold">Amount:</span>{" "}
+                                                    {moneyKsh(financing.amount)}
+                                                </div>
+                                            ) : null}
+
+                                            {financing.deposit ? (
+                                                <div>
+                                                    <span className="font-bold">Deposit:</span>{" "}
+                                                    {moneyKsh(financing.deposit)}
+                                                </div>
+                                            ) : null}
+
+                                            {financing.term ? (
+                                                <div>
+                                                    <span className="font-bold">Term:</span> {financing.term}
+                                                </div>
+                                            ) : null}
+
+                                            {financing.income ? (
+                                                <div>
+                                                    <span className="font-bold">Income:</span>{" "}
+                                                    {moneyKsh(financing.income)}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                ) : !noPriceNeeded ? (
+                                    <div className="hidden rounded-xl border border-slate-200 bg-white p-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.06)] lg:block">
+                                        <div className="text-sm text-slate-500">Price</div>
+                                        <div className="mt-0.5 text-xl font-extrabold text-slate-900">
+                                            {priceText}
+                                        </div>
+                                    </div>
+                                ) : null}
+
+                                <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+                                    <Link
+                                        href={`/seller/${organizerId}`}
+                                        className="group flex items-center gap-2.5 rounded-xl transition hover:bg-slate-50"
+                                    >
+                                        <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border border-orange-100 bg-orange-50">
+                                            {sellerPhoto ? (
+                                                <Image
+                                                    src={sellerPhoto}
+                                                    alt={sellerName}
+                                                    width={96}
+                                                    height={96}
+                                                    className="h-11 w-11 object-cover"
+                                                    unoptimized
+                                                />
+                                            ) : (
+                                                <div className="flex h-11 w-11 items-center justify-center text-sm font-bold text-orange-600">
+                                                    {sellerName.slice(0, 1).toUpperCase()}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="min-w-0 flex-1">
+                                            <div className="truncate text-sm font-extrabold text-slate-900 group-hover:text-orange-600">
+                                                {sellerName}
+                                            </div>
+                                            <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-slate-500">
+                                                <span>{isVerified ? "Verified Seller" : "Seller"}</span>
+                                                <span>•</span>
+                                                <span>View profile</span>
+                                            </div>
+                                        </div>
+
+                                        {isVerified ? (
+                                            <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-extrabold text-emerald-700">
+                                                VERIFIED
+                                            </span>
+                                        ) : null}
+                                    </Link>
+
+                                    <div className="mt-3 grid grid-cols-1 gap-2">
+                                        {phone && canViewProtectedContact ? (
+                                            <TrackedAdLink
+                                                adId={String(ad._id)}
+                                                metric="calls"
+                                                href={`tel:${phone}`}
+                                                className="group flex min-h-[42px] items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
+                                            >
+                                                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                                    <IoCall className="h-4 w-4" />
+                                                </span>
+                                                <span className="min-w-0">
+                                                    <span className="block text-[11px] font-medium text-slate-500">Call</span>
+                                                    <span className="block truncate font-bold text-slate-900">{phone}</span>
+                                                </span>
+                                            </TrackedAdLink>
+                                        ) : null}
+
+                                        {whatsapp && canViewProtectedContact ? (
+                                            <TrackedAdLink
+                                                adId={String(ad._id)}
+                                                metric="whatsapp"
+                                                href={`https://wa.me/${whatsapp.replace(/[^\d]/g, "")}`}
+                                                className="group flex min-h-[42px] items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
+                                            >
+                                                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                                    <IoChatbubbleOutline className="h-4 w-4" />
+                                                </span>
+                                                <span className="min-w-0">
+                                                    <span className="block text-[11px] font-medium text-slate-500">WhatsApp</span>
+                                                    <span className="block truncate font-bold text-slate-900">{whatsapp}</span>
+                                                </span>
+                                            </TrackedAdLink>
+
+                                        ) : null}
+
+                                        {email && canViewProtectedContact ? (
+                                            <TrackedAdLink
+                                                adId={String(ad._id)}
+                                                metric="inquiries"
+                                                href={`mailto:${email}`}
+                                                className="group flex min-h-[42px] items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
+                                            >
+                                                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                                    <IoMail className="h-4 w-4" />
+                                                </span>
+                                                <span className="min-w-0">
+                                                    <span className="block text-[11px] font-medium text-slate-500">Email</span>
+                                                    <span className="block truncate font-bold text-slate-900">{email}</span>
+                                                </span>
+                                            </TrackedAdLink>
+
+                                        ) : null}
+                                        {isContactProtectedAd && !canViewProtectedContact ? (
+                                            <div className="mt-2 rounded-xl border border-orange-200 bg-orange-50 p-3">
+                                                <h3 className="text-sm font-extrabold text-slate-900">
+                                                    View contact details
+                                                </h3>
+
+                                                <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                                                    You can view this item first. To contact the owner, please verify your account now.
+                                                </p>
+
+                                                <Link
+                                                    href={`/verify?redirect_url=${encodeURIComponent(canonicalPath)}&reason=protected-contact`}
+                                                    className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-lg bg-orange-500 text-sm font-extrabold text-white hover:bg-orange-600"
+                                                >
+                                                    Verify Now
+                                                </Link>
+                                            </div>
+                                        ) : null}
+                                        {canViewProtectedContact ? (
+                                            <TrackedAdLink
+                                                adId={String(ad._id)}
+                                                metric="inquiries"
+                                                href={chatHref}
+                                                className="group flex min-h-[42px] items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
+                                            >
+                                                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                                    <IoChatboxOutline className="h-4 w-4" />
+                                                </span>
+                                                <span className="min-w-0">
+                                                    <span className="block text-[11px] font-medium text-slate-500">Message</span>
+                                                    <span className="block truncate font-bold text-slate-900">Chat seller</span>
+                                                </span>
+                                            </TrackedAdLink>
+
+
+                                        ) : null}
+
+                                        <CopyLinkButton
+                                            url={canonicalUrl}
+                                            title={title}
+                                            text={`Check out this ad on Tadao Market: ${title}`}
+                                            className="group flex min-h-[42px] items-center gap-2.5 rounded-lg bg-orange-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-orange-600 hover:shadow-sm"
+                                        >
+                                            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition group-hover:bg-white/20">
+                                                <IoShareSocialOutline className="h-4 w-4" />
+                                            </span>
+                                            <span className="min-w-0 text-left">
+                                                <span className="block text-xs font-medium text-orange-100">Share</span>
+                                                <span className="block truncate font-extrabold text-white">Share ad</span>
+                                            </span>
+                                        </CopyLinkButton>
+
+                                        <Link
+                                            href={`/ads/${ad._id}/update`}
+                                            className="group flex min-h-[42px] items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
+                                        >
+                                            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600 transition group-hover:bg-amber-100">
+                                                <IoCreateOutline className="h-4 w-4" />
+                                            </span>
+                                            <span className="min-w-0">
+                                                <span className="block text-[11px] font-medium text-slate-500">Manage</span>
+                                                <span className="block truncate font-bold text-slate-900">Edit this ad</span>
+                                            </span>
+                                        </Link>
+                                    </div>
+
+                                    <div className="mt-3 border-t border-slate-200 pt-3">
+                                        <AdDetailActions ad={ad} adPath={canonicalPath} />
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </section>
+
+                    <RelatedPropertiesInfinite
+                        initial={relatedInitial}
+                        subcategory={safeStr(data?.subcategory)}
+                        currentAdId={String(ad?._id)}
+                        regionFallback={region}
+                        listingSlug={listingSlug}
+                        pageSize={PAGE_SIZE}
+                    />
+                </main>
+            </div>
         </>
     );
 }

@@ -2,21 +2,18 @@
 
 import * as React from "react";
 import type { HomeAd, HomeCategory, HomeRegion } from "@/lib/home/home.data";
-import { HomeCategoryNode } from "@/lib/home/home.categories";
+import type { HomeCategoryNode } from "@/lib/home/home.categories";
 
 import TopBar from "./TopBar.client";
-import HeroSearchBar from "./HeroSearchBar.client";
 import CategoryRail from "./CategoryRail";
 import QuickChips from "./QuickChips";
 import FeaturedRow from "./FeaturedRow";
 import TrendingGrid from "./TrendingGrid";
-//import RegionsGrid from "./RegionsGrid";
 import Footer from "./Footer.client";
 import FeaturedRowSkeleton from "./FeaturedRowSkeleton";
 import TrendingGridSkeleton from "./TrendingGridSkeleton";
 import BottomNav from "@/components/home/BottomNav.client";
 import { getAllPackages } from "@/lib/actions/packages.actions";
-import { console } from "inspector";
 import { useAuth } from "@/app/hooks/useAuth";
 
 function slugify(input: string) {
@@ -51,11 +48,8 @@ function toListingSlugFromName(name: string) {
 
 function getDefaultListingSlugFromTree(tree: any[]) {
     const first = tree?.[0];
-    const name =
-        first?.subcategories?.length ? first.subcategories[0]?.name : first?.name;
-
-    const computed = toListingSlugFromName(String(name || ""));
-    return computed || "cars-for-sale";
+    const name = first?.subcategories?.length ? first.subcategories[0]?.name : first?.name;
+    return toListingSlugFromName(String(name || "")) || "cars-for-sale";
 }
 
 export default function HomeShell({
@@ -80,45 +74,38 @@ export default function HomeShell({
     const [packagesList, setPackagesList] = React.useState<any[]>([]);
 
     React.useEffect(() => {
+        let mounted = true;
         const loadPackages = async () => {
-            const data = (await getAllPackages()) || [];
-            setPackagesList(data);
+            try {
+                const data = (await getAllPackages()) || [];
+                if (mounted) setPackagesList(data);
+            } catch (error) {
+                // Keep the rest of the homepage functional when packages cannot load.
+                console.error("Could not load packages", error);
+            }
         };
-
-        loadPackages();
+        void loadPackages();
+        return () => { mounted = false; };
     }, []);
+
     return (
-        <div className="min-h-screen W-full bg-white">
-            <TopBar />
+        <div className="min-h-screen w-full bg-[#EBEEF2]">
+            {/* Green status bar stays fixed; orange header takes its normal flow height. */}
+            <TopBar
+                searchProps={{
+                    regions,
+                    listingSlug: defaultListingSlug,
+                    featured,
+                    trending,
+                }}
+            />
 
             <div
-                className="w-full lg:mx-auto lg:max-w-6xl lg:px-3 lg:pb-[calc(var(--bottomnav-h,72px)+12px)] md:pb-10"
-                style={{ paddingTop: "var(--topbar-h, 0px)" }}
+                className="mx-auto w-full max-w-[1600px] bg-[#EBEEF2] px-3 pb-[calc(var(--bottomnav-h,72px)+12px)] pt-2 sm:px-5 md:pb-10 xl:px-7"
+
             >
-                <div className="relative mt-[-20px] overflow-visible lg:rounded-2xl border bg-gradient-to-r from-orange-500 via-orange-500 to-orange-400">
-                    <div className="absolute inset-0 opacity-25">
-                        <div className="h-full w-full bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,.35),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,.25),transparent_45%)]" />
-                    </div>
-
-                    <div className="relative p-5 sm:p-8">
-                        <div className="text-white">
-
-                            <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
-                                What are you looking for?
-                            </h1>
-                            <p className="mt-1 text-sm opacity-90">
-                                Buy & sell across Kenya — promoted ads first, then trending.
-                            </p>
-                        </div>
-
-                        <div className="mt-5">
-                            <HeroSearchBar regions={regions} listingSlug={defaultListingSlug} featured={featured}
-                                trending={trending} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="w-full mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
+                {/* The old orange hero/title has been removed: it is now the header. */}
+                <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-[290px_minmax(0,1fr)] lg:gap-5">
                     <aside className="hidden min-w-0 lg:block">
                         <CategoryRail
                             tree={categoryTree}
@@ -129,11 +116,11 @@ export default function HomeShell({
                         />
                     </aside>
 
-                    <div className="mt-4 lg:hidden">
+                    <div className="min-w-0 lg:hidden">
                         <CategoryRail tree={categoryTree} compact />
                     </div>
 
-                    <section className="p-2 lg:p-0 min-w-0 space-y-5">
+                    <section className="min-w-0 space-y-5">
                         <QuickChips packagesList={packagesList} />
 
                         {featured === undefined ? (
@@ -147,8 +134,6 @@ export default function HomeShell({
                         ) : (
                             <TrendingGridSkeleton />
                         )}
-
-                        {/**   <RegionsGrid regions={regions} listingSlug={defaultListingSlug} />*/}
                     </section>
                 </div>
             </div>
@@ -156,7 +141,6 @@ export default function HomeShell({
             <footer ref={footerRef} className="hidden md:block">
                 <Footer />
             </footer>
-
             <BottomNav />
         </div>
     );

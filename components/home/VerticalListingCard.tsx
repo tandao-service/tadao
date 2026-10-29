@@ -450,7 +450,7 @@ export default function VerticalListingCard({
                 listingSlug
             )}
             style={cardBorderStyle}
-            className="group block h-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
+            className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-[0_3px_12px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_8px_22px_rgba(15,23,42,0.12)] dark:border-gray-700 dark:bg-[#2D3236]"
         >
             <div className="relative w-full overflow-hidden">
                 {image &&
@@ -467,7 +467,7 @@ export default function VerticalListingCard({
                             alt={title}
                             width={700}
                             height={500}
-                            className="h-[190px] w-full object-cover transition duration-300 group-hover:scale-[1.02] sm:h-[210px]"
+                            className="h-[160px] w-full object-cover transition duration-300 group-hover:scale-[1.02] sm:h-[180px]"
                             unoptimized
                             onLoadingComplete={() =>
                                 setImgLoading(
@@ -486,7 +486,7 @@ export default function VerticalListingCard({
                         />
                     </>
                 ) : (
-                    <div className="flex h-[190px] w-full items-center justify-center bg-gradient-to-br from-orange-50 via-slate-100 to-orange-100 sm:h-[210px]">
+                    <div className="flex h-[160px] w-full items-center justify-center bg-gradient-to-br from-orange-50 via-slate-100 to-orange-100 sm:h-[180px]">
                         <div className="flex flex-col items-center gap-2">
                             <Image
                                 src="/logo.png"
@@ -558,12 +558,12 @@ export default function VerticalListingCard({
                     )}
             </div>
 
-            <div className="flex h-full flex-col p-3">
-                <h2 className="line-clamp-2 text-[14px] font-extrabold leading-5 text-[#047034] dark:text-emerald-100">
+            <div className="flex flex-1 flex-col p-2.5 sm:p-3">
+                <h2 className="line-clamp-2 text-[13px] font-extrabold leading-[18px] text-[#047034] dark:text-emerald-100">
                     {title}
                 </h2>
 
-                <div className="mt-1 line-clamp-1 text-[12px] font-medium text-slate-500 dark:text-slate-300">
+                <div className="mt-1 line-clamp-1 text-[11px] font-medium text-slate-500 dark:text-slate-300">
                     {region}
                     {area
                         ? ` - ${area}`
@@ -571,17 +571,17 @@ export default function VerticalListingCard({
                 </div>
 
                 {description ? (
-                    <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-slate-500 dark:text-slate-300">
+                    <p className="mt-1.5 line-clamp-2 text-[11px] leading-4 text-slate-500 dark:text-slate-300">
                         {description}
                     </p>
                 ) : (
-                    <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-slate-400">
+                    <p className="mt-1.5 line-clamp-2 text-[11px] leading-4 text-slate-400">
                         No description provided.
                     </p>
                 )}
 
                 {showFinancingInfo ? (
-                    <div className="mt-3 space-y-1 text-[11px] text-slate-600 dark:text-slate-300">
+                    <div className="mt-auto space-y-0.5 pt-2 text-[11px] text-slate-600 dark:text-slate-300">
                         {financing.subcategory && (
                             <div className="font-bold text-orange-600">
                                 {
@@ -635,7 +635,7 @@ export default function VerticalListingCard({
                         )}
                     </div>
                 ) : !noPriceNeeded ? (
-                    <div className="mt-3 text-base font-black text-[#fb540d] dark:text-orange-400">
+                    <div className="mt-auto pt-2 text-sm font-black text-[#fb540d] dark:text-orange-400 sm:text-base">
                         {isContactPrice
                             ? "Contact for price"
                             : moneyKsh(

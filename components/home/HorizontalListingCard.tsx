@@ -382,11 +382,11 @@ export default function HorizontalListingCard({
                 listingSlug
             )}
             style={cardBorderStyle}
-            className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-[#2D3236]"
+            className="group block overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-[0_3px_12px_rgba(15,23,42,0.08)] transition duration-200 hover:border-slate-300 hover:shadow-[0_8px_22px_rgba(15,23,42,0.12)] dark:border-gray-700 dark:bg-[#2D3236]"
         >
-            <div className="flex min-h-[170px] w-full">
+            <div className="flex min-h-[150px] w-full">
                 {/* IMAGE */}
-                <div className="relative w-[145px] shrink-0 overflow-hidden sm:w-[190px] md:w-[220px] lg:w-[250px]">
+                <div className="relative w-[130px] shrink-0 overflow-hidden sm:w-[175px] md:w-[200px] lg:w-[220px]">
                     {image &&
                         !imgError ? (
                         <>
@@ -400,7 +400,7 @@ export default function HorizontalListingCard({
                                 src={image}
                                 alt={title}
                                 fill
-                                sizes="(max-width: 640px) 145px, (max-width: 1024px) 220px, 250px"
+                                sizes="(max-width: 640px) 130px, (max-width: 1024px) 200px, 220px"
                                 className="object-cover transition duration-300 group-hover:scale-[1.02]"
                                 unoptimized
                                 onLoadingComplete={() =>
@@ -420,7 +420,7 @@ export default function HorizontalListingCard({
                             />
                         </>
                     ) : (
-                        <div className="flex h-full min-h-[170px] items-center justify-center bg-gradient-to-br from-orange-50 via-slate-100 to-orange-100">
+                        <div className="flex h-full min-h-[150px] items-center justify-center bg-gradient-to-br from-orange-50 via-slate-100 to-orange-100">
                             <div className="flex flex-col items-center gap-2">
                                 <Image
                                     src="/logo.png"
@@ -477,11 +477,11 @@ export default function HorizontalListingCard({
                 </div>
 
                 {/* CONTENT */}
-                <div className="flex min-w-0 flex-1 flex-col justify-between p-3 sm:p-4">
+                <div className="flex min-w-0 flex-1 flex-col justify-between p-2.5 sm:p-3">
                     <div>
                         <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                                <h2 className="line-clamp-2 text-sm font-extrabold leading-5 text-[#047034] dark:text-emerald-100 sm:text-base lg:text-lg">
+                                <h2 className="line-clamp-2 text-[13px] font-extrabold leading-[18px] text-[#047034] dark:text-emerald-100 sm:text-sm">
                                     {title}
                                 </h2>
 
@@ -499,7 +499,7 @@ export default function HorizontalListingCard({
                         </div>
 
                         {description && (
-                            <p className="mt-2 line-clamp-2 text-[11px] leading-5 text-slate-500 dark:text-slate-300 sm:text-xs lg:line-clamp-3 lg:text-sm">
+                            <p className="mt-1.5 line-clamp-2 text-[11px] leading-4 text-slate-500 dark:text-slate-300 sm:text-xs">
                                 {
                                     description
                                 }
@@ -548,9 +548,9 @@ export default function HorizontalListingCard({
                         </div>
                     </div>
 
-                    <div className="mt-3 flex items-end justify-between gap-3">
+                    <div className="mt-2 flex items-end justify-between gap-2">
                         {!noPriceNeeded ? (
-                            <div className="text-base font-black text-[#fb540d] dark:text-orange-400 sm:text-lg">
+                            <div className="text-sm font-black text-[#fb540d] dark:text-orange-400 sm:text-base">
                                 {isContactPrice
                                     ? "Contact for price"
                                     : moneyKsh(

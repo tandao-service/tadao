@@ -78,10 +78,10 @@ export default function PropertyGallery({
                 if (track) {
                     const el = track.children.item(i) as HTMLElement | null;
                     if (el) {
-                        el.scrollIntoView({
+                        // Scroll only the carousel, not the entire document on mount.
+                        track.scrollTo({
+                            left: el.offsetLeft - track.offsetLeft,
                             behavior: "smooth",
-                            inline: "start",
-                            block: "nearest",
                         });
                     }
                 }
@@ -207,7 +207,7 @@ export default function PropertyGallery({
 
     if (!list.length) {
         return (
-            <div className="flex h-[260px] w-full items-center justify-center rounded-2xl bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 md:h-[420px]">
+            <div className="flex h-[240px] w-full items-center justify-center bg-gradient-to-br from-orange-50 via-gray-100 to-orange-100 md:h-[350px]">
                 <div className="text-center">
                     <div className="text-sm font-extrabold text-orange-500">No photos</div>
                     <div className="mt-1 text-xs text-gray-500">
@@ -220,7 +220,7 @@ export default function PropertyGallery({
 
     return (
         <>
-            <div className="relative overflow-hidden lg:rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+            <div className="relative overflow-hidden border-b border-slate-100 bg-white">
                 <div className="relative">
                     <div
                         ref={trackRef}
@@ -242,7 +242,7 @@ export default function PropertyGallery({
                                     resetZoomState();
                                     setIsFs(true);
                                 }}
-                                className="relative aspect-[4/3] sm:aspect-[16/10] md:h-[460px] md:aspect-auto w-full shrink-0 snap-start overflow-hidden bg-black"
+                                className="relative aspect-[4/3] w-full shrink-0 snap-start overflow-hidden bg-black sm:aspect-[16/10] md:aspect-auto md:h-[350px] lg:h-[370px]"
                                 aria-label={`Open photo ${idx + 1} fullscreen`}
                             >
                                 <Image
@@ -260,12 +260,12 @@ export default function PropertyGallery({
                     </div>
 
                     {badgeText ? (
-                        <div className="absolute left-4 top-4 rounded-full bg-black/65 px-3 py-1.5 text-[11px] font-bold text-white shadow-lg backdrop-blur">
+                        <div className="absolute left-3 top-3 rounded-lg bg-black/65 px-2.5 py-1 text-[10px] font-bold text-white shadow-sm backdrop-blur">
                             {badgeText}
                         </div>
                     ) : null}
 
-                    <div className="absolute bottom-4 left-4 rounded-full bg-black/65 px-3 py-2 text-xs font-bold text-white shadow-lg backdrop-blur">
+                    <div className="absolute bottom-3 left-3 rounded-lg bg-black/65 px-2.5 py-1.5 text-[11px] font-bold text-white shadow-sm backdrop-blur">
                         <div className="flex items-center gap-1.5">
                             <IoCamera className="text-sm" />
                             {active + 1}/{list.length}
@@ -277,25 +277,25 @@ export default function PropertyGallery({
                             <button
                                 type="button"
                                 onClick={prevPage}
-                                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-3 text-slate-800 shadow-xl transition hover:scale-105 hover:bg-white"
+                                className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2.5 text-slate-800 shadow-md transition hover:scale-105 hover:bg-white"
                                 aria-label="Previous photo"
                             >
-                                <IoChevronBack className="text-xl" />
+                                <IoChevronBack className="text-lg" />
                             </button>
 
                             <button
                                 type="button"
                                 onClick={nextPage}
-                                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-3 text-slate-800 shadow-xl transition hover:scale-105 hover:bg-white"
+                                className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2.5 text-slate-800 shadow-md transition hover:scale-105 hover:bg-white"
                                 aria-label="Next photo"
                             >
-                                <IoChevronForward className="text-xl" />
+                                <IoChevronForward className="text-lg" />
                             </button>
                         </>
                     ) : null}
 
                     {hasMany ? (
-                        <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-black/50 px-2 py-1.5 backdrop-blur">
+                        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/50 px-2 py-1 backdrop-blur">
                             {list.slice(0, 8).map((_, i) => {
                                 const isActive = i === active;
                                 return (
@@ -321,8 +321,8 @@ export default function PropertyGallery({
                 </div>
 
                 {hasMany ? (
-                    <div className="border-t border-slate-200 bg-slate-50/70 p-3">
-                        <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]">
+                    <div className="border-t border-slate-200 bg-slate-50 p-2">
+                        <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]">
                             <style jsx>{`
                 div::-webkit-scrollbar {
                   display: none;
@@ -335,7 +335,7 @@ export default function PropertyGallery({
                                     type="button"
                                     onClick={() => setSlide(idx, "page")}
                                     className={[
-                                        "relative shrink-0 overflow-hidden rounded-2xl border transition",
+                                        "relative shrink-0 overflow-hidden rounded-lg border transition",
                                         idx === active
                                             ? "border-orange-500 ring-2 ring-orange-500/30"
                                             : "border-slate-200 hover:border-orange-300",
@@ -348,7 +348,7 @@ export default function PropertyGallery({
                                         alt={`${title} thumb ${idx + 1}`}
                                         width={140}
                                         height={100}
-                                        className="h-20 w-28 object-cover"
+                                        className="h-14 w-20 object-cover sm:h-16 sm:w-24"
                                         unoptimized
                                     />
                                 </button>
@@ -468,7 +468,7 @@ export default function PropertyGallery({
                                             className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white px-3 py-3 text-slate-900 shadow-xl transition hover:scale-105"
                                             aria-label="Previous photo"
                                         >
-                                            <IoChevronBack className="text-xl" />
+                                            <IoChevronBack className="text-lg" />
                                         </button>
 
                                         <button
@@ -480,7 +480,7 @@ export default function PropertyGallery({
                                             className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white px-3 py-3 text-slate-900 shadow-xl transition hover:scale-105"
                                             aria-label="Next photo"
                                         >
-                                            <IoChevronForward className="text-xl" />
+                                            <IoChevronForward className="text-lg" />
                                         </button>
                                     </>
                                 ) : null}

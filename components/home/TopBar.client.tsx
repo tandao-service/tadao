@@ -4,29 +4,23 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
 import MessageIcon from "@mui/icons-material/Message";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-
 import UserMenu from "@/components/shared/UserMenu";
 import { useAuth } from "@/app/hooks/useAuth";
 import Unreadmessages from "../shared/Unreadmessages";
 import MobileNav from "../shared/MobileNav";
+import { Loader2, PlusIcon, UserRound } from "lucide-react";
+import HeroSearchBar from "./HeroSearchBar.client";
 
-import {
-    Loader2,
-    PlusIcon,
-} from "lucide-react";
+// Search parameters are exactly those accepted by the existing component.
+// This way we keep its location, keyword, and ad search logic untouched.
+type TopBarProps = {
+    searchProps?: React.ComponentProps<typeof HeroSearchBar>;
+};
 
 function getDisplayName(
     appUser?: any,
@@ -59,7 +53,7 @@ function getDisplayName(
     return "Account";
 }
 
-export default function TopBar() {
+export default function TopBar({ searchProps }: TopBarProps) {
     const ref =
         React.useRef<HTMLDivElement>(null);
 
@@ -90,8 +84,9 @@ export default function TopBar() {
             authUser
         );
 
-    const showBackButton =
-        pathname !== "/";
+    // Only the homepage displays the orange search/branding section.
+    const isHomeRoute = pathname === "/";
+    const showBackButton = !isHomeRoute;
 
     /*
     |--------------------------------------------------------------------------
@@ -271,10 +266,10 @@ export default function TopBar() {
                 el.getBoundingClientRect()
                     .height;
 
-            document.documentElement.style.setProperty(
-                "--topbar-h",
-                `${Math.ceil(h)}px`
-            );
+            // Only the green status bar remains visible when the page scrolls.
+            // Keep the existing variable for sticky rails and mobile back controls.
+            document.documentElement.style.setProperty("--topbar-h", `${Math.ceil(h)}px`);
+            document.documentElement.style.setProperty("--statusbar-h", `${Math.ceil(h)}px`);
         };
 
         apply();
@@ -306,625 +301,294 @@ export default function TopBar() {
         (isLoggedIn &&
             profileLoading);
 
-    const iconButtonClass =
-        "flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 active:scale-95 disabled:pointer-events-none disabled:opacity-70 dark:border-slate-700 dark:bg-[#1B2327] dark:text-slate-200 dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] dark:hover:text-orange-300";
+    const utilityIconClass =
+        "relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-white/90 transition hover:bg-white/15 hover:text-white disabled:opacity-60 lg:h-11 lg:w-11";
+
+    const openSell = () => {
+        navigate(
+            "sell",
+            isLoggedIn
+                ? "/create-ad"
+                : "/auth?redirect_url=%2Fcreate-ad"
+        );
+    };
+
+    // Reuse the existing user menu and mobile navigation instead of
+    // replacing their account, chat, premium, or seller functionality.
+    const openUserAds = () =>
+        navigate("user-ads", isLoggedIn ? "/dashboard/ads" : "/auth");
+    const openUserSettings = () =>
+        navigate("user-settings", isLoggedIn ? "/settings" : "/auth");
+
+    // Keep mobile navigation available on every route, including when the
+    // large orange header is intentionally hidden.
+    const mobileNavigation = (
+        <MobileNav
+            userstatus={userstatus}
+            userId={resolvedUserId}
+            popup={popup}
+            user={appUser}
+            handleOpenSell={() =>
+                navigate("mobile-sell", isLoggedIn ? "/create-ad" : "/auth?redirect_url=%2Fcreate-ad")
+            }
+            handleOpenBook={() =>
+                navigate("mobile-book", isLoggedIn ? "/favorites" : "/auth")
+            }
+            handleOpenPlan={() => navigate("mobile-plan", "/plan")}
+            handleOpenChat={() =>
+                navigate("mobile-chat", isLoggedIn ? "/profile-messages" : "/auth")
+            }
+            handleOpenShop={(item: any) => {
+                const id = item?._id || item?.id || item || "";
+                if (!id) return;
+                navigate("mobile-shop", isLoggedIn ? `/seller/${id}` : `/profile/${id}`);
+            }}
+            handleOpenPerfomance={() => navigate("mobile-performance", "/performance")}
+            handleOpenSettings={() => navigate("mobile-settings", isLoggedIn ? "/settings" : "/auth")}
+            handleOpenAbout={() => navigate("mobile-about", "/about")}
+            handleOpenTerms={() => navigate("mobile-terms", "/terms")}
+            handleOpenPrivacy={() => navigate("mobile-privacy", "/privacy")}
+            handleOpenSafety={() => navigate("mobile-safety", "/safety")}
+            onClose={() => navigate("mobile-home", "/")}
+        />
+    );
 
     return (
-        <div
-            ref={ref}
-            className="fixed inset-x-0 top-0 z-[50] border-b border-orange-100 bg-white/95 backdrop-blur-md dark:border-slate-800 dark:bg-[#131B1E]/95"
-        >
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3 sm:px-4">
-                {/* Left */}
-                <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                    {showBackButton ? (
-                        <button
-                            type="button"
-                            onClick={
-                                handleGoBack
-                            }
-                            disabled={
-                                pendingAction ===
-                                "back"
-                            }
-                            className={
-                                iconButtonClass
-                            }
-                            aria-label="Go back"
-                            title="Go back"
-                        >
-                            {pendingAction ===
-                                "back" ? (
-                                <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                            ) : (
-                                <ArrowBackIosNewIcon
-                                    sx={{
-                                        fontSize: 18,
-                                    }}
-                                />
-                            )}
-                        </button>
-                    ) : null}
-
-                    <Link
-                        href="/"
-                        prefetch
-                        onClick={() =>
-                            setPendingAction(
-                                "home"
-                            )
-                        }
-                        className="flex min-w-0 items-center gap-2.5"
-                    >
-                        <div className="relative h-10 w-10 overflow-hidden rounded-full border border-orange-100 bg-white shadow-sm ring-1 ring-orange-50">
-                            {pendingAction ===
-                                "home" ? (
-                                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90">
-                                    <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                                </div>
-                            ) : null}
-
-                            <Image
-                                src="/logo.png"
-                                alt="Tadao Market"
-                                fill
-                                className="object-contain"
-                                priority
-                                unoptimized
-                            />
-                        </div>
-
-                        <div>
-                            <div className="truncate text-sm font-extrabold leading-tight text-slate-900 dark:text-white">
-                                Tadao Market
-                            </div>
-
-                            <div className="-mt-0.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                                Buy & sell across
-                                Kenya
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-
-                {/* Right */}
-                <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="hidden items-center gap-2 lg:flex">
-                        {/* Favorites */}
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger
-                                    asChild
-                                >
-                                    <button
-                                        type="button"
-                                        disabled={
-                                            pendingAction ===
-                                            "favorites"
-                                        }
-                                        onClick={() => {
-                                            if (
-                                                authUser
-                                            ) {
-                                                navigate(
-                                                    "favorites",
-                                                    "/favorites"
-                                                );
-                                            } else {
-                                                navigate(
-                                                    "favorites",
-                                                    "/auth"
-                                                );
-                                            }
-                                        }}
-                                        className={
-                                            iconButtonClass
-                                        }
-                                    >
-                                        {pendingAction ===
-                                            "favorites" ? (
-                                            <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                                        ) : (
-                                            <BookmarkIcon fontSize="small" />
-                                        )}
-                                    </button>
-                                </TooltipTrigger>
-
-                                <TooltipContent>
-                                    <p>
-                                        Favorites
-                                    </p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-
-                        {/* Messages */}
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger
-                                    asChild
-                                >
-                                    <button
-                                        type="button"
-                                        disabled={
-                                            pendingAction ===
-                                            "messages"
-                                        }
-                                        onClick={() => {
-                                            if (
-                                                authUser
-                                            ) {
-                                                navigate(
-                                                    "messages",
-                                                    "/profile-messages"
-                                                );
-                                            } else {
-                                                navigate(
-                                                    "messages",
-                                                    "/auth"
-                                                );
-                                            }
-                                        }}
-                                        className={`relative ${iconButtonClass}`}
-                                    >
-                                        {pendingAction ===
-                                            "messages" ? (
-                                            <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                                        ) : (
-                                            <>
-                                                <MessageIcon fontSize="small" />
-
-                                                {resolvedUserId ? (
-                                                    <span className="absolute -right-1 -top-1">
-                                                        <Unreadmessages
-                                                            userId={
-                                                                resolvedUserId
-                                                            }
-                                                        />
-                                                    </span>
-                                                ) : null}
-                                            </>
-                                        )}
-                                    </button>
-                                </TooltipTrigger>
-
-                                <TooltipContent>
-                                    <div className="flex items-center gap-2">
-                                        Chats
-
-                                        {resolvedUserId ? (
-                                            <Unreadmessages
-                                                userId={
-                                                    resolvedUserId
-                                                }
-                                            />
-                                        ) : null}
-                                    </div>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-
-                        {/* Plan */}
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger
-                                    asChild
-                                >
-                                    <button
-                                        type="button"
-                                        disabled={
-                                            pendingAction ===
-                                            "plan"
-                                        }
-                                        onClick={() =>
-                                            navigate(
-                                                "plan",
-                                                "/plan"
-                                            )
-                                        }
-                                        className={
-                                            iconButtonClass
-                                        }
-                                    >
-                                        {pendingAction ===
-                                            "plan" ? (
-                                            <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                                        ) : (
-                                            <DiamondIcon fontSize="small" />
-                                        )}
-                                    </button>
-                                </TooltipTrigger>
-
-                                <TooltipContent>
-                                    <p>
-                                        Premium
-                                        Services
-                                    </p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-
-                        {/* My adverts */}
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger
-                                    asChild
-                                >
-                                    <button
-                                        type="button"
-                                        disabled={
-                                            pendingAction ===
-                                            "ads"
-                                        }
-                                        onClick={() =>
-                                            navigate(
-                                                "ads",
-                                                "/dashboard/ads"
-                                            )
-                                        }
-                                        className={
-                                            iconButtonClass
-                                        }
-                                    >
-                                        {pendingAction ===
-                                            "ads" ? (
-                                            <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                                        ) : (
-                                            <SellOutlinedIcon />
-                                        )}
-                                    </button>
-                                </TooltipTrigger>
-
-                                <TooltipContent>
-                                    <p>
-                                        My Adverts
-                                    </p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-
-                        {/* Sell */}
-                        <button
-                            type="button"
-                            disabled={
-                                pendingAction ===
-                                "sell"
-                            }
-                            onClick={() => {
-                                if (authUser) {
-                                    navigate(
-                                        "sell",
-                                        "/create-ad"
-                                    );
-                                } else {
-                                    navigate(
-                                        "sell",
-                                        "/auth?redirect_url=%2Fcreate-ad"
-                                    );
-                                }
-                            }}
-                            className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-sm font-extrabold text-white shadow-sm transition hover:bg-orange-600 hover:shadow active:scale-95 disabled:pointer-events-none disabled:opacity-75"
-                        >
-                            {pendingAction ===
-                                "sell" ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <PlusIcon className="h-5 w-5" />
-                            )}
-
-                            <span>
-                                {pendingAction ===
-                                    "sell"
-                                    ? "Opening..."
-                                    : "Sell"}
-                            </span>
-                        </button>
-                    </div>
-
-                    {/* User loading */}
-                    {showUserLoading ? (
-                        <div className="h-10 w-24 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
-                    ) : !isLoggedIn ? (
+        <header className="relative z-[50] w-full shadow-sm">
+            {/* The green strip is fixed independently of the orange header. */}
+            <div ref={ref} className="fixed inset-x-0 top-0 z-[50] bg-[#FF5108] text-white">
+                <div className="mx-auto flex h-[42px] w-full max-w-[1600px] items-center justify-between gap-3 px-3 sm:h-[46px] sm:px-5 lg:h-[50px] xl:px-7">
+                    {isHomeRoute ? (
                         <>
-                            <button
-                                type="button"
-                                disabled={
-                                    pendingAction ===
-                                    "signin"
-                                }
-                                onClick={() =>
-                                    navigate(
-                                        "signin",
-                                        "/auth"
-                                    )
-                                }
-                                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-900 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 active:scale-95 disabled:pointer-events-none disabled:opacity-70 dark:border-slate-700 dark:bg-[#1B2327] dark:text-white dark:hover:border-orange-500/30 dark:hover:bg-[#222C31]"
-                            >
-                                {pendingAction ===
-                                    "signin" ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
-                                        Opening...
-                                    </>
-                                ) : (
-                                    "Sign in"
-                                )}
-                            </button>
-
-                            <MobileNav
-                                userstatus={
-                                    userstatus
-                                }
-                                userId={
-                                    resolvedUserId
-                                }
-                                popup={popup}
-                                user={appUser}
-                                handleOpenSell={() =>
-                                    navigate(
-                                        "mobile-sell",
-                                        "/create-ad"
-                                    )
-                                }
-                                handleOpenBook={() =>
-                                    navigate(
-                                        "mobile-book",
-                                        "/bookmarks"
-                                    )
-                                }
-                                handleOpenPlan={() =>
-                                    navigate(
-                                        "mobile-plan",
-                                        "/plan"
-                                    )
-                                }
-                                handleOpenChat={() =>
-                                    navigate(
-                                        "mobile-chat",
-                                        "/profile-messages"
-                                    )
-                                }
-                                handleOpenShop={(
-                                    shopId: any
-                                ) => {
-                                    const id =
-                                        shopId?._id ||
-                                        shopId?.id ||
-                                        shopId ||
-                                        "";
-
-                                    if (!id) return;
-
-                                    navigate(
-                                        "mobile-shop",
-                                        `/profile/${id}`
-                                    );
-                                }}
-                                handleOpenPerfomance={() =>
-                                    navigate(
-                                        "mobile-performance",
-                                        "/performance"
-                                    )
-                                }
-                                handleOpenSettings={() =>
-                                    navigate(
-                                        "mobile-settings",
-                                        "/settings"
-                                    )
-                                }
-                                handleOpenAbout={() =>
-                                    navigate(
-                                        "mobile-about",
-                                        "/about"
-                                    )
-                                }
-                                handleOpenTerms={() =>
-                                    navigate(
-                                        "mobile-terms",
-                                        "/terms"
-                                    )
-                                }
-                                handleOpenPrivacy={() =>
-                                    navigate(
-                                        "mobile-privacy",
-                                        "/privacy"
-                                    )
-                                }
-                                handleOpenSafety={() =>
-                                    navigate(
-                                        "mobile-safety",
-                                        "/safety"
-                                    )
-                                }
-                                onClose={() =>
-                                    navigate(
-                                        "mobile-home",
-                                        "/"
-                                    )
-                                }
-                            />
+                            <span className="hidden text-sm font-medium tracking-wide text-white/90 sm:inline lg:text-base">
+                                Buy &amp; sell across Kenya
+                            </span>
+                            <span className="text-sm font-semibold sm:hidden">
+                                Tadao Market
+                            </span>
                         </>
                     ) : (
-                        <div className="flex items-center gap-2">
-                            {/* Desktop user menu */}
-                            <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/50 dark:border-slate-700 dark:bg-[#1B2327] dark:hover:border-orange-500/30 dark:hover:bg-[#222C31] md:flex">
-                                <div className="max-w-[120px] text-left">
-                                    <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">
-                                        {
-                                            displayName
-                                        }
-                                    </div>
-                                </div>
-
-                                <UserMenu
-                                    userdata={
-                                        appUser
-                                    }
-                                    handleOpenShop={() => {
-                                        if (
-                                            authUser
-                                        ) {
-                                            navigate(
-                                                "user-ads",
-                                                "/dashboard/ads"
-                                            );
-                                        } else {
-                                            navigate(
-                                                "user-auth",
-                                                "/auth"
-                                            );
-                                        }
-                                    }}
-                                    handleOpenSettings={() => {
-                                        if (
-                                            authUser
-                                        ) {
-                                            navigate(
-                                                "user-settings",
-                                                "/settings"
-                                            );
-                                        } else {
-                                            navigate(
-                                                "user-auth",
-                                                "/auth"
-                                            );
-                                        }
-                                    }}
-                                />
-                            </div>
-
-                            {/* Mobile user menu */}
-                            <div className="md:hidden">
-                                <UserMenu
-                                    userdata={
-                                        appUser
-                                    }
-                                    handleOpenShop={() => {
-                                        if (
-                                            authUser
-                                        ) {
-                                            navigate(
-                                                "user-ads",
-                                                "/dashboard/ads"
-                                            );
-                                        } else {
-                                            navigate(
-                                                "user-auth",
-                                                "/auth"
-                                            );
-                                        }
-                                    }}
-                                    handleOpenSettings={() => {
-                                        if (
-                                            authUser
-                                        ) {
-                                            navigate(
-                                                "user-settings",
-                                                "/settings"
-                                            );
-                                        } else {
-                                            navigate(
-                                                "user-auth",
-                                                "/auth"
-                                            );
-                                        }
-                                    }}
-                                />
-                            </div>
-
-                            <MobileNav
-                                userstatus={
-                                    userstatus
-                                }
-                                userId={
-                                    resolvedUserId
-                                }
-                                popup={popup}
-                                user={appUser}
-                                handleOpenSell={() =>
-                                    navigate(
-                                        "mobile-sell",
-                                        "/create-ad"
-                                    )
-                                }
-                                handleOpenBook={() =>
-                                    navigate(
-                                        "mobile-book",
-                                        "/favorites"
-                                    )
-                                }
-                                handleOpenPlan={() =>
-                                    navigate(
-                                        "mobile-plan",
-                                        "/plan"
-                                    )
-                                }
-                                handleOpenChat={() =>
-                                    navigate(
-                                        "mobile-chat",
-                                        "/profile-messages"
-                                    )
-                                }
-                                handleOpenShop={(
-                                    user: any
-                                ) => {
-                                    const id =
-                                        user?._id;
-
-                                    if (!id) return;
-
-                                    navigate(
-                                        "mobile-shop",
-                                        `/seller/${id}`
-                                    );
-                                }}
-                                handleOpenPerfomance={() =>
-                                    navigate(
-                                        "mobile-performance",
-                                        "/dashboard/ads"
-                                    )
-                                }
-                                handleOpenSettings={() =>
-                                    navigate(
-                                        "mobile-settings",
-                                        "/settings"
-                                    )
-                                }
-                                handleOpenAbout={() =>
-                                    navigate(
-                                        "mobile-about",
-                                        "/about"
-                                    )
-                                }
-                                handleOpenTerms={() =>
-                                    navigate(
-                                        "mobile-terms",
-                                        "/terms"
-                                    )
-                                }
-                                handleOpenPrivacy={() =>
-                                    navigate(
-                                        "mobile-privacy",
-                                        "/privacy"
-                                    )
-                                }
-                                handleOpenSafety={() =>
-                                    navigate(
-                                        "mobile-safety",
-                                        "/safety"
-                                    )
-                                }
-                                onClose={() =>
-                                    navigate(
-                                        "mobile-home",
-                                        "/"
-                                    )
-                                }
-                            />
+                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                            <button
+                                type="button"
+                                aria-label="Go back"
+                                title="Go back"
+                                disabled={!!pendingAction}
+                                onClick={handleGoBack}
+                                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition hover:bg-white/15 disabled:opacity-60"
+                            >
+                                {pendingAction === "back" ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <ArrowBackIosNewIcon sx={{ fontSize: 15 }} />
+                                )}
+                            </button>
+                            <Link
+                                href="/"
+                                prefetch
+                                aria-label="Tadao Market home"
+                                onClick={() => setPendingAction("home")}
+                                className="truncate text-sm font-bold text-white hover:text-white/85 sm:text-base"
+                            >
+                                Tadao Market
+                            </Link>
                         </div>
                     )}
+
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {/* Keep all four desktop shortcuts, now in the status bar. */}
+                        <nav aria-label="Quick links" className="hidden items-center gap-1 lg:flex">
+                            <button
+                                type="button"
+                                title="Favorites"
+                                aria-label="Favorites"
+                                className={utilityIconClass}
+                                disabled={!!pendingAction}
+                                onClick={() => navigate("favorites", isLoggedIn ? "/favorites" : "/auth")}
+                            >
+                                <BookmarkIcon sx={{ fontSize: 18 }} />
+                            </button>
+                            <button
+                                type="button"
+                                title="Chats"
+                                aria-label="Chats"
+                                className={utilityIconClass}
+                                disabled={!!pendingAction}
+                                onClick={() => navigate("messages", isLoggedIn ? "/profile-messages" : "/auth")}
+                            >
+                                <MessageIcon sx={{ fontSize: 18 }} />
+                                {resolvedUserId ? (
+                                    <span className="absolute -right-1 -top-1">
+                                        <Unreadmessages userId={resolvedUserId} />
+                                    </span>
+                                ) : null}
+                            </button>
+                            <button
+                                type="button"
+                                title="Premium Services"
+                                aria-label="Premium Services"
+                                className={utilityIconClass}
+                                disabled={!!pendingAction}
+                                onClick={() => navigate("plan", "/plan")}
+                            >
+                                <DiamondIcon sx={{ fontSize: 18 }} />
+                            </button>
+                            <button
+                                type="button"
+                                title="My Adverts"
+                                aria-label="My Adverts"
+                                className={utilityIconClass}
+                                disabled={!!pendingAction}
+                                onClick={() => navigate("ads", isLoggedIn ? "/dashboard/ads" : "/auth")}
+                            >
+                                <SellOutlinedIcon sx={{ fontSize: 18 }} />
+                            </button>
+                            {!isHomeRoute ? (
+                                <button
+                                    type="button"
+                                    onClick={openSell}
+                                    disabled={!!pendingAction}
+                                    className="ml-2 inline-flex h-8 items-center gap-1 rounded-lg bg-white px-3 text-xs font-extrabold text-[#087D43] transition hover:bg-emerald-50 disabled:opacity-60"
+                                >
+                                    <PlusIcon className="h-3.5 w-3.5" /> Sell
+                                </button>
+                            ) : null}
+                            <span className="mx-2 h-5 w-px bg-white/30" />
+                        </nav>
+
+                        {showUserLoading ? (
+                            <span className="inline-flex h-7 w-28 animate-pulse rounded-md bg-white/20" />
+                        ) : !isLoggedIn ? (
+                            <button
+                                type="button"
+                                onClick={() => navigate("signin", "/auth")}
+                                disabled={!!pendingAction}
+                                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/15 lg:text-base"
+                            >
+                                {pendingAction === "signin" ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <UserRound className="h-4 w-4" />
+                                )}
+                                Login / Register
+                            </button>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <span className="hidden max-w-[145px] truncate text-xs font-semibold text-white/95 sm:inline">
+                                    {displayName}
+                                </span>
+                                <div className="rounded-full bg-white px-1 py-0.5 text-slate-900">
+                                    <UserMenu
+                                        userdata={appUser}
+                                        handleOpenShop={openUserAds}
+                                        handleOpenSettings={openUserSettings}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {!isHomeRoute ? (
+                            <div className="lg:hidden [&_button]:!border-white/40">
+                                {mobileNavigation}
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
             </div>
-        </div>
+
+            {/* Space for the fixed status bar, so the orange header starts below it. */}
+            <div aria-hidden="true" className="h-[42px] sm:h-[46px] lg:h-[50px]" />
+
+            {/* The orange branding/search header is homepage-only and scrolls away. */}
+            {isHomeRoute ? (
+                <div className="relative bg-[#FF5108] text-white">
+                    <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-3 py-4 sm:min-h-[150px] sm:px-5 sm:py-5 lg:min-h-[190px] lg:grid-cols-[minmax(220px,275px)_minmax(0,1fr)_auto] lg:gap-x-5 lg:py-6 xl:px-7">
+                        {/* LOGO */}
+                        <div className="flex min-w-0 items-center gap-2">
+                            {showBackButton ? (
+                                <button
+                                    type="button"
+                                    title="Go back"
+                                    aria-label="Go back"
+                                    onClick={handleGoBack}
+                                    disabled={!!pendingAction}
+                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 transition hover:bg-white/25"
+                                >
+                                    {pendingAction === "back" ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+                                    )}
+                                </button>
+                            ) : null}
+                            <Link
+                                href="/"
+                                prefetch
+                                onClick={() => {
+                                    if (pathname !== "/") setPendingAction("home");
+                                }}
+                                className="flex min-w-0 items-center gap-2.5"
+                            >
+                                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/80 bg-white shadow-sm sm:h-[58px] sm:w-[58px] lg:h-[68px] lg:w-[68px]">
+                                    {pendingAction === "home" ? (
+                                        <span className="absolute inset-0 z-10 grid place-items-center bg-white/80">
+                                            <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
+                                        </span>
+                                    ) : null}
+                                    <Image
+                                        src="/logo.png"
+                                        alt="Tadao Market"
+                                        fill
+                                        priority
+                                        unoptimized
+                                        className="object-contain"
+                                    />
+                                </div>
+                                <div className="min-w-0">
+                                    <strong className="block truncate text-[19px] font-black leading-tight tracking-tight text-white sm:text-[24px]">
+                                        Tadao Market
+                                    </strong>
+                                    <span className="hidden truncate text-xs font-medium text-white/85 sm:block">
+                                        Buy &amp; sell across Kenya
+                                    </span>
+                                </div>
+                            </Link>
+                        </div>
+
+                        {/* Search: one instance, moves below the logo on mobile. */}
+                        {searchProps ? (
+                            <div className="order-3 col-span-2 min-w-0 w-full lg:order-none lg:col-span-1 [&>div]:w-full [&_form]:w-full">
+                                <HeroSearchBar {...searchProps} />
+                            </div>
+                        ) : (
+                            <div className="hidden text-center text-lg font-semibold text-white/90 lg:block">
+                                Explore listings from sellers across Kenya
+                            </div>
+                        )}
+
+                        {/* POST AD + MOBILE MENU */}
+                        <div className="col-start-2 row-start-1 flex shrink-0 items-center justify-end gap-2 lg:col-auto lg:row-auto">
+                            <button
+                                type="button"
+                                onClick={openSell}
+                                disabled={!!pendingAction}
+                                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-white px-3 font-extrabold text-[#EF4B08] shadow-sm transition hover:bg-orange-50 hover:shadow-md active:scale-[.98] disabled:opacity-70 sm:h-[52px] sm:px-5 lg:h-[62px] lg:min-w-[178px] lg:text-base"
+                            >
+                                {pendingAction === "sell" ? (
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                ) : (
+                                    <PlusIcon className="h-5 w-5 lg:h-6 lg:w-6" />
+                                )}
+                                <span className="hidden sm:inline">Sell</span>
+                                <span className="sm:hidden">Sell</span>
+                            </button>
+
+                            <div className="lg:hidden [&_button]:!border-white/40">
+                                {mobileNavigation}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+        </header>
     );
 }

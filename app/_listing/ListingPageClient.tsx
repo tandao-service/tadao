@@ -259,7 +259,7 @@ function SidebarPanel({
     return (
         <div
             className={cn(
-                "overflow-hidden rounded-xl border border-orange-100 bg-white shadow-sm",
+                "overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-[0_4px_18px_rgba(15,23,42,0.08)]",
                 className
             )}
         >
@@ -280,8 +280,8 @@ function SidebarSection({
     className?: string;
 }) {
     return (
-        <section className={cn("border-b border-orange-100 last:border-b-0", className)}>
-            <div className="flex items-center justify-between px-4 py-3">
+        <section className={cn("border-b border-slate-100 last:border-b-0", className)}>
+            <div className="flex items-center justify-between px-3 py-2.5">
                 <h3 className="text-[12px] font-bold text-slate-800">
                     {title}
                 </h3>
@@ -293,7 +293,7 @@ function SidebarSection({
                 ) : null}
             </div>
 
-            <div className="px-3 pb-4">{children}</div>
+            <div className="px-3 pb-3">{children}</div>
         </section>
     );
 }
@@ -1584,10 +1584,10 @@ export default function ListingPageClient(props: Props) {
     }, [q, county, town, membership, make, model, type, brand, min, max]);
 
     const FiltersContent = (
-        <div className="space-y-5">
+        <div className="space-y-3.5">
             {/* CATEGORY */}
             <div>
-                <label className="mb-2 block text-sm font-extrabold text-slate-900">
+                <label className="mb-1.5 block text-[12px] font-extrabold text-slate-800">
                     Category
                 </label>
 
@@ -1598,7 +1598,7 @@ export default function ListingPageClient(props: Props) {
                         setMobileCatName(categoryName);
                         setCatsOpen(true);
                     }}
-                    className="flex min-h-[58px] w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 text-left shadow-sm transition active:scale-[0.99] md:hidden"
+                    className="flex min-h-[48px] w-full items-center gap-2 rounded-sm border border-slate-200 bg-white px-3 text-left shadow-sm transition active:scale-[0.99] md:hidden"
                 >
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-orange-50 text-orange-600 ring-1 ring-orange-100">
                         <Layers className="h-5 w-5" />
@@ -1632,17 +1632,17 @@ export default function ListingPageClient(props: Props) {
                             await onCategoryListingPick(e.target.value);
                         }}
                         className="
-                            h-14
+                            h-11
                             w-full
                             appearance-none
-                            rounded-2xl
+                            rounded-sm
                             border border-slate-200
                             bg-white
                             py-0
                             pl-9
                             pr-8
                             text-sm
-                            font-extrabold
+                            font-bold
                             text-slate-800
                             shadow-sm
                             outline-none
@@ -1691,7 +1691,7 @@ export default function ListingPageClient(props: Props) {
 
             {/* LOCATION */}
             <div>
-                <label className="mb-2 block text-sm font-extrabold text-slate-900">
+                <label className="mb-1.5 block text-[12px] font-extrabold text-slate-800">
                     Location
                 </label>
 
@@ -1701,7 +1701,7 @@ export default function ListingPageClient(props: Props) {
                     <select
                         value={locationSelectValue}
                         onChange={(e) => onLocationChange(e.target.value)}
-                        className="h-14 w-full appearance-none rounded-2xl border border-slate-200 bg-white pl-11 pr-9 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                        className="h-11 w-full appearance-none rounded-sm border border-slate-200 bg-white pl-10 pr-8 text-[13px] font-semibold text-slate-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                     >
                         <option value="">All Kenya</option>
 
@@ -1724,17 +1724,17 @@ export default function ListingPageClient(props: Props) {
             {/* PRICE */}
             {!hidePriceFilters ? (
                 <div>
-                    <label className="mb-2 block text-sm font-extrabold text-slate-900">
+                    <label className="mb-1.5 block text-[12px] font-extrabold text-slate-800">
                         Price (KSh)
                     </label>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                         <input
                             value={min}
                             onChange={(e) => setMin(e.target.value)}
                             placeholder="Min"
                             inputMode="numeric"
-                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400 transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                            className="h-11 w-full rounded-sm border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-900 outline-none placeholder:text-slate-400 transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                         />
 
                         <input
@@ -1742,7 +1742,7 @@ export default function ListingPageClient(props: Props) {
                             onChange={(e) => setMax(e.target.value)}
                             placeholder="Max"
                             inputMode="numeric"
-                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400 transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                            className="h-11 w-full rounded-sm border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-900 outline-none placeholder:text-slate-400 transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                         />
                     </div>
                 </div>
@@ -1750,14 +1750,14 @@ export default function ListingPageClient(props: Props) {
 
             {/* SELLER */}
             <div>
-                <label className="mb-2 block text-sm font-extrabold text-slate-900">
+                <label className="mb-1.5 block text-[12px] font-extrabold text-slate-800">
                     Seller
                 </label>
 
                 <select
                     value={membership}
                     onChange={(e) => setMembership(e.target.value)}
-                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+                    className="h-11 w-full rounded-sm border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                 >
                     <option value="">All sellers</option>
                     <option value="verified">Verified sellers</option>
@@ -1767,7 +1767,7 @@ export default function ListingPageClient(props: Props) {
 
             {/* CATEGORY-SPECIFIC / ADVANCED FILTERS */}
             {activeFields?.length ? (
-                <div className="border-t border-slate-100 pt-5">
+                <div className="border-t border-slate-100 pt-3">
 
                     {/* Header / Toggle */}
                     <button
@@ -1783,12 +1783,12 @@ export default function ListingPageClient(props: Props) {
                 items-center
                 justify-between
                 gap-3
-                rounded-2xl
+                rounded-sm
                 border
                 border-slate-200
                 bg-slate-50
-                px-4
-                py-3
+                px-3
+                py-2.5
                 text-left
                 transition
                 hover:bg-orange-50
@@ -1853,7 +1853,7 @@ export default function ListingPageClient(props: Props) {
         return (
             <>
                 <TopBar />
-                <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-emerald-50 pt-[calc(var(--topbar-h,64px)+12px)]">
+                <div className="min-h-screen bg-[#EBEEF2] pt-1">
                     <main className="mx-auto max-w-[1440px] px-4 pb-10">
                         <div className="flex min-h-[60vh] items-center justify-center">
                             <div className="rounded-[28px] border border-emerald-100 bg-white px-8 py-10 shadow-[0_10px_35px_rgba(15,23,42,0.06)]">
@@ -1923,10 +1923,10 @@ export default function ListingPageClient(props: Props) {
                 </button>
             </div>
 
-            <div className="pt-[calc(var(--topbar-h,64px)+12px)]">
-                <main className="mx-auto max-w-[1440px] px-3 pb-8 sm:px-4 lg:px-5">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[270px_minmax(0,1fr)]">
-                        <aside className="hidden md:block">
+            <div className="min-h-screen bg-[#EBEEF2] pt-1">
+                <main className="mx-auto max-w-[1600px] px-2.5 pb-6 sm:px-3 lg:px-4">
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-[235px_minmax(0,1fr)] lg:grid-cols-[245px_minmax(0,1fr)] lg:gap-4">
+                        <aside className="hidden min-w-0 md:block">
                             <SidebarPanel>
                                 {/**  <SidebarSection
                                     title="Category"
@@ -1989,14 +1989,14 @@ export default function ListingPageClient(props: Props) {
                                         <button
                                             type="button"
                                             onClick={clearAll}
-                                            className="h-11 rounded-sm border border-slate-200 bg-white px-3 text-[13px] font-extrabold text-slate-700 transition hover:bg-slate-50"
+                                            className="h-10 rounded-sm border border-slate-200 bg-white px-3 text-[12px] font-extrabold text-slate-700 shadow-sm transition hover:bg-slate-50"
                                         >
                                             Clear
                                         </button>
                                         <button
                                             type="button"
                                             onClick={applyFilters}
-                                            className="h-11 rounded-sm bg-emerald-600 px-3 text-[13px] font-extrabold text-white transition hover:bg-emerald-700"
+                                            className="h-10 rounded-sm bg-emerald-700 px-3 text-[12px] font-extrabold text-white shadow-sm transition hover:bg-emerald-800"
                                         >
                                             Apply
                                         </button>
@@ -2006,18 +2006,18 @@ export default function ListingPageClient(props: Props) {
                         </aside>
 
                         <section className="min-w-0">
-                            <div className="overflow-hidden bg-white">
-                                <div className="bg-gradient-to-r from-white via-orange-50/40 to-white px-5 py-5 sm:px-6">
+                            <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-[0_3px_16px_rgba(15,23,42,0.06)]">
+                                <div className="bg-white px-3 py-3 sm:px-4 sm:py-4">
 
                                     <div className="min-w-0 flex-1">
 
 
-                                        <h1 className="mt-2 font-black tracking-tight text-slate-950 sm:text-4xl">
+                                        <h1 className="text-[17px] font-extrabold leading-snug tracking-tight text-slate-950 sm:text-[19px] lg:text-[21px]">
                                             {String(activeListing?.title || props.title)} in{" "}
                                             <span className="text-orange-600">{props.regionLabel}</span>
                                         </h1>
 
-                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                                        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px] text-slate-500">
                                             <span className="font-bold text-slate-700">{categoryName}</span>
                                             <span>•</span>
                                             <span>{Number(totalCategoryAds || 0).toLocaleString()} ads</span>
@@ -2028,8 +2028,8 @@ export default function ListingPageClient(props: Props) {
 
 
 
-                                    <div className="mt-2 flex items-center gap-3">
-                                        <div className="relative flex-1">
+                                    <div className="mt-3 flex items-center gap-2">
+                                        <div className="relative min-w-0 flex-1">
                                             <IoSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
 
                                             <input
@@ -2037,13 +2037,13 @@ export default function ListingPageClient(props: Props) {
                                                 onChange={(e) => setQ(e.target.value)}
                                                 onKeyDown={(e) => e.key === "Enter" && applyFilters()}
                                                 placeholder="Search keywords, category, subcategory..."
-                                                className="h-14 w-full rounded-sm border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                                                className="h-11 w-full rounded-sm border border-slate-200 bg-white pl-10 pr-3 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
                                             />
                                         </div>
 
                                         <button
                                             onClick={applyFilters}
-                                            className="h-14 shrink-0 rounded-sm bg-emerald-700 px-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-emerald-800"
+                                            className="h-11 shrink-0 rounded-sm bg-emerald-700 px-4 text-[13px] font-extrabold text-white shadow-sm transition hover:bg-emerald-800"
                                         >
                                             Search
                                         </button>
@@ -2168,7 +2168,7 @@ export default function ListingPageClient(props: Props) {
                                         </div>
                                     ) : null}
 
-                                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                                    <div className="mt-3 flex flex-wrap items-center gap-2">
                                         {/* FILTERS */}
                                         <button
                                             type="button"
@@ -2209,7 +2209,7 @@ export default function ListingPageClient(props: Props) {
                                                 type="button"
                                                 onClick={() => setLayout("grid")}
                                                 className={cn(
-                                                    "h-10 rounded-sm border border-slate-200 px-3 text-sm font-extrabold transition",
+                                                    "h-9 rounded-sm border border-slate-200 px-3 text-[12px] font-bold transition",
                                                     layout === "grid"
                                                         ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
                                                         : "bg-white text-slate-700 hover:bg-orange-50"
@@ -2222,7 +2222,7 @@ export default function ListingPageClient(props: Props) {
                                                 type="button"
                                                 onClick={() => setLayout("list")}
                                                 className={cn(
-                                                    "h-10 rounded-sm border border-slate-200 px-3 text-sm font-extrabold transition",
+                                                    "h-9 rounded-sm border border-slate-200 px-3 text-[12px] font-bold transition",
                                                     layout === "list"
                                                         ? "bg-orange-50 text-orange-700 ring-1 ring-orange-200"
                                                         : "bg-white text-slate-700 hover:bg-orange-50"
@@ -2242,7 +2242,7 @@ export default function ListingPageClient(props: Props) {
                                                 value={sort}
                                                 onChange={(e) => onSortChange(e.target.value)}
                                                 className="
-                h-10
+                h-9
                 min-w-0
                 flex-1
                 rounded-sm
@@ -2293,9 +2293,9 @@ export default function ListingPageClient(props: Props) {
 
                             <div
                                 className={cn(
-                                    "mt-4 transition-opacity duration-150",
+                                    "mt-3 transition-opacity duration-150",
                                     layout === "grid"
-                                        ? "grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
+                                        ? "grid grid-cols-2 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
                                         : "flex flex-col gap-3",
                                     refreshing &&
                                     "pointer-events-none opacity-55"
@@ -2393,7 +2393,7 @@ export default function ListingPageClient(props: Props) {
 
                                             <div className="mt-3 flex items-end justify-between gap-3">
                                                 <div>
-                                                    <h2 className="text-lg font-black tracking-tight text-slate-950 sm:text-xl">
+                                                    <h2 className="text-base font-extrabold tracking-tight text-slate-950 sm:text-lg">
                                                         {section.title}
                                                     </h2>
 
@@ -2421,7 +2421,7 @@ export default function ListingPageClient(props: Props) {
                                         <div
                                             className={cn(
                                                 layout === "grid"
-                                                    ? "grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
+                                                    ? "grid grid-cols-2 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
                                                     : "flex flex-col gap-3"
                                             )}
                                         >
@@ -2523,14 +2523,14 @@ export default function ListingPageClient(props: Props) {
                     />
 
                     <div
-                        className="absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-hidden rounded-t-[28px] bg-[#FBFAF6] shadow-[0_-18px_60px_rgba(15,23,42,0.18)]"
+                        className="absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-hidden rounded-t-[28px] bg-white shadow-[0_-18px_60px_rgba(15,23,42,0.18)]"
                         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
                         <div className="flex justify-center pt-2.5">
                             <div className="h-1.5 w-11 rounded-full bg-slate-300" />
                         </div>
 
-                        <div className="sticky top-0 z-10 border-b border-slate-200 bg-[#FBFAF6]/95 px-4 pb-3 pt-2 backdrop-blur-xl">
+                        <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-4 pb-3 pt-2 backdrop-blur-xl">
                             <div className="flex items-center justify-between gap-3">
                                 <div className="min-w-0">
                                     <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-orange-600">
@@ -2635,14 +2635,14 @@ export default function ListingPageClient(props: Props) {
                     />
 
                     <div
-                        className="absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-hidden rounded-t-[28px] bg-[#FBFAF6] shadow-[0_-18px_60px_rgba(15,23,42,0.18)]"
+                        className="absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-hidden rounded-t-[28px] bg-white shadow-[0_-18px_60px_rgba(15,23,42,0.18)]"
                         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
                     >
                         <div className="flex justify-center pt-2.5">
                             <div className="h-1.5 w-11 rounded-full bg-slate-300" />
                         </div>
 
-                        <div className="sticky top-0 z-10 border-b border-slate-200 bg-[#FBFAF6]/95 px-4 pb-3 pt-2 backdrop-blur-xl">
+                        <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-4 pb-3 pt-2 backdrop-blur-xl">
                             <div className="flex items-center justify-between gap-3">
                                 <button
                                     type="button"

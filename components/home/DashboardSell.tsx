@@ -6,7 +6,7 @@ import TopBar from "./TopBar.client";
 import { useRouter } from "next/navigation";
 import EventForm from "../shared/EventForm";
 
-type dashboardProps = {
+type DashboardProps = {
   userId: string;
   user: any;
   userImage: string;
@@ -22,7 +22,7 @@ type dashboardProps = {
   tx?: string;
 };
 
-const DashboardSell = ({
+export default function DashboardSell({
   userId,
   user,
   userName,
@@ -36,15 +36,13 @@ const DashboardSell = ({
   subcategoryList,
   payStatus,
   tx,
-}: dashboardProps) => {
+}: DashboardProps) {
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || mode;
-    const isDark = savedTheme === mode;
-    setIsDarkMode(isDark);
-    document.documentElement.classList.toggle(mode, isDark);
+    setIsDarkMode(savedTheme === mode);
   }, []);
 
   useEffect(() => {
@@ -56,59 +54,51 @@ const DashboardSell = ({
   const resolveAdId = (value: any) =>
     value?._id || value?.adId?._id || value?.adId || value?.id || "";
 
-  if (isDarkMode === null) return null;
-
+  // TopBar already renders a spacer for its fixed status bar.
+  // Only add a small visual gap here (not another --topbar-h offset).
   return (
-    <div className="min-h-screen bg-slate-50 text-black dark:bg-[#131B1E] dark:text-[#F1F3F3]">
+    <div className="min-h-screen bg-[#EBEEF2] text-slate-900 dark:bg-[#131B1E] dark:text-[#F1F3F3]">
       <TopBar />
 
-      <div className="mx-auto w-full max-w-5xl px-3 pb-10 pt-[calc(var(--topbar-h,64px)+12px)] lg:px-4">
-        <div className="overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-sm dark:border-[#2D3236] dark:bg-[#1B2225]">
-          {/**  <div className="bg-gradient-to-r from-orange-500 to-orange-400 px-5 py-6 text-white lg:px-8 lg:py-8">
-            <h1 className="text-2xl font-extrabold tracking-[-0.02em] lg:text-4xl">
-              {type === "Update" ? "Update Your Ad" : "Create New Ad"}
-            </h1>
-            <p className="mt-2 text-sm text-orange-50 lg:text-base">
-              {type === "Update"
-                ? "Edit your listing details, photos, and pricing, then save your changes."
-                : "Fill in your ad details and publish professionally on Tadao Market."}
-            </p>
-          </div>*/}
-
-          <div className="p-2 lg:p-4">
-            <EventForm
-              userId={userId}
-              userImage={userImage}
-              ad={ad}
-              categories={subcategoryList}
-              adId={adId}
-              user={user}
-              userName={userName}
-              category={category}
-              subcategory={subcategory}
-              packagesList={packagesList}
-              payStatus={payStatus}
-              tx={tx}
-              handleAdView={(ad: any) => {
-                const id = resolveAdId(ad);
-                if (!id) return;
-                router.push(`/ads/${id}`);
-              }}
-              handlePay={(value: any) => {
-                const orderTrackingId =
-                  value?.orderTrackingId || value?.tx || value?._id || value;
-                if (!orderTrackingId) return;
-                router.push(`/pay/${orderTrackingId}`);
-              }}
-              handleOpenShop={(shopId: string) => router.push(`/profile/${shopId}`)}
-              handleOpenTerms={() => router.push(`/terms`)}
-              type={type === "Update" ? "Update" : "Create"}
-            />
+      <main className="mx-auto w-full max-w-[900px] px-3 pb-8 pt-2 sm:px-4 lg:px-5">
+        <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_4px_24px_rgba(15,23,42,0.08)] dark:border-[#2D3236] dark:bg-[#1B2225]">
+          <div className="p-4 sm:p-5 lg:p-6">
+            {isDarkMode === null ? (
+              <div className="flex min-h-44 items-center justify-center gap-3 text-sm text-slate-500">
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-orange-200 border-t-orange-500" />
+                Preparing the form...
+              </div>
+            ) : (
+              <EventForm
+                userId={userId}
+                userImage={userImage}
+                ad={ad}
+                categories={subcategoryList}
+                adId={adId}
+                user={user}
+                userName={userName}
+                category={category}
+                subcategory={subcategory}
+                packagesList={packagesList}
+                payStatus={payStatus}
+                tx={tx}
+                handleAdView={(createdAd: any) => {
+                  const id = resolveAdId(createdAd);
+                  if (id) router.push(`/ads/${id}`);
+                }}
+                handlePay={(value: any) => {
+                  const orderTrackingId =
+                    value?.orderTrackingId || value?.tx || value?._id || value;
+                  if (orderTrackingId) router.push(`/pay/${orderTrackingId}`);
+                }}
+                handleOpenShop={(shopId: string) => router.push(`/profile/${shopId}`)}
+                handleOpenTerms={() => router.push("/terms")}
+                type={type === "Update" ? "Update" : "Create"}
+              />
+            )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
-};
-
-export default DashboardSell;
+}

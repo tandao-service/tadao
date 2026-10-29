@@ -28,7 +28,6 @@ export default function AdDetailActions({ ad, adPath }: Props) {
     const [isOpenP, setIsOpenP] = useState(false);
 
     const organizer = ad?.organizer || {};
-
     const userId = currentUser?._id || "";
 
     const userName =
@@ -84,11 +83,11 @@ export default function AdDetailActions({ ad, adPath }: Props) {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2.5">
             {hasActiveBidding ? (
                 <>
                     {bidIncrement > 0 ? (
-                        <div className="rounded-2xl border border-orange-100 bg-orange-50 px-4 py-3 text-sm text-orange-700">
+                        <div className="rounded-lg border border-orange-100 bg-orange-50 px-3 py-2 text-xs text-orange-700">
                             Minimum bid increment:{" "}
                             <span className="font-bold">KSh {bidIncrement.toLocaleString()}</span>
                         </div>
@@ -100,30 +99,31 @@ export default function AdDetailActions({ ad, adPath }: Props) {
 
             {!biddingEnabled && isFinanceCategory ? (
                 <button
+                    type="button"
                     onClick={handleOpenPopupLoan}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-green-500 px-4 py-3 text-base font-bold text-white transition hover:bg-green-600"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-green-500 px-3 py-2 text-center text-[13px] font-bold leading-snug text-white shadow-sm transition hover:bg-green-600"
                 >
-                    <SellOutlinedIcon />
+                    <SellOutlinedIcon sx={{ fontSize: 18 }} />
                     Request Financing for This Property
                 </button>
             ) : null}
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-2">
                 <button
                     type="button"
                     onClick={handleOpenReportAbuse}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 transition hover:bg-red-100"
+                    className="inline-flex min-h-[42px] w-full items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-2 text-[12px] font-semibold text-red-700 transition hover:bg-red-100"
                 >
-                    <ReportGmailerrorredOutlinedIcon sx={{ fontSize: 18 }} />
+                    <ReportGmailerrorredOutlinedIcon sx={{ fontSize: 17 }} />
                     Report Ad
                 </button>
 
                 <button
                     type="button"
                     onClick={handleOpenReportUnavailable}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700 transition hover:bg-blue-100"
+                    className="inline-flex min-h-[42px] w-full items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-2 text-[12px] font-semibold text-blue-700 transition hover:bg-blue-100"
                 >
-                    <Inventory2OutlinedIcon sx={{ fontSize: 18 }} />
+                    <Inventory2OutlinedIcon sx={{ fontSize: 17 }} />
                     Confirm Unavailable
                 </button>
             </div>

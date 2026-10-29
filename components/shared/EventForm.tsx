@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { BellIcon } from "lucide-react";
+import { BellIcon, ArrowRight, Info, Tag } from "lucide-react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 
@@ -914,11 +914,11 @@ const AdForm = ({
   };
 
   const renderNegotiableBlock = () => (
-    <div className="mt-3 bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border w-full">
-      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
+    <div className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm dark:border-slate-600 dark:bg-[#222C31] dark:text-gray-100">
+      <h3 className="text-xs font-bold text-gray-700 dark:text-gray-300">
         Are you open to negotiation?
       </h3>
-      <div className="flex items-center space-x-4 mt-2">
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
         {["Yes", "No", "Not sure"].map((option) => (
           <label
             key={option}
@@ -1227,7 +1227,7 @@ const AdForm = ({
 
   if (showLoad) {
     return (
-      <div className="w-full p-5 h-full flex flex-col items-center justify-center">
+      <div className="flex min-h-[180px] w-full flex-col items-center justify-center gap-3 rounded-xl bg-slate-50 p-6">
         <Image
           src="/assets/icons/loading2.gif"
           alt="loading"
@@ -1235,56 +1235,86 @@ const AdForm = ({
           height={40}
           unoptimized
         />
+        <span className="text-sm font-medium text-slate-500">Preparing your ad form...</span>
       </div>
     );
   }
 
   return (
     <>
-      <div className="p-0 lg:p-2">
-        <section className="bg-grey-50 bg-dotted-pattern bg-cover bg-center mb-2 mt-2 rounded-sm">
-          <div className="wrapper flex items-center justify-center sm:justify-between">
-            <div className="lg:flex-1 p-1 ml-2 mr-5 mb-0 lg:mb-0">
-              <div className="text-lg font-bold breadcrumbs">
-                <h3 className="font-bold text-[25px] text-center sm:text-left">
-                  {type} Ad
-                </h3>
-              </div>
-            </div>
+      <div className="w-full min-w-0">
+        <header className="mb-4 flex items-start gap-3 border-b border-slate-100 pb-4 sm:items-center">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-600 ring-1 ring-orange-100 dark:bg-orange-500/10">
+            <Tag className="h-5 w-5" />
           </div>
-        </section>
+          <div className="min-w-0">
+            <h1 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-[22px]">
+              {type === "Update" ? "Edit your ad" : "Create an ad"}
+            </h1>
+            <p className="mt-0.5 text-xs leading-5 text-slate-500 dark:text-slate-400 sm:text-[13px]">
+              {type === "Update"
+                ? "Update your listing details and save changes."
+                : "Choose a category, add your details, and reach buyers across Kenya."}
+            </p>
+          </div>
+        </header>
 
-        <div className="flex flex-col w-full mt-2">
+        <div className="flex w-full min-w-0 flex-col gap-3">
           {!isSpecialFixedCategory && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              <div className="flex flex-col">
-                <CategorySelect
-                  selected={selectedCategory}
-                  data={categoryOptions}
-                  onChange={handleInputCategoryChange}
-                />
-                {formErrors.category && (
-                  <p className="text-red-500 text-sm">{formErrors.category}</p>
-                )}
+            <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-700 dark:bg-[#232C30] sm:p-4">
+              <div className="mb-3 flex items-center gap-2.5">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-orange-500 text-[11px] font-bold text-white">1</span>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">Category &amp; subcategory</h2>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Select where your advertisement belongs.</p>
+                </div>
               </div>
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                <div className="flex min-w-0 flex-col">
+                  <CategorySelect
+                    selected={selectedCategory}
+                    data={categoryOptions}
+                    onChange={handleInputCategoryChange}
+                  />
+                  {formErrors.category && (
+                    <p className="text-xs text-red-500">{formErrors.category}</p>
+                  )}
+                </div>
 
-              <div className="flex flex-col">
-                <SubCategorySelect
-                  selected={selectedSubCategory}
-                  data={selectedCategory ? filteredSubcategories : []}
-                  onChange={handleInputSubCategoryChange}
-                />
+                <div className="flex min-w-0 flex-col">
+                  <SubCategorySelect
+                    selected={selectedSubCategory}
+                    data={selectedCategory ? filteredSubcategories : []}
+                    onChange={handleInputSubCategoryChange}
+                  />
+                  {formErrors.subcategory && (
+                    <p className="text-xs text-red-500">{formErrors.subcategory}</p>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
 
-                {formErrors.subcategory && (
-                  <p className="text-red-500 text-sm">{formErrors.subcategory}</p>
-                )}
+          {!selectedSubCategory && !isSpecialFixedCategory ? (
+            <div className="flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700 dark:bg-[#223037] dark:text-slate-300">
+              <Info className="h-4 w-4 shrink-0 text-blue-600" />
+              Choose a subcategory to show the relevant ad fields.
+            </div>
+          ) : null}
+
+          {selectedSubCategory ? (
+            <div className="flex items-center gap-2.5 pt-1">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-orange-500 text-[11px] font-bold text-white">2</span>
+              <div>
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Ad details</h2>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Add clear information to help buyers find your listing.</p>
               </div>
             </div>
-          )}
+          ) : null}
 
           {selectedSubCategory &&
             !EXCLUDED_BIDDING_CATEGORIES.includes(selectedCategory) && (
-              <div className="mb-4 mt-2">
+              <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-[#222C31]">
                 <div className="flex gap-2 items-center">
                   <label className="font-semibold text-sm">Enable Bidding?</label>
                   <BiddingCheckbox
@@ -1296,7 +1326,7 @@ const AdForm = ({
                 </div>
 
                 {formData.biddingEnabled && (
-                  <div className="mt-4 space-y-4">
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     <div>
                       <label className="block text-sm font-medium">
                         Bid Increment (Ksh)
@@ -1311,7 +1341,7 @@ const AdForm = ({
                             bidIncrement: e.target.value,
                           }))
                         }
-                        className="mt-1 block w-full rounded border p-2 text-sm"
+                        className="mt-1 block h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
                         placeholder="Enter bid increment e.g. 500"
                       />
                       {bidErrors.bidIncrement && (
@@ -1338,7 +1368,7 @@ const AdForm = ({
                             biddingEndsAt: e.target.value,
                           }))
                         }
-                        className="mt-1 block w-full rounded border p-2 text-sm"
+                        className="mt-1 block h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
                       />
                       {bidErrors.biddingEndsAt && (
                         <p className="text-red-500 text-xs mt-1">
@@ -1352,7 +1382,7 @@ const AdForm = ({
             )}
 
           {selectedSubCategory && !isFinancing && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
+            <div className="mt-1 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-[#222C31] lg:grid-cols-2">
               <div>
                 <AutoComplete
                   data={REGIONS_WITH_AREA.map((county) => county.region)}
@@ -1424,7 +1454,7 @@ const AdForm = ({
             </div>
           )}*/}
           {selectedSubCategory && selectedCategory !== "Buyer Requests" && (
-            <div className="flex bg-white w-full mt-3 gap-0 border dark:bg-[#2D3236] py-2 px-1 rounded-sm border-gray-300 dark:border-gray-600 items-center">
+            <div className="mt-1 flex w-full min-w-0 items-center rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-[#222C31]">
               <FileUploader
                 onFieldChange={(urls) => handleInputChange("imageUrls", urls)}
                 imageUrls={formData.imageUrls || []}
@@ -1444,7 +1474,7 @@ const AdForm = ({
           )}
 
           {fields.map((field: Field) => (
-            <div key={field.name} className="flex gap-3 items-center mt-3">
+            <div key={field.name} className="mt-1.5 flex w-full min-w-0 items-start gap-2 [&_.MuiOutlinedInput-root]:rounded-lg">
               {field.type === "checkbox" && (
                 <div className="mt-3 mb-3">
                   {capitalizeFirstLetter(field.name.replace("-", " "))}
@@ -1464,6 +1494,7 @@ const AdForm = ({
 
               {field.type === "text" && (
                 <TextField
+                  size="small"
                   required={field.required}
                   id={field.name}
                   label={capitalizeFirstLetter(field.name.replace("-", " "))}
@@ -1477,6 +1508,7 @@ const AdForm = ({
 
               {field.type === "youtube-link" && (
                 <TextField
+                  size="small"
                   required={field.required}
                   id={field.type}
                   label="YouTube link"
@@ -1490,6 +1522,7 @@ const AdForm = ({
 
               {field.type === "virtualTourLink" && (
                 <TextField
+                  size="small"
                   required={field.required}
                   id={field.type}
                   label="3D Virtual Property Tour Link"
@@ -1504,6 +1537,7 @@ const AdForm = ({
               {field.type === "price" && (
                 <div className="flex flex-col w-full">
                   <TextField
+                    size="small"
                     required={field.required}
                     id={field.name}
                     label={capitalizeFirstLetter(field.name)}
@@ -1521,6 +1555,7 @@ const AdForm = ({
                 <div className="flex flex-col w-full">
                   <div className="flex w-full gap-1">
                     <TextField
+                      size="small"
                       required={field.required}
                       id="price"
                       label="Price"
@@ -1532,7 +1567,7 @@ const AdForm = ({
                     />
 
                     <select
-                      className="bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border w-[140px] lg:w-[200px]"
+                      className="h-11 w-[125px] rounded-lg border border-slate-200 bg-white px-2 text-xs dark:border-slate-600 dark:bg-[#2D3236] dark:text-gray-100 sm:w-[160px]"
                       value={formData.period || ""}
                       onChange={(e) => handleInputChange("period", e.target.value)}
                     >
@@ -1551,6 +1586,7 @@ const AdForm = ({
                 <div className="flex flex-col w-full">
                   <div className="flex w-full gap-1">
                     <TextField
+                      size="small"
                       required={field.required}
                       id="price"
                       label="Price"
@@ -1562,7 +1598,7 @@ const AdForm = ({
                     />
 
                     <select
-                      className="bg-white border-gray-300 cursor-pointer dark:border-gray-600 dark:bg-[#2D3236] dark:text-gray-100 text-sm py-2 px-1 rounded-sm border w-[140px] lg:w-[200px]"
+                      className="h-11 w-[125px] rounded-lg border border-slate-200 bg-white px-2 text-xs dark:border-slate-600 dark:bg-[#2D3236] dark:text-gray-100 sm:w-[160px]"
                       value={formData.per || "Outright Price"}
                       onChange={(e) => handleInputChange("per", e.target.value)}
                     >
@@ -1580,6 +1616,7 @@ const AdForm = ({
                 <div className="flex flex-col w-full">
                   <div className="flex w-full gap-1">
                     <TextField
+                      size="small"
                       required={field.required}
                       id="price"
                       label="Price"
@@ -1593,7 +1630,7 @@ const AdForm = ({
                     <button
                       type="button"
                       onClick={() => setShowBulkPopup(true)}
-                      className="py-3 text-sm lg:text-base w-[200px] px-1 rounded-sm border border-orange-500 text-orange-500 hover:bg-orange-100"
+                      className="min-h-11 w-[175px] rounded-lg border border-orange-300 bg-orange-50 px-2 py-2 text-xs font-semibold text-orange-600 hover:bg-orange-100"
                     >
                       <AddOutlinedIcon /> Add Bulk Price
                     </button>
@@ -1625,6 +1662,7 @@ const AdForm = ({
 
               {field.type === "number" && (
                 <TextField
+                  size="small"
                   required={field.required}
                   id={field.name}
                   label={capitalizeFirstLetter(field.name.replace("-", " "))}
@@ -1638,6 +1676,7 @@ const AdForm = ({
 
               {field.type === "money" && (
                 <TextField
+                  size="small"
                   required={field.required}
                   id={field.name}
                   label={capitalizeFirstLetter(field.name.replace("-", " "))}
@@ -1656,6 +1695,7 @@ const AdForm = ({
                     {field.required && <>*</>}
                   </InputLabel>
                   <Select
+                    size="small"
                     value={formData[field.name] || ""}
                     onChange={(e) => handleInputChange(field.name, e.target.value)}
                     required={field.required}
@@ -1690,7 +1730,7 @@ const AdForm = ({
               )}
 
               {field.type === "multi-select" && (
-                <div className="w-full flex py-2 px-1 rounded-sm border border-gray-300 dark:border-gray-600 flex-wrap gap-2 dark:bg-[#2D3236] bg-white">
+                <div className="flex w-full flex-wrap gap-2 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-[#222C31]">
                   <Multiselect
                     features={field.options || []}
                     name={field.name}
@@ -1701,7 +1741,7 @@ const AdForm = ({
               )}
 
               {field.type === "radio" && (
-                <div className="w-full flex py-2 px-3 rounded-sm border border-gray-300 dark:border-gray-600 flex-wrap gap-2 dark:bg-[#2D3236] bg-white">
+                <div className="flex w-full flex-wrap gap-2 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-[#222C31]">
                   <FormControl>
                     <FormLabel className="text-gray-800 dark:text-gray-200">
                       {capitalizeFirstLetter(field.name.replace("-", " "))}
@@ -1749,11 +1789,11 @@ const AdForm = ({
                 ))}
 
               {field.type === "textarea" && (
-                <div className="border border-gray-300 p-1 bg-white rounded-sm w-full">
+                <div className="w-full rounded-xl border border-slate-200 bg-white p-2 dark:border-slate-700">
                   <div
                     style={{
                       width: "100%",
-                      height: "300px",
+                      height: "250px",
                       borderRadius: "8px",
                       overflow: "hidden",
                     }}
@@ -1797,9 +1837,7 @@ const AdForm = ({
                           phone: fullPhone,
                         }));
                       }}
-                      className="border border-gray-300 dark:border-gray-600
-                   dark:bg-[#2D3236] dark:text-gray-100
-                   px-2 py-3 rounded-md w-[130px]"
+                      className="h-11 w-[122px] shrink-0 rounded-lg border border-slate-200 bg-white px-2 text-sm dark:border-slate-600 dark:bg-[#2D3236] dark:text-gray-100"
                     >
                       <option value="+254">+254 Kenya</option>
                       <option value="+256">+256 Uganda</option>
@@ -1832,9 +1870,7 @@ const AdForm = ({
                         }));
                       }}
                       placeholder="0712345678"
-                      className="border border-gray-300 dark:border-gray-600
-                   dark:bg-[#2D3236] dark:text-gray-100
-                   px-3 py-3 rounded-md w-full"
+                      className="h-11 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm dark:border-slate-600 dark:bg-[#2D3236] dark:text-gray-100"
                     />
                   </div>
 
@@ -1855,7 +1891,7 @@ const AdForm = ({
                   <button
                     type="button"
                     onClick={() => setShowDeliveryPopup(true)}
-                    className="py-3 w-full px-1 rounded-sm border border-orange-500 text-orange-500 hover:bg-orange-100"
+                    className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-600 hover:bg-orange-100"
                   >
                     <AddOutlinedIcon /> Add Delivery Option
                   </button>
@@ -1902,33 +1938,31 @@ const AdForm = ({
                 title="Promote your ad"
                 subtitle="Select a package for normal posting or more visibility"
                 showFree
-                compact={false}
+                compact={true}
                 onSelectPackage={handlePackageClick}
                 onSelectPeriod={handleButtonClick}
               />
 
             )}
 
-          <button
-            disabled={loading}
-            onClick={handleSubmit}
-            className="py-3 w-full px-1 mt-2 items-center justify-center rounded-sm hover:bg-gray-900 bg-black text-white"
-          >
-            <div className="flex w-full justify-center gap-1 items-center">
-              {loading && <CircularProgress size={18} sx={{ color: "#fff" }} />}
-              {loading ? "Submitting..." : `${type} Ad`}
-            </div>
-          </button>
-
-          <p className="mt-3 mb-10 text-xs text-gray-600 dark:text-gray-500 text-center">
-            By clicking on Create Ad, you accept the{" "}
-            <span
-              onClick={() => handleOpenTerms()}
-              className="text-orange-500 cursor-pointer underline"
+          <div className="mt-2 flex flex-col-reverse items-stretch gap-3 border-t border-slate-100 pt-4 dark:border-slate-700 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-center text-[11px] leading-5 text-slate-500 dark:text-slate-400 sm:max-w-[430px] sm:text-left">
+              By clicking {type === "Update" ? "Update Ad" : "Create Ad"}, you agree to our{" "}
+              <button type="button" onClick={handleOpenTerms} className="font-semibold text-orange-600 underline underline-offset-2 hover:text-orange-700">
+                Terms of Use
+              </button>.
+            </p>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={handleSubmit}
+              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#FF5108] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-orange-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[190px]"
             >
-              Terms of Use
-            </span>
-          </p>
+              {loading ? <CircularProgress size={17} sx={{ color: "#fff" }} /> : null}
+              {loading ? "Submitting..." : type === "Update" ? "Save Changes" : "Create Ad"}
+              {!loading ? <ArrowRight className="h-4 w-4" /> : null}
+            </button>
+          </div>
         </div>
       </div>
 
