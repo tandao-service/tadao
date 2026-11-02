@@ -86,7 +86,6 @@ export default function TopBar({ searchProps }: TopBarProps) {
 
     // Only the homepage displays the orange search/branding section.
     const isHomeRoute = pathname === "/";
-    const showBackButton = !isHomeRoute;
 
     /*
     |--------------------------------------------------------------------------
@@ -302,7 +301,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
             profileLoading);
 
     const utilityIconClass =
-        "relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-white/90 transition hover:bg-white/15 hover:text-white disabled:opacity-60 lg:h-11 lg:w-11";
+        "relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-white/90 transition hover:bg-white/15 hover:text-white disabled:opacity-60 lg:h-12 lg:w-12";
 
     const openSell = () => {
         navigate(
@@ -355,27 +354,18 @@ export default function TopBar({ searchProps }: TopBarProps) {
 
     return (
         <header className="relative z-[50] w-full shadow-sm">
-            {/* The green strip is fixed independently of the orange header. */}
+            {/* Fixed orange status bar with permanent branding. */}
             <div ref={ref} className="fixed inset-x-0 top-0 z-[50] bg-[#FF5108] text-white">
-                <div className="mx-auto flex h-[42px] w-full max-w-[1600px] items-center justify-between gap-3 px-3 sm:h-[46px] sm:px-5 lg:h-[50px] xl:px-7">
-                    {isHomeRoute ? (
-                        <>
-                            <span className="hidden text-sm font-medium tracking-wide text-white/90 sm:inline lg:text-base">
-                                Buy &amp; sell across Kenya
-                            </span>
-                            <span className="text-sm font-semibold sm:hidden">
-                                Tadao Market
-                            </span>
-                        </>
-                    ) : (
-                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                <div className="mx-auto flex h-[62px] w-full max-w-[1600px] items-center justify-between gap-2 px-3 sm:h-[70px] sm:px-5 lg:h-[80px] xl:px-7">
+                    <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
+                        {!isHomeRoute && (
                             <button
                                 type="button"
                                 aria-label="Go back"
                                 title="Go back"
                                 disabled={!!pendingAction}
                                 onClick={handleGoBack}
-                                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition hover:bg-white/15 disabled:opacity-60"
+                                className="inline-flex h-8 w-7 shrink-0 items-center justify-center rounded-full text-white transition hover:bg-white/15 disabled:opacity-60 sm:w-8"
                             >
                                 {pendingAction === "back" ? (
                                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -383,19 +373,36 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                     <ArrowBackIosNewIcon sx={{ fontSize: 15 }} />
                                 )}
                             </button>
-                            <Link
-                                href="/"
-                                prefetch
-                                aria-label="Tadao Market home"
-                                onClick={() => setPendingAction("home")}
-                                className="truncate text-sm font-bold text-white hover:text-white/85 sm:text-base"
-                            >
-                                Tadao Market
-                            </Link>
-                        </div>
-                    )}
+                        )}
+                        <Link
+                            href="/"
+                            prefetch
+                            aria-label="Tadao Market home"
+                            onClick={() => { if (!isHomeRoute) setPendingAction("home"); }}
+                            className="flex min-w-0 items-center gap-2 sm:gap-3"
+                        >
+                            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-white/80 bg-white sm:h-[54px] sm:w-[54px] lg:h-[60px] lg:w-[60px]">
+                                <Image
+                                    src="/logo.png"
+                                    alt="Tadao Market logo"
+                                    fill
+                                    priority
+                                    sizes="(min-width: 1024px) 60px, (min-width: 640px) 54px, 44px"
+                                    className="object-contain"
+                                />
+                            </div>
+                            <div className="min-w-0">
+                                <strong className="block truncate text-[16px] font-extrabold leading-tight tracking-tight sm:text-[22px] lg:text-[26px]">
+                                    Tadao Market
+                                </strong>
+                                <span className="block truncate text-[10px] font-semibold leading-snug text-white/90 sm:text-[13px] lg:text-[15px]">
+                                    Buy &amp; sell across Kenya
+                                </span>
+                            </div>
+                        </Link>
+                    </div>
 
-                    <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex shrink-0 items-center gap-1 sm:gap-3">
                         {/* Keep all four desktop shortcuts, now in the status bar. */}
                         <nav aria-label="Quick links" className="hidden items-center gap-1 lg:flex">
                             <button
@@ -406,7 +413,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 disabled={!!pendingAction}
                                 onClick={() => navigate("favorites", isLoggedIn ? "/favorites" : "/auth")}
                             >
-                                <BookmarkIcon sx={{ fontSize: 18 }} />
+                                <BookmarkIcon sx={{ fontSize: 24 }} />
                             </button>
                             <button
                                 type="button"
@@ -416,7 +423,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 disabled={!!pendingAction}
                                 onClick={() => navigate("messages", isLoggedIn ? "/profile-messages" : "/auth")}
                             >
-                                <MessageIcon sx={{ fontSize: 18 }} />
+                                <MessageIcon sx={{ fontSize: 24 }} />
                                 {resolvedUserId ? (
                                     <span className="absolute -right-1 -top-1">
                                         <Unreadmessages userId={resolvedUserId} />
@@ -431,7 +438,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 disabled={!!pendingAction}
                                 onClick={() => navigate("plan", "/plan")}
                             >
-                                <DiamondIcon sx={{ fontSize: 18 }} />
+                                <DiamondIcon sx={{ fontSize: 24 }} />
                             </button>
                             <button
                                 type="button"
@@ -441,7 +448,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 disabled={!!pendingAction}
                                 onClick={() => navigate("ads", isLoggedIn ? "/dashboard/ads" : "/auth")}
                             >
-                                <SellOutlinedIcon sx={{ fontSize: 18 }} />
+                                <SellOutlinedIcon sx={{ fontSize: 24 }} />
                             </button>
                             {!isHomeRoute ? (
                                 <button
@@ -463,7 +470,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 type="button"
                                 onClick={() => navigate("signin", "/auth")}
                                 disabled={!!pendingAction}
-                                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/15 lg:text-base"
+                                className="inline-flex items-center gap-1 rounded-lg px-1.5 py-2 text-[11px] font-semibold text-white transition hover:bg-white/15 sm:gap-2 sm:px-3 sm:text-sm lg:text-base"
                             >
                                 {pendingAction === "signin" ? (
                                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -496,92 +503,38 @@ export default function TopBar({ searchProps }: TopBarProps) {
             </div>
 
             {/* Space for the fixed status bar, so the orange header starts below it. */}
-            <div aria-hidden="true" className="h-[42px] sm:h-[46px] lg:h-[50px]" />
+            <div aria-hidden="true" className="h-[62px] sm:h-[70px] lg:h-[80px]" />
 
-            {/* The orange branding/search header is homepage-only and scrolls away. */}
+            {/* Homepage search header only; branding stays in the fixed status bar. */}
             {isHomeRoute ? (
                 <div className="relative bg-[#FF5108] text-white">
-                    <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-3 py-4 sm:min-h-[150px] sm:px-5 sm:py-5 lg:min-h-[190px] lg:grid-cols-[minmax(220px,275px)_minmax(0,1fr)_auto] lg:gap-x-5 lg:py-6 xl:px-7">
-                        {/* LOGO */}
-                        <div className="flex min-w-0 items-center gap-2">
-                            {showBackButton ? (
-                                <button
-                                    type="button"
-                                    title="Go back"
-                                    aria-label="Go back"
-                                    onClick={handleGoBack}
-                                    disabled={!!pendingAction}
-                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 transition hover:bg-white/25"
-                                >
-                                    {pendingAction === "back" ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
-                                    )}
-                                </button>
-                            ) : null}
-                            <Link
-                                href="/"
-                                prefetch
-                                onClick={() => {
-                                    if (pathname !== "/") setPendingAction("home");
-                                }}
-                                className="flex min-w-0 items-center gap-2.5"
-                            >
-                                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/80 bg-white shadow-sm sm:h-[58px] sm:w-[58px] lg:h-[68px] lg:w-[68px]">
-                                    {pendingAction === "home" ? (
-                                        <span className="absolute inset-0 z-10 grid place-items-center bg-white/80">
-                                            <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                                        </span>
-                                    ) : null}
-                                    <Image
-                                        src="/logo.png"
-                                        alt="Tadao Market"
-                                        fill
-                                        priority
-                                        unoptimized
-                                        className="object-contain"
-                                    />
-                                </div>
-                                <div className="min-w-0">
-                                    <strong className="block truncate text-[19px] font-black leading-tight tracking-tight text-white sm:text-[24px]">
-                                        Tadao Market
-                                    </strong>
-                                    <span className="hidden truncate text-xs font-medium text-white/85 sm:block">
-                                        Buy &amp; sell across Kenya
-                                    </span>
-                                </div>
-                            </Link>
-                        </div>
-
-                        {/* Search: one instance, moves below the logo on mobile. */}
+                    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-3 px-4 py-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-center lg:gap-4 lg:py-6">
+                        {/* One search instance, retaining its existing search behaviour. */}
                         {searchProps ? (
-                            <div className="order-3 col-span-2 min-w-0 w-full lg:order-none lg:col-span-1 [&>div]:w-full [&_form]:w-full">
+                            <div className="min-w-0 w-full text-slate-900 lg:max-w-[900px] lg:flex-1 [&>div]:min-w-0 [&>div]:w-full [&_form]:min-w-0 [&_form]:w-full [&_input]:text-slate-900 [&_input]:placeholder:text-slate-400 [&_select]:text-slate-900">
                                 <HeroSearchBar {...searchProps} />
                             </div>
                         ) : (
-                            <div className="hidden text-center text-lg font-semibold text-white/90 lg:block">
+                            <div className="min-w-0 flex-1 text-center text-lg font-semibold text-white/90">
                                 Explore listings from sellers across Kenya
                             </div>
                         )}
 
-                        {/* POST AD + MOBILE MENU */}
-                        <div className="col-start-2 row-start-1 flex shrink-0 items-center justify-end gap-2 lg:col-auto lg:row-auto">
+                        {/* Sell and mobile menu remain available on the homepage. */}
+                        <div className="flex shrink-0 items-center justify-end gap-2">
                             <button
                                 type="button"
                                 onClick={openSell}
                                 disabled={!!pendingAction}
-                                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-white px-3 font-extrabold text-[#EF4B08] shadow-sm transition hover:bg-orange-50 hover:shadow-md active:scale-[.98] disabled:opacity-70 sm:h-[52px] sm:px-5 lg:h-[62px] lg:min-w-[178px] lg:text-base"
+                                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 font-extrabold text-[#EF4B08] shadow-sm transition hover:bg-orange-50 hover:shadow-md active:scale-[.98] disabled:opacity-70 sm:h-[52px] lg:h-[58px] lg:w-[160px] lg:text-base"
                             >
                                 {pendingAction === "sell" ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
                                     <PlusIcon className="h-5 w-5 lg:h-6 lg:w-6" />
                                 )}
-                                <span className="hidden sm:inline">Sell</span>
-                                <span className="sm:hidden">Sell</span>
+                                Sell
                             </button>
-
                             <div className="lg:hidden [&_button]:!border-white/40">
                                 {mobileNavigation}
                             </div>
