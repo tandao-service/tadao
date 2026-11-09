@@ -493,11 +493,10 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 </div>
                             </div>
                         )}
-                        {!isHomeRoute ? (
-                            <div className="lg:hidden [&_button]:!border-white/40">
-                                {mobileNavigation}
-                            </div>
-                        ) : null}
+                        {/* Permanent menu: next to the account avatar on mobile and desktop. */}
+                        <div className="flex shrink-0 items-center justify-center [&_button]:!border-white/40">
+                            {mobileNavigation}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -520,7 +519,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                             </div>
                         )}
 
-                        {/* Sell and mobile menu remain available on the homepage. */}
+                        {/* Homepage Sell action; the menu now lives beside the avatar above. */}
                         <div className="flex shrink-0 items-center justify-end gap-2">
                             <button
                                 type="button"
@@ -535,9 +534,7 @@ export default function TopBar({ searchProps }: TopBarProps) {
                                 )}
                                 Sell
                             </button>
-                            <div className="lg:hidden [&_button]:!border-white/40">
-                                {mobileNavigation}
-                            </div>
+
                         </div>
                     </div>
                 </div>
