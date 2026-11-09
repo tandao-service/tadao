@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -13,27 +13,86 @@ import {
 } from "@/components/ui/drawer";
 import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import { FreePackId, VerificationPackId } from "@/constants";
 import { createTransaction } from "@/lib/actions/transactions.actions";
-import { v4 as uuidv4 } from "uuid";
 import { useToast } from "../ui/use-toast";
-import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
-import ProgressPopup from "./ProgressPopup";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
+import { getVerfiesfee } from "@/lib/actions/verifies.actions";
 
-// import { Checkbox } from "../ui/checkbox"; // Unused
+type PackagePrice = {
+  amount: number | string;
+  period: number | string;
+};
+
+type PackageFeature = {
+  title: string;
+};
+
 type Package = {
-  imageUrl: string;
+  imageUrl?: string;
   name: string;
   _id: string;
-  description: string;
-  price: string[];
-  features: string[];
-  color: string;
-  priority: number;
-
+  description?: string;
+  price: PackagePrice[];
+  features: PackageFeature[];
+  color?: string;
+  priority?: number;
 };
+
+type AppUser = {
+  _id: string;
+  clerkId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  photo?: string;
+  imageUrl?: string;
+  status?: string;
+  businessname?: string;
+  aboutbusiness?: string;
+  businessaddress?: string;
+  latitude?: string;
+  longitude?: string;
+  businesshours?: {
+    openHour: string;
+    openMinute: string;
+    closeHour: string;
+    closeMinute: string;
+  }[];
+  businessworkingdays?: string[];
+  phone?: string;
+  whatsapp?: string;
+  website?: string;
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  tiktok?: string;
+  verified?: { accountverified: boolean; verifieddate: string | Date }[];
+  token?: string;
+  notifications?: {
+    email: boolean;
+    fcm: boolean;
+  };
+  fee?: string | number;
+  subscription?: {
+    planId?: string | null;
+    planName?: string;
+    active?: boolean;
+    expiresAt?: string | Date | null;
+    remainingAds?: number;
+    entitlements?: {
+      maxListings?: number;
+      priority?: number;
+      topDays?: number;
+      featuredDays?: number;
+      autoRenewHours?: number | null;
+    };
+  };
+  [key: string]: any;
+};
+
 export function DrawerDemo({
   handleOpenSell,
   onClose,
@@ -45,50 +104,198 @@ export function DrawerDemo({
   subcategory,
   packagesList,
   user,
+  viewHref,
 }: {
   category: string;
   subcategory: string;
   userId: string;
-  user: any;
+  user: AppUser | null;
   isOpen: boolean;
-  packagesList: any,
+  packagesList: Package[];
   onClose: () => void;
   handlePayNow: (id: string) => void;
   handleSubCategory: (category: string, subcategory: string) => void;
   handleOpenSell: (category?: string, subcategory?: string) => void;
+  viewHref?: string;
 }) {
   const { toast } = useToast();
+  const router = useRouter();
+  const { user: currentUser } = useAuth();
+
   const [showVerify, setShowVerify] = useState(true);
   const [showPackages, setShowPackages] = useState(true);
   const [isSending, setIsSending] = useState(false);
-  const { user: currentUser } = useAuth();
-  const handlePostRequest = () => {
-    if (subcategory === 'bids') {
-      handleOpenSell('', '');
-      onClose();
-    } else {
-      handleOpenSell(category, subcategory);
-      onClose();
-    }
-  };
+
+  const [activePackage, setActivePackage] = useState<Package | null>(null);
+  const [activeButton, setActiveButton] = useState(0);
+  const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
+
+  const [plan, setPlan] = useState("Free");
+  const [planId, setPlanId] = useState(FreePackId);
+  const [priceInput, setPriceInput] = useState("");
+  const [periodInput, setPeriodInput] = useState("");
+
+  const [activationFee, setActivationFee] = useState("500");
+  const [loadingFee, setLoadingFee] = useState(false);
+
+  function capitalizeFirstLetter(str: string) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   function generateRandomOrderId() {
-    const timestamp = Date.now(); // Current timestamp in milliseconds
+    const timestamp = Date.now();
     return `MERCHANT_${userId}_${timestamp}`;
   }
+
+  const isAssetFinancing =
+    String(category ?? "").trim().toLowerCase() === "financing" &&
+    String(subcategory ?? "").trim().toLowerCase() === "assets financing";
+
+  const getPostHref = () => {
+    if (subcategory === "bids") return "/create-ad";
+    if (!category && !subcategory) return "/create-ad";
+
+    return `/create-ad?category=${encodeURIComponent(
+      category
+    )}&subcategory=${encodeURIComponent(subcategory)}`;
+  };
+
+  const getViewHref = () => {
+    if (viewHref) return viewHref;
+    if (subcategory === "bids") return "/auction";
+    if (subcategory === "Donated Items") return "/donations";
+    if (subcategory === "Lost and Found Items") return "/lost-and-found";
+    return "/";
+  };
+
+  const isVerified = useMemo(() => {
+    return Boolean(user?.verified?.some((v) => v?.accountverified === true));
+  }, [user]);
+
+  const subscriptionInfo = useMemo(() => {
+    const active = Boolean(user?.subscription?.active);
+    const planName = user?.subscription?.planName || "";
+
+    const expiresAtRaw = user?.subscription?.expiresAt;
+    const expiresAt = expiresAtRaw ? new Date(expiresAtRaw) : null;
+
+    const hasValidExpiry =
+      !!expiresAt &&
+      !Number.isNaN(expiresAt.getTime()) &&
+      expiresAt.getTime() > Date.now();
+
+    const remainingAds =
+      typeof user?.subscription?.remainingAds === "number"
+        ? user.subscription.remainingAds
+        : null;
+
+    const hasRemainingAds = remainingAds === null ? true : remainingAds > 0;
+
+    const hasActiveSubscription = active && hasValidExpiry && hasRemainingAds;
+
+    return {
+      active,
+      planName,
+      expiresAt,
+      hasValidExpiry,
+      remainingAds,
+      hasRemainingAds,
+      hasActiveSubscription,
+    };
+  }, [user]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchData = async () => {
+      try {
+        setLoadingFee(true);
+        const fee = await getVerfiesfee();
+        if (mounted && fee != null) {
+          setActivationFee(String(fee));
+        }
+      } catch (error) {
+        console.error("Failed to fetch verification fee", error);
+      } finally {
+        if (mounted) {
+          setLoadingFee(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    setShowVerify(true);
+    setShowPackages(true);
+
+    const defaultPack = packagesList?.[1] || packagesList?.[0] || null;
+    setActivePackage(defaultPack);
+    setPlanId(defaultPack?._id || FreePackId);
+    setPlan(defaultPack?.name || "Free");
+
+    const defaultPrice = defaultPack?.price?.[activeButton];
+    setPriceInput(String(defaultPrice?.amount ?? ""));
+    setPeriodInput(String(defaultPrice?.period ?? ""));
+  }, [packagesList, activeButton]);
+
+  const handleClick = (pack: Package) => {
+    setActivePackage(pack);
+    setPlanId(pack._id);
+    setPlan(pack.name);
+
+    const selectedPrice = pack.price?.[activeButton];
+    setPriceInput(String(selectedPrice?.amount ?? ""));
+    setPeriodInput(String(selectedPrice?.period ?? ""));
+  };
+
+  const handleButtonClick = (index: number, title: string) => {
+    setActiveButton(index);
+    setActiveButtonTitle(title);
+
+    const selectedPrice = activePackage?.price?.[index];
+    setPriceInput(String(selectedPrice?.amount ?? ""));
+    setPeriodInput(String(selectedPrice?.period ?? ""));
+  };
+
+  const handlePostRequest = () => {
+    const postHref = getPostHref();
+
+    if (!currentUser) {
+      onClose();
+      router.push(`/auth?redirect_url=${encodeURIComponent(postHref)}`);
+      return;
+    }
+
+    if (subcategory === "bids") {
+      handleOpenSell("", "");
+    } else {
+      handleOpenSell(category, subcategory);
+    }
+
+    onClose();
+  };
+
   const handlePay = async (
     packIdInput: string,
     packNameInput: string,
-    periodInput: string,
-    priceInput: string
+    periodInputValue: string,
+    priceInputValue: string
   ) => {
     const customerId = generateRandomOrderId();
 
     const trans = {
       orderTrackingId: customerId,
-      amount: Number(priceInput),
+      amount: Number(priceInputValue),
       plan: packNameInput,
       planId: packIdInput,
-      period: periodInput,
+      period: periodInputValue,
       buyerId: userId,
       merchantId: customerId,
       status: "Pending",
@@ -98,117 +305,59 @@ export function DrawerDemo({
     try {
       setIsSending(true);
       const response = await createTransaction(trans);
-      if (response.status === "Pending") {
+
+      if (response?.status === "Pending") {
         handlePayNow(response.merchantId);
         onClose();
       }
     } catch (error) {
-      //console.log(response);
-      console.log("Error processing payment: ", error);
+      console.error("Error processing payment: ", error);
+      toast({
+        title: "Payment failed",
+        description: "Could not start payment. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSending(false);
     }
   };
 
   const handleViewRequests = () => {
+    const targetViewHref = getViewHref();
 
-    const isVerified =
-      user?.user?.verified && user?.user?.verified[0]?.accountverified === true;
-    const hasSubscription = user?.subscriptionStatus === "Active";
+    if (!currentUser) {
+      onClose();
+      router.push(`/auth?redirect_url=${encodeURIComponent(targetViewHref)}`);
+      return;
+    }
 
-    // if (!isVerified) {
-    //  setShowVerify(false);
-    //  return;
-    //}
+    if (!isVerified) {
+      setShowVerify(false);
+      setShowPackages(true);
+      return;
+    }
 
-    // if (isVerified && !hasSubscription) {
-    //  setShowPackages(false);
-    //  return;
-    //}
+    if (!subscriptionInfo.hasActiveSubscription) {
+      setShowVerify(true);
+      setShowPackages(false);
+      return;
+    }
 
     handleSubCategory(category, subcategory);
     onClose();
   };
-  const [activePackage, setActivePackage] = useState<Package | null>(null);
-  const [activeButton, setActiveButton] = useState(0);
-  const [activeButtonTitle, setActiveButtonTitle] = useState("1 week");
-  const createdAt = new Date(user?.transaction?.createdAt || new Date());
-  const periodInDays = parseInt(user?.transaction?.period) || 0;
-  const expiryDate = new Date(createdAt.getTime() + periodInDays * 24 * 60 * 60 * 1000);
-  const currentTime = new Date();
-  const remainingTime = expiryDate.getTime() - currentTime.getTime();
-  const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
 
-
-  const [Plan, setplan] = useState("Free");
-  const [PlanId, setplanId] = useState(FreePackId);
-  const [Priority_, setpriority] = useState(0);
-  const [Adstatus_, setadstatus] = useState("Active");
-  const [priceInput, setPriceInput] = useState("");
-  const [periodInput, setPeriodInput] = useState("");
-  const [ExpirationDate_, setexpirationDate] = useState(new Date());
-
-  const currDate = new Date();
-  // Add one month to the current date
-  let expirationDate = new Date(currDate);
-  // expirationDate.setMonth(currDate.getMonth() + 1);
-  expirationDate.setDate(currDate.getDate() + 7);
-
-  useEffect(() => {
-    setShowVerify(true);
-    setShowPackages(true);
-    setadstatus("Pending");
-    setActivePackage(packagesList[1] || "Free");
-    setplanId(packagesList[1]?._id || FreePackId);
-    setplan(packagesList[1]?.name || "Free");
-    setpriority(packagesList[1]?.priority || 1);
-    setexpirationDate(expirationDate);
-    packagesList[1]?.price.forEach((price: any, index: number) => {
-      if (index === activeButton) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
-  }, []);
-  const handleClick = (pack: Package) => {
-
-    if (pack.name === "Free") {
-      setadstatus("Active");
-    } else {
-      setadstatus("Pending");
-    }
-    setActivePackage(pack);
-    setplanId(pack._id);
-    setplan(pack.name);
-    setpriority(pack.priority);
-    setexpirationDate(expirationDate);
-    pack.price.forEach((price: any, index: number) => {
-      if (index === activeButton) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
-  };
-  const handleButtonClick = (index: number, title: string) => {
-    setActiveButton(index);
-    setActiveButtonTitle(title);
-    activePackage?.price.forEach((price: any, indexx: number) => {
-      if (indexx === index) {
-        setPriceInput(price.amount);
-        setPeriodInput(price.period);
-      }
-    });
-  };
-  const router = useRouter();
-  const [isOpenP, setIsOpenP] = useState(false);
-  const handleCloseP = () => {
-    setIsOpenP(false);
-  };
-  function capitalizeFirstLetter(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+          setShowVerify(true);
+          setShowPackages(true);
+        }
+      }}
+    >
       <DrawerContent className="dark:bg-[#131B1E]">
         <div className="mx-auto w-full max-w-md">
           {!showVerify && (
@@ -219,6 +368,7 @@ export function DrawerDemo({
                   You need to verify your account to view requests.
                 </DrawerDescription>
               </DrawerHeader>
+
               <div className="flex flex-col gap-4 w-full items-center">
                 <button
                   onClick={() =>
@@ -226,17 +376,15 @@ export function DrawerDemo({
                       VerificationPackId,
                       "Verification",
                       "0",
-                      user.user?.fee
+                      activationFee
                     )
                   }
-                  className="w-full flex flex-col gap-2 justify-enter items-center bg-orange-500 text-white hover:bg-orange-600 py-3 px-4 rounded-lg shadow"
+                  disabled={isSending || loadingFee}
+                  className="w-full flex flex-col gap-2 items-center bg-orange-500 text-white hover:bg-orange-600 py-3 px-4 rounded-lg shadow disabled:opacity-60"
                 >
-                  {isSending ? (
+                  {isSending || loadingFee ? (
                     <div className="flex gap-2 items-center">
-                      <CircularProgress
-                        sx={{ color: "white" }}
-                        size={24}
-                      />
+                      <CircularProgress sx={{ color: "white" }} size={24} />
                       Processing...
                     </div>
                   ) : (
@@ -250,243 +398,207 @@ export function DrawerDemo({
             </div>
           )}
 
-          {(showVerify && showPackages) && (
+          {showVerify && showPackages && (
             <div className="p-4">
               <DrawerHeader>
-                <DrawerTitle>{subcategory === "bids" ? (<>Auction</>) : (<>{capitalizeFirstLetter(subcategory)}</>)}</DrawerTitle>
-                <DrawerDescription>
+                <DrawerTitle>
+                  {subcategory === "bids" ? "Auction" : capitalizeFirstLetter(subcategory)}
+                </DrawerTitle>
 
-                  {subcategory === "Donated Items" ? (<>
-                    <p className="mt-1 text-sm text-gray-800 leading-relaxed">
+                <DrawerDescription>
+                  {subcategory === "Donated Items" ? (
+                    <p className="mt-1 text-sm text-gray-800 leading-relaxed dark:text-gray-200">
                       Give out items you no longer use — they can be of help to a needy person.
-                      <span className="block mt-1 text-xs text-gray-900">
+                      <span className="block mt-1 text-xs text-gray-900 dark:text-gray-300">
                         E.g. Equipment, Electronics, Furniture, Clothes, Baby-walker, etc.
                       </span>
                     </p>
-                  </>) : (<>  What would you like to do?</>)}
+                  ) : (
+                    <>What would you like to do?</>
+                  )}
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="flex flex-col gap-4 w-full items-center">
 
-                {currentUser ? (<> <button
+              <div className="flex flex-col gap-4 w-full items-center">
+                <button
                   onClick={handlePostRequest}
                   className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                 >
-                  {subcategory === "Donated Items" ? (
-                    <>
-                      <p>Post Items to Donate</p>
-                    </>
-                  ) : subcategory === "bids" ? (
-                    <>
-                      <p>Post Item on Auction</p>
-                    </>
-                  ) : (
-                    <>Post {subcategory}</>
-                  )}
-
-
+                  {isAssetFinancing
+                    ? "Financier Listing"
+                    : subcategory === "Donated Items"
+                      ? "Post Items to Donate"
+                      : subcategory === "bids"
+                        ? "Post Item on Auction"
+                        : `Post ${subcategory}`}
                 </button>
-                  <button
-                    onClick={handleViewRequests}
-                    disabled={isSending}
-                    className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded  disabled:opacity-50"
-                  >
-                    {isSending ? ("Checking...") : (<>{subcategory === "bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
 
-                  </button></>) : (
-                  <> <button
-
-                    onClick={() => {
-                      setIsOpenP(true);
-                      router.push("/auth");
-                    }}
-                    className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
-                  >
-                    {subcategory === "Donated Items" ? (
-                      <>
-                        <p>Post Items to Donate</p>
-                      </>
-                    ) : subcategory === "bids" ? (
-                      <>
-                        <p>Post Item on Auction</p>
-                      </>
-                    ) : (
-                      <>Post {subcategory}</>
-                    )}
-
-                  </button>
-                    <button
-
-                      onClick={() => {
-                        setIsOpenP(true);
-                        router.push("/auth");
-                      }}
-                      disabled={isSending}
-                      className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
-                    >
-                      {isSending ? ("Checking...") : (<>{subcategory === "bids" ? (<>View Items on Auction</>) : (<>View {subcategory}</>)}</>)}
-
-
-                    </button>
-                    <ProgressPopup isOpen={isOpenP} onClose={handleCloseP} /></>
-                )}
-
+                <button
+                  onClick={handleViewRequests}
+                  disabled={isSending}
+                  className="w-full text-orange-500 bg-white border border-orange-500 hover:bg-[#FAE6DA] py-2 px-4 rounded disabled:opacity-50"
+                >
+                  {isSending
+                    ? "Checking..."
+                    : isAssetFinancing
+                      ? "Apply Financing"
+                      : subcategory === "bids"
+                        ? "View Items on Auction"
+                        : `View ${subcategory}`}
+                </button>
               </div>
-
             </div>
           )}
 
           {!showPackages && (
             <div className="p-4 text-center text-gray-600">
-
               <DrawerHeader>
                 <DrawerTitle>Subscription Required</DrawerTitle>
                 <DrawerDescription>
-                  <p>You need a subscription to view requests.</p>
+                  <div className="space-y-1">
+                    <p>You need a subscription to view requests.</p>
+
+                    {!subscriptionInfo.active && (
+                      <p className="text-xs text-red-500">No active subscription found.</p>
+                    )}
+
+                    {subscriptionInfo.active && !subscriptionInfo.hasValidExpiry && (
+                      <p className="text-xs text-red-500">Your subscription has expired.</p>
+                    )}
+
+                    {subscriptionInfo.active &&
+                      subscriptionInfo.hasValidExpiry &&
+                      !subscriptionInfo.hasRemainingAds && (
+                        <p className="text-xs text-red-500">
+                          Your subscription has no remaining ads.
+                        </p>
+                      )}
+                  </div>
                 </DrawerDescription>
               </DrawerHeader>
 
               <div className="w-full mt-2 p-0 dark:text-gray-100 rounded-lg">
-
-
-                {/* No Promo */}
                 <div className="w-full">
                   {packagesList.length > 0 &&
-                    packagesList.slice(1).map((pack: any, index: number) => {
-                      const issamepackage = user.currentpack.name === pack.name;
+                    packagesList
+                      .filter((pack) => pack.name !== "Free")
+                      .map((pack, index) => {
+                        const isSamePackage = user?.subscription?.planName === pack.name;
+                        const isCurrentActive =
+                          isSamePackage && subscriptionInfo.hasActiveSubscription;
 
-                      return (
-                        <div
-                          key={index}
-                          className={`mb-2 dark:bg-[#2D3236] border bg-white rounded-lg cursor-pointer ${activePackage === pack
-                            ? "bg-[#F2FFF2] border-orange-600 border-2"
-                            : ""
-                            }`}
-                        >
+                        return (
                           <div
-                            onClick={() =>
-                              (!issamepackage && pack.name === "Free") ||
-                                (issamepackage && pack.name === "Free" && (user.currentpack.list - user.ads) === 0)
-                                ? handleClick(pack)
-                                : handleClick(pack)
-                            }
-                            className="flex justify-between items-center w-full"
+                            key={pack._id || index}
+                            className={`mb-2 dark:bg-[#2D3236] border bg-white rounded-lg cursor-pointer ${activePackage?._id === pack._id
+                              ? "bg-[#F2FFF2] border-orange-600 border-2"
+                              : ""
+                              }`}
                           >
-                            {/* Left Column: Package Details */}
-                            <div className="p-3">
-                              <p className="text-gray-700 font-semibold dark:text-gray-300">
-                                {pack.name}
-                              </p>
-                              <ul className="flex flex-col gap-1 p-1">
-                                {pack.features.slice(0, 1).map((feature: any, i: number) => (
-                                  <li key={i} className="flex items-center gap-1">
-                                    <DoneOutlinedIcon />
-                                    <p className="text-sm">{feature.title}</p>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                            <div
+                              onClick={() => handleClick(pack)}
+                              className="flex justify-between items-center w-full"
+                            >
+                              <div className="p-3">
+                                <p className="text-gray-700 font-semibold dark:text-gray-300">
+                                  {pack.name}
+                                </p>
 
-                            {/* Right Column: Status and Price */}
-                            <div className="p-3">
-                              <div className="text-gray-600 mb-1">
-                                <div className="flex gap-2 text-sm">
-                                  {remainingDays > 0 && pack.name === user.currentpack.name ? (
-                                    <div className="p-1 flex-block rounded-full bg-orange-500">
-                                      <p className="text-white text-xs">Active</p>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      {(!issamepackage && pack.name === "Free") ||
-                                        (issamepackage &&
-                                          pack.name === "Free" &&
-                                          (user.currentpack.list - user.ads) === 0) ? null : issamepackage &&
-                                            pack.name === "Free" &&
-                                            (user.currentpack.list - user.ads) > 0 ? null : null}
-                                    </>
-                                  )}
-                                </div>
+                                <ul className="flex flex-col gap-1 p-1">
+                                  {pack.features?.slice(0, 1).map((feature, i) => (
+                                    <li key={i} className="flex items-center gap-1">
+                                      <DoneOutlinedIcon />
+                                      <p className="text-sm">{feature.title}</p>
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
 
-                              {/* Price Display */}
-                              <div className="text-center">
-                                {pack.name !== "Free" && (
+                              <div className="p-3">
+                                <div className="text-gray-600 mb-1">
+                                  <div className="flex gap-2 text-sm justify-end">
+                                    {isCurrentActive ? (
+                                      <div className="p-1 rounded-full bg-orange-500">
+                                        <p className="text-white text-xs">Active</p>
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                </div>
+
+                                <div className="text-center">
                                   <div className="text-gray-800 font-bold mb-0">
                                     <ul className="flex flex-col items-center gap-0 py-0">
-                                      {pack.price.map((price: any, i: number) => (
+                                      {pack.price?.map((price, i) => (
                                         <li
                                           key={i}
                                           className={`flex items-center gap-0 ${i !== activeButton ? "hidden" : ""
                                             }`}
                                         >
                                           <p
-                                            className={`font-semibold ${activePackage === pack
+                                            className={`font-semibold ${activePackage?._id === pack._id
                                               ? "text-orange-500"
                                               : "text-gray-800 dark:text-gray-400"
                                               }`}
                                           >
-                                            Ksh {price.amount.toLocaleString()}/ {activeButtonTitle}
+                                            Ksh {Number(price.amount).toLocaleString()}/{" "}
+                                            {activeButtonTitle}
                                           </p>
                                         </li>
                                       ))}
                                     </ul>
                                   </div>
-                                )}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* Button Group */}
-                          {pack.name !== "Free" && activePackage === pack && (
-                            <div className="flex flex-wrap justify-end items-center p-2">
-                              <button
-                                className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
-                                  ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
-                                  : "border border-orange-500 text-orange-500 rounded-full p-2"
-                                  }`}
-                                onClick={() => handleButtonClick(0, "1 week")}
-                              >
-                                1 week
-                              </button>
-                              <button
-                                className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
-                                  ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
-                                  : "border border-orange-500 text-orange-500 rounded-full p-2"
-                                  }`}
-                                onClick={() => handleButtonClick(1, "1 month")}
-                              >
-                                1 month
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                            {activePackage?._id === pack._id && (
+                              <div className="flex flex-wrap justify-end items-center p-2">
+                                <button
+                                  className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 0
+                                    ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                    : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                    }`}
+                                  onClick={() => handleButtonClick(0, "1 week")}
+                                >
+                                  1 week
+                                </button>
+
+                                <button
+                                  className={`mr-2 mb-2 text-xs w-[80px] lg:w-[90px] lg:text-sm ${activeButton === 1
+                                    ? "bg-gradient-to-b from-orange-600 to-orange-500 text-white p-2 rounded-full"
+                                    : "border border-orange-500 text-orange-500 rounded-full p-2"
+                                    }`}
+                                  onClick={() => handleButtonClick(1, "1 month")}
+                                >
+                                  1 month
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                 </div>
               </div>
 
               <button
-                onClick={() =>
-                  handlePay(
-                    PlanId,
-                    Plan,
-                    periodInput,
-                    priceInput
-                  )
-                }
-                className="w-full mt-3 hover:bg-orange-600 bg-orange-500 text-white px-4 py-2 rounded-sm"
+                onClick={() => handlePay(planId, plan, periodInput, priceInput)}
+                disabled={isSending || !planId || !priceInput}
+                className="w-full mt-3 hover:bg-orange-600 bg-orange-500 text-white px-4 py-2 rounded-sm disabled:opacity-60"
               >
-                Subscribe Now
+                {isSending ? "Processing..." : "Subscribe Now"}
               </button>
             </div>
           )}
 
           <DrawerFooter>
-            <Button onClick={() => {
-              onClose();
-              setShowVerify(true);
-              setShowPackages(true);
-            }} variant="outline">
+            <Button
+              onClick={() => {
+                onClose();
+                setShowVerify(true);
+                setShowPackages(true);
+              }}
+              variant="outline"
+            >
               Cancel
             </Button>
           </DrawerFooter>

@@ -149,8 +149,8 @@ export function DrawerDemo({
   }
 
   const isAssetFinancing =
-    category.trim().toLowerCase() === "financing" &&
-    subcategory.trim().toLowerCase() === "assets financing";
+    String(category ?? "").trim().toLowerCase() === "financing" &&
+    String(subcategory ?? "").trim().toLowerCase() === "assets financing";
 
   const getPostHref = () => {
     if (subcategory === "bids") return "/create-ad";
@@ -427,7 +427,7 @@ export function DrawerDemo({
                   {isAssetFinancing
                     ? "Financier Listing"
                     : subcategory === "Donated Items"
-                      ? "Post Items to Donate"
+                      ? "Post Items to Donateeee"
                       : subcategory === "bids"
                         ? "Post Item on Auction"
                         : `Post ${subcategory}`}
