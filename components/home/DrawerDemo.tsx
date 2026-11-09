@@ -148,6 +148,10 @@ export function DrawerDemo({
     return `MERCHANT_${userId}_${timestamp}`;
   }
 
+  const isAssetFinancing =
+    category.trim().toLowerCase() === "financing" &&
+    subcategory.trim().toLowerCase() === "assets financing";
+
   const getPostHref = () => {
     if (subcategory === "bids") return "/create-ad";
     if (!category && !subcategory) return "/create-ad";
@@ -420,11 +424,13 @@ export function DrawerDemo({
                   onClick={handlePostRequest}
                   className="w-full bg-orange-500 text-white hover:bg-orange-600 py-2 px-4 rounded"
                 >
-                  {subcategory === "Donated Items"
-                    ? "Post Items to Donate"
-                    : subcategory === "bids"
-                      ? "Post Item on Auction"
-                      : `Post ${subcategory}`}
+                  {isAssetFinancing
+                    ? "Financier Listing"
+                    : subcategory === "Donated Items"
+                      ? "Post Items to Donate"
+                      : subcategory === "bids"
+                        ? "Post Item on Auction"
+                        : `Post ${subcategory}`}
                 </button>
 
                 <button
@@ -434,9 +440,11 @@ export function DrawerDemo({
                 >
                   {isSending
                     ? "Checking..."
-                    : subcategory === "bids"
-                      ? "View Items on Auction"
-                      : `View ${subcategory}`}
+                    : isAssetFinancing
+                      ? "Apply Financing"
+                      : subcategory === "bids"
+                        ? "View Items on Auction"
+                        : `View ${subcategory}`}
                 </button>
               </div>
             </div>
