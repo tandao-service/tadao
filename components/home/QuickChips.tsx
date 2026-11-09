@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { ArrowUpRight, Gavel, HandHeart, Landmark, Loader2, SearchCheck, Tag, type LucideIcon } from "lucide-react";
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { DrawerDemo } from "@/components/shared/DrawerDemo";
@@ -11,9 +11,12 @@ import { cn } from "@/lib/utils";
 
 type QuickItem = {
     label: string;
-    icon: string;
-    tone: string;
+    description: string;
+    icon: LucideIcon;
     mode: "direct" | "drawer";
+    iconBox: string;
+    iconColor: string;
+    cardClass: string;
     href?: string;
     category?: string;
     subcategory?: string;
@@ -100,41 +103,62 @@ export default function QuickChips({
     const items: QuickItem[] = [
         {
             label: "Post Ad",
-            href: "/create-ad",
-            icon: "🏷️",
+            description: "Sell something today",
+            icon: Tag,
             mode: "direct",
-            tone:
-                "from-orange-50 to-orange-100 border-orange-200 text-orange-700",
+            href: "/create-ad",
+            iconBox: "bg-white/20 ring-1 ring-white/25",
+            iconColor: "text-white",
+            cardClass: "border-orange-500 bg-gradient-to-br from-[#ff690a] via-[#ff5100] to-[#e74000] text-white shadow-orange-200/50",
         },
         {
             label: "Donated Items",
-            icon: "💚",
+            description: "Give or find support",
+            icon: HandHeart,
             mode: "drawer",
             category: "Donations",
             subcategory: "Donated Items",
             viewHref: "/donations",
-            tone:
-                "from-green-50 to-green-100 border-green-200 text-green-700",
+            iconBox: "bg-white/20 ring-1 ring-white/25",
+            iconColor: "text-white",
+            cardClass: "border-emerald-500 bg-gradient-to-br from-[#20bf83] via-[#0fa86f] to-[#078451] text-white shadow-emerald-200/50",
+        },
+        {
+            label: "Asset Financing",
+            description: "Explore financing options",
+            icon: Landmark,
+            mode: "drawer",
+            category: "Financing",
+            subcategory: "Assets financing",
+            // Matches toListingSlugFromName("Assets financing") in app/_ad/ad-url.ts.
+            viewHref: "/financing",
+            iconBox: "bg-white/20 ring-1 ring-white/25",
+            iconColor: "text-white",
+            cardClass: "border-cyan-500 bg-gradient-to-br from-[#19b8d5] via-[#079bc1] to-[#087b9e] text-white shadow-cyan-200/50",
         },
         {
             label: "Auction",
-            icon: "⚖️",
+            description: "Browse and place bids",
+            icon: Gavel,
             mode: "drawer",
             category: "auction",
             subcategory: "bids",
             viewHref: "/auction",
-            tone:
-                "from-blue-50 to-blue-100 border-blue-200 text-blue-700",
+            iconBox: "bg-white/20 ring-1 ring-white/25",
+            iconColor: "text-white",
+            cardClass: "border-blue-500 bg-gradient-to-br from-[#518cf9] via-[#316be7] to-[#234ec6] text-white shadow-blue-200/50",
         },
         {
             label: "Lost & Found",
-            icon: "🔎",
+            description: "Find what matters",
+            icon: SearchCheck,
             mode: "drawer",
             category: "Lost and Found",
             subcategory: "Lost and Found Items",
             viewHref: "/lost-and-found",
-            tone:
-                "from-purple-50 to-purple-100 border-purple-200 text-purple-700",
+            iconBox: "bg-white/20 ring-1 ring-white/25",
+            iconColor: "text-white",
+            cardClass: "border-violet-500 bg-gradient-to-br from-[#ac70ef] via-[#8b4cd9] to-[#6e30b9] text-white shadow-violet-200/50",
         },
     ];
 
@@ -269,99 +293,81 @@ export default function QuickChips({
 
     return (
         <>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {items.map((x) => {
-                    const isLoading =
-                        pendingAction ===
-                        x.label;
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5 xl:gap-4">
+                {items.map((item) => {
+                    const Icon = item.icon;
+                    const isLoading = pendingAction === item.label;
+                    const isPrimary = item.mode === "direct";
 
-                    if (
-                        x.mode ===
-                        "direct"
-                    ) {
+                    const cardContents = (
+                        <>
+                            <div className="flex w-full items-start justify-between gap-2">
+                                <span className={cn(
+                                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105",
+                                    item.iconBox
+                                )}>
+                                    <Icon className={cn("h-6 w-6", item.iconColor)} strokeWidth={2} aria-hidden="true" />
+                                </span>
+                                <span className={cn(
+                                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
+                                    "bg-white/15 text-white group-hover:bg-white/25"
+                                )}>
+                                    {isLoading ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <ArrowUpRight className="h-4 w-4" />
+                                    )}
+                                </span>
+                            </div>
+
+                            <div className="mt-5 min-w-0">
+                                <span className={cn(
+                                    "block text-[15px] font-extrabold leading-5 tracking-tight sm:text-base",
+                                    "text-white"
+                                )}>
+                                    {isLoading ? "Opening..." : item.label}
+                                </span>
+                                <span className={cn(
+                                    "mt-1.5 block text-xs leading-5",
+                                    "text-white/85"
+                                )}>
+                                    {isLoading ? "Please wait" : item.description}
+                                </span>
+                            </div>
+                        </>
+                    );
+
+                    const cardClasses = cn(
+                        "group relative flex min-h-[154px] w-full flex-col justify-between overflow-hidden rounded-[22px] border p-4 text-left shadow-sm transition-all duration-200",
+                        "hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.99]",
+                        "sm:min-h-[170px] sm:p-5",
+                        item.cardClass,
+                        isLoading && "pointer-events-none opacity-75"
+                    );
+
+                    if (isPrimary) {
                         return (
                             <Link
-                                key={
-                                    x.label
-                                }
-                                href={
-                                    x.href!
-                                }
+                                key={item.label}
+                                href={item.href!}
                                 prefetch
-                                aria-busy={
-                                    isLoading
-                                }
-                                onClick={(
-                                    e
-                                ) =>
-                                    handleDirectClick(
-                                        e,
-                                        x
-                                    )
-                                }
-                                className={cn(
-                                    `relative rounded-2xl border bg-gradient-to-br ${x.tone} p-4 transition hover:shadow-md`,
-                                    "active:scale-[0.98]",
-                                    isLoading &&
-                                    "pointer-events-none ring-2 ring-orange-300"
-                                )}
+                                aria-busy={isLoading}
+                                onClick={(e) => handleDirectClick(e, item)}
+                                className={cardClasses}
                             >
-                                <div className="flex items-start justify-between gap-2">
-                                    <div className="text-2xl">
-                                        {
-                                            x.icon
-                                        }
-                                    </div>
-
-                                    {isLoading && (
-                                        <Loader2 className="h-5 w-5 animate-spin opacity-80" />
-                                    )}
-                                </div>
-
-                                <div className="mt-2 text-sm font-extrabold">
-                                    {isLoading
-                                        ? "Opening..."
-                                        : x.label}
-                                </div>
-
-                                <div className="text-xs opacity-70">
-                                    {isLoading
-                                        ? "Please wait"
-                                        : "Quick action"}
-                                </div>
+                                {cardContents}
                             </Link>
                         );
                     }
 
                     return (
                         <button
-                            key={
-                                x.label
-                            }
+                            key={item.label}
                             type="button"
-                            onClick={() =>
-                                openDrawer(
-                                    x
-                                )
-                            }
-                            className={cn(
-                                `rounded-2xl border bg-gradient-to-br ${x.tone} p-4 text-left transition hover:shadow-md`,
-                                "active:scale-[0.98]"
-                            )}
+                            onClick={() => openDrawer(item)}
+                            className={cardClasses}
                         >
-                            <div className="text-2xl">
-                                {x.icon}
-                            </div>
-
-                            <div className="mt-2 text-sm font-extrabold">
-                                {
-                                    x.label
-                                }
-                            </div>
-
-                            <div className="text-xs opacity-70">
-                                Choose action
-                            </div>
+                            {cardContents}
                         </button>
                     );
                 })}
